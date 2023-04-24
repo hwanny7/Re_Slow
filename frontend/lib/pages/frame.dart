@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> {
                 label: '채팅',
                 backgroundColor: Colors.green),
             BottomNavigationBarItem(
-                icon: Icon(Icons.chat),
+                icon: Icon(Icons.person),
                 label: '프로필',
                 backgroundColor: Colors.green),
           ]),

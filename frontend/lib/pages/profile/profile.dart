@@ -15,7 +15,7 @@ class _ProfileState extends State<Profile> {
           Container(
             height: 150,
             color: Colors.grey[300],
-            child: Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CircleAvatar(
@@ -34,7 +34,7 @@ class _ProfileState extends State<Profile> {
           ),
 
           // Icons
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Container(
             color: Colors.green,
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -77,7 +77,7 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           // konw-how-started
           Container(
             padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
