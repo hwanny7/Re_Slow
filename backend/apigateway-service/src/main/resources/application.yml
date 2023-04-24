@@ -25,3 +25,9 @@ spring:
       hibernate:
         format_sql: true
 
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://k8b306.p.ssafy.io:8761/eureka   # ? ??? service ? ?????.
