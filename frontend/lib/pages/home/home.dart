@@ -15,6 +15,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('Home입니다.'));
+    return Text('Home입니다.');
   }
 }

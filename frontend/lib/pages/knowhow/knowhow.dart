@@ -8,6 +8,6 @@ class KnowHow extends StatefulWidget {
 class _KnowHowState extends State<KnowHow> {
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('노하우입니다.'));
+    return Text('노하우입니다.');
   }
 }

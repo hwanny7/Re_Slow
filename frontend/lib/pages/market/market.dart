@@ -8,6 +8,6 @@ class Market extends StatefulWidget {
 class _MarketState extends State<Market> {
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('마켓입니다.'));
+    return Text('마켓입니다');
   }
 }

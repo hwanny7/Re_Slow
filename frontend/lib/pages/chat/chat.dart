@@ -8,6 +8,6 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('채팅입니다.'));
+    return Text('채팅입니다.');
   }
 }
