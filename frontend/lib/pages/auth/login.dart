@@ -191,5 +191,10 @@ class _LoginState extends State<Login> {
   }
 }
 
-// https://www.freecodecamp.org/news/how-to-build-a-simple-login-app-with-flutter/
-// https://github.com/daffaalam/flutter_jwt_auth/tree/master/lib/src
+
+
+
+
+// https://github.com/aaronksaunders/simple_firebase_auth/blob/completed-part-one/lib/main.dart
+// https://medium.com/@afegbua/flutter-thursday-13-building-a-user-registration-and-login-process-with-provider-and-external-api-1bb87811fd1d
+
