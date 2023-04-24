@@ -1,0 +1,27 @@
+server:
+  port: 9000
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Mysql Settings
+    url: jdbc:mysql://localhost:3306/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${LOCAL_MYSQL_NAME}
+    password: ${LOCAL_MYSQL_PASSWORD}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  main:
+    web-application-type: reactive
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        format_sql: true
+
