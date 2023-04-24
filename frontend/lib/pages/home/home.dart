@@ -15,6 +15,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Text('Home입니다.');
+    return Container(
+        margin: EdgeInsets.all(16),
+        child: Center(
+            child: Column(
+                children: [Image.asset("assets/image/Logo_Reslow.png")])));
   }
 }
