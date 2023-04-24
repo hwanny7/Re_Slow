@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/frame.dart';
+import 'pages/auth/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +15,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       // home: MainPage(key: key),
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
         '/': (context) => MainPage(key: key),
+        '/login': (context) => Login(key: key),
       },
     );
   }
