@@ -16,8 +16,8 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
 
   // editing controller
-  final TextEditingController emailController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   // firebase
 
@@ -131,15 +131,15 @@ class _LoginState extends State<Login> {
                           "assets/logo.png",
                           fit: BoxFit.contain,
                         )),
-                    SizedBox(
+                    const SizedBox(
                       height: 45,
                     ),
                     emailField,
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                     passwordField,
-                    SizedBox(height: 35),
+                    const SizedBox(height: 35),
                     loginButton,
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[

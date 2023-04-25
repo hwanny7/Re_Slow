@@ -1,6 +1,5 @@
 class User {
   String userId;
-
   String accessToken;
   String refreshToken;
 

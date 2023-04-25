@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -11,18 +10,11 @@ import 'package:reslow/utils/shared_preference.dart';
 const String baseURL = "http://localhost:8080";
 
 class AuthProvider with ChangeNotifier {
-
-
-
   Future<Map<String, dynamic>> login(String userId, String password) async {
-    var result;
+    dynamic result;
     final Map<String, dynamic> payload = {
-      'data': {
-        'userId': userId,
-        'password': password
-      }
+      'data': {'userId': userId, 'password': password}
     };
-
 
     Response response = await post(
       Uri.parse(baseURL),
@@ -39,7 +31,6 @@ class AuthProvider with ChangeNotifier {
 
       UserPreferences().saveUser(authUser);
 
-
       result = {'status': true, 'message': 'Successful', 'user': authUser};
     } else {
       result = {
@@ -50,8 +41,9 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<Map<String, dynamic>> register(String userId, String password, String passwordConfirmation) async {
-    var result;
+  Future<Map<String, dynamic>> register(
+      String userId, String password, String passwordConfirmation) async {
+    dynamic result;
 
     final Map<String, dynamic> payload = {
       'user': {
@@ -60,10 +52,9 @@ class AuthProvider with ChangeNotifier {
         'password_confirmation': passwordConfirmation
       }
     };
-    Response response = await post(
-        Uri.parse(baseURL),
+    Response response = await post(Uri.parse(baseURL),
         body: json.encode(payload),
-        headers: {'Content-Type': 'application/json'})
+        headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -73,7 +64,6 @@ class AuthProvider with ChangeNotifier {
 
       UserPreferences().saveUser(authUser);
 
-
       result = {'status': true, 'message': 'Successful', 'user': authUser};
     } else {
       result = {
@@ -84,10 +74,7 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-
   static onError(error) {
-    print("the error is $error.detail");
     return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
   }
-
 }
