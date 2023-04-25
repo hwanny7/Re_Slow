@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'notificationsetting.dart';
+import 'notificationpage.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/test.jpg'),
+                  backgroundImage: AssetImage('assets/image/test.jpg'),
                 ),
                 Text(
                   '리폼왕 춘식이',
@@ -46,7 +48,12 @@ class _ProfileState extends State<Profile> {
                     IconButton(
                       icon: Icon(Icons.notifications),
                       onPressed: () {
-                        // Navigate to notifications page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationPage(),
+                          ),
+                        );
                       },
                     ),
                     Text('알림'),
@@ -189,6 +196,11 @@ class _ProfileState extends State<Profile> {
                       GestureDetector(
                         onTap: () {
                           // Navigate to my account settings page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotificationSetting()),
+                          );
                         },
                         child: Container(
                           padding: EdgeInsets.all(5),
