@@ -15,13 +15,14 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
   final GlobalKey containerKey5 = GlobalKey();
   final GlobalKey containerKey6 = GlobalKey();
   final GlobalKey containerKey7 = GlobalKey();
+  final GlobalKey tabsContainerKey = GlobalKey();
 
   final scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        key: containerKey1,
+        key: tabsContainerKey,
         margin: const EdgeInsets.symmetric(
           vertical: 12.0,
         ),
@@ -31,6 +32,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
           controller: scrollController,
           children: <Widget>[
             Container(
+              key: containerKey1,
               margin: const EdgeInsets.only(left: 10.0),
               child: TextButton(
                 style: ButtonStyle(
@@ -107,7 +109,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('바나나welkfjelfewfjkefefj'),
+                child: Text('바나나'),
                 onPressed: () {
                   _scrollToButton(containerKey4);
                 },
@@ -181,95 +183,21 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
   }
 
   void _scrollToButton(GlobalKey containerKey) {
-    print(containerKey.currentContext);
-    // double buttonWidth = 30; // Replace with your button width
-    // double buttonOffset = index * buttonWidth;
+    final RenderBox tabsContainer =
+        tabsContainerKey.currentContext!.findRenderObject() as RenderBox;
+    double screenWidth = tabsContainer.size.width;
+    final tabsContainerPosition = tabsContainer.localToGlobal(Offset.zero).dx;
+    final tabsContainerOffset = Offset(-tabsContainerPosition, 0);
+    print(tabsContainerOffset);
+
     final RenderBox renderBox =
         containerKey.currentContext!.findRenderObject() as RenderBox;
-    final offset = renderBox.localToGlobal(Offset.zero);
-    print(containerKey.currentContext);
+    double size = renderBox.size.width;
+    double position = renderBox.localToGlobal(tabsContainerOffset).dx;
 
-    scrollController.animateTo(offset.dx,
+    double offset = (position + size / 2) - screenWidth / 2;
+
+    scrollController.animateTo(offset,
         duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
   }
 }
-
-
-  // Widget build(BuildContext context) {
-  //   return const DefaultTabController(
-  //     initialIndex: 1,
-  //     length: 2,
-  //     child: TabBar(
-  //       isScrollable: true,
-  //       // indicator: BoxDecoration(
-  //       //   color: Colors.green,
-  //       //   // borderRadius: BorderRadius
-  //       // ),
-  //       labelColor: Color.fromARGB(255, 56, 56, 56),
-  //       // labelPadding: const EdgeInsets.symmetric(horizontal: 10),
-  //       tabs: [
-  //         Tab(
-  //           icon: Icon(Icons.beach_access_sharp),
-  //         ),
-  //         Tab(
-  //           icon: Icon(Icons.beach_access_sharp),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-
-  //   // body: const TabBarView(
-  //   //   children: <Widget>[
-  //   //     Center(
-  //   //       child: Text("It's cloudy here"),
-  //   //     ),
-  //   //     Center(
-  //   //       child: Text("It's rainy here"),
-  //   //     ),
-  //   //     Center(
-  //   //       child: Text("It's sunny here"),
-  //   //     ),
-  //   //   ],
-  //   // );
-  // }
-
-
-
-  // Widget build(BuildContext context) {
-  //   return DefaultTabController(
-  //       length: 10,
-  //       child: ButtonsTabBar(
-  //         // decoration: BoxDecoration(
-  //         //   color: Colors.grey[200],
-  //         //   borderRadius: BorderRadius.circular(8),
-  //         // ),
-
-  //         backgroundColor: Colors.blue[600],
-  //         unselectedBackgroundColor: Colors.white,
-  //         labelStyle:
-  //             TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-  //         unselectedLabelStyle:
-  //             TextStyle(color: Colors.blue[600], fontWeight: FontWeight.bold),
-  //         borderWidth: 1,
-  //         borderColor: const Color(0xffBABCBE),
-  //         // unselectedBorderColor: Colors.blue,
-  //         tabs: [
-  //           Tab(
-  //             text: "전체",
-  //           ),
-  //           Tab(
-  //             text: "의류",
-  //           ),
-  //           Tab(
-  //             text: "서적",
-  //           ),
-  //           Tab(text: "악세서리"),
-  //           Tab(text: "가구"),
-  //           Tab(text: "transit"),
-  //           Tab(icon: Icon(Icons.directions_bike)),
-  //           Tab(icon: Icon(Icons.directions_bike)),
-  //           Tab(icon: Icon(Icons.directions_bike)),
-  //           Tab(icon: Icon(Icons.directions_bike)),
-  //         ],
-  //       ));
-  // }
