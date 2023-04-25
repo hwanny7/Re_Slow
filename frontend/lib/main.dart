@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/frame.dart';
 import 'pages/auth/login.dart';
-import 'landingpage.dart'; // Import landingpage widget here
+import 'splashscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       routes: {
         // '/': (context) => MainPage(key: key),
         '/main': (context) => MainPage(),
-        '/': (context) => LandingPage(),
+        '/': (context) => SplashScreen(),
         '/login': (context) => Login(key: key),
       },
     );
