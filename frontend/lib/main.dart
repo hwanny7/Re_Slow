@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/frame.dart';
+import 'package:reslow/pages/frame.dart';
 import 'pages/auth/login.dart';
 
 void main() {
