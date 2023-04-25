@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'notificationsetting.dart';
+import 'notificationpage.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -47,7 +48,12 @@ class _ProfileState extends State<Profile> {
                     IconButton(
                       icon: Icon(Icons.notifications),
                       onPressed: () {
-                        // Navigate to notifications page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NotificationPage(),
+                          ),
+                        );
                       },
                     ),
                     Text('알림'),
