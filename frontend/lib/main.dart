@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My App',
       // home: MainPage(key: key),
+      theme: ThemeData(fontFamily: "NanumSquare"),
       initialRoute: '/',
       routes: {
         // '/': (context) => MainPage(key: key),
