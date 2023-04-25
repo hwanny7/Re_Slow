@@ -38,29 +38,33 @@ class _MainPageState extends State<MainPage> {
         child: Scaffold(
       body: screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: const Color(0xff555555),
           currentIndex: _currentIndex,
           onTap: _onTabTapped,
+          showUnselectedLabels: true,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: '홈',
-                backgroundColor: Colors.green),
+              label: '홈',
+              icon: Icon(Icons.home),
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.call),
-                label: '플리마켓',
-                backgroundColor: Colors.green),
+              icon: Icon(Icons.local_mall),
+              label: '플리마켓',
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.camera),
-                label: '노하우',
-                backgroundColor: Colors.green),
+              icon: Icon(Icons.local_florist),
+              label: '노하우',
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.chat),
-                label: '채팅',
-                backgroundColor: Colors.green),
+              icon: Icon(Icons.textsms),
+              label: '채팅',
+            ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: '프로필',
-                backgroundColor: Colors.green),
+              icon: Icon(Icons.person),
+              label: '프로필',
+            ),
           ]),
       floatingActionButton: _currentIndex == 0 ||
               _currentIndex == 1 ||
