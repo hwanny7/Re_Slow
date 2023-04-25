@@ -5,7 +5,7 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # Mysql Settings
-    url: jdbc:mysql://localhost:3306/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://k8b306.p.ssafy.io:13306/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ${LOCAL_MYSQL_NAME}
     password: ${LOCAL_MYSQL_PASSWORD}
   mvc:
