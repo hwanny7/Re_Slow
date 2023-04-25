@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'notificationsetting.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -189,6 +190,11 @@ class _ProfileState extends State<Profile> {
                       GestureDetector(
                         onTap: () {
                           // Navigate to my account settings page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotificationSetting()),
+                          );
                         },
                         child: Container(
                           padding: EdgeInsets.all(5),
