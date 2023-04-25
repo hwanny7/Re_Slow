@@ -20,7 +20,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundImage: AssetImage('assets/test.jpg'),
+                  backgroundImage: AssetImage('assets/image/test.jpg'),
                 ),
                 Text(
                   '리폼왕 춘식이',
