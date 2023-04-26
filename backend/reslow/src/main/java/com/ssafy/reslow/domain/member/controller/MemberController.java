@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
-import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.domain.member.service.MemberService;
+import com.ssafy.reslow.global.common.dto.TokenResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

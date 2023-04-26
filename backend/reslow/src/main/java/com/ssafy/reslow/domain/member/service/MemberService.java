@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
-import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.auth.jwt.JwtTokenProvider;
+import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;

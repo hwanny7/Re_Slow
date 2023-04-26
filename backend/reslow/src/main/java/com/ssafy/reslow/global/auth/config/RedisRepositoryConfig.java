@@ -16,24 +16,24 @@ import lombok.RequiredArgsConstructor;
 @EnableRedisRepositories
 public class RedisRepositoryConfig {
 
-    private final RedisProperties redisProperties;
+	private final RedisProperties redisProperties;
 
-    // lettuce
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(
-            redisProperties.getHost(), redisProperties.getPort());
-        lettuceConnectionFactory.setPassword(redisProperties.getPassword());
-        return lettuceConnectionFactory;
-    }
+	// lettuce
+	@Bean
+	public RedisConnectionFactory redisConnectionFactory() {
+		LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(
+			redisProperties.getHost(), redisProperties.getPort());
+		lettuceConnectionFactory.setPassword(redisProperties.getPassword());
+		return lettuceConnectionFactory;
+	}
 
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory());
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+	@Bean
+	public RedisTemplate<String, Object> redisTemplate() {
+		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+		redisTemplate.setConnectionFactory(redisConnectionFactory());
+		redisTemplate.setKeySerializer(new StringRedisSerializer());
+		redisTemplate.setValueSerializer(new StringRedisSerializer());
 
-        return redisTemplate;
-    }
+		return redisTemplate;
+	}
 }
