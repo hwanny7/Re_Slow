@@ -23,3 +23,17 @@ spring:
         format_sql: true
 jwt:
   secret: ${JWT_SECRETKEY}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${ACCESS_KEY_AWS_S3}
+      secretKey: ${SECRET_KEY_AWS_S3}
+    s3:
+      bucket: ${BUCKET_ADDRESS}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+  profiles:
+    include: aws
