@@ -20,21 +20,30 @@ class _NotificationPageState extends State<NotificationPage> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Text(
-                  '알림',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            child: Container(
+              width: double.infinity,
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 30), // 위치 중간으로 조정
+                      child: Text(
+                        '알림',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Divider(),
