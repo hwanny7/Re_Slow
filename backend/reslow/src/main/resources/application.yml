@@ -13,6 +13,7 @@ spring:
       matching-strategy: ant_path_matcher
   main:
     web-application-type: reactive
+    allow-bean-definition-overriding: true
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -24,4 +25,5 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+jwt:
+  secret: ${JWT_SECRETKEY}
