@@ -3,6 +3,9 @@ package com.ssafy.reslow.domain.member.entity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.global.common.BaseEntity;
@@ -24,4 +27,9 @@ public class Device extends BaseEntity {
 
 	@Column(name = "DEVICE_TOKEN")
 	private String deviceToken;
+
+	@Column(name = "MEMBER_PK")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEMBER_PK")
+	private Member member;
 }

@@ -5,10 +5,14 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -48,6 +52,18 @@ public class Member extends BaseEntity implements UserDetails {
 
 	@Column(name = "IS_CERTIFICATION")
 	private boolean isCertification;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Device> devices = new ArrayList<>();
+
+	@OneToOne
+	@JoinColumn(name = "MEMBER_ACCOUNT_PK")
+	private MemberAccount memberAccount;
+
+	@OneToOne
+	@JoinColumn(name = "MEMBER_ADDRESS_PK")
+	private MemberAddress memberAddress;
 
 	@Column
 	@Builder.Default

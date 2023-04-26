@@ -3,6 +3,10 @@ package com.ssafy.reslow.domain.member.entity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.global.common.BaseEntity;
@@ -22,21 +26,12 @@ import lombok.NoArgsConstructor;
 @AttributeOverride(name = "no", column = @Column(name = "MEMBER_ACCOUNT_PK"))
 public class MemberAccount extends BaseEntity {
 
-	@Column(name = "NICKNAME")
-	private String nickname;
+	@Column(name = "BANK")
+	private String back;
 
-	@Column(name = "ID")
-	private String id;
+	@Column(name = "ACCOUNT_NUMBER")
+	private String accountNumber;
 
-	@Column(name = "PASSWORD")
-	private String password;
-
-	@Column(name = "PROFILE_PIC")
-	private String profilePic;
-
-	@Column(name = "PHONE_NUM")
-	private String phoneNum;
-
-	@Column(name = "IS_CERTIFICATION")
-	private String isCertification;
+	@Column(name = "ACCOUNT_HOLDER")
+	private String accountHolder;
 }
