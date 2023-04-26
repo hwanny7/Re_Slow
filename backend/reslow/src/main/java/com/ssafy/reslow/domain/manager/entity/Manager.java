@@ -5,20 +5,16 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ssafy.reslow.domain.coupon.entity.Coupon;
-import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
-import com.ssafy.reslow.global.common.BaseEntity;
+import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

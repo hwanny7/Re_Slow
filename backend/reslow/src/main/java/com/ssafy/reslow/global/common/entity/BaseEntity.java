@@ -1,4 +1,4 @@
-package com.ssafy.reslow.global.common;
+package com.ssafy.reslow.global.common.entity;
 
 import java.time.LocalDateTime;
 
