@@ -132,6 +132,7 @@ class WaveClipper extends CustomClipper<Path> {
           sin((x / size.width * 2 * pi) + (time * 2 * pi * speed)) *
               size.height /
               5;
+      (time * 100) % size.height;
       path.lineTo(x, y);
       x += 1;
     }
