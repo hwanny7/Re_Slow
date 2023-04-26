@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'bubbleanimation.dart';
 
 class Recommend extends StatefulWidget {
   @override
@@ -114,6 +115,11 @@ class _RecommendState extends State<Recommend> {
                 )
                 .toList(),
           ),
+          //버블버블 ??????????????
+          SizedBox(height: 16.0),
+
+          BubblesAnimation(tags: _tags),
+          //
         ],
       ),
     );
