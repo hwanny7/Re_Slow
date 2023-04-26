@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
+import 'couponlist.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -64,7 +65,13 @@ class _ProfileState extends State<Profile> {
                     IconButton(
                       icon: Icon(Icons.local_offer),
                       onPressed: () {
-                        // Navigate to wallet page
+                        // Navigate to couponlist
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CouponList(coupons: []),
+                          ),
+                        );
                       },
                     ),
                     Text('쿠폰'),
