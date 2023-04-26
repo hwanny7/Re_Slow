@@ -2,7 +2,9 @@ package com.ssafy.reslow.domain.manager.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -12,8 +14,11 @@ import javax.persistence.FetchType;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.ssafy.reslow.domain.manager.dto.ManagerSignUpRequest;
+import com.ssafy.reslow.global.common.entity.Authority;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -42,9 +47,19 @@ public class Manager extends BaseEntity implements UserDetails {
 	@ElementCollection(fetch = FetchType.EAGER)
 	private List<String> roles = new ArrayList<>();
 
+	public static Manager toEntity(ManagerSignUpRequest signUp, String encode) {
+		return Manager.builder()
+			.id(signUp.getId())
+			.password(encode)
+			.roles(Collections.singletonList(Authority.MANAGER.name()))
+			.build();
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return this.roles.stream()
+			.map(SimpleGrantedAuthority::new)
+			.collect(Collectors.toList());
 	}
 
 	@Override
