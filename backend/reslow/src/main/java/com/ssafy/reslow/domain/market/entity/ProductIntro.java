@@ -3,8 +3,12 @@ package com.ssafy.reslow.domain.market.entity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -27,4 +31,7 @@ public class ProductIntro extends BaseEntity {
 	@Column(name = "DESCRIPTION", columnDefinition = "TEXT")
 	private String description;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEMBER_PK")
+	private Member member;
 }

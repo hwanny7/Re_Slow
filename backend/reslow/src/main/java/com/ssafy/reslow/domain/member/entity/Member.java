@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.ssafy.reslow.domain.market.entity.ProductIntro;
 import com.ssafy.reslow.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -52,11 +53,6 @@ public class Member extends BaseEntity implements UserDetails {
 
 	@Column(name = "IS_CERTIFICATION")
 	private boolean isCertification;
-
-	@Builder.Default
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-	private List<Device> devices = new ArrayList<>();
-
 	@OneToOne
 	@JoinColumn(name = "MEMBER_ACCOUNT_PK")
 	private MemberAccount memberAccount;
@@ -64,6 +60,14 @@ public class Member extends BaseEntity implements UserDetails {
 	@OneToOne
 	@JoinColumn(name = "MEMBER_ADDRESS_PK")
 	private MemberAddress memberAddress;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<ProductIntro> productIntros = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Device> devices = new ArrayList<>();
 
 	@Column
 	@Builder.Default
