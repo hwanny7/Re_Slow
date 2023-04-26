@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'waterloadingbubble.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -26,14 +27,24 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.blue.shade100,
-        child: Center(
-          child: Text(
-            "Splash Screen!",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.blue.shade100,
+            child: Center(
+              child: Text(
+                "Splash Screen!",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
-        ),
+          Center(
+            child: WaterLoadingBubble(
+              size: 100,
+              color: Colors.blue,
+            ),
+          ),
+        ],
       ),
     );
   }
