@@ -13,7 +13,10 @@ public enum ErrorCode {
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, -3, "허용되지 않은 메서드입니다."),
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -4, "내부 서버 오류입니다."),
 	FORBIDDEN(HttpStatus.FORBIDDEN, -5, "권한이 없는 사용자입니다."),
-	ENTITY_NOT_FOUND(HttpStatus.OK, -6, "엔티티를 찾을 수 없습니다.");
+	ENTITY_NOT_FOUND(HttpStatus.OK, -6, "엔티티를 찾을 수 없습니다."),
+	MEBER_ALREADY_EXSIST(HttpStatus.OK, -7, "이미 회원가입된 아이디입니다."),
+	USER_NOT_FOUND(HttpStatus.OK, -8, "사용자를 찾을 수 없습니다."),
+	PASSWORD_NOT_MATCH(HttpStatus.OK, -9, "비밀번호가 일치하지 않습니다.");
 
 	private final HttpStatus status;
 	private final int code;

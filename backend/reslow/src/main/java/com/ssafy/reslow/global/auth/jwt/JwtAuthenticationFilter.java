@@ -16,7 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.reslow.global.common.dto.CommonResponse;
+import com.ssafy.reslow.global.common.dto.ReissueResponse;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
@@ -55,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		} catch (ExpiredJwtException e) {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			response.setContentType("application/json;charset=UTF-8");
-			response.getWriter().write(new ObjectMapper().writeValueAsString(CommonResponse.Reissue.reissue()));
+			response.getWriter().write(new ObjectMapper().writeValueAsString(ReissueResponse.reissue()));
 			response.getWriter().flush();
 		}
 	}
