@@ -5,6 +5,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
+import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -39,4 +41,15 @@ public class MemberAddress extends BaseEntity {
 
 	@Column(name = "MEMO")
 	private String memo;
+
+	public static MemberAddress toEntity(MemberUpdateRequest request) {
+		return MemberAddress.builder()
+			.recipient(request.getRecipient())
+			.zipCode(request.getZipCode())
+			.address(request.getAddress())
+			.addressDetail(request.getAddressDetail())
+			.phoneNum(request.getPhoneNum())
+			.memo(request.getMemo())
+			.build();
+	}
 }

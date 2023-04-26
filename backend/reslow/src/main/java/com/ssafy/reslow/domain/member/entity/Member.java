@@ -2,6 +2,7 @@ package com.ssafy.reslow.domain.member.entity;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.market.entity.ProductIntro;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.notice.entity.Notice;
+import com.ssafy.reslow.global.common.entity.Authority;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -129,6 +131,12 @@ public class Member extends BaseEntity implements UserDetails {
 			.id(signUp.getId())
 			.password(password)
 			.nickname(signUp.getNickname())
+			.roles(Collections.singletonList(Authority.USER.name()))
 			.build();
+	}
+
+	public void updateMember(String nickname, String profilePic) {
+		this.nickname = nickname;
+		this.profilePic = profilePic;
 	}
 }

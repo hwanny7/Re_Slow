@@ -21,7 +21,7 @@ import lombok.Setter;
 public class MemberProvider implements AuthenticationProvider {
 
 	@Autowired
-	CustomMemberDetailService userDetailsService;
+	CustomMemberDetailService memberDetailService;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -30,7 +30,7 @@ public class MemberProvider implements AuthenticationProvider {
 		String userId = authentication.getName();
 		String userPassword = authentication.getCredentials().toString();
 
-		UserDetails user = userDetailsService.loadUserByUsername(userId);
+		UserDetails user = memberDetailService.loadUserByUsername(userId);
 		if (!user.isEnabled()) {
 			throw new BadCredentialsException(user.getUsername());
 		}
