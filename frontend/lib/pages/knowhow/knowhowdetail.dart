@@ -35,17 +35,9 @@ List<dynamic> content = [
   },
 ];
 
-List<dynamic> heartYN = [
-  {"YN": true},
-  {"YN": false},
-];
-
-int _selectedindex = -1;
-
 class _KnowHowState extends State<KnowHow> {
   late double fullWidth;
   late double fullHeight;
-  String heartImage = "assets/image/heart.png";
   // 사진 개수에 따라 사진 배치
   Widget imageGrid(List images) {
     fullWidth = MediaQuery.of(context).size.width * 0.92;
@@ -325,55 +317,28 @@ class _KnowHowState extends State<KnowHow> {
                               ),
                               Row(
                                 children: [
-                                  InkWell(
-                                      onTap: () => {
-                                            if (heartYN[index]["YN"])
-                                              {
-                                                setState(() {
-                                                  heartYN[index]["YH"] = false;
-                                                })
-                                              }
-                                            else
-                                              {
-                                                setState(() {
-                                                  heartYN[index]["YH"] = true;
-                                                })
-                                              }
-                                          },
-                                      child: Row(children: [
-                                        Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                8, 0, 8, 0),
-                                            child: Image.asset(
-                                              heartYN[index]["YN"]
-                                                  ? "assets/image/full_heart.png"
-                                                  : "assets/image/heart.png",
-                                              width: 24,
-                                            )),
-                                        Text(
-                                          "${content[index]["heart"]}",
-                                          style: const TextStyle(fontSize: 18),
-                                        )
-                                      ])),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  InkWell(
-                                      onTap: () => {},
-                                      child: Row(children: [
-                                        Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                8, 0, 8, 0),
-                                            child: Image.asset(
-                                              "assets/image/comment.png",
-                                              width: 24,
-                                            )),
-                                        Text(
-                                          "${content[index]["comment"]}",
-                                          style: const TextStyle(fontSize: 18),
-                                        )
-                                      ])),
+                                  Container(
+                                      margin:
+                                          const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                      child: Image.asset(
+                                        "assets/image/heart.png",
+                                        width: 24,
+                                      )),
+                                  Text(
+                                    "${content[index]["heart"]}",
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                  Container(
+                                      margin:
+                                          const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                      child: Image.asset(
+                                        "assets/image/comment.png",
+                                        width: 24,
+                                      )),
+                                  Text(
+                                    "${content[index]["comment"]}",
+                                    style: const TextStyle(fontSize: 18),
+                                  )
                                 ],
                               )
                             ])),
