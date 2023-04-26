@@ -62,20 +62,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/image/test.jpg
-    - assets/image/Logo_Reslow.png
-    - assets/image/image 1.png
-    - assets/image/image 2.png
-    - assets/image/image 3.png
-    - assets/image/image 4.png
-    - assets/image/image 5.png
-    - assets/image/image 6.png
-    - assets/image/image 7.png
-    - assets/image/image 8.png
-    - assets/image/image 9.png
-    - assets/image/coupon 1.png
-    - assets/image/coupon 2.png
-    - assets/image/coupon 3.png
+    - assets/image/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
