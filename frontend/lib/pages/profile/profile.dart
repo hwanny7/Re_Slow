@@ -69,7 +69,7 @@ class _ProfileState extends State<Profile> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => CouponList(),
+                            builder: (context) => CouponList(coupons: []),
                           ),
                         );
                       },
