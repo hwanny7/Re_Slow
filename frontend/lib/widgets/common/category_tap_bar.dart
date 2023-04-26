@@ -17,7 +17,21 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
   final GlobalKey containerKey7 = GlobalKey();
   final GlobalKey tabsContainerKey = GlobalKey();
 
-  final scrollController = ScrollController();
+  ScrollController? scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    scrollController!.dispose();
+    super.dispose();
+  }
+
+  // final scrollController = ScrollController();
 
   int selectedIndex = 0;
 
@@ -26,8 +40,8 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
     return Container(
         key: tabsContainerKey,
         padding: EdgeInsets.all(10.0),
-        margin: const EdgeInsets.symmetric(
-          vertical: 12.0,
+        margin: const EdgeInsets.only(
+          top: 12.0,
         ),
         height: 55,
         decoration: BoxDecoration(
@@ -226,7 +240,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
 
     double offset = (position + size / 2) - screenWidth / 2;
 
-    scrollController.animateTo(offset,
+    scrollController!.animateTo(offset,
         duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
   }
 }
