@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
+import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.service.MemberService;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
@@ -44,5 +45,10 @@ public class MemberController {
 	@PostMapping("/id")
 	public Map<String, Object> idDuplicate(@RequestBody MemberIdRequest id) {
 		return memberService.idDuplicate(id);
+	}
+
+	@PostMapping("/nickname")
+	public Map<String, Object> idDuplicate(@RequestBody MemberNicknameRequest nickname) {
+		return memberService.nicknameDuplicate(nickname);
 	}
 }
