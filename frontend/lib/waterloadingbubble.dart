@@ -90,10 +90,10 @@ class _WaterLoadingBubbleState extends State<WaterLoadingBubble>
               height: widget.size / 2,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: Colors.transparent,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.transparent,
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
@@ -101,7 +101,8 @@ class _WaterLoadingBubbleState extends State<WaterLoadingBubble>
               ),
               child: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(widget.color),
+                  backgroundColor: Colors.transparent,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.transparent),
                 ),
               ),
             ),
