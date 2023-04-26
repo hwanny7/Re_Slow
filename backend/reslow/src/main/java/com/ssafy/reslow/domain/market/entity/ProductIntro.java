@@ -13,7 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.domain.member.entity.Member;
-import com.ssafy.reslow.global.common.BaseEntity;
+import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
