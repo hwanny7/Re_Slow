@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
 import 'couponlist.dart';
+import 'package:reslow/pages/home/recommend.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -82,7 +83,13 @@ class _ProfileState extends State<Profile> {
                     IconButton(
                       icon: Icon(Icons.favorite),
                       onPressed: () {
-                        // Navigate to likes page
+                        // Navigate to likes page 잠시 추천 페이지로 사용
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Recommend(),
+                          ),
+                        );
                       },
                     ),
                     Text('관심'),
