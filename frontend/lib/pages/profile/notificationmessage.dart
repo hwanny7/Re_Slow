@@ -23,7 +23,7 @@ class NotificationMessage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.notifications),
+          Icon(Icons.notifications, size: 20, color: Colors.purple.shade400),
           SizedBox(width: 10),
           Expanded(
             child: Column(
@@ -37,8 +37,9 @@ class NotificationMessage extends StatelessWidget {
               ],
             ),
           ),
-          Text('Please check it!',
-              style: TextStyle(fontSize: 10, color: Colors.grey)),
+          // Text('Please check it!',
+          //     style: TextStyle(fontSize: 10, color: Colors.grey)),
+          Icon(Icons.remove_circle, size: 20, color: Colors.red.shade400)
         ],
       ),
     );
