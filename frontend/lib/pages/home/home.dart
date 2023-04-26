@@ -65,14 +65,17 @@ class _HomeState extends State<Home> {
         child: Row(
           children: [
             Container(
-                child: Image.asset("assets/image/image 1.png"),
-                margin: const EdgeInsets.all(8)),
+              margin: const EdgeInsets.all(8),
+              child: Image.asset("assets/image/image 1.png"),
+            ),
             Container(
-                child: Image.asset("assets/image/image 2.png"),
-                margin: const EdgeInsets.all(8)),
+              margin: const EdgeInsets.all(8),
+              child: Image.asset("assets/image/image 2.png"),
+            ),
             Container(
-                child: Image.asset("assets/image/image 3.png"),
-                margin: const EdgeInsets.all(8)),
+              margin: const EdgeInsets.all(8),
+              child: Image.asset("assets/image/image 3.png"),
+            ),
           ],
         ),
       ),
@@ -128,14 +131,17 @@ class _HomeState extends State<Home> {
         child: Row(
           children: [
             Container(
-                child: Image.asset("assets/image/image 7.png"),
-                margin: const EdgeInsets.all(8)),
+              margin: const EdgeInsets.all(8),
+              child: Image.asset("assets/image/image 7.png"),
+            ),
             Container(
-                child: Image.asset("assets/image/image 8.png"),
-                margin: const EdgeInsets.all(8)),
+              margin: const EdgeInsets.all(8),
+              child: Image.asset("assets/image/image 8.png"),
+            ),
             Container(
-                child: Image.asset("assets/image/image 9.png"),
-                margin: const EdgeInsets.all(8)),
+              margin: const EdgeInsets.all(8),
+              child: Image.asset("assets/image/image 9.png"),
+            ),
           ],
         ),
       ),
