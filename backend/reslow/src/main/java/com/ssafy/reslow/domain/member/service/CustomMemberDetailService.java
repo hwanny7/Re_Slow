@@ -14,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomMemberDetailService implements UserDetailsService {
 
-	private final MemberRepository usersRepository;
+	private final MemberRepository memberRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-		return usersRepository.findById(id)
+		return memberRepository.findById(id)
 			.map(this::createUserDetail)
 			.orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 	}
