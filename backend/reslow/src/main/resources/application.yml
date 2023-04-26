@@ -4,14 +4,13 @@ server:
 spring:
   profiles:
     active: ${ACTIVE}
-
+  redis:
+    host: k8b306.p.ssafy.io
+    port: '6379'
+    password: ${REDIS_PASSWORD}
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-  main:
-    web-application-type: reactive
-    allow-bean-definition-overriding: true
-
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false

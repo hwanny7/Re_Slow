@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.ssafy.reslow.global.common.dto.CommonResponse;
+import com.ssafy.reslow.global.common.dto.TokenResponse;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -45,7 +45,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public CommonResponse.TokenInfo generateToken(Authentication authentication) {
+    public TokenResponse generateToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(","));
@@ -64,7 +64,7 @@ public class JwtTokenProvider {
             .signWith(key, SignatureAlgorithm.HS256)
             .compact();
 
-        return CommonResponse.TokenInfo.builder()
+        return TokenResponse.builder()
             .grantType(BEARER_TYPE)
             .accessToken(accessToken)
             .refreshToken(refreshToken)
