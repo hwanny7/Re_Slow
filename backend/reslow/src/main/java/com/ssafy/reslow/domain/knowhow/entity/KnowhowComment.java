@@ -3,6 +3,9 @@ package com.ssafy.reslow.domain.knowhow.entity;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.global.common.BaseEntity;
@@ -27,4 +30,8 @@ public class KnowhowComment extends BaseEntity {
 
 	@Column(name = "PARENT")
 	private Long parentNo;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "KNOWHOW_PK")
+	private Knowhow knowhow;
 }

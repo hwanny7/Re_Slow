@@ -18,7 +18,10 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
+import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.market.entity.ProductIntro;
+import com.ssafy.reslow.domain.notice.entity.Notice;
 import com.ssafy.reslow.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -53,6 +56,7 @@ public class Member extends BaseEntity implements UserDetails {
 
 	@Column(name = "IS_CERTIFICATION")
 	private boolean isCertification;
+
 	@OneToOne
 	@JoinColumn(name = "MEMBER_ACCOUNT_PK")
 	private MemberAccount memberAccount;
@@ -67,9 +71,20 @@ public class Member extends BaseEntity implements UserDetails {
 
 	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Knowhow> knowhows = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Device> devices = new ArrayList<>();
 
-	@Column
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Notice> notices = new ArrayList<>();
+
 	@Builder.Default
 	@ElementCollection(fetch = FetchType.EAGER)
 	private List<String> roles = new ArrayList<>();

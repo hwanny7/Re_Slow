@@ -1,10 +1,14 @@
 package com.ssafy.reslow.domain.coupon.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.global.common.BaseEntity;
@@ -53,4 +57,8 @@ public class Coupon extends BaseEntity {
 
 	@Column(name = "REMAINING_QUANTITY")
 	private int remainQuantity;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
 }

@@ -1,10 +1,20 @@
 package com.ssafy.reslow.domain.knowhow.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.market.entity.MarketCategory;
+import com.ssafy.reslow.domain.market.entity.ProductImage;
+import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -29,4 +39,19 @@ public class Knowhow extends BaseEntity {
 	@Column(name = "CONTENT", columnDefinition = "TEXT")
 	private String content;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEMBER_PK")
+	private Member member;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "KNOWHOW_CATEGORY_PK")
+	private KnowhowCategory knowhowCategory;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "knowhow")
+	private List<KnowhowImage> knowhowImages = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "knowhow")
+	private List<KnowhowComment> knowhowComments = new ArrayList<>();
 }

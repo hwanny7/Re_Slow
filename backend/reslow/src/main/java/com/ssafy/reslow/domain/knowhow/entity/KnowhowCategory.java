@@ -1,10 +1,16 @@
 package com.ssafy.reslow.domain.knowhow.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.ssafy.reslow.domain.market.entity.ProductIntro;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,5 +33,8 @@ public class KnowhowCategory{
 
 	@Column(name = "KNOWHOW_CATEGORY")
 	private String category;
-	
+
+	@Builder.Default
+	@OneToMany(mappedBy = "knowhowCategory")
+	private List<Knowhow> knowhows = new ArrayList<>();
 }

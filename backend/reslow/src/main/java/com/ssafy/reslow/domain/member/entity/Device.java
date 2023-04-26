@@ -28,7 +28,6 @@ public class Device extends BaseEntity {
 	@Column(name = "DEVICE_TOKEN")
 	private String deviceToken;
 
-	@Column(name = "MEMBER_PK")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_PK")
 	private Member member;

@@ -1,11 +1,15 @@
 package com.ssafy.reslow.domain.market.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.domain.member.entity.Member;
@@ -34,4 +38,16 @@ public class ProductIntro extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_PK")
 	private Member member;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MARKET_CATEGORY_PK")
+	private MarketCategory marketCategory;
+
+	@Builder.Default
+	@OneToMany(mappedBy = "productIntro")
+	private List<ProductImage> productImages = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "productIntro")
+	private List<Product> products = new ArrayList<>();
 }
