@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/models/market_item.dart';
 
 class ItemInfo extends StatelessWidget {
   final double mediaWidth;
   final double mediaHeight;
-  final String text;
+  final MarketItem item;
 
-  ItemInfo(
-      {required this.mediaWidth,
-      required this.mediaHeight,
-      required this.text});
+  const ItemInfo({
+    required this.mediaWidth,
+    required this.mediaHeight,
+    required this.item,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class ItemInfo extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('$text',
+                        Text('${item.name}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: mediaWidth * 0.05,
@@ -45,7 +47,7 @@ class ItemInfo extends StatelessWidget {
                         Text('도안동'),
                         Text('23.04.19'),
                         SizedBox(height: mediaHeight * 0.02),
-                        Text('5500원',
+                        Text('${item.price}',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: mediaWidth * 0.05,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/market/create_article.dart';
 import 'chat/chat.dart';
 import 'home/home.dart';
 import 'knowhow/knowhow.dart';
@@ -30,6 +31,27 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  void _pressedPlus() {
+    print('시작!');
+    switch (_currentIndex) {
+      case 0:
+      case 1:
+        print('들어옴ㅋ');
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateArticle(),
+            ));
+      case 2:
+    }
+    ;
+    //   Navigator.push(
+    // context,
+    // MaterialPageRoute(
+    //   builder: (context) => NotificationPage(),
+    // ),
   }
 
   @override
@@ -66,11 +88,14 @@ class _MainPageState extends State<MainPage> {
               label: '프로필',
             ),
           ]),
-      floatingActionButton: _currentIndex == 0 ||
-              _currentIndex == 1 ||
-              _currentIndex == 2
-          ? FloatingActionButton(child: const Icon(Icons.add), onPressed: () {})
-          : null,
+      floatingActionButton:
+          _currentIndex == 0 || _currentIndex == 1 || _currentIndex == 2
+              ? FloatingActionButton(
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    _pressedPlus();
+                  })
+              : null,
     ));
   }
 }
