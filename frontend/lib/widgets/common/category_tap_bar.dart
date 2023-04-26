@@ -19,14 +19,19 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
 
   final scrollController = ScrollController();
 
+  int selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Container(
         key: tabsContainerKey,
+        padding: EdgeInsets.all(10.0),
         margin: const EdgeInsets.symmetric(
           vertical: 12.0,
         ),
-        height: 40,
+        height: 55,
+        decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xffF4F2F2), width: 2.0)),
         child: ListView(
           scrollDirection: Axis.horizontal,
           controller: scrollController,
@@ -41,14 +46,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 0
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('전체'),
                 onPressed: () {
-                  _scrollToButton(containerKey1);
+                  _scrollToButton(containerKey1, 0);
                 },
               ),
             ),
@@ -62,14 +70,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 1
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('의류'),
                 onPressed: () {
-                  _scrollToButton(containerKey2);
+                  _scrollToButton(containerKey2, 1);
                 },
               ),
             ),
@@ -83,14 +94,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 2
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('서적'),
                 onPressed: () {
-                  _scrollToButton(containerKey3);
+                  _scrollToButton(containerKey3, 2);
                 },
               ),
             ),
@@ -104,14 +118,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 3
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('바나나'),
                 onPressed: () {
-                  _scrollToButton(containerKey4);
+                  _scrollToButton(containerKey4, 3);
                 },
               ),
             ),
@@ -125,14 +142,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 4
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('수영장'),
                 onPressed: () {
-                  _scrollToButton(containerKey5);
+                  _scrollToButton(containerKey5, 4);
                 },
               ),
             ),
@@ -146,14 +166,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 5
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('전체'),
                 onPressed: () {
-                  _scrollToButton(containerKey6);
+                  _scrollToButton(containerKey6, 5);
                 },
               ),
             ),
@@ -167,14 +190,17 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
-                      side:
-                          const BorderSide(width: 2, color: Color(0xffE0E0E0)),
+                      side: BorderSide(
+                          width: 2,
+                          color: selectedIndex == 6
+                              ? const Color(0xff165B40)
+                              : const Color(0xffE0E0E0)),
                     ),
                   ),
                 ),
                 child: Text('전체'),
                 onPressed: () {
-                  _scrollToButton(containerKey7);
+                  _scrollToButton(containerKey7, 6);
                 },
               ),
             ),
@@ -182,16 +208,19 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
         ));
   }
 
-  void _scrollToButton(GlobalKey containerKey) {
+  void _scrollToButton(GlobalKey containerKey, int index) {
+    setState(() {
+      selectedIndex = index;
+    });
     final RenderBox tabsContainer =
         tabsContainerKey.currentContext!.findRenderObject() as RenderBox;
     double screenWidth = tabsContainer.size.width;
     final tabsContainerPosition = tabsContainer.localToGlobal(Offset.zero).dx;
     final tabsContainerOffset = Offset(-tabsContainerPosition, 0);
-    print(tabsContainerOffset);
 
     final RenderBox renderBox =
         containerKey.currentContext!.findRenderObject() as RenderBox;
+    print(RenderBox);
     double size = renderBox.size.width;
     double position = renderBox.localToGlobal(tabsContainerOffset).dx;
 
