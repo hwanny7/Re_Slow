@@ -5,7 +5,7 @@ spring:
   profiles:
     active: ${ACTIVE}
   redis:
-    host: http://k8b306.p.ssafy.io/
+    host: k8b306.p.ssafy.io
     port: '6379'
     password: ${REDIS_PASSWORD}
   mvc:
