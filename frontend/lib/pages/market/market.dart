@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
+import 'package:reslow/widgets/market/item_info.dart';
 
 class Market extends StatefulWidget {
   @override
@@ -30,56 +31,10 @@ class _MarketState extends State<Market> {
             child: ListView.builder(
           itemCount: itemList.length,
           itemBuilder: (context, idx) {
-            return Card(
-                color: Colors.white,
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 16.0),
-                    child: Row(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            "assets/image/jean.jpg",
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: MediaQuery.of(context).size.height * 0.15,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Container(
-                            height: MediaQuery.of(context).size.height * 0.15,
-                            padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.03,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('${itemList[idx]}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                    )),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.01),
-                                Text('도안동'),
-                                Text('23.04.19'),
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.02),
-                                Text('5500원',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.05,
-                                    )),
-                              ],
-                            ))
-                      ],
-                    )));
+            return ItemInfo(
+                mediaWidth: MediaQuery.of(context).size.width,
+                mediaHeight: MediaQuery.of(context).size.height,
+                text: itemList[idx]);
           },
         )),
       ],
