@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
+import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
@@ -77,11 +78,20 @@ public class MemberService {
 	public Map<String, Object> idDuplicate(MemberIdRequest id) {
 		Map<String, Object> map = new HashMap<>();
 		if (memberRepository.existsById(id.getId())) {
-			map.put("isDuplicated", "YES");
+			map.put("isPossible", "YES");
 		} else {
-			map.put("isDuplicated", "NO");
+			map.put("isPossible", "NO");
 		}
 		return map;
 	}
 
+	public Map<String, Object> nicknameDuplicate(MemberNicknameRequest id) {
+		Map<String, Object> map = new HashMap<>();
+		if (memberRepository.existsByNickname(id.getNickname())) {
+			map.put("isPossible", "YES");
+		} else {
+			map.put("isPossible", "NO");
+		}
+		return map;
+	}
 }
