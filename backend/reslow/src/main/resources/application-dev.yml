@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Mysql Settings
+    url: jdbc:mysql://k8b306.p.ssafy.io:13306/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DEV_MYSQL_NAME}
+    password: ${DEV_MYSQL_PASSWORD}
