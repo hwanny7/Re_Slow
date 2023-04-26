@@ -1,8 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-import 'model/CouponClass.dart';
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -37,10 +35,12 @@ class _HomeState extends State<Home> {
                 width: MediaQuery.of(context).size.width,
                 margin: const EdgeInsets.symmetric(horizontal: 5.0),
                 decoration: const BoxDecoration(color: Colors.white),
-                child: Image.asset(
-                  item,
-                  fit: BoxFit.cover,
-                ),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      item,
+                      fit: BoxFit.cover,
+                    )),
               );
             }).toList(),
           ),
@@ -65,16 +65,36 @@ class _HomeState extends State<Home> {
         child: Row(
           children: [
             Container(
+                margin: const EdgeInsets.all(8),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      "assets/image/image 1.png",
+                      width: 140,
+                      height: 140,
+                      fit: BoxFit.cover,
+                    ))),
+            Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 1.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 2.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 2.png"),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 3.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 3.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
           ],
         ),
@@ -99,15 +119,36 @@ class _HomeState extends State<Home> {
           children: [
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 4.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 4.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 5.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 5.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 6.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 6.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
           ],
         ),
@@ -132,15 +173,36 @@ class _HomeState extends State<Home> {
           children: [
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 7.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 7.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 8.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 8.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: Image.asset("assets/image/image 9.png"),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.asset(
+                    "assets/image/image 9.png",
+                    width: 140,
+                    height: 140,
+                    fit: BoxFit.cover,
+                  )),
             ),
           ],
         ),
