@@ -7,13 +7,29 @@ class WaterLoadingBubble extends StatefulWidget {
   final double waveHeight;
   final double waveSpeed;
   final double verticalOffset;
+  final Color color2; // new wave color
+  final double waveHeight2; // new wave height
+  final double waveSpeed2; // new wave speed
+  final double verticalOffset2; // new wave vertical offset
+  final Color color3; // new wave color
+  final double waveHeight3; // new wave height
+  final double waveSpeed3; // new wave speed
+  final double verticalOffset3; // new wave vertical offset
 
   WaterLoadingBubble({
     this.size = 120,
-    this.color = Colors.blueAccent,
-    this.waveHeight = 500, // 파도 사이즈
+    this.color = Colors.lightBlue,
+    this.color2 = Colors.blue,
+    this.color3 = Colors.lightBlueAccent,
+    this.waveHeight = 500, // wave size
+    this.waveHeight2 = 500, // wave size
+    this.waveHeight3 = 500, // wave size
     this.waveSpeed = 0.2,
-    this.verticalOffset = 650, // 파도 y축 위치 (반대)
+    this.waveSpeed2 = 0.2,
+    this.waveSpeed3 = 0.2,
+    this.verticalOffset = 650, // wave y-axis position (opposite)
+    this.verticalOffset2 = 650,
+    this.verticalOffset3 = 650,
   });
 
   @override
@@ -39,7 +55,8 @@ class _WaterLoadingBubbleState extends State<WaterLoadingBubble>
     super.dispose();
   }
 
-  Widget _buildWave(double height, double speed, double time, double offset) {
+  Widget _buildWave(
+      double height, double speed, double time, double offset, Color color) {
     return Container(
       alignment: Alignment.bottomCenter,
       child: Transform.translate(
@@ -53,10 +70,10 @@ class _WaterLoadingBubbleState extends State<WaterLoadingBubble>
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  widget.color.withOpacity(0.5),
-                  widget.color.withOpacity(0.7),
-                  widget.color,
-                  widget.color,
+                  color.withOpacity(0.5),
+                  color.withOpacity(0.7),
+                  color,
+                  color,
                 ],
                 stops: [0.1, 0.3, 0.7, 1],
               ),
@@ -78,8 +95,37 @@ class _WaterLoadingBubbleState extends State<WaterLoadingBubble>
           AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
-              return _buildWave(widget.waveHeight, widget.waveSpeed,
-                  _controller.value, widget.verticalOffset);
+              return _buildWave(
+                widget.waveHeight,
+                widget.waveSpeed,
+                _controller.value,
+                widget.verticalOffset,
+                widget.color,
+              );
+            },
+          ),
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return _buildWave(
+                widget.waveHeight2,
+                widget.waveSpeed2,
+                _controller.value - 1.2, // x-axis 위치 조정
+                widget.verticalOffset2,
+                widget.color2,
+              );
+            },
+          ),
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return _buildWave(
+                widget.waveHeight3,
+                widget.waveSpeed3,
+                _controller.value - 2.4, // x-axis 위치 조정
+                widget.verticalOffset3,
+                widget.color3,
+              );
             },
           ),
           Positioned(
