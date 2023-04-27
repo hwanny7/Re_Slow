@@ -1,4 +1,4 @@
-package com.ssafy.reslow.domain.market.entity;
+package com.ssafy.reslow.domain.product.entity;
 
 import java.util.ArrayList;
 import java.util.List;
