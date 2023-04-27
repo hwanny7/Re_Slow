@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class Coupon extends StatefulWidget {
+class CouponDownload extends StatefulWidget {
   @override
-  _CouponState createState() => _CouponState();
+  _CouponDownloadState createState() => _CouponDownloadState();
 }
 
-class _CouponState extends State<Coupon> {
+class _CouponDownloadState extends State<CouponDownload> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Text('쿠폰'),
+      child: Text('쿠폰 다운로드'),
     );
   }
 }
