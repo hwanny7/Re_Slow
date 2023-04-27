@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "KNOWHOW_CATEGORY_TB")
-public class KnowhowCategory{
+public class KnowhowCategory {
 
 	@Id
 	@GeneratedValue

@@ -20,19 +20,22 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "KNOWHOW_IMAGE_TB")
-public class KnowhowImage {
+@Table(name = "KNOWHOW_CONTENT_TB")
+public class KnowhowContent {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "KNOWHOW_IMAGE_PK")
+	@Column(name = "KNOWHOW_CONTENT_PK")
 	private Long no;
 
-	@Column(name = "IMAGE_URL")
-	private String url;
+	@Column(name = "IMAGE_URL", columnDefinition = "TEXT")
+	private String image;
 
+	@Column(name = "CONTENT", columnDefinition = "TEXT")
+	private String content;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "KNOWHOW_PK")
 	private Knowhow knowhow;
+	
 }
