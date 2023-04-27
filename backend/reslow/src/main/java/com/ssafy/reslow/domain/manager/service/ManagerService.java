@@ -71,7 +71,7 @@ public class ManagerService {
 			redisTemplate.delete("RT_MANAGER:" + authentication.getName());
 		}
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", authentication.getName());
+		map.put("no", authentication.getName());
 		return map;
 	}
 }

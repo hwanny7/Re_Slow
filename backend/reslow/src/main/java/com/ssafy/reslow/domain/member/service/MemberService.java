@@ -81,7 +81,7 @@ public class MemberService {
 			redisTemplate.delete("RT:" + authentication.getName());
 		}
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", authentication.getName());
+		map.put("no", authentication.getName());
 		return map;
 	}
 
