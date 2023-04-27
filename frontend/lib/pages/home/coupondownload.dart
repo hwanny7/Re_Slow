@@ -6,25 +6,36 @@ class CouponDownload extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              '50%', // set the discount percentage here
-              style: TextStyle(fontSize: 48.0),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20.0),
-            Text(
-              '모든 상품에 적용 가능', // set the description here
-              style: TextStyle(fontSize: 20.0),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: 20.0),
-            Text(
-              '사용기간 2023-05-01 ~ 2023-05-31', // set the start and end dates here
-              style: TextStyle(fontSize: 16.0),
-              textAlign: TextAlign.center,
+            Container(
+              padding: EdgeInsets.all(40.0),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '50%', // set the discount percentage here
+                    style: TextStyle(fontSize: 48.0, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    '모든 상품에 적용 가능', // set the description here
+                    style: TextStyle(fontSize: 20.0, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.0),
+                  Text(
+                    '사용기간 2023-05-01 ~ 2023-05-31', // set the start and end dates here
+                    style: TextStyle(fontSize: 16.0, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 50.0),
             // 버튼
@@ -32,7 +43,9 @@ class CouponDownload extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                  ),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
