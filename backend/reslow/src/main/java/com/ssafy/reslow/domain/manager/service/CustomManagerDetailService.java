@@ -27,6 +27,6 @@ public class CustomManagerDetailService implements UserDetailsService {
 	}
 
 	private UserDetails createUserDetail(Manager manager) {
-		return new User(manager.getId(), manager.getPassword(), manager.getAuthorities());
+		return new User(Long.toString(manager.getNo()), manager.getPassword(), manager.getAuthorities());
 	}
 }

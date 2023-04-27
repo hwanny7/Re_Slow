@@ -24,6 +24,6 @@ public class CustomMemberDetailService implements UserDetailsService {
 	}
 
 	private UserDetails createUserDetail(Member member) {
-		return new User(member.getId(), member.getPassword(), member.getAuthorities());
+		return new User(Long.toString(member.getNo()), member.getPassword(), member.getAuthorities());
 	}
 }
