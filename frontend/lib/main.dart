@@ -22,11 +22,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         // '/': (context) => MainPage(key: key),
-        '/main': (context) => MainPage(),
+        '/main': (context) => const MainPage(),
         '/': (context) => SplashScreen(),
         '/login': (context) => Login(key: key),
-        '/knowhow': (context) => KnowHow(),
-        '/knowhow/:id': (context) => KnowHowDetail(),
+        '/knowhow': (context) => const KnowHow(),
+        '/knowhow/:id': (context) => const KnowHowDetail(),
       },
     );
   }

@@ -11,6 +11,7 @@ class KnowHow extends StatefulWidget {
 
 List<dynamic> content = [
   {
+    "id": 1,
     "title": "톡톡 튀는 청바지 리폼 Tip!",
     "userimage": "assets/image/test.jpg",
     "username": "리폼왕춘식이",
@@ -24,6 +25,7 @@ List<dynamic> content = [
     "comment": 10
   },
   {
+    "id": 2,
     "title": "춘식의 서적 리폼 노하우\u{1f60d}",
     "userimage": "assets/image/test.jpg",
     "username": "리폼왕춘식이",
@@ -47,10 +49,9 @@ int _selectedindex = -1;
 class _KnowHowState extends State<KnowHow> {
   late double fullWidth;
   late double fullHeight;
-  String heartImage = "assets/image/heart.png";
   // 사진 개수에 따라 사진 배치
   Widget imageGrid(List images) {
-    fullWidth = MediaQuery.of(context).size.width * 0.9;
+    fullWidth = MediaQuery.of(context).size.width * 0.98;
     fullHeight = MediaQuery.of(context).size.height * 0.3;
     int imagenumber = images.length;
     // 사진 없을 때
@@ -59,7 +60,7 @@ class _KnowHowState extends State<KnowHow> {
       // 사진 한 개일 때
     } else if (imagenumber == 1) {
       return ClipRRect(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(0.0),
           child: Image.asset(
             images[0],
             width: fullWidth,
@@ -68,11 +69,11 @@ class _KnowHowState extends State<KnowHow> {
           ));
       // 사진 두 개일 때
     } else if (imagenumber == 2) {
-      return Row(children: [
+      return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         Container(
-            margin: const EdgeInsets.all(2),
+            margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(0.0),
                 child: Image.asset(
                   images[0],
                   width: fullWidth / 2,
@@ -80,9 +81,9 @@ class _KnowHowState extends State<KnowHow> {
                   fit: BoxFit.cover,
                 ))),
         Container(
-            margin: const EdgeInsets.all(2),
+            margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(0.0),
                 child: Image.asset(
                   images[1],
                   width: fullWidth / 2,
@@ -93,11 +94,12 @@ class _KnowHowState extends State<KnowHow> {
       // 사진 세 개일 때
     } else if (imagenumber == 3) {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-              margin: const EdgeInsets.all(2),
+              margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(0.0),
                   child: Image.asset(
                     images[0],
                     width: fullWidth / 2,
@@ -107,9 +109,9 @@ class _KnowHowState extends State<KnowHow> {
           Column(
             children: [
               Container(
-                  margin: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.fromLTRB(2, 0, 0, 2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[1],
                         width: fullWidth / 2,
@@ -117,9 +119,9 @@ class _KnowHowState extends State<KnowHow> {
                         fit: BoxFit.cover,
                       ))),
               Container(
-                  margin: const EdgeInsets.all(2),
+                  margin: const EdgeInsets.fromLTRB(2, 2, 0, 0),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[2],
                         width: fullWidth / 2,
@@ -140,7 +142,7 @@ class _KnowHowState extends State<KnowHow> {
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[0],
                         width: fullWidth / 2,
@@ -150,7 +152,7 @@ class _KnowHowState extends State<KnowHow> {
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[1],
                         width: fullWidth / 2,
@@ -164,7 +166,7 @@ class _KnowHowState extends State<KnowHow> {
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[2],
                         width: fullWidth / 2,
@@ -174,7 +176,7 @@ class _KnowHowState extends State<KnowHow> {
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[3],
                         width: fullWidth / 2,
@@ -188,13 +190,14 @@ class _KnowHowState extends State<KnowHow> {
       // 사진이 다섯 개 이상일 때
     } else {
       return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
             children: [
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[0],
                         width: fullWidth / 2,
@@ -204,7 +207,7 @@ class _KnowHowState extends State<KnowHow> {
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[1],
                         width: fullWidth / 2,
@@ -218,7 +221,7 @@ class _KnowHowState extends State<KnowHow> {
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(0.0),
                       child: Image.asset(
                         images[2],
                         width: fullWidth / 2,
@@ -230,7 +233,7 @@ class _KnowHowState extends State<KnowHow> {
                   child: Stack(
                     children: [
                       ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(0.0),
                           child: Image.asset(
                             images[3],
                             width: fullWidth / 2,
@@ -310,15 +313,13 @@ class _KnowHowState extends State<KnowHow> {
                         color: const Color(0xffDBDBDB)),
                     InkWell(
                         onTap: () => {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => KnowHowDetail()))
+                              Navigator.pushNamed(context, '/knowhow/:id',
+                                  arguments: {'id': content[index]["id"]})
                             },
                         child: Column(children: [
                           Container(
-                              width: MediaQuery.of(context).size.width * 0.94,
-                              margin: const EdgeInsets.all(8),
+                              width: MediaQuery.of(context).size.width,
+                              margin: const EdgeInsets.all(0),
                               child: Center(
                                   child: Column(children: [
                                 Center(
