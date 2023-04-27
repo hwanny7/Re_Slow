@@ -16,6 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
+import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
+import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
 import com.ssafy.reslow.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,6 +37,15 @@ public class ProductController {
 		throws IOException {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		return productService.registProduct(principal, request, files);
+	}
+
+	@PostMapping("/{productNo}")
+	public ProductUpdateResponse updateProduct(Authentication authentication, @PathVariable("productNo") Long productNo,
+		@RequestPart(value = "Update") ProductUpdateRequest request,
+		@RequestPart List<MultipartFile> files)
+		throws IOException {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		return productService.updateProduct(principal, productNo, request, files);
 	}
 
 	@PostMapping("/{productNo}/like")
