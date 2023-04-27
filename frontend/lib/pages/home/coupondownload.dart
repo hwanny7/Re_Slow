@@ -37,21 +37,26 @@ class CouponDownload extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 50.0),
+            SizedBox(height: 30.0),
             // 버튼
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: SizedBox(
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {},
                       icon: Icon(Icons.download),
                       label: Text('다운로드'),
+                      style: ElevatedButton.styleFrom(
+                        // adjust the height of the ElevatedButton
+                        fixedSize: Size(200, 50),
+
+                        // change the background color of the ElevatedButton
+                        backgroundColor: Colors.blue,
+                      ),
                     ),
                   ),
                 ),
@@ -65,11 +70,19 @@ class CouponDownload extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Text('닫기'),
+                      style: ElevatedButton.styleFrom(
+                        // adjust the height of the ElevatedButton
+                        fixedSize: Size(200, 50),
+
+                        // change the background color of the ElevatedButton
+                        backgroundColor: Colors.grey,
+                      ),
                     ),
                   ),
                 ),
               ],
-            ),
+            )
+
             // 버튼 끝
           ],
         ),
