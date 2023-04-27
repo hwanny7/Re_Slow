@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowContent;
 
 @Repository
-public interface KnowhowContentRepository extends JpaRepository<KnowhowContent, Long
-	> {
+public interface KnowhowContentRepository extends JpaRepository<KnowhowContent, Long> {
 
 }
