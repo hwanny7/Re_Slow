@@ -3,6 +3,7 @@ package com.ssafy.reslow.domain.product.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,18 +22,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MARKET_CATEGORY_TB")
-public class MarketCategory {
+@Table(name = "PRODUCT_CATEGORY_TB")
+public class ProductCategory {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "MARKET_CATEGORY_PK")
+	@Column(name = "PRODUCT_CATEGORY_PK")
 	private Long no;
 
-	@Column(name = "MARKET_CATEGORY")
+	@Column(name = "CATEGORY")
 	private String category;
 
 	@Builder.Default
-	@OneToMany(mappedBy = "marketCategory")
+	@OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
 	private List<Product> products = new ArrayList<>();
 }
