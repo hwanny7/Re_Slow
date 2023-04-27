@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/frame.dart';
+import 'package:reslow/pages/knowhow/knowhow.dart';
+import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
         '/main': (context) => MainPage(),
         '/': (context) => SplashScreen(),
         '/login': (context) => Login(key: key),
+        '/knowhow': (context) => KnowHow(),
+        '/knowhow/:id': (context) => KnowHowDetail(),
       },
     );
   }
