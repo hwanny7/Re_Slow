@@ -142,46 +142,63 @@ class _RecommendState extends State<Recommend>
                 .toList(),
           ),
 
-          // Draw Floating Bubble
-          Column(
-            children: [
-              SlideTransition(
-                position: _animation,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blue,
-                  ),
+          // Draw Floating Bubbles
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 50.0, vertical: 10.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 20),
+                    SlideTransition(
+                      position: _animation,
+                      child: Transform.translate(
+                        offset: Offset(-20, 0),
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue.shade300.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 50),
+                    SlideTransition(
+                      position: _animation,
+                      child: Container(
+                        width: 280,
+                        height: 280,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue.shade600.withOpacity(0.7),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 50),
+                    SlideTransition(
+                      position: _animation,
+                      child: Transform.translate(
+                        offset: Offset(20, 0),
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue.shade900.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                  ],
                 ),
               ),
-              SizedBox(height: 16.0),
-              SlideTransition(
-                position: _animation,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.green,
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              SlideTransition(
-                position: _animation,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.orange,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
+          // Drawed Bubbles
         ],
       ),
     );
