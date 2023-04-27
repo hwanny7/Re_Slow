@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/home/coupondownload.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
 import 'couponlist.dart';
@@ -204,6 +205,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   alignment: Alignment.centerLeft,
                 ),
+                // Menues of Settings
                 Expanded(
                   child: Column(
                     children: [
@@ -213,7 +215,8 @@ class _ProfileState extends State<Profile> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NotificationSetting()),
+                                builder: (context) =>
+                                    NotificationSetting()), //알림설정 페이지로 이동
                           );
                         },
                         child: Container(
@@ -225,7 +228,7 @@ class _ProfileState extends State<Profile> {
                                   width:
                                       10), // for spacing between icon and text
                               Text(
-                                '알림 설정',
+                                '알림설정',
                                 style: TextStyle(fontSize: 15),
                               ),
                             ],
@@ -233,51 +236,94 @@ class _ProfileState extends State<Profile> {
                           alignment: Alignment.centerLeft,
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          children: [
-                            Icon(Icons.shield),
-                            SizedBox(
-                                width: 10), // for spacing between icon and text
-                            Text(
-                              '개인 정보',
-                              style: TextStyle(fontSize: 15),
+                      // 알림설정 끝
+                      GestureDetector(
+                        onTap: () {
+                          // Navigate to privacy settings page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CouponDownload(), // 개인정보 페이지로 이동
                             ),
-                          ],
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+                              Icon(Icons.shield),
+                              SizedBox(
+                                width: 10,
+                              ), // for spacing between icon and text
+                              Text(
+                                '개인 정보',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.centerLeft,
                         ),
-                        alignment: Alignment.centerLeft,
                       ),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          children: [
-                            Icon(Icons.warning),
-                            SizedBox(
-                                width: 10), // for spacing between icon and text
-                            Text(
-                              '신고 하기',
-                              style: TextStyle(fontSize: 15),
+                      // 개인정보 끝
+                      GestureDetector(
+                        onTap: () {
+                          // Navigate to privacy settings page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  NotificationSetting(), // 신고하기 페이지로 이동
                             ),
-                          ],
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+                              Icon(Icons.warning),
+                              SizedBox(
+                                width: 10,
+                              ), // for spacing between icon and text
+                              Text(
+                                '신고하기',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.centerLeft,
                         ),
-                        alignment: Alignment.centerLeft,
                       ),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        child: Row(
-                          children: [
-                            Icon(Icons.logout),
-                            SizedBox(
-                                width: 10), // for spacing between icon and text
-                            Text(
-                              '로그아웃',
-                              style: TextStyle(fontSize: 15),
+                      // 신고하기 끝
+                      GestureDetector(
+                        onTap: () {
+                          // Navigate to privacy settings page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  NotificationSetting(), // 로그아웃 시키고 로그인 창으로 이동
                             ),
-                          ],
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(5),
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout),
+                              SizedBox(
+                                width: 10,
+                              ), // for spacing between icon and text
+                              Text(
+                                '로그아웃',
+                                style: TextStyle(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.centerLeft,
                         ),
-                        alignment: Alignment.centerLeft,
                       ),
+                      // 로그아웃 끝
                     ],
                   ),
                 ),
