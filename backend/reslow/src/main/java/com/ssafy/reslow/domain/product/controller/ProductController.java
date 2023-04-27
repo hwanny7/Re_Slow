@@ -31,7 +31,7 @@ public class ProductController {
 	private final ProductService productService;
 
 	@PostMapping
-	public Map<String, Object> registProduct(Authentication authentication,
+	public Map<String, Long> registProduct(Authentication authentication,
 		@RequestPart(value = "Regist") ProductRegistRequest request,
 		@RequestPart List<MultipartFile> files)
 		throws IOException {
@@ -46,6 +46,14 @@ public class ProductController {
 		throws IOException {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		return productService.updateProduct(principal, productNo, request, files);
+	}
+
+	@DeleteMapping("/{productNo}")
+	public Map<String, Long> deleteroduct(Authentication authentication, @PathVariable("productNo") Long productNo)
+		throws IOException {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return productService.deleteroduct(memberNo, productNo);
 	}
 
 	@PostMapping("/{productNo}/like")

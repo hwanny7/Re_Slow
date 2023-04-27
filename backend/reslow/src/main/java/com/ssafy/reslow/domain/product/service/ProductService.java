@@ -68,7 +68,7 @@ public class ProductService {
 		return map;
 	}
 
-	public Map<String, Object> registProduct(UserDetails user, ProductRegistRequest request, List<MultipartFile> files)
+	public Map<String, Long> registProduct(UserDetails user, ProductRegistRequest request, List<MultipartFile> files)
 		throws IOException {
 		Member member = memberRepository.findById(Long.parseLong(user.getUsername()))
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -85,7 +85,7 @@ public class ProductService {
 
 		product.setProductImages(productImages);
 		Product savedProduct = productRepository.save(product);
-		Map<String, Object> map = new HashMap<>();
+		Map<String, Long> map = new HashMap<>();
 		map.put("productId", savedProduct.getNo());
 		return map;
 	}
@@ -128,5 +128,14 @@ public class ProductService {
 		ProductUpdateResponse updatedProduct = ProductUpdateResponse.of(product,
 			product.getProductCategory().getCategory());
 		return updatedProduct;
+	}
+
+	public Map<String, Long> deleteroduct(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		productRepository.delete(product);
+		Map<String, Long> map = new HashMap<>();
+		map.put("productId", productNo);
+		return map;
 	}
 }
