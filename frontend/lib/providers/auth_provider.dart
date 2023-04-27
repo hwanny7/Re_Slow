@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:reslow/models/user.dart';
 import 'package:reslow/utils/shared_preference.dart';
@@ -9,7 +8,7 @@ import 'package:reslow/utils/shared_preference.dart';
 
 const String baseURL = "http://localhost:8080";
 
-class AuthProvider with ChangeNotifier {
+class AuthProvider {
   Future<Map<String, dynamic>> login(String userId, String password) async {
     dynamic result;
     final Map<String, dynamic> payload = {
@@ -31,7 +30,7 @@ class AuthProvider with ChangeNotifier {
 
       UserPreferences().saveUser(authUser);
 
-      result = {'status': true, 'message': 'Successful', 'user': authUser};
+      result = {'status': true, 'message': 'Successful'};
     } else {
       result = {
         'status': false,
