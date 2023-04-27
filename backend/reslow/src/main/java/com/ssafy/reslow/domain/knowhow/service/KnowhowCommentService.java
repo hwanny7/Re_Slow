@@ -17,12 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowCommentCreateRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowCommentResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowCommentUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowComment;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCommentRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -91,4 +93,30 @@ public class KnowhowCommentService {
 		}
 	}
 
+	public Map<String, Object> updateComment(Long memberNo, KnowhowCommentUpdateRequest request) {
+		KnowhowComment comment = commentRepository.findById(request.getCommentNo())
+			.orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+		if (!memberNo.equals(comment.getMember().getNo())) {
+			throw new CustomException(ErrorCode.FORBIDDEN);
+		}
+
+		comment.updateContent(request.getContent());
+		Long savedCommentNo = commentRepository.save(comment).getNo();
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("commentNo", savedCommentNo);
+		return map;
+	}
+
+	public void deleteComment(Long memberNo, Long commentNo) {
+		KnowhowComment comment = commentRepository.findById(commentNo)
+			.orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
+
+		if (!memberNo.equals(comment.getMember().getNo())) {
+			throw new CustomException(ErrorCode.FORBIDDEN);
+		}
+
+		commentRepository.deleteById(commentNo);
+	}
 }
