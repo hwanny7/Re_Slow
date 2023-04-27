@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityNotFoundException;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -22,6 +20,7 @@ import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowComment;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCommentRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
+import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.global.exception.ErrorCode;
@@ -41,56 +40,26 @@ public class KnowhowCommentService {
 		Slice<KnowhowComment> comments = commentRepository.findByKnowhowNoAndParentIsNull(knowhowNo, pageable);
 		List<KnowhowCommentResponse> commentResponses = comments.getContent()
 			.stream()
-			.map(comment -> {
-				List<KnowhowCommentResponse> children = comment.getChildren()
-					.stream()
-					.map(child -> KnowhowCommentResponse.builder()
-						.commentNo(child.getNo())
-						.memberNo(child.getMember().getNo())
-						.parentNo(child.getParent() != null ? child.getParent().getNo() : null)
-						.profilePic(child.getMember().getProfilePic())
-						.nickname(child.getMember().getNickname())
-						.datetime(child.getCreatedDate())
-						.content(child.getContent())
-						.build())
-					.collect(Collectors.toList());
-
-				return KnowhowCommentResponse.builder()
-					.commentNo(comment.getNo())
-					.memberNo(comment.getMember().getNo())
-					.parentNo(comment.getParent() != null ? comment.getParent().getNo() : null)
-					.profilePic(comment.getMember().getProfilePic())
-					.nickname(comment.getMember().getNickname())
-					.datetime(comment.getCreatedDate())
-					.content(comment.getContent())
-					.children(children != null && !children.isEmpty() ? children : null)
-					.build();
-			})
+			.map(KnowhowCommentResponse::of)
 			.collect(Collectors.toList());
 
 		return new SliceImpl<>(commentResponses, pageable, comments.hasNext());
 	}
 
 	public Map<String, Object> createComment(Long memberNo, KnowhowCommentCreateRequest request) {
-		try {
-			Knowhow knowhow = knowhowRepository.getReferenceById(request.getKnowhowNo());
+		Knowhow knowhow = knowhowRepository.findById(request.getKnowhowNo())
+			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		KnowhowComment parent =
+			request.getParentNo() == null ? null : commentRepository.findById(request.getParentNo())
+				.orElseThrow(() -> new CustomException(COMMENT_NOT_FOUND));
 
-			KnowhowComment comment = KnowhowComment.builder()
-				.knowhow(knowhow)
-				.member(memberRepository.getReferenceById(memberNo))
-				.parent(
-					request.getParentNo() != null ? commentRepository.getReferenceById(request.getParentNo()) : null)
-				.content(request.getContent())
-				.build();
+		KnowhowComment comment = KnowhowComment.of(knowhow, member, parent, request.getContent());
+		Long savedCommentNo = commentRepository.save(comment).getNo();
 
-			Long savedCommentNo = commentRepository.save(comment).getNo();
-
-			Map<String, Object> map = new HashMap<>();
-			map.put("commentNo", savedCommentNo);
-			return map;
-		} catch (EntityNotFoundException e) {
-			throw new CustomException(KNOWHOW_NOT_FOUND);
-		}
+		Map<String, Object> map = new HashMap<>();
+		map.put("commentNo", savedCommentNo);
+		return map;
 	}
 
 	public Map<String, Object> updateComment(Long memberNo, KnowhowCommentUpdateRequest request) {
@@ -119,4 +88,5 @@ public class KnowhowCommentService {
 
 		commentRepository.deleteById(commentNo);
 	}
+
 }

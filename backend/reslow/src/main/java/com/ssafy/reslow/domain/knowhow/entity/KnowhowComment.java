@@ -50,6 +50,15 @@ public class KnowhowComment extends BaseEntity {
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
 	private List<KnowhowComment> children = new ArrayList<>();
 
+	public static KnowhowComment of(Knowhow knowhow, Member member, KnowhowComment parent, String content) {
+		return KnowhowComment.builder()
+			.knowhow(knowhow)
+			.member(member)
+			.parent(parent)
+			.content(content)
+			.build();
+	}
+
 	public void updateContent(String content) {
 		this.content = content;
 	}

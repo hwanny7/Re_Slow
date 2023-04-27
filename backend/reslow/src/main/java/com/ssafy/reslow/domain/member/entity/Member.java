@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
-import com.ssafy.reslow.domain.market.entity.Product;
+import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.notice.entity.Notice;
 import com.ssafy.reslow.global.common.entity.Authority;

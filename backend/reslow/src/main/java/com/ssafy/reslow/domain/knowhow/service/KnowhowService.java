@@ -3,13 +3,12 @@ package com.ssafy.reslow.domain.knowhow.service;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import javax.transaction.Transactional;
 
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowContentRepository;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Slf4j
 public class KnowhowService {
+
+	private final RedisTemplate redisTemplate;
 	private final MemberRepository memberRepository;
 	private final KnowhowRepository knowhowRepository;
 	private final KnowhowCategoryRepository knowhowCategoryRepository;
@@ -40,12 +41,12 @@ public class KnowhowService {
 
 	// 게시글 정보 저장
 	public String saveKnowhow(Long memberNo, List<MultipartFile> imageList,
-		KnowhowRequest knowhowRequest) throws IOException {
+							  KnowhowRequest knowhowRequest) throws IOException {
 		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		// 카테고리 객체 만들기
 		KnowhowCategory category = knowhowCategoryRepository.findById(knowhowRequest.getCategoryNo())
-			.orElseThrow(() -> new NoSuchElementException("category 존재하지 않음"));
+				.orElseThrow(() -> new NoSuchElementException("category 존재하지 않음"));
 
 		// 노하우 테이블 저장
 		Knowhow knowhow = Knowhow.ofEntity(knowhowRequest, member, category);
@@ -65,4 +66,23 @@ public class KnowhowService {
 		return "글 작성 완료";
 	}
 
+	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
+		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
+		setOperations.add(knowhowNo, memberNo);
+		setOperations.add(memberNo + "_like_knowhow", knowhowNo);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", setOperations.size(knowhowNo));
+		return map;
+	}
+
+	public Map<String, Long> unlikeKnowhow(Long memberNo, Long knowhowNo) {
+		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
+		setOperations.remove(knowhowNo, memberNo);
+		setOperations.remove(memberNo + "_like_knowhow", knowhowNo);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", setOperations.size(knowhowNo));
+		return map;
+	}
 }
