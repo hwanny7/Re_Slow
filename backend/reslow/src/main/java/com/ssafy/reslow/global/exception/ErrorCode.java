@@ -20,7 +20,8 @@ public enum ErrorCode {
 	KNOWHOW_NOT_FOUND(HttpStatus.OK, -10, "노하우를 찾을 수 없습니다."),
 	COMMENT_NOT_FOUND(HttpStatus.OK, -11, "댓글을 찾을 수 없습니다."),
 	CATEGORY_NOT_FOUND(HttpStatus.OK, -12, "카테고리를 찾을 수 없습니다."),
-	PRODUCT_NOT_FOUND(HttpStatus.OK, -13, "상품을 찾을 수 없습니다.");
+	PRODUCT_NOT_FOUND(HttpStatus.OK, -13, "상품을 찾을 수 없습니다."),
+	USER_NOT_MATCH(HttpStatus.OK, -14, "사용자 접근 권한이 없습니다.");
 
 	private final HttpStatus status;
 	private final int code;
