@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
+import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
 import com.ssafy.reslow.domain.product.entity.Product;
@@ -157,5 +160,18 @@ public class ProductService {
 		ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product, product.getProductCategory()
 			.getCategory(), images);
 		return productDetailResponse;
+	}
+
+	public Slice<ProductListResponse> myProductList(Long memberNo, int status, Pageable pageable) {
+		Member member = memberRepository.findById(memberNo).get();
+		Slice<Product> list = null;
+		if(status == 0){
+			list = productRepository.findByMemberAndStock(member, 0, pageable);
+		}else {
+			list = productRepository.findByMemberAndStockNot(member, 0, pageable);
+		}
+		Slice<ProductListResponse> responses = list.map(
+			(product) -> ProductListResponse.of(product, product.getProductImages().get(0).getUrl()));
+		return responses;
 	}
 }
