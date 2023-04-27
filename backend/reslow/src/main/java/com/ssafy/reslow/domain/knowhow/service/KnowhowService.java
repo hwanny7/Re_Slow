@@ -5,11 +5,11 @@ import static com.ssafy.reslow.global.exception.ErrorCode.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 import javax.transaction.Transactional;
 
+import com.ssafy.reslow.domain.knowhow.repository.KnowhowContentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,31 +35,34 @@ public class KnowhowService {
 	private final MemberRepository memberRepository;
 	private final KnowhowRepository knowhowRepository;
 	private final KnowhowCategoryRepository knowhowCategoryRepository;
+	private final KnowhowContentRepository knowhowContentRepository;
 	private final S3StorageClient s3StorageClient;
 
-	// 게시글 정보 KnowhowReuqest DTO에 저장
-	public Map<String, Object> saveKnowhowDto(Long memberNo, List<MultipartFile> imageList,
+	// 게시글 정보 저장
+	public String saveKnowhow(Long memberNo, List<MultipartFile> imageList,
 		KnowhowRequest knowhowRequest) throws IOException {
 		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		// KnowhowRequest knowhow = request.ofEntity(member.getId(), imageList, request);
-		// Knowhow table 저장
-		List<String> contentList = knowhowRequest.getContents();
-		List<KnowhowContent> knowhowContents = new ArrayList<>();
-		
-		for (int i = 0; i < imageList.size(); i++) {
-			KnowhowContent knowhowContent = KnowhowContent.builder().image(s3StorageClient.uploadFile(imageList.get(i)))
-				.content(contentList.get(i)).build();
-
-			knowhowContents.add(knowhowContent);
-		}
-
 		// 카테고리 객체 만들기
-		KnowhowCategory category = knowhowCategoryRepository.findByCategory(knowhowRequest.getCategory())
+		KnowhowCategory category = knowhowCategoryRepository.findById(knowhowRequest.getCategoryNo())
 			.orElseThrow(() -> new NoSuchElementException("category 존재하지 않음"));
 
-		knowhowRepository.save(Knowhow.ofEntity(knowhowRequest, member, category, knowhowContents));
-		return null;
+		// 노하우 테이블 저장
+		Knowhow knowhow = Knowhow.ofEntity(knowhowRequest, member, category);
+		knowhowRepository.save(knowhow);
+
+		List<String> contentList = knowhowRequest.getContentList();
+		List<KnowhowContent> knowhowContentList = new ArrayList<>();
+
+		for (int i = 0; i < imageList.size(); i++) {
+			KnowhowContent knowhowContent = KnowhowContent.builder().image(s3StorageClient.uploadFile(imageList.get(i)))
+					.content(contentList.get(i)).knowhow(knowhow).build();
+
+			knowhowContentList.add(knowhowContent);
+		}
+		// 노하우 글 저장
+		knowhowContentRepository.saveAll(knowhowContentList);
+		return "글 작성 완료";
 	}
 
 }
