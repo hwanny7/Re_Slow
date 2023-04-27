@@ -9,5 +9,4 @@ import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
 
 @Repository
 public interface KnowhowCategoryRepository extends JpaRepository<KnowhowCategory, Long> {
-	Optional<KnowhowCategory> findByCategory(String category);
 }
