@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reslow/pages/home/coupondownload.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
 import 'couponlist.dart';
@@ -243,8 +242,7 @@ class _ProfileState extends State<Profile> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  CouponDownload(), // 개인정보 페이지로 이동
+                              builder: (context) => NotificationSetting(),
                             ),
                           );
                         },
@@ -257,7 +255,7 @@ class _ProfileState extends State<Profile> {
                                 width: 10,
                               ), // for spacing between icon and text
                               Text(
-                                '개인 정보',
+                                '개인정보',
                                 style: TextStyle(fontSize: 15),
                               ),
                             ],
