@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.member.entity.Member;
@@ -27,11 +30,10 @@ import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.infra.storage.S3StorageClient;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class ProductService {
 
 	private final MemberRepository memberRepository;
@@ -41,6 +43,27 @@ public class ProductService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final AuthenticationManager authenticationManager;
 	private final S3StorageClient s3Service;
+	private final RedisTemplate redisTemplate;
+
+	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
+		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
+		setOperations.add(productNo, memberNo);
+		setOperations.add(memberNo + "_like_product", productNo);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", setOperations.size(productNo));
+		return map;
+	}
+
+	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
+		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
+		setOperations.remove(productNo, memberNo);
+		setOperations.remove(memberNo + "_like_product", productNo);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", setOperations.size(productNo));
+		return map;
+	}
 
 	public Map<String, Object> registProduct(UserDetails user, ProductRegistRequest request, List<MultipartFile> files)
 		throws IOException {
