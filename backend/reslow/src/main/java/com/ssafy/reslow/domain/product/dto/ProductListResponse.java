@@ -1,7 +1,6 @@
 package com.ssafy.reslow.domain.product.dto;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.ssafy.reslow.domain.product.entity.Product;
 
@@ -10,27 +9,21 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProductDetailResponse {
+public class ProductListResponse {
 
 	private String title;
-	private String description;
-	private int deliveryFee;
 	private int price;
 	private int stock;
-	private String category;
 	private LocalDate date;
-	private List<String> images;
+	private String image;
 
-	public static ProductDetailResponse of(Product product, String category, List<String> images) {
-		return ProductDetailResponse.builder()
+	public static ProductListResponse of(Product product, String image) {
+		return ProductListResponse.builder()
 			.title(product.getTitle())
-			.description(product.getDescription())
-			.deliveryFee(product.getDeliveryFee())
 			.price(product.getPrice())
 			.stock(product.getStock())
-			.category(category)
 			.date(product.getCreatedDate().toLocalDate())
-			.images(images)
+			.image(image)
 			.build();
 	}
 }
