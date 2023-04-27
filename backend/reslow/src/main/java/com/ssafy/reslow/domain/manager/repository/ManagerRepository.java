@@ -11,4 +11,5 @@ import com.ssafy.reslow.domain.manager.entity.Manager;
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
 	Optional<Manager> findById(String id);
+	boolean existsById(String Id);
 }

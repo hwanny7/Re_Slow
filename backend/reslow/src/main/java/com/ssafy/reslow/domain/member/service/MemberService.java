@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,17 +48,17 @@ public class MemberService {
 	private final AuthenticationManager authenticationManager;
 	private final S3StorageClient s3Service;
 
-	public Map<String, Object> signUp(MemberSignUpRequest signUp) {
+	public ResponseEntity<?> signUp(MemberSignUpRequest signUp) {
 		if (memberRepository.existsById(signUp.getId())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
 		Member member = memberRepository.save(Member.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
 		Map<String, Object> map = new HashMap<>();
 		map.put("nickname", member.getNickname());
-		return map;
+		return ResponseEntity.ok(map);
 	}
 
-	public TokenResponse login(MemberLoginRequest login) {
+	public ResponseEntity<?> login(MemberLoginRequest login) {
 		Member member = memberRepository.findById(login.getId())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
@@ -71,7 +73,7 @@ public class MemberService {
 		redisTemplate.opsForValue()
 			.set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(),
 				tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-		return tokenInfo;
+		return ResponseEntity.ok(tokenInfo);
 	}
 
 	public Map<String, Object> logout(Authentication authentication) {

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -36,15 +37,18 @@ public class ManagerService {
 	private final RedisTemplate redisTemplate;
 	private final AuthenticationManager authenticationManager;
 
-	public Map<String, Object> signUp(ManagerSignUpRequest signUp) {
+	public ResponseEntity<?> signUp(ManagerSignUpRequest signUp) {
+		if (managerRepository.existsById(signUp.getId())) {
+			throw new CustomException(MEBER_ALREADY_EXSIST);
+		}
 		Manager manager = managerRepository.save(
 			Manager.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", manager.getId());
-		return map;
+		return ResponseEntity.ok(map);
 	}
 
-	public TokenResponse login(ManagerLoginRequest login) {
+	public ResponseEntity<?> login(ManagerLoginRequest login) {
 		Manager manager = managerRepository.findById(login.getId())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		if (!passwordEncoder.matches(login.getPassword(), manager.getPassword())) {
@@ -59,7 +63,7 @@ public class ManagerService {
 		redisTemplate.opsForValue()
 			.set("RT_MANAGER:" + authentication.getName(), tokenInfo.getRefreshToken(),
 				tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-		return tokenInfo;
+		return ResponseEntity.ok(tokenInfo);
 	}
 
 	public Map<String, Object> logout(Authentication authentication) {
