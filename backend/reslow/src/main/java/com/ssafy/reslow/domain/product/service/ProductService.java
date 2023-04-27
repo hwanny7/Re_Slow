@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
@@ -19,9 +20,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
-import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
 import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.domain.product.entity.ProductCategory;
 import com.ssafy.reslow.domain.product.entity.ProductImage;
@@ -90,15 +91,16 @@ public class ProductService {
 		return map;
 	}
 
-	public ProductUpdateResponse updateProduct(UserDetails user, Long productNo, ProductUpdateRequest request,
+	public ProductDetailResponse updateProduct(Long memberNo, Long productNo, ProductUpdateRequest request,
 		List<MultipartFile> files) throws
 		IOException {
-		Member member = memberRepository.findById(Long.parseLong(user.getUsername()))
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		ProductCategory productCategory = productCategoryRepository.findById(request.getCategory())
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+		if (memberNo != product.getMember().getNo()) {
+			throw new CustomException(USER_NOT_MATCH);
+		}
 		product.updateProduct(request, productCategory);
 
 		List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
@@ -125,17 +127,35 @@ public class ProductService {
 		product.setProductImages(newImages);
 
 		productRepository.save(product);
-		ProductUpdateResponse updatedProduct = ProductUpdateResponse.of(product,
-			product.getProductCategory().getCategory());
+		List<String> images = product.getProductImages().stream()
+			.map((productImage) -> productImage.getUrl())
+			.collect(Collectors.toList());
+		ProductDetailResponse updatedProduct = ProductDetailResponse.of(product,
+			product.getProductCategory().getCategory(), images);
 		return updatedProduct;
 	}
 
 	public Map<String, Long> deleteroduct(Long memberNo, Long productNo) {
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		if (memberNo != product.getMember().getNo()) {
+			throw new CustomException(USER_NOT_MATCH);
+		}
 		productRepository.delete(product);
 		Map<String, Long> map = new HashMap<>();
 		map.put("productId", productNo);
 		return map;
+	}
+
+	public ProductDetailResponse productDetail(Long productNo) {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
+		List<String> images = productImages.stream()
+			.map((productImage) -> productImage.getUrl())
+			.collect(Collectors.toList());
+		ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product, product.getProductCategory()
+			.getCategory(), images);
+		return productDetailResponse;
 	}
 }

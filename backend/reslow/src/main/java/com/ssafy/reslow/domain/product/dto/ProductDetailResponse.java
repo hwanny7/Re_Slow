@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.product.dto;
 
+import java.util.List;
+
 import com.ssafy.reslow.domain.product.entity.Product;
 
 import lombok.Builder;
@@ -7,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProductUpdateResponse {
+public class ProductDetailResponse {
 
 	private String title;
 	private String description;
@@ -15,15 +17,17 @@ public class ProductUpdateResponse {
 	private int price;
 	private int stock;
 	private String category;
+	private List<String> images;
 
-	public static ProductUpdateResponse of(Product product, String category) {
-		return ProductUpdateResponse.builder()
+	public static ProductDetailResponse of(Product product, String category, List<String> images) {
+		return ProductDetailResponse.builder()
 			.title(product.getTitle())
 			.description(product.getDescription())
 			.deliveryFee(product.getDeliveryFee())
 			.price(product.getPrice())
 			.stock(product.getStock())
 			.category(category)
+			.images(images)
 			.build();
 	}
 }
