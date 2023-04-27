@@ -22,7 +22,8 @@ import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
 import com.ssafy.reslow.domain.member.service.MemberService;
-import com.ssafy.reslow.global.exception.ErrorHandler;
+import com.ssafy.reslow.global.common.dto.TokenResponse;
+import com.ssafy.reslow.global.exception.ValidationCheckException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,17 +37,17 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public ResponseEntity<?> signUp(@Validated @RequestBody MemberSignUpRequest signUp, Errors errors) {
+	public Map<String, Object> signUp(@Validated @RequestBody MemberSignUpRequest signUp, Errors errors) {
 		if (errors.hasErrors()) {
-			return ResponseEntity.badRequest().body(ErrorHandler.refineErrors(errors));
+			throw new ValidationCheckException(errors);
 		}
 		return memberService.signUp(signUp);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Validated @RequestBody MemberLoginRequest login, Errors errors) {
+	public TokenResponse login(@Validated @RequestBody MemberLoginRequest login, Errors errors) {
 		if (errors.hasErrors()) {
-			return ResponseEntity.badRequest().body(ErrorHandler.refineErrors(errors));
+			throw new ValidationCheckException(errors);
 		}
 		return memberService.login(login);
 	}

@@ -1,7 +1,11 @@
 package com.ssafy.reslow.global.exception;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+
 import javax.persistence.EntityNotFoundException;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +25,22 @@ public class GlobalExceptionHandler {
 		return ResponseEntity
 			.status(e.getErrorCode().getStatus().value())
 			.body(new ErrorResponse(e.getErrorCode()));
+	}
+
+	@ExceptionHandler(ValidationCheckException.class)
+	protected ResponseEntity<LinkedList<LinkedHashMap<String, String>>> handleValidationException(
+		final ValidationCheckException errors) {
+		log.error("handleValidationException: {}", errors.getErrors());
+		LinkedList errorList = new LinkedList<LinkedHashMap<String, String>>();
+		errors.getErrors().getFieldErrors().forEach(e -> {
+			LinkedHashMap<String, String> error = new LinkedHashMap<>();
+			error.put("field", e.getField());
+			error.put("message", e.getDefaultMessage());
+			errorList.push(error);
+		});
+		return ResponseEntity
+			.status(HttpStatus.BAD_REQUEST)
+			.body(errorList);
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)

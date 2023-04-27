@@ -48,17 +48,17 @@ public class MemberService {
 	private final AuthenticationManager authenticationManager;
 	private final S3StorageClient s3Service;
 
-	public ResponseEntity<?> signUp(MemberSignUpRequest signUp) {
+	public Map<String, Object> signUp(MemberSignUpRequest signUp) {
 		if (memberRepository.existsById(signUp.getId())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
 		Member member = memberRepository.save(Member.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
 		Map<String, Object> map = new HashMap<>();
 		map.put("nickname", member.getNickname());
-		return ResponseEntity.ok(map);
+		return map;
 	}
 
-	public ResponseEntity<?> login(MemberLoginRequest login) {
+	public TokenResponse login(MemberLoginRequest login) {
 		Member member = memberRepository.findById(login.getId())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
@@ -73,7 +73,7 @@ public class MemberService {
 		redisTemplate.opsForValue()
 			.set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(),
 				tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-		return ResponseEntity.ok(tokenInfo);
+		return tokenInfo;
 	}
 
 	public Map<String, Object> logout(Authentication authentication) {

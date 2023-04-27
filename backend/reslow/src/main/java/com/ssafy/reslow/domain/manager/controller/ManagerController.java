@@ -15,7 +15,7 @@ import com.ssafy.reslow.domain.manager.dto.ManagerLoginRequest;
 import com.ssafy.reslow.domain.manager.dto.ManagerSignUpRequest;
 import com.ssafy.reslow.domain.manager.service.ManagerService;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
-import com.ssafy.reslow.global.exception.ErrorHandler;
+import com.ssafy.reslow.global.exception.ValidationCheckException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,17 +29,17 @@ public class ManagerController {
 	private final ManagerService managerService;
 
 	@PostMapping
-	public ResponseEntity<?> signUp(@Validated @RequestBody ManagerSignUpRequest signUp, Errors errors) {
+	public Map<String, Object> signUp(@Validated @RequestBody ManagerSignUpRequest signUp, Errors errors) {
 		if (errors.hasErrors()) {
-			return ResponseEntity.badRequest().body(ErrorHandler.refineErrors(errors));
+			throw new ValidationCheckException(errors);
 		}
 		return managerService.signUp(signUp);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@Validated @RequestBody ManagerLoginRequest login, Errors errors) {
+	public TokenResponse login(@Validated @RequestBody ManagerLoginRequest login, Errors errors) {
 		if (errors.hasErrors()) {
-			return ResponseEntity.badRequest().body(ErrorHandler.refineErrors(errors));
+			throw new ValidationCheckException(errors);
 		}
 		return managerService.login(login);
 	}

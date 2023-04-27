@@ -37,7 +37,7 @@ public class ManagerService {
 	private final RedisTemplate redisTemplate;
 	private final AuthenticationManager authenticationManager;
 
-	public ResponseEntity<?> signUp(ManagerSignUpRequest signUp) {
+	public Map<String, Object> signUp(ManagerSignUpRequest signUp) {
 		if (managerRepository.existsById(signUp.getId())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
@@ -45,10 +45,10 @@ public class ManagerService {
 			Manager.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
 		Map<String, Object> map = new HashMap<>();
 		map.put("id", manager.getId());
-		return ResponseEntity.ok(map);
+		return map;
 	}
 
-	public ResponseEntity<?> login(ManagerLoginRequest login) {
+	public TokenResponse login(ManagerLoginRequest login) {
 		Manager manager = managerRepository.findById(login.getId())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		if (!passwordEncoder.matches(login.getPassword(), manager.getPassword())) {
@@ -63,7 +63,7 @@ public class ManagerService {
 		redisTemplate.opsForValue()
 			.set("RT_MANAGER:" + authentication.getName(), tokenInfo.getRefreshToken(),
 				tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-		return ResponseEntity.ok(tokenInfo);
+		return tokenInfo;
 	}
 
 	public Map<String, Object> logout(Authentication authentication) {
