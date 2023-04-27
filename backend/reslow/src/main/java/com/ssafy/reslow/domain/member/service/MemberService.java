@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -79,7 +81,7 @@ public class MemberService {
 			redisTemplate.delete("RT:" + authentication.getName());
 		}
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", authentication.getName());
+		map.put("no", authentication.getName());
 		return map;
 	}
 
