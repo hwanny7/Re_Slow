@@ -41,31 +41,7 @@ public class KnowhowCommentService {
 		Slice<KnowhowComment> comments = commentRepository.findByKnowhowNoAndParentIsNull(knowhowNo, pageable);
 		List<KnowhowCommentResponse> commentResponses = comments.getContent()
 			.stream()
-			.map(comment -> {
-				List<KnowhowCommentResponse> children = comment.getChildren()
-					.stream()
-					.map(child -> KnowhowCommentResponse.builder()
-						.commentNo(child.getNo())
-						.memberNo(child.getMember().getNo())
-						.parentNo(child.getParent() != null ? child.getParent().getNo() : null)
-						.profilePic(child.getMember().getProfilePic())
-						.nickname(child.getMember().getNickname())
-						.datetime(child.getCreatedDate())
-						.content(child.getContent())
-						.build())
-					.collect(Collectors.toList());
-
-				return KnowhowCommentResponse.builder()
-					.commentNo(comment.getNo())
-					.memberNo(comment.getMember().getNo())
-					.parentNo(comment.getParent() != null ? comment.getParent().getNo() : null)
-					.profilePic(comment.getMember().getProfilePic())
-					.nickname(comment.getMember().getNickname())
-					.datetime(comment.getCreatedDate())
-					.content(comment.getContent())
-					.children(children != null && !children.isEmpty() ? children : null)
-					.build();
-			})
+			.map(KnowhowCommentResponse::of)
 			.collect(Collectors.toList());
 
 		return new SliceImpl<>(commentResponses, pageable, comments.hasNext());
@@ -109,14 +85,4 @@ public class KnowhowCommentService {
 		return map;
 	}
 
-	public void deleteComment(Long memberNo, Long commentNo) {
-		KnowhowComment comment = commentRepository.findById(commentNo)
-			.orElseThrow(() -> new CustomException(ErrorCode.COMMENT_NOT_FOUND));
-
-		if (!memberNo.equals(comment.getMember().getNo())) {
-			throw new CustomException(ErrorCode.FORBIDDEN);
-		}
-
-		commentRepository.deleteById(commentNo);
-	}
 }
