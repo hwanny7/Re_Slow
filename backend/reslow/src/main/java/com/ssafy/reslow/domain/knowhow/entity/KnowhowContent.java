@@ -28,7 +28,7 @@ public class KnowhowContent {
 	@Column(name = "KNOWHOW_CONTENT_PK")
 	private Long no;
 
-	@Column(name = "IMAGE_URL")
+	@Column(name = "IMAGE_URL", columnDefinition = "TEXT")
 	private String image;
 
 	@Column(name = "CONTENT", columnDefinition = "TEXT")
