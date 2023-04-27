@@ -3,8 +3,10 @@ package com.ssafy.reslow.domain.member.controller;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
 import com.ssafy.reslow.domain.member.service.MemberService;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
+import com.ssafy.reslow.global.exception.ValidationCheckException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +37,18 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public Map<String, Object> signUp(@RequestBody MemberSignUpRequest signUp) {
+	public Map<String, Object> signUp(@Validated @RequestBody MemberSignUpRequest signUp, Errors errors) {
+		if (errors.hasErrors()) {
+			throw new ValidationCheckException(errors);
+		}
 		return memberService.signUp(signUp);
 	}
 
 	@PostMapping("/login")
-	public TokenResponse login(@Validated @RequestBody MemberLoginRequest login) {
+	public TokenResponse login(@Validated @RequestBody MemberLoginRequest login, Errors errors) {
+		if (errors.hasErrors()) {
+			throw new ValidationCheckException(errors);
+		}
 		return memberService.login(login);
 	}
 
