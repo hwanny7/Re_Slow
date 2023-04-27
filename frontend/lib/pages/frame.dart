@@ -62,6 +62,7 @@ class _MainPageState extends State<MainPage> {
             ));
         return;
       case 2:
+        Navigator.pushNamed(context, '/knowhow/register');
         return;
     }
     ;
