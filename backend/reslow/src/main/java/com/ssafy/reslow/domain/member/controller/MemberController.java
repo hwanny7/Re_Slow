@@ -3,7 +3,6 @@ package com.ssafy.reslow.domain.member.controller;
 import java.io.IOException;
 import java.util.Map;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;

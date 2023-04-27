@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.reslow.domain.manager.entity.Manager;
 import com.ssafy.reslow.domain.manager.repository.ManagerRepository;
-import com.ssafy.reslow.domain.member.entity.Member;
-import com.ssafy.reslow.domain.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
