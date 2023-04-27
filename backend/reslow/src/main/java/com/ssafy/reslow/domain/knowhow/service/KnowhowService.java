@@ -5,6 +5,8 @@ import java.util.*;
 
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
+import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
+import com.ssafy.reslow.domain.knowhow.repository.KnowhowContentRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
