@@ -51,13 +51,11 @@ public class Knowhow extends BaseEntity {
 	@OneToMany(mappedBy = "knowhow")
 	private List<KnowhowComment> knowhowComments = new ArrayList<>();
 
-	public static Knowhow ofEntity(KnowhowRequest knowhowRequest, Member member, KnowhowCategory knowhowCategory,
-		List<KnowhowContent> knowhowContents) {
+	public static Knowhow ofEntity(KnowhowRequest knowhowRequest, Member member, KnowhowCategory knowhowCategory) {
 		return Knowhow.builder()
 			.title(knowhowRequest.getTitle())
 			.member(member)
 			.knowhowCategory(knowhowCategory)
-			.knowhowContents(knowhowContents)
 			.build();
 	}
 }
