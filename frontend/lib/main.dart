@@ -17,11 +17,11 @@ class MyApp extends StatelessWidget {
       title: 'My App',
       // home: MainPage(key: key),
       theme: ThemeData(fontFamily: "NanumSquare"),
-      initialRoute: '/',
+      initialRoute: '/login',
       routes: {
         // '/': (context) => MainPage(key: key),
         '/main': (context) => MainPage(),
-        '/': (context) => SplashScreen(),
+        // '/': (context) => SplashScreen(),
         '/login': (context) => Login(key: key),
       },
     );

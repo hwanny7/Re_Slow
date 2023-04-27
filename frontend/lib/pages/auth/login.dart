@@ -66,7 +66,8 @@ class _LoginState extends State<Login> {
         controller: passwordController,
         obscureText: true,
         validator: (value) {
-          RegExp regex = RegExp(r'^.{6,}$');
+          RegExp regex =
+              RegExp(r'(?=.*[0-9])(?=.*[a-z])(?=.*\\W)(?=\\S+$).{8,16}');
           if (value!.isEmpty) {
             return ("Password is required for login");
           }
@@ -125,12 +126,12 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(
-                        height: 200,
-                        child: Image.asset(
-                          "assets/logo.png",
-                          fit: BoxFit.contain,
-                        )),
+                    // SizedBox(
+                    //     height: 200,
+                    //     child: Image.asset(
+                    //       "assets/Logo_Reslow.png",
+                    //       fit: BoxFit.contain,
+                    //     )),
                     const SizedBox(
                       height: 45,
                     ),
