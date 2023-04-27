@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,12 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
+import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
 import com.ssafy.reslow.domain.product.service.ProductService;
@@ -62,6 +66,14 @@ public class ProductController {
 	public ProductDetailResponse productDetail(@PathVariable("productNo") Long productNo)
 		throws IOException {
 		return productService.productDetail(productNo);
+	}
+
+	@GetMapping("/sale")
+	public Slice<ProductListResponse> myProductList(Authentication authentication, @RequestParam("status") int status, Pageable pageable)
+		throws IOException {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return productService.myProductList(memberNo, status, pageable);
 	}
 
 	@PostMapping("/{productNo}/like")
