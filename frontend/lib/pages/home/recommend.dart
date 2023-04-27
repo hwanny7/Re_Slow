@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class Recommend extends StatefulWidget {
@@ -147,9 +146,10 @@ class _RecommendState extends State<Recommend>
             child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 50.0, vertical: 10.0),
+                    horizontal: 50.0, vertical: 15.0),
                 child: Column(
                   children: [
+                    // Bubble 1
                     SizedBox(height: 20),
                     SlideTransition(
                       position: _animation,
@@ -160,23 +160,22 @@ class _RecommendState extends State<Recommend>
                           height: 280,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blue.shade300.withOpacity(0.7),
+                            color: Colors.blue.shade200.withOpacity(0.6),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(height: 50),
-                    SlideTransition(
-                      position: _animation,
-                      child: Container(
-                        width: 280,
-                        height: 280,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.blue.shade600.withOpacity(0.7),
+                    // Turtle
+                    Padding(
+                      padding: EdgeInsets.only(left: 180.0, top: 30),
+                      child: Positioned.fill(
+                        child: Image.asset(
+                          "assets/image/turtle.png",
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ),
+                    // Bubble 2
                     SizedBox(height: 50),
                     SlideTransition(
                       position: _animation,
@@ -187,7 +186,33 @@ class _RecommendState extends State<Recommend>
                           height: 280,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Colors.blue.shade900.withOpacity(0.7),
+                            color: Colors.blue.shade400.withOpacity(0.6),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Turtle_reversed
+                    Padding(
+                      padding: EdgeInsets.only(right: 180.0, top: 30),
+                      child: Positioned.fill(
+                        child: Image.asset(
+                          "assets/image/turtle_reversed.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    // Bubble 3
+                    SizedBox(height: 50),
+                    SlideTransition(
+                      position: _animation,
+                      child: Transform.translate(
+                        offset: Offset(0, 0),
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue.shade600.withOpacity(0.6),
                           ),
                         ),
                       ),
