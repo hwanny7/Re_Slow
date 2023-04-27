@@ -11,15 +11,15 @@ import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
 @Table(name = "PRODUCT_IMAGE_TB")
 public class ProductImage {
 	@Id
@@ -33,4 +33,11 @@ public class ProductImage {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRODUCT_PK")
 	private Product product;
+
+	public static ProductImage of(Product product, String imageSrc) {
+		return ProductImage.builder()
+			.url(imageSrc)
+			.product(product)
+			.build();
+	}
 }

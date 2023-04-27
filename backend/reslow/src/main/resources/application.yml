@@ -21,6 +21,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:sql/data.sql
 jwt:
   secret: ${JWT_SECRETKEY}
 
