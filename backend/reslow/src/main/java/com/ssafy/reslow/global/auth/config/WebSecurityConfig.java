@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 			.antMatchers("/**", "/members/**", "/managers/**", "/coupons/**", "/notices/**",
-				"/markets/**", "/knowhows/**", "/chattings/**", "/likes/**").permitAll()
+				"/products/**", "/knowhows/**", "/chattings/**", "/likes/**").permitAll()
 			.and()
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),
 				UsernamePasswordAuthenticationFilter.class);

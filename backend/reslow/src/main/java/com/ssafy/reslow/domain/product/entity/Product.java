@@ -1,9 +1,10 @@
-package com.ssafy.reslow.domain.market.entity;
+package com.ssafy.reslow.domain.product.entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
@@ -50,14 +52,30 @@ public class Product extends BaseEntity {
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "MARKET_CATEGORY_PK")
-	private MarketCategory marketCategory;
+	@JoinColumn(name = "PRODUCT_CATEGORY_PK")
+	private ProductCategory productCategory;
 
 	@Builder.Default
-	@OneToMany(mappedBy = "product")
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 	private List<ProductImage> productImages = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORDER_PK")
 	private Order order;
+
+	public static Product of(Member member, ProductRegistRequest request, ProductCategory productCategory) {
+		return Product.builder()
+			.member(member)
+			.title(request.getTitle())
+			.description(request.getDescription())
+			.deliveryFee(request.getDeliveryFee())
+			.price(request.getPrice())
+			.stock(request.getStock())
+			.productCategory(productCategory)
+			.build();
+	}
+
+	public void setProductImages(List<ProductImage> productImages) {
+		this.productImages = productImages;
+	}
 }
