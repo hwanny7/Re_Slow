@@ -1,4 +1,4 @@
-package com.ssafy.reslow.domain.market.entity;
+package com.ssafy.reslow.domain.product.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

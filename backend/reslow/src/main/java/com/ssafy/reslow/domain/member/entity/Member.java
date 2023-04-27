@@ -23,9 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
-import com.ssafy.reslow.domain.market.entity.Product;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.notice.entity.Notice;
+import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.global.common.entity.Authority;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
@@ -94,6 +94,15 @@ public class Member extends BaseEntity implements UserDetails {
 	@ElementCollection(fetch = FetchType.EAGER)
 	private List<String> roles = new ArrayList<>();
 
+	public static Member toEntity(MemberSignUpRequest signUp, String password) {
+		return Member.builder()
+			.id(signUp.getId())
+			.password(password)
+			.nickname(signUp.getNickname())
+			.roles(Collections.singletonList(Authority.USER.name()))
+			.build();
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roles.stream()
@@ -124,15 +133,6 @@ public class Member extends BaseEntity implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return false;
-	}
-
-	public static Member toEntity(MemberSignUpRequest signUp, String password) {
-		return Member.builder()
-			.id(signUp.getId())
-			.password(password)
-			.nickname(signUp.getNickname())
-			.roles(Collections.singletonList(Authority.USER.name()))
-			.build();
 	}
 
 	public void updateMember(String nickname, String profilePic) {
