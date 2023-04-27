@@ -1,4 +1,4 @@
-package com.ssafy.reslow.global.auth.config;
+package com.ssafy.reslow.global.config;
 
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
