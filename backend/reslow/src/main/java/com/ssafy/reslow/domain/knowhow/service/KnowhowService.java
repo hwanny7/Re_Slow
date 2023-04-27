@@ -3,8 +3,10 @@ package com.ssafy.reslow.domain.knowhow.service;
 import java.io.IOException;
 import java.util.*;
 
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
+import com.ssafy.reslow.domain.knowhow.entity.KnowhowContent;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowContentRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;

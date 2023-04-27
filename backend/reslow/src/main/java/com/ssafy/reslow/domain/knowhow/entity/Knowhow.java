@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
@@ -34,9 +35,6 @@ public class Knowhow extends BaseEntity {
 	@Column(name = "TITLE")
 	private String title;
 
-	@Column(name = "CONTENT", columnDefinition = "TEXT")
-	private String content;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_PK")
 	private Member member;
@@ -47,9 +45,17 @@ public class Knowhow extends BaseEntity {
 
 	@Builder.Default
 	@OneToMany(mappedBy = "knowhow")
-	private List<KnowhowImage> knowhowImages = new ArrayList<>();
+	private List<KnowhowContent> knowhowContents = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(mappedBy = "knowhow")
 	private List<KnowhowComment> knowhowComments = new ArrayList<>();
+
+	public static Knowhow ofEntity(KnowhowRequest knowhowRequest, Member member, KnowhowCategory knowhowCategory) {
+		return Knowhow.builder()
+				.title(knowhowRequest.getTitle())
+				.member(member)
+				.knowhowCategory(knowhowCategory)
+				.build();
+	}
 }
