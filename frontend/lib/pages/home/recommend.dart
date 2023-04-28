@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class Recommend extends StatefulWidget {
   @override
@@ -58,31 +59,11 @@ class _RecommendState extends State<Recommend>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
+      appBar: CustomAppBar(title: '추천'),
       body: Column(
         children: [
-          SizedBox(height: 32.0),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: EdgeInsets.only(right: 30),
-                  child: Text(
-                    '추천',
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Divider(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -264,6 +245,6 @@ class _RecommendState extends State<Recommend>
           // Drawed Bubbles
         ],
       ),
-    );
+    ));
   }
 }
