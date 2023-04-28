@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/market/create_article.dart';
+import 'package:reslow/utils/navigator.dart';
 import 'chat/chat.dart';
 import 'home/home.dart';
 import 'knowhow/knowhow.dart';
@@ -40,26 +41,7 @@ class _MainPageState extends State<MainPage> {
         return;
       case 1:
         print('들어옴ㅋ');
-        Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  const CreateArticle(),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                var begin = Offset(-1.0, 0.0);
-                var end = Offset.zero;
-                var curve = Curves.ease;
-
-                var tween = Tween(begin: begin, end: end)
-                    .chain(CurveTween(curve: curve));
-
-                return SlideTransition(
-                  position: animation.drive(tween),
-                  child: child,
-                );
-              },
-            ));
+        leftToRightNavigator(const CreateArticle(), context);
         return;
       case 2:
         return;

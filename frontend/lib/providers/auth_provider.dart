@@ -9,12 +9,31 @@ import 'package:reslow/utils/shared_preference.dart';
 
 const String baseURL = "http://localhost:8080";
 
+enum Status {
+  NotLoggedIn,
+  NotRegistered,
+  LoggedIn,
+  Registered,
+  Authenticating,
+  Registering,
+  LoggedOut
+}
+
 class AuthProvider with ChangeNotifier {
+  Status _loggedInStatus = Status.NotLoggedIn;
+  Status _registeredInStatus = Status.NotRegistered;
+
+  Status get loggedInStatus => _loggedInStatus;
+  Status get registeredInStatus => _registeredInStatus;
+
   Future<Map<String, dynamic>> login(String userId, String password) async {
-    dynamic result;
+    var result;
     final Map<String, dynamic> payload = {
       'data': {'userId': userId, 'password': password}
     };
+
+    _loggedInStatus = Status.Authenticating;
+    notifyListeners();
 
     Response response = await post(
       Uri.parse(baseURL),
@@ -31,7 +50,10 @@ class AuthProvider with ChangeNotifier {
 
       UserPreferences().saveUser(authUser);
 
-      result = {'status': true, 'message': 'Successful', 'user': authUser};
+      _loggedInStatus = Status.LoggedIn;
+      notifyListeners();
+
+      result = {'status': true, 'message': 'Successful'};
     } else {
       result = {
         'status': false,
@@ -72,9 +94,5 @@ class AuthProvider with ChangeNotifier {
       };
     }
     return result;
-  }
-
-  static onError(error) {
-    return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
   }
 }
