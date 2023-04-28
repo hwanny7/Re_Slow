@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/home/recommend.dart';
 import 'package:reslow/pages/market/create_article.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'chat/chat.dart';
@@ -38,9 +39,9 @@ class _MainPageState extends State<MainPage> {
     print('시작!');
     switch (_currentIndex) {
       case 0:
+        leftToRightNavigator(Recommend(), context);
         return;
       case 1:
-        print('들어옴ㅋ');
         leftToRightNavigator(const CreateArticle(), context);
         return;
       case 2:
