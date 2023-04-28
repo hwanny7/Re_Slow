@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:reslow/models/user.dart';
+import 'package:reslow/pages/auth/register.dart';
+import 'package:reslow/providers/auth_provider.dart';
+import 'package:reslow/providers/user_provider.dart';
+import 'package:reslow/utils/navigator.dart';
 
 // import 'package:fluttertoast/fluttertoast.dart';
 
@@ -14,6 +19,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   // form key
   final _formKey = GlobalKey<FormState>();
+  final _idFormKey = GlobalKey<FormState>();
+  final _passwordFormKey = GlobalKey<FormState>();
+  bool _isInitialSubmit = true;
 
   // editing controller
   final TextEditingController emailController = TextEditingController();
@@ -26,24 +34,30 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    //email field
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+
     final emailField = TextFormField(
         autofocus: false,
         controller: emailController,
         keyboardType: TextInputType.text,
+        key: _idFormKey,
         validator: (value) {
+          RegExp regex = RegExp(r'^[a-zA-Z][a-zA-Z0-9]{3,15}$');
           if (value!.isEmpty) {
-            return ("Please Enter Your Email");
+            return ("아이디를 입력해주세요");
           }
-          // reg expression for email validation
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
+          if (!regex.hasMatch(value)) {
+            return ("4~16자의 영문 혹은 숫자로만 입력");
           }
           return null;
         },
         onSaved: (value) {
           emailController.text = value!;
+        },
+        onChanged: (value) {
+          if (!_isInitialSubmit) {
+            _formKey.currentState!.validate();
+          }
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -65,13 +79,20 @@ class _LoginState extends State<Login> {
         autofocus: false,
         controller: passwordController,
         obscureText: true,
+        key: _passwordFormKey,
         validator: (value) {
-          RegExp regex = RegExp(r'^.{6,}$');
+          RegExp regex = RegExp(
+              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$');
           if (value!.isEmpty) {
             return ("Password is required for login");
           }
           if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 6 Character)");
+            return ("문자, 숫자, 특수문자를 최소 한 개씩 입력해주세요.");
+          }
+        },
+        onChanged: (value) {
+          if (!_isInitialSubmit) {
+            _formKey.currentState!.validate();
           }
         },
         onSaved: (value) {
@@ -92,6 +113,23 @@ class _LoginState extends State<Login> {
               )),
         ));
 
+    void submit(String id, String password) {
+      _isInitialSubmit = false;
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save();
+        Future<Map<String, dynamic>> response = auth.login(id, password);
+        response.then((res) {
+          if (res['status'] == true) {
+            User user = res['user'];
+            Provider.of<UserProvider>(context, listen: false).setUser(user);
+            Navigator.pushReplacementNamed(context, '/main');
+          } else {
+            print(res['message']['message'].toString());
+          }
+        });
+      }
+    }
+
     final loginButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(4),
@@ -100,7 +138,7 @@ class _LoginState extends State<Login> {
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            signIn(emailController.text.toString(),
+            submit(emailController.text.toString(),
                 passwordController.text.toString());
           },
           child: const Text(
@@ -109,6 +147,14 @@ class _LoginState extends State<Login> {
             style: TextStyle(
                 fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
           )),
+    );
+
+    final loading = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        Text(" Authenticating ... Please wait")
+      ],
     );
 
     return Scaffold(
@@ -125,12 +171,12 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(
-                        height: 200,
-                        child: Image.asset(
-                          "assets/logo.png",
-                          fit: BoxFit.contain,
-                        )),
+                    // SizedBox(
+                    //     height: 200,
+                    //     child: Image.asset(
+                    //       "assets/Logo_Reslow.png",
+                    //       fit: BoxFit.contain,
+                    //     )),
                     const SizedBox(
                       height: 45,
                     ),
@@ -138,7 +184,9 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 25),
                     passwordField,
                     const SizedBox(height: 35),
-                    loginButton,
+                    auth.loggedInStatus == Status.Authenticating
+                        ? loading
+                        : loginButton,
                     const SizedBox(height: 15),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -146,11 +194,7 @@ class _LoginState extends State<Login> {
                           const Text("계정이 없으신가요? "),
                           GestureDetector(
                             onTap: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             RegistrationScreen()));
+                              leftToRightNavigator(const Register(), context);
                             },
                             child: const Text(
                               "회원가입",
@@ -169,25 +213,6 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
-  }
-
-  void signIn(String email, String password) async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        Response response = await post(Uri.parse('https://reqres.in/api/login'),
-            body: {'email': email, 'password': password});
-
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body.toString());
-          print(data['token']);
-          print('Login successfully');
-        } else {
-          print('failed');
-        }
-      } catch (e) {
-        print(e.toString());
-      }
-    }
   }
 }
 
