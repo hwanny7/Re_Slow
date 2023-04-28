@@ -44,5 +44,5 @@ public class KnowhowContent {
 		this.content = content.getContent();
 		this.knowhow = knowhow;
 	}
-
+	
 }
