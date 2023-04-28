@@ -53,9 +53,15 @@ public class Knowhow extends BaseEntity {
 
 	public static Knowhow ofEntity(KnowhowRequest knowhowRequest, Member member, KnowhowCategory knowhowCategory) {
 		return Knowhow.builder()
-				.title(knowhowRequest.getTitle())
-				.member(member)
-				.knowhowCategory(knowhowCategory)
-				.build();
+			.title(knowhowRequest.getTitle())
+			.member(member)
+			.knowhowCategory(knowhowCategory)
+			.build();
+	}
+
+	public void update(KnowhowRequest knowhowRequest, Member member, KnowhowCategory knowhowCategory) {
+		this.title = knowhowRequest.getTitle();
+		this.member = member;
+		this.knowhowCategory = knowhowCategory;
 	}
 }
