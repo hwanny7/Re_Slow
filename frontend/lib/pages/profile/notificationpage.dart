@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'notificationmessage.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key? key}) : super(key: key);
@@ -16,37 +17,17 @@ class _NotificationPageState extends State<NotificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
+      appBar: CustomAppBar(title: '알림'),
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Container(
               width: double.infinity,
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: EdgeInsets.only(right: 30), // 위치 중간으로 조정
-                      child: Text(
-                        '알림',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
-          Divider(),
           Expanded(
             child: ListView.builder(
               itemCount: notifications.length,
@@ -65,6 +46,6 @@ class _NotificationPageState extends State<NotificationPage> {
           ),
         ],
       ),
-    );
+    ));
   }
 }

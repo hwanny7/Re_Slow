@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class CouponDownload extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -87,6 +88,6 @@ class CouponDownload extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }
