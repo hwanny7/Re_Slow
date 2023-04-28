@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/models/user.dart';
+import 'package:reslow/pages/auth/register.dart';
 import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
+import 'package:reslow/utils/navigator.dart';
 
 // import 'package:fluttertoast/fluttertoast.dart';
 
@@ -192,11 +194,7 @@ class _LoginState extends State<Login> {
                           const Text("계정이 없으신가요? "),
                           GestureDetector(
                             onTap: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             RegistrationScreen()));
+                              leftToRightNavigator(const Register(), context);
                             },
                             child: const Text(
                               "회원가입",

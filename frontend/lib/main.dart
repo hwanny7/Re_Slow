@@ -25,10 +25,9 @@ class MyApp extends StatelessWidget {
           title: 'My App',
           // home: MainPage(key: key),
           theme: ThemeData(fontFamily: "NanumSquare"),
-          initialRoute: '/',
+          initialRoute: '/login',
           routes: {
-            '/': (context) => MainPage(key: key),
-            '/main': (context) => MainPage(),
+            '/main': (context) => MainPage(key: key),
             // '/': (context) => SplashScreen(),
             '/login': (context) => Login(key: key),
           },
