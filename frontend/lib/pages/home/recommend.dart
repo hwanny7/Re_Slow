@@ -1,17 +1,45 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'bubbleanimation.dart';
 
 class Recommend extends StatefulWidget {
   @override
   _RecommendState createState() => _RecommendState();
 }
 
-class _RecommendState extends State<Recommend> {
+class _RecommendState extends State<Recommend>
+    with SingleTickerProviderStateMixin {
   final List<String> _tags = [];
   final TextEditingController _textController = TextEditingController();
+  late AnimationController _controller;
+  late Animation<Offset> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    );
+    _animation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset(0.0, 0.08),
+    ).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    ))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _controller.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _controller.forward();
+        }
+      });
+    _controller.forward();
+  }
 
   @override
   void dispose() {
+    _controller.dispose();
     _textController.dispose();
     super.dispose();
   }
@@ -43,7 +71,7 @@ class _RecommendState extends State<Recommend> {
               Expanded(
                 flex: 1,
                 child: Padding(
-                  padding: EdgeInsets.only(right: 30), // 위치 중간으로 조정
+                  padding: EdgeInsets.only(right: 30),
                   child: Text(
                     '추천',
                     textAlign: TextAlign.center,
@@ -55,7 +83,6 @@ class _RecommendState extends State<Recommend> {
             ],
           ),
           Divider(),
-
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
@@ -73,8 +100,6 @@ class _RecommendState extends State<Recommend> {
               ],
             ),
           ),
-
-          // Input field
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
@@ -115,11 +140,128 @@ class _RecommendState extends State<Recommend> {
                 )
                 .toList(),
           ),
-          //버블버블 ??????????????
-          SizedBox(height: 16.0),
 
-          BubblesAnimation(tags: _tags),
-          //
+          // Draw Floating Bubbles
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 50.0, vertical: 15.0),
+                child: Column(
+                  children: [
+                    // Bubble 1
+                    SizedBox(height: 20),
+                    SlideTransition(
+                      position: _animation,
+                      child: Transform.translate(
+                        offset: Offset(-20, 0),
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue.shade200.withOpacity(0.6),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'bubble1',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Bubble1 end
+                    // Turtle
+                    Padding(
+                      padding: EdgeInsets.only(left: 180.0, top: 30),
+                      child: SlideTransition(
+                        position: _animation,
+                        child: Image.asset(
+                          "assets/image/turtle.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    // Bubble 2
+                    SizedBox(height: 50),
+                    SlideTransition(
+                      position: _animation,
+                      child: Transform.translate(
+                        offset: Offset(20, 0),
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue.shade400.withOpacity(0.6),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'bubble2',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Turtle_reversed
+                    Padding(
+                      padding: EdgeInsets.only(right: 180.0, top: 30),
+                      child: SlideTransition(
+                        position: _animation,
+                        child: Image.asset(
+                          "assets/image/turtle_reversed.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                    // Bubble 2 end
+                    // Bubble 3
+                    SizedBox(height: 50),
+                    SlideTransition(
+                      position: _animation,
+                      child: Transform.translate(
+                        offset: Offset(0, 0),
+                        child: Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue.shade600.withOpacity(0.6),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'bubble3',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Bubble 3 end
+                    SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Drawed Bubbles
         ],
       ),
     );
