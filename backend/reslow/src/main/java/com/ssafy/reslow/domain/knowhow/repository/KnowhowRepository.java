@@ -7,5 +7,4 @@ import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 
 @Repository
 public interface KnowhowRepository extends JpaRepository<Knowhow, Long> {
-
 }
