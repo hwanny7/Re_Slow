@@ -170,7 +170,7 @@ class RegisterState extends State<Register> {
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
           labelText: '닉네임',
-          prefixIcon: const Icon(Icons.vpn_key),
+          prefixIcon: const Icon(Icons.person),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "영문, 숫자, 한글 조합 2-16자",
           border: OutlineInputBorder(

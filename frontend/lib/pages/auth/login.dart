@@ -21,7 +21,6 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final _idFormKey = GlobalKey<FormState>();
   final _passwordFormKey = GlobalKey<FormState>();
-  bool _isInitialSubmit = true;
 
   // editing controller
   final TextEditingController emailController = TextEditingController();
@@ -41,29 +40,14 @@ class _LoginState extends State<Login> {
         controller: emailController,
         keyboardType: TextInputType.text,
         key: _idFormKey,
-        validator: (value) {
-          RegExp regex = RegExp(r'^[a-zA-Z][a-zA-Z0-9]{3,15}$');
-          if (value!.isEmpty) {
-            return ("아이디를 입력해주세요");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("4~16자의 영문 혹은 숫자로만 입력");
-          }
-          return null;
-        },
         onSaved: (value) {
           emailController.text = value!;
-        },
-        onChanged: (value) {
-          if (!_isInitialSubmit) {
-            _formKey.currentState!.validate();
-          }
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.mail),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "아이디",
+          labelText: '아이디',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
           ),
@@ -80,21 +64,6 @@ class _LoginState extends State<Login> {
         controller: passwordController,
         obscureText: true,
         key: _passwordFormKey,
-        validator: (value) {
-          RegExp regex = RegExp(
-              r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$');
-          if (value!.isEmpty) {
-            return ("Password is required for login");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("문자, 숫자, 특수문자를 최소 한 개씩 입력해주세요.");
-          }
-        },
-        onChanged: (value) {
-          if (!_isInitialSubmit) {
-            _formKey.currentState!.validate();
-          }
-        },
         onSaved: (value) {
           passwordController.text = value!;
         },
@@ -102,7 +71,7 @@ class _LoginState extends State<Login> {
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.vpn_key),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "비밀번호",
+          labelText: '비밀번호',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
           ),
@@ -114,19 +83,19 @@ class _LoginState extends State<Login> {
         ));
 
     void submit(String id, String password) {
-      _isInitialSubmit = false;
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        Future<Map<String, dynamic>> response = auth.login(id, password);
-        response.then((res) {
-          if (res['status'] == true) {
-            User user = res['user'];
-            Provider.of<UserProvider>(context, listen: false).setUser(user);
-            Navigator.pushReplacementNamed(context, '/main');
-          } else {
-            print(res['message']['message'].toString());
-          }
-        });
+        print(_formKey.toString());
+        // Future<Map<String, dynamic>> response = auth.login(id, password);
+        // response.then((res) {
+        //   if (res['status'] == true) {
+        //     User user = res['user'];
+        //     Provider.of<UserProvider>(context, listen: false).setUser(user);
+        //     Navigator.pushReplacementNamed(context, '/main');
+        //   } else {
+        //     print(res['message']['message'].toString());
+        //   }
+        // });
       }
     }
 
@@ -138,8 +107,7 @@ class _LoginState extends State<Login> {
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            submit(emailController.text.toString(),
-                passwordController.text.toString());
+            submit(emailController.text, passwordController.text);
           },
           child: const Text(
             "로그인하기",
