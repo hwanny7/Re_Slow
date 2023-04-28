@@ -111,18 +111,20 @@ class _LoginState extends State<Login> {
               )),
         ));
 
-    void submit(String id, String password) async {
+    void submit(String id, String password) {
       _isInitialSubmit = false;
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        dynamic response = auth.login(id, password);
-        if (response['status'] == true) {
-          User user = response['user'];
-          Provider.of<UserProvider>(context, listen: false).setUser(user);
-          Navigator.pushReplacementNamed(context, '/main');
-        } else {
-          print(response['message']['message'].toString());
-        }
+        Future<Map<String, dynamic>> response = auth.login(id, password);
+        response.then((res) {
+          if (res['status'] == true) {
+            User user = res['user'];
+            Provider.of<UserProvider>(context, listen: false).setUser(user);
+            Navigator.pushReplacementNamed(context, '/main');
+          } else {
+            print(res['message']['message'].toString());
+          }
+        });
       }
     }
 
@@ -143,6 +145,14 @@ class _LoginState extends State<Login> {
             style: TextStyle(
                 fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
           )),
+    );
+
+    final loading = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+        Text(" Authenticating ... Please wait")
+      ],
     );
 
     return Scaffold(
@@ -172,7 +182,9 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 25),
                     passwordField,
                     const SizedBox(height: 35),
-                    loginButton,
+                    auth.loggedInStatus == Status.Authenticating
+                        ? loading
+                        : loginButton,
                     const SizedBox(height: 15),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,

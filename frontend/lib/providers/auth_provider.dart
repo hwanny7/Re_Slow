@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:reslow/models/user.dart';
 import 'package:reslow/utils/shared_preference.dart';
@@ -8,12 +9,31 @@ import 'package:reslow/utils/shared_preference.dart';
 
 const String baseURL = "http://localhost:8080";
 
-class AuthProvider {
+enum Status {
+  NotLoggedIn,
+  NotRegistered,
+  LoggedIn,
+  Registered,
+  Authenticating,
+  Registering,
+  LoggedOut
+}
+
+class AuthProvider with ChangeNotifier {
+  Status _loggedInStatus = Status.NotLoggedIn;
+  Status _registeredInStatus = Status.NotRegistered;
+
+  Status get loggedInStatus => _loggedInStatus;
+  Status get registeredInStatus => _registeredInStatus;
+
   Future<Map<String, dynamic>> login(String userId, String password) async {
-    dynamic result;
+    var result;
     final Map<String, dynamic> payload = {
       'data': {'userId': userId, 'password': password}
     };
+
+    _loggedInStatus = Status.Authenticating;
+    notifyListeners();
 
     Response response = await post(
       Uri.parse(baseURL),
@@ -29,6 +49,9 @@ class AuthProvider {
       User authUser = User.fromJson(userData);
 
       UserPreferences().saveUser(authUser);
+
+      _loggedInStatus = Status.LoggedIn;
+      notifyListeners();
 
       result = {'status': true, 'message': 'Successful'};
     } else {
@@ -71,9 +94,5 @@ class AuthProvider {
       };
     }
     return result;
-  }
-
-  static onError(error) {
-    return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
   }
 }
