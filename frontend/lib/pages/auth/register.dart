@@ -11,14 +11,15 @@ class Register extends StatefulWidget {
 class RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   final _idFormKey = GlobalKey<FormFieldState>();
+  final _nicknameFormKey = GlobalKey<FormFieldState>();
   final _passwordFormKey = GlobalKey<FormFieldState>();
   final _secondPasswordFormKey = GlobalKey<FormFieldState>();
   final TextEditingController idController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController nicknameController = TextEditingController();
   final TextEditingController secondPasswordController =
       TextEditingController();
-  final FocusNode _passwordFocusNode = FocusNode();
-  final FocusNode _secondPasswordFocusNode = FocusNode();
+
   bool _isTyped = false;
 
   @override
@@ -68,7 +69,6 @@ class RegisterState extends State<Register> {
         autofocus: false,
         controller: passwordController,
         obscureText: true,
-        focusNode: _passwordFocusNode,
         key: _passwordFormKey,
         validator: (value) {
           RegExp regex = RegExp(
@@ -110,7 +110,6 @@ class RegisterState extends State<Register> {
         autofocus: false,
         controller: secondPasswordController,
         obscureText: true,
-        focusNode: _secondPasswordFocusNode,
         key: _secondPasswordFormKey,
         validator: (value) {
           if (!(value == '')) {
@@ -136,6 +135,44 @@ class RegisterState extends State<Register> {
           prefixIcon: const Icon(Icons.vpn_key),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           hintText: "비밀번호 재입력",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(0),
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(0),
+              borderSide: const BorderSide(
+                color: Color(0xff3C9F61),
+              )),
+        ));
+
+    final nickNameField = TextFormField(
+        autofocus: false,
+        controller: nicknameController,
+        key: _nicknameFormKey,
+        validator: (value) {
+          RegExp regex = RegExp(r'^[a-zA-Z0-9가-힣]{2,16}$');
+          if (value!.isEmpty) {
+            return ("별명은 필수정보 입니다.");
+          }
+          if (value.length < 2 || 16 < value.length) {
+            return ("최소 2자, 최대 16자를 작성해주세요.");
+          }
+          if (!regex.hasMatch(value)) {
+            return ("영문, 숫자, 한글 조합 2-16자");
+          }
+        },
+        onChanged: (value) {
+          _nicknameFormKey.currentState!.validate();
+        },
+        // onSaved: (value) {
+        //   passwordController.text = value!;
+        // },
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          labelText: '닉네임',
+          prefixIcon: const Icon(Icons.vpn_key),
+          contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
+          hintText: "영문, 숫자, 한글 조합 2-16자",
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
           ),
@@ -186,7 +223,9 @@ class RegisterState extends State<Register> {
                     SizedBox(height: height * 0.01),
                     secondPasswordField,
                     SizedBox(height: height * 0.02),
-                    signUpBtn
+                    nickNameField,
+                    SizedBox(height: height * 0.02),
+                    signUpBtn,
                   ]),
             )),
       )),
