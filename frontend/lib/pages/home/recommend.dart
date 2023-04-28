@@ -162,13 +162,26 @@ class _RecommendState extends State<Recommend>
                             shape: BoxShape.circle,
                             color: Colors.blue.shade200.withOpacity(0.6),
                           ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'bubble1',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    // Bubble1 end
                     // Turtle
                     Padding(
                       padding: EdgeInsets.only(left: 180.0, top: 30),
-                      child: Positioned.fill(
+                      child: SlideTransition(
+                        position: _animation,
                         child: Image.asset(
                           "assets/image/turtle.png",
                           fit: BoxFit.contain,
@@ -188,19 +201,32 @@ class _RecommendState extends State<Recommend>
                             shape: BoxShape.circle,
                             color: Colors.blue.shade400.withOpacity(0.6),
                           ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'bubble2',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                     // Turtle_reversed
                     Padding(
                       padding: EdgeInsets.only(right: 180.0, top: 30),
-                      child: Positioned.fill(
+                      child: SlideTransition(
+                        position: _animation,
                         child: Image.asset(
                           "assets/image/turtle_reversed.png",
                           fit: BoxFit.contain,
                         ),
                       ),
                     ),
+                    // Bubble 2 end
                     // Bubble 3
                     SizedBox(height: 50),
                     SlideTransition(
@@ -214,9 +240,21 @@ class _RecommendState extends State<Recommend>
                             shape: BoxShape.circle,
                             color: Colors.blue.shade600.withOpacity(0.6),
                           ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'bubble3',
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    // Bubble 3 end
                     SizedBox(height: 20),
                   ],
                 ),
