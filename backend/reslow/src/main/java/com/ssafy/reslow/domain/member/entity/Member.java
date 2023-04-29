@@ -23,9 +23,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
-import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.notice.entity.Notice;
+import com.ssafy.reslow.domain.order.entity.Order;
+import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.global.common.entity.Authority;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
@@ -73,6 +74,10 @@ public class Member extends BaseEntity implements UserDetails {
 	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Product> products = new ArrayList<>();
+
+	@Builder.Default
+	@OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
+	private List<Order> orders = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

@@ -16,7 +16,6 @@ public class ProductDetailResponse {
 	private String description;
 	private int deliveryFee;
 	private int price;
-	private int stock;
 	private String category;
 	private LocalDate date;
 	private List<String> images;
@@ -27,7 +26,6 @@ public class ProductDetailResponse {
 			.description(product.getDescription())
 			.deliveryFee(product.getDeliveryFee())
 			.price(product.getPrice())
-			.stock(product.getStock())
 			.category(category)
 			.date(product.getCreatedDate().toLocalDate())
 			.images(images)

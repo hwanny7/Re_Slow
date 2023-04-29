@@ -1,11 +1,18 @@
-package com.ssafy.reslow.domain.product.entity;
+package com.ssafy.reslow.domain.order.entity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.product.entity.OrderStatusConverter;
+import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -23,11 +30,9 @@ import lombok.NoArgsConstructor;
 @AttributeOverride(name = "no", column = @Column(name = "ORDER_PK"))
 public class Order extends BaseEntity {
 
-	@Column(name = "AMOUNT")
-	private int amount;
-
 	@Column(name = "STATUS")
-	private String status;
+	@Convert(converter = OrderStatusConverter.class)
+	private OrderStatus status;
 
 	@Column(name = "RECIPIENT")
 	private String recipient;
@@ -55,4 +60,8 @@ public class Order extends BaseEntity {
 
 	@OneToOne(mappedBy = "order")
 	private Product product;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MEMBER_PK")
+	private Member buyer;
 }
