@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.order.entity.Order;
+import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
@@ -165,13 +168,27 @@ public class ProductService {
 	public Slice<ProductListResponse> myProductList(Long memberNo, int status, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).get();
 		Slice<Product> list = null;
-		if(status == 0){
-			list = productRepository.findByMemberAndStock(member, 0, pageable);
-		}else {
-			list = productRepository.findByMemberAndStockNot(member, 0, pageable);
+		if (status == 1) {
+			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNull(member, OrderStatus.ofValue(status),
+				pageable);
+		} else {
+			list = productRepository.findByMemberAndOrder_Status(member, OrderStatus.ofValue(status), pageable);
 		}
-		Slice<ProductListResponse> responses = list.map(
-			(product) -> ProductListResponse.of(product, product.getProductImages().get(0).getUrl()));
-		return responses;
+
+		List<ProductListResponse> responses = new ArrayList<>();
+		list.stream().forEach(
+			product -> {
+				Order order = product.getOrder();
+				String imageResource =
+					product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl();
+				if (status == 1) {
+					responses.add(ProductListResponse.of(product, imageResource,
+						order == null ? 0 : order.getStatus().getValue()));
+				} else if (order != null) {
+					responses.add(ProductListResponse.of(product, imageResource, order.getStatus().getValue()));
+				}
+			}
+		);
+		return new SliceImpl<>(responses, pageable, list.hasNext());
 	}
 }

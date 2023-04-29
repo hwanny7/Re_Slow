@@ -14,8 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.order.entity.Order;
+import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
@@ -45,9 +46,6 @@ public class Product extends BaseEntity {
 	@Column(name = "PRICE")
 	private int price;
 
-	@Column(name = "STOCK")
-	private int stock;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_PK")
 	private Member member;
@@ -71,7 +69,6 @@ public class Product extends BaseEntity {
 			.description(request.getDescription())
 			.deliveryFee(request.getDeliveryFee())
 			.price(request.getPrice())
-			.stock(request.getStock())
 			.productCategory(productCategory)
 			.build();
 	}
@@ -79,12 +76,12 @@ public class Product extends BaseEntity {
 	public void setProductImages(List<ProductImage> productImages) {
 		this.productImages = productImages;
 	}
+
 	public void updateProduct(ProductUpdateRequest request, ProductCategory productCategory) {
 		this.title = request.getTitle();
 		this.description = request.getDescription();
 		this.productCategory = productCategory;
 		this.deliveryFee = request.getDeliveryFee();
 		this.price = request.getPrice();
-		this.stock = request.getStock();
 	}
 }

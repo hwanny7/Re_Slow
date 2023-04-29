@@ -43,7 +43,7 @@ public class ManagerService {
 		Manager manager = managerRepository.save(
 			Manager.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
 		Map<String, Object> map = new HashMap<>();
-		map.put("id", manager.getId());
+		map.put("no", manager.getId());
 		return map;
 	}
 
