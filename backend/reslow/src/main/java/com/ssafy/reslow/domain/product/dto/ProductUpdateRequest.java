@@ -11,7 +11,6 @@ public class ProductUpdateRequest {
 	private String description;
 	private int deliveryFee;
 	private int price;
-	private int stock;
 	private Long category;
 	private Set<Long> productImages;
 }
