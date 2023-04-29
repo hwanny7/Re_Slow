@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,7 +47,7 @@ public class MemberService {
 	private final S3StorageClient s3Service;
 
 	public Map<String, Object> signUp(MemberSignUpRequest signUp) {
-		if (memberRepository.existsById(signUp.getId())) {
+		if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(signUp.getId())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
 		Member member = memberRepository.save(Member.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
