@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class CouponList extends StatelessWidget {
   final List<Coupon> coupons;
@@ -20,43 +21,14 @@ class CouponList extends StatelessWidget {
       Coupon(discount: 33, startDate: '2023-08-01', endDate: '2023-08-31'),
     ];
 
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
+      appBar: CustomAppBar(title: '보유 쿠폰'),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             height: MediaQuery.of(context).padding.top,
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      '보유 쿠폰',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 48,
-                ),
-              ],
-            ),
-          ),
-          Divider(
-            thickness: 1,
-            color: Colors.grey[400],
           ),
           Expanded(
             child: Padding(
@@ -84,7 +56,7 @@ class CouponList extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 

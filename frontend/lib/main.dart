@@ -6,6 +6,8 @@ import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
+import 'package:reslow/pages/knowhow/knowhow.dart';
+import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 

@@ -18,7 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       body: Stack(
         children: [
           Container(
@@ -26,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
             child: Center(
               child: Transform.scale(
                 scale: 1.5, // adjust the scale factor as needed
-                child: Image.asset("assets/image/Logo_Reslow.png"),
+                child: Image.asset("assets/image/Logo_Home.png"),
               ),
             ),
           ),
@@ -38,6 +39,10 @@ class _SplashScreenState extends State<SplashScreen> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
+
+//지구를 살리는 작은 습관 리폼을 실천해 보세요
+
+
