@@ -1,9 +1,12 @@
 package com.ssafy.reslow.domain.order.service;
 
 import static com.ssafy.reslow.domain.order.entity.OrderStatus.*;
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,10 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.order.dto.OrderListResponse;
+import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
 import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import com.ssafy.reslow.domain.order.repository.OrderRepository;
 import com.ssafy.reslow.domain.product.entity.Product;
+import com.ssafy.reslow.domain.product.repository.ProductRepository;
+import com.ssafy.reslow.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +34,7 @@ public class OrderService {
 
 	private final MemberRepository memberRepository;
 	private final OrderRepository orderRepository;
+	private final ProductRepository productRepository;
 
 	public Slice<OrderListResponse> myOrderList(Long memberNo, int status, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).get();
@@ -49,5 +56,16 @@ public class OrderService {
 			}
 		);
 		return new SliceImpl<>(responses, pageable, list.hasNext());
+	}
+
+	public Map<String, Long> registOrder(Long memberNo, OrderRegistRequest request) {
+		Product product = productRepository.findById(request.getProductNo())
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		Order order = Order.of(request, product, member);
+		Order savedOrder = orderRepository.save(order);
+		Map<String, Long> map = new HashMap<>();
+		map.put("orderNo", savedOrder.getNo());
+		return map;
 	}
 }
