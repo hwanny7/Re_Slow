@@ -16,7 +16,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,6 @@ import com.ssafy.reslow.domain.product.entity.ProductImage;
 import com.ssafy.reslow.domain.product.repository.ProductCategoryRepository;
 import com.ssafy.reslow.domain.product.repository.ProductImageRepository;
 import com.ssafy.reslow.domain.product.repository.ProductRepository;
-import com.ssafy.reslow.global.auth.jwt.JwtTokenProvider;
 import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.infra.storage.S3StorageClient;
 
@@ -94,7 +92,7 @@ public class ProductService {
 		product.setProductImages(productImages);
 		Product savedProduct = productRepository.save(product);
 		Map<String, Long> map = new HashMap<>();
-		map.put("productId", savedProduct.getNo());
+		map.put("productNo", savedProduct.getNo());
 		return map;
 	}
 
@@ -150,7 +148,7 @@ public class ProductService {
 		}
 		productRepository.delete(product);
 		Map<String, Long> map = new HashMap<>();
-		map.put("productId", productNo);
+		map.put("productNo", productNo);
 		return map;
 	}
 
