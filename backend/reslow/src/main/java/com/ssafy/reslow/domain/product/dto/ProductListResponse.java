@@ -2,8 +2,6 @@ package com.ssafy.reslow.domain.product.dto;
 
 import java.time.LocalDate;
 
-import com.ssafy.reslow.domain.product.entity.Product;
-
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,17 +11,19 @@ public class ProductListResponse {
 
 	private String title;
 	private int price;
-	private int status;
+	private Long memberNo;
+	private Long productNo;
 	private LocalDate date;
 	private String image;
 
-	public static ProductListResponse of(Product product, String image, int status) {
+	public static ProductListResponse of(ProductListProjection product, Long memberNo) {
 		return ProductListResponse.builder()
-			.title(product.getTitle())
+			.memberNo(memberNo)
+			.productNo(product.getProductNo())
+			.date(product.getDate())
 			.price(product.getPrice())
-			.status(status)
-			.date(product.getCreatedDate().toLocalDate())
-			.image(image)
+			.title(product.getTitle())
+			.image(product.getImage().isEmpty() ? null : product.getImage().get(0))
 			.build();
 	}
 }

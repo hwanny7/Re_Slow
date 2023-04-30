@@ -26,7 +26,9 @@ import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
+import com.ssafy.reslow.domain.product.dto.MyProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
+import com.ssafy.reslow.domain.product.dto.ProductListProjection;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
@@ -51,8 +53,6 @@ public class ProductService {
 	private final ProductRepository productRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final ProductImageRepository productImageRepository;
-	private final JwtTokenProvider jwtTokenProvider;
-	private final AuthenticationManager authenticationManager;
 	private final S3StorageClient s3Service;
 	private final RedisTemplate redisTemplate;
 
@@ -154,6 +154,19 @@ public class ProductService {
 		return map;
 	}
 
+	public Slice<ProductListResponse> productList(Long memberNo, String keyword, Long category, Pageable pageable) {
+		Slice<ProductListProjection> list = productRepository.findByMemberIsNotAndCategoryAndKeyword(
+			keyword, category, pageable);
+		list.forEach(
+			System.out::println
+		);
+		List<ProductListResponse> productListResponses = list.stream()
+			.map((product) -> ProductListResponse.of(product,
+				memberNo == product.getMemberNo() ? null : product.getMemberNo()))
+			.collect(Collectors.toList());
+		return new SliceImpl<>(productListResponses, pageable, list.hasNext());
+	}
+
 	public ProductDetailResponse productDetail(Long productNo) {
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
@@ -166,7 +179,7 @@ public class ProductService {
 		return productDetailResponse;
 	}
 
-	public Slice<ProductListResponse> myProductList(Long memberNo, int status, Pageable pageable) {
+	public Slice<MyProductListResponse> myProductList(Long memberNo, int status, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).get();
 		Slice<Product> list = null;
 		if (status == COMPLETE_PAYMENT.getValue()) {
@@ -179,17 +192,17 @@ public class ProductService {
 			list = productRepository.findByMemberAndOrder_Status(member, OrderStatus.ofValue(status), pageable);
 		}
 
-		List<ProductListResponse> responses = new ArrayList<>();
+		List<MyProductListResponse> responses = new ArrayList<>();
 		list.stream().forEach(
 			product -> {
 				Order order = product.getOrder();
 				String imageResource =
 					product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl();
 				if (status == COMPLETE_PAYMENT.getValue()) {
-					responses.add(ProductListResponse.of(product, imageResource,
+					responses.add(MyProductListResponse.of(product, imageResource,
 						order == null ? 0 : order.getStatus().getValue()));
 				} else if (order != null) {
-					responses.add(ProductListResponse.of(product, imageResource, order.getStatus().getValue()));
+					responses.add(MyProductListResponse.of(product, imageResource, order.getStatus().getValue()));
 				}
 			}
 		);
