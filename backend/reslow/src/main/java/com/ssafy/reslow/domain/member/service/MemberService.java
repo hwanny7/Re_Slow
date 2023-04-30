@@ -86,19 +86,19 @@ public class MemberService {
 	public Map<String, Object> idDuplicate(MemberIdRequest id) {
 		Map<String, Object> map = new HashMap<>();
 		if (memberRepository.existsById(id.getId())) {
-			map.put("isPossible", "YES");
-		} else {
 			map.put("isPossible", "NO");
+		} else {
+			map.put("isPossible", "YES");
 		}
 		return map;
 	}
 
-	public Map<String, Object> nicknameDuplicate(MemberNicknameRequest id) {
+	public Map<String, Object> nicknameDuplicate(MemberNicknameRequest nickname) {
 		Map<String, Object> map = new HashMap<>();
-		if (memberRepository.existsByNickname(id.getNickname())) {
-			map.put("isPossible", "YES");
-		} else {
+		if (memberRepository.existsByNickname(nickname.getNickname())) {
 			map.put("isPossible", "NO");
+		} else {
+			map.put("isPossible", "YES");
 		}
 		return map;
 	}
