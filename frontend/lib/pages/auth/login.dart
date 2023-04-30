@@ -82,9 +82,7 @@ class _LoginState extends State<Login> {
         if (response['status'] == true) {
           User user = User.fromJson(response['user']);
           userProvider.setUser(user);
-          User nowUser = userProvider.user;
-          print(nowUser.accessToken);
-          // Navigator.pushReplacementNamed(context, '/main');
+          Navigator.pushReplacementNamed(context, '/main');
         } else {
           print(response['message']);
         }

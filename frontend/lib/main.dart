@@ -35,16 +35,14 @@ class MyApp extends StatelessWidget {
                   if (snapshot.data == true) {
                     return const MainPage();
                   } else {
-                    return const Login();
+                    return SplashScreen();
                   }
                 }
               }),
           theme: ThemeData(fontFamily: "NanumSquare"),
-          // initialRoute: '/login',
           routes: {
-            // '/': (context) => MainPage(key: key),
             '/main': (context) => const MainPage(),
-            // '/': (context) => SplashScreen(),
+            '/splash': (context) => SplashScreen(),
             '/login': (context) => Login(key: key),
             '/knowhow': (context) => const KnowHow(),
             '/knowhow/:id': (context) => const KnowHowDetail(),

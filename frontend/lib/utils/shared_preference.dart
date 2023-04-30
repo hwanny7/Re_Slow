@@ -36,8 +36,7 @@ class UserPreferences {
 
   Future<bool> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String accessToken = prefs.getString("accessToken")!;
-    print(accessToken);
-    return accessToken.isNotEmpty;
+    String? accessToken = prefs.getString("accessToken");
+    return accessToken != null && accessToken.isNotEmpty;
   }
 }
