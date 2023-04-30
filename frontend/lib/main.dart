@@ -5,6 +5,7 @@ import 'package:reslow/pages/knowhow/knowhow.dart';
 import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
+import 'package:reslow/utils/shared_preference.dart';
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
@@ -18,8 +19,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // Future<User> getUserData() => UserPreferences().getUser();
-
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
@@ -27,9 +26,21 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: 'My App',
-          // home: MainPage(key: key),
+          home: FutureBuilder<bool>(
+              future: UserPreferences().getToken(),
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else {
+                  if (snapshot.data == true) {
+                    return const MainPage();
+                  } else {
+                    return const Login();
+                  }
+                }
+              }),
           theme: ThemeData(fontFamily: "NanumSquare"),
-          initialRoute: '/login',
+          // initialRoute: '/login',
           routes: {
             // '/': (context) => MainPage(key: key),
             '/main': (context) => const MainPage(),

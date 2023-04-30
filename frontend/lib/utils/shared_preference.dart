@@ -7,7 +7,6 @@ class UserPreferences {
   Future<SharedPreferences> saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // prefs.setString("userId", user.userId);
     prefs.setString("accessToken", user.accessToken!);
     // null aware operator
     prefs.setString("refreshToken", user.refreshToken!);
@@ -23,7 +22,6 @@ class UserPreferences {
     String refreshToken = prefs.getString("refreshToken")!;
 
     return User(
-      // userId: userId,
       accessToken: accessToken,
       refreshToken: refreshToken,
     );
@@ -32,14 +30,14 @@ class UserPreferences {
   void removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // prefs.remove("userId");
     prefs.remove("accessToken");
     prefs.remove("refreshToken");
   }
 
-  Future<String> getToken(args) async {
+  Future<bool> getToken() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String accessToken = prefs.getString("accessToken")!;
-    return accessToken;
+    print(accessToken);
+    return accessToken.isNotEmpty;
   }
 }

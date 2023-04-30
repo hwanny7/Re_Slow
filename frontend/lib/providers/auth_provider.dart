@@ -26,7 +26,7 @@ class AuthProvider with ChangeNotifier {
   Status get registeredInStatus => _registeredInStatus;
 
   Future<Map<String, dynamic>> login(String userId, String password) async {
-    var result;
+    dynamic result;
     final Map<String, dynamic> payload = {'id': userId, 'password': password};
 
     _loggedInStatus = Status.Authenticating;
@@ -58,34 +58,31 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<Map<String, dynamic>> register(
-      String userId, String password, String passwordConfirmation) async {
+      String id, String password, String nickname) async {
     dynamic result;
 
     final Map<String, dynamic> payload = {
-      'user': {
-        'userId': userId,
-        'password': password,
-        'password_confirmation': passwordConfirmation
-      }
+      'id': id.toLowerCase(),
+      'password': password,
+      'nickname': nickname,
     };
+
+    // lowercase로 바꾸기!!!
+    _registeredInStatus = Status.Registering;
+    notifyListeners();
+
     Response response = await post(Uri.parse('$baseURL/'),
         body: json.encode(payload),
         headers: {'Content-Type': 'application/json'});
+    final Map<String, dynamic> responseData = json.decode(response.body);
+
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-
-      var userData = responseData['data'];
-
-      User authUser = User.fromJson(userData);
-
-      UserPreferences().saveUser(authUser);
-
-      result = {'status': true, 'message': 'Successful', 'user': authUser};
+      result = {'status': true, 'message': 'Successful'};
+      _registeredInStatus = Status.Registered;
+      notifyListeners();
     } else {
-      result = {
-        'status': false,
-        'message': json.decode(response.body)['error']
-      };
+      result = {'status': false, 'message': responseData['message']};
+      _registeredInStatus = Status.NotRegistered;
     }
     return result;
   }
@@ -96,6 +93,23 @@ class AuthProvider with ChangeNotifier {
     };
 
     Response response = await post(Uri.parse('$baseURL/id'),
+        body: json.encode(payload),
+        headers: {'Content-Type': 'application/json'});
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    if (responseData['isPossible'] == "YES") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> checkNickname(String nickname) async {
+    final Map<String, dynamic> payload = {
+      'nickname': nickname,
+    };
+
+    Response response = await post(Uri.parse('$baseURL/nickname'),
         body: json.encode(payload),
         headers: {'Content-Type': 'application/json'});
 
