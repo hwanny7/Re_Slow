@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -62,6 +64,11 @@ public class KnowhowController {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.deleteKnowhow(memberNo, knowhowNo));
 		return ResponseEntity.ok(responseMap);
+	}
+
+	@GetMapping("/")
+	public ResponseEntity<KnowhowListResponse> getKnowhowPostingList(Pageable pageable){
+		return ResponseEntity.ok(knowhowService.knowhowList(pageable));
 	}
 
 	@PostMapping("/{knowhowNo}/like")
