@@ -1,17 +1,15 @@
 class User {
-  String userId;
-  String accessToken;
-  String refreshToken;
+  // String userId;
+  String? accessToken;
+  String? refreshToken;
+  int? refreshTokenExpirationTime;
 
-  User(
-      {required this.userId,
-      required this.accessToken,
-      required this.refreshToken});
+  User({this.refreshTokenExpirationTime, this.accessToken, this.refreshToken});
 
   factory User.fromJson(Map<String, dynamic> responseData) {
     return User(
-        userId: responseData['userId'],
         accessToken: responseData['accessToken'],
-        refreshToken: responseData['refreshToken']);
+        refreshToken: responseData['refreshToken'],
+        refreshTokenExpirationTime: responseData['refreshTokenExpirationTime']);
   }
 }
