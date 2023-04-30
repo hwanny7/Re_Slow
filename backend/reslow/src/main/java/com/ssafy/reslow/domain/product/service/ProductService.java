@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.product.service;
 
+import static com.ssafy.reslow.domain.order.entity.OrderStatus.*;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
@@ -168,8 +169,11 @@ public class ProductService {
 	public Slice<ProductListResponse> myProductList(Long memberNo, int status, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).get();
 		Slice<Product> list = null;
-		if (status == 1) {
+		if (status == COMPLETE_PAYMENT.getValue()) {
 			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNull(member, OrderStatus.ofValue(status),
+				pageable);
+		} else if (status == COMPLETE_DELIVERY.getValue()) {
+			list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqual(member, OrderStatus.ofValue(status),
 				pageable);
 		} else {
 			list = productRepository.findByMemberAndOrder_Status(member, OrderStatus.ofValue(status), pageable);
@@ -181,7 +185,7 @@ public class ProductService {
 				Order order = product.getOrder();
 				String imageResource =
 					product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl();
-				if (status == 1) {
+				if (status == COMPLETE_PAYMENT.getValue()) {
 					responses.add(ProductListResponse.of(product, imageResource,
 						order == null ? 0 : order.getStatus().getValue()));
 				} else if (order != null) {
