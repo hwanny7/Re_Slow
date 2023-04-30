@@ -11,6 +11,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
 import com.ssafy.reslow.domain.product.entity.OrderStatusConverter;
 import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
@@ -64,4 +65,18 @@ public class Order extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_PK")
 	private Member buyer;
+
+	public static Order of(OrderRegistRequest request, Product product, Member buyer) {
+		return Order.builder()
+			.status(OrderStatus.COMPLETE_PAYMENT)
+			.recipient(request.getRecipient())
+			.zipcode(request.getZipcode())
+			.address(request.getAddress())
+			.addressDetail(request.getAddressDetail())
+			.phoneNumber(request.getPhoneNumber())
+			.memo(request.getMemo())
+			.product(product)
+			.buyer(buyer)
+			.build();
+	}
 }
