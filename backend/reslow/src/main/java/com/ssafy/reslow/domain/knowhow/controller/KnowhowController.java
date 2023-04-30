@@ -8,14 +8,7 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
@@ -59,6 +52,15 @@ public class KnowhowController {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.updateKnowhow(memberNo, multipartFileList, updateRequest));
 
+		return ResponseEntity.ok(responseMap);
+	}
+
+	@DeleteMapping("/{knowhowNo}")
+	public ResponseEntity<Map<String, Object>> deleteKnowhowPosting(Authentication authentication, @PathVariable("knowhowNo") Long knowhowNo){
+		Long memberNo = Long.parseLong(authentication.getName());
+
+		HashMap<String, Object> responseMap = new HashMap<>();
+		responseMap.put("msg", knowhowService.deleteKnowhow(memberNo, knowhowNo));
 		return ResponseEntity.ok(responseMap);
 	}
 
