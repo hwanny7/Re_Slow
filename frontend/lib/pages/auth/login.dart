@@ -82,22 +82,28 @@ class _LoginState extends State<Login> {
               )),
         ));
 
-    void submit(String id, String password) {
+    void submit(String id, String password) async {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        print(_formKey.toString());
-        // Future<Map<String, dynamic>> response = auth.login(id, password);
-        // response.then((res) {
-        //   if (res['status'] == true) {
-        //     User user = res['user'];
-        //     Provider.of<UserProvider>(context, listen: false).setUser(user);
-        //     Navigator.pushReplacementNamed(context, '/main');
-        //   } else {
-        //     print(res['message']['message'].toString());
-        //   }
-        // });
+        // 소문자로 변환해서 보내기
+        Map<String, dynamic> response = await auth.login(id, password);
+
+        if (response['status'] == true) {
+          User user = User.fromJson(response['user']);
+          Provider.of<UserProvider>(context, listen: false).setUser(user);
+          Navigator.pushReplacementNamed(context, '/main');
+        } else {
+          print(response['message']);
+        }
       }
     }
+
+    const loading = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CircularProgressIndicator(),
+      ],
+    );
 
     final loginButton = Material(
       elevation: 5,
@@ -109,20 +115,16 @@ class _LoginState extends State<Login> {
           onPressed: () {
             submit(emailController.text, passwordController.text);
           },
-          child: const Text(
-            "로그인하기",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          )),
-    );
-
-    final loading = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        CircularProgressIndicator(),
-        Text(" Authenticating ... Please wait")
-      ],
+          child: auth.loggedInStatus == Status.Authenticating
+              ? loading
+              : const Text(
+                  "로그인하기",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                )),
     );
 
     return Scaffold(
@@ -152,9 +154,7 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 25),
                     passwordField,
                     const SizedBox(height: 35),
-                    auth.loggedInStatus == Status.Authenticating
-                        ? loading
-                        : loginButton,
+                    loginButton,
                     const SizedBox(height: 15),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,

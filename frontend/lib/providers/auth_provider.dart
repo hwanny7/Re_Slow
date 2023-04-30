@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:reslow/models/user.dart';
 import 'package:reslow/utils/shared_preference.dart';
-// import 'package:jada/util/app_url.dart';
 
-const String baseURL = "http://localhost:8080";
+String baseURL = "http://k8b306.p.ssafy.io:8080/members";
 
 enum Status {
   NotLoggedIn,
@@ -28,37 +27,32 @@ class AuthProvider with ChangeNotifier {
 
   Future<Map<String, dynamic>> login(String userId, String password) async {
     var result;
-    final Map<String, dynamic> payload = {
-      'data': {'userId': userId, 'password': password}
-    };
+    final Map<String, dynamic> payload = {'id': userId, 'password': password};
 
     _loggedInStatus = Status.Authenticating;
     notifyListeners();
 
     Response response = await post(
-      Uri.parse(baseURL),
+      Uri.parse('$baseURL/login'),
       body: json.encode(payload),
       headers: {'Content-Type': 'application/json'},
     );
+    Map<String, dynamic> responseData = json.decode(response.body);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-
-      var userData = responseData['data'];
-
-      User authUser = User.fromJson(userData);
+      User authUser = User.fromJson(responseData);
 
       UserPreferences().saveUser(authUser);
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
 
-      result = {'status': true, 'message': 'Successful'};
+      result = {'status': true, 'user': responseData};
     } else {
-      result = {
-        'status': false,
-        'message': json.decode(response.body)['error']
-      };
+      _loggedInStatus = Status.NotLoggedIn;
+      notifyListeners();
+
+      result = {'status': false, 'message': responseData['error']};
     }
     return result;
   }
@@ -74,7 +68,7 @@ class AuthProvider with ChangeNotifier {
         'password_confirmation': passwordConfirmation
       }
     };
-    Response response = await post(Uri.parse(baseURL),
+    Response response = await post(Uri.parse('$baseURL/'),
         body: json.encode(payload),
         headers: {'Content-Type': 'application/json'});
     if (response.statusCode == 200) {
@@ -94,5 +88,22 @@ class AuthProvider with ChangeNotifier {
       };
     }
     return result;
+  }
+
+  Future<bool> checkId(String id) async {
+    final Map<String, dynamic> payload = {
+      'id': id,
+    };
+
+    Response response = await post(Uri.parse('$baseURL/id'),
+        body: json.encode(payload),
+        headers: {'Content-Type': 'application/json'});
+
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    if (responseData['isPossible'] == "YES") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class Register extends StatefulWidget {
@@ -24,6 +26,12 @@ class RegisterState extends State<Register> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    void Idchecking(value) async {
+      bool isPossible = await auth.checkId(value);
+      print(isPossible);
+    }
+
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
@@ -38,8 +46,9 @@ class RegisterState extends State<Register> {
             return ("아이디를 입력해주세요");
           }
           if (!regex.hasMatch(value)) {
-            return ("4~16자의 영문 혹은 숫자로만 입력");
+            return ("영문, 숫자 4-16자");
           }
+          Idchecking(value);
           return null;
         },
         onSaved: (value) {
