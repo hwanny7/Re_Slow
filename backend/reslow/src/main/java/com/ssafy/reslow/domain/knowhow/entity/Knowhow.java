@@ -3,14 +3,7 @@ package com.ssafy.reslow.domain.knowhow.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.member.entity.Member;
@@ -44,11 +37,11 @@ public class Knowhow extends BaseEntity {
 	private KnowhowCategory knowhowCategory;
 
 	@Builder.Default
-	@OneToMany(mappedBy = "knowhow")
+	@OneToMany(mappedBy = "knowhow", cascade = CascadeType.ALL)
 	private List<KnowhowContent> knowhowContents = new ArrayList<>();
 
 	@Builder.Default
-	@OneToMany(mappedBy = "knowhow")
+	@OneToMany(mappedBy = "knowhow", cascade = CascadeType.ALL)
 	private List<KnowhowComment> knowhowComments = new ArrayList<>();
 
 	public static Knowhow ofEntity(KnowhowRequest knowhowRequest, Member member, KnowhowCategory knowhowCategory) {
