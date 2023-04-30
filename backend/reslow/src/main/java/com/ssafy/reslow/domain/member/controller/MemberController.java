@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.member.controller;
 
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -22,6 +24,7 @@ import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
 import com.ssafy.reslow.domain.member.service.MemberService;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
+import com.ssafy.reslow.global.exception.ErrorCode;
 import com.ssafy.reslow.global.exception.ValidationCheckException;
 
 import lombok.RequiredArgsConstructor;
@@ -38,7 +41,7 @@ public class MemberController {
 	@PostMapping
 	public Map<String, Object> signUp(@Validated @RequestBody MemberSignUpRequest signUp, Errors errors) {
 		if (errors.hasErrors()) {
-			throw new ValidationCheckException(errors);
+			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
 		return memberService.signUp(signUp);
 	}
@@ -46,7 +49,7 @@ public class MemberController {
 	@PostMapping("/login")
 	public TokenResponse login(@Validated @RequestBody MemberLoginRequest login, Errors errors) {
 		if (errors.hasErrors()) {
-			throw new ValidationCheckException(errors);
+			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
 		return memberService.login(login);
 	}
@@ -59,7 +62,7 @@ public class MemberController {
 	@PostMapping("/id")
 	public Map<String, Object> idDuplicate(@Validated @RequestBody MemberIdRequest id, Errors errors) {
 		if (errors.hasErrors()) {
-			throw new ValidationCheckException(errors);
+			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
 		return memberService.idDuplicate(id);
 	}
@@ -67,7 +70,7 @@ public class MemberController {
 	@PostMapping("/nickname")
 	public Map<String, Object> nicknameDuplicate(@Validated @RequestBody MemberNicknameRequest nickname, Errors errors) {
 		if (errors.hasErrors()) {
-			throw new ValidationCheckException(errors);
+			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
 		return memberService.nicknameDuplicate(nickname);
 	}

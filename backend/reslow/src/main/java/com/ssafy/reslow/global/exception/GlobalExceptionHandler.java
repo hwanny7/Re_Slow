@@ -28,19 +28,12 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler(ValidationCheckException.class)
-	protected ResponseEntity<LinkedList<LinkedHashMap<String, String>>> handleValidationException(
+	protected ResponseEntity<ErrorResponse> handleValidationException(
 		final ValidationCheckException errors) {
 		log.error("handleValidationException: {}", errors.getErrors());
-		LinkedList errorList = new LinkedList<LinkedHashMap<String, String>>();
-		errors.getErrors().getFieldErrors().forEach(e -> {
-			LinkedHashMap<String, String> error = new LinkedHashMap<>();
-			error.put("field", e.getField());
-			error.put("message", e.getDefaultMessage());
-			errorList.push(error);
-		});
 		return ResponseEntity
-			.status(HttpStatus.BAD_REQUEST)
-			.body(errorList);
+			.status(ErrorCode.VALIDATION_CHECK.getStatus().value())
+			.body(new ErrorResponse(ErrorCode.VALIDATION_CHECK));
 	}
 
 	@ExceptionHandler(EntityNotFoundException.class)
