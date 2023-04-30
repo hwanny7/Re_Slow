@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.manager.controller;
 
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
+
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
@@ -30,7 +32,7 @@ public class ManagerController {
 	@PostMapping
 	public Map<String, Object> signUp(@Validated @RequestBody ManagerSignUpRequest signUp, Errors errors) {
 		if (errors.hasErrors()) {
-			throw new ValidationCheckException(errors);
+			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
 		return managerService.signUp(signUp);
 	}
@@ -38,7 +40,7 @@ public class ManagerController {
 	@PostMapping("/login")
 	public TokenResponse login(@Validated @RequestBody ManagerLoginRequest login, Errors errors) {
 		if (errors.hasErrors()) {
-			throw new ValidationCheckException(errors);
+			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
 		return managerService.login(login);
 	}

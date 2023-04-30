@@ -21,7 +21,8 @@ public enum ErrorCode {
 	COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, -11, "댓글을 찾을 수 없습니다."),
 	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, -12, "카테고리를 찾을 수 없습니다."),
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, -13, "상품을 찾을 수 없습니다."),
-	USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, -14, "사용자 접근 권한이 없습니다.");
+	USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, -14, "사용자 접근 권한이 없습니다."),
+	VALIDATION_CHECK(HttpStatus.UNAUTHORIZED, -15, "유효성 검사를 다시 실시해주세요.");
 
 	private final HttpStatus status;
 	private final int code;
