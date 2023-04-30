@@ -177,6 +177,16 @@ public class KnowhowService {
 		return "글 수정 완료";
 	}
 
+	public String deleteKnowhow(Long memberNo, Long knowhowNo){
+		Knowhow knowhow = knowhowRepository.findById(knowhowNo).orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+		if(knowhow.getMember().getNo() != memberNo){
+			throw new CustomException(FORBIDDEN);
+		}
+
+		knowhowRepository.deleteById(knowhowNo);
+		return "글 삭제 완료";
+	}
+
 	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
 		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
 		setOperations.add(knowhowNo, memberNo);
