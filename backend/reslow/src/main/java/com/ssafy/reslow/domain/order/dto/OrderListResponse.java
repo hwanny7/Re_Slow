@@ -12,6 +12,7 @@ import lombok.Getter;
 @Builder
 public class OrderListResponse {
 
+	private Long productNo;
 	private String title;
 	private int price;
 	private LocalDate date;
@@ -21,6 +22,7 @@ public class OrderListResponse {
 	public static OrderListResponse of(Product product, Order order, String image, int status) {
 		return OrderListResponse.builder()
 			.title(product.getTitle())
+			.productNo(product.getNo())
 			.price(product.getPrice())
 			.date(order.getCreatedDate().toLocalDate())
 			.status(status)

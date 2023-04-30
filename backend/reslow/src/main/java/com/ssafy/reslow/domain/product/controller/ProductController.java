@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
+import com.ssafy.reslow.domain.product.dto.MyProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
@@ -55,22 +56,30 @@ public class ProductController {
 	}
 
 	@DeleteMapping("/{productNo}")
-	public Map<String, Long> deleteProduct(Authentication authentication, @PathVariable("productNo") Long productNo)
-		throws IOException {
+	public Map<String, Long> deleteProduct(Authentication authentication, @PathVariable("productNo") Long productNo) {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
 		return productService.deleteroduct(memberNo, productNo);
 	}
 
 	@GetMapping("/{productNo}")
-	public ProductDetailResponse productDetail(@PathVariable("productNo") Long productNo)
-		throws IOException {
+	public ProductDetailResponse productDetail(@PathVariable("productNo") Long productNo) {
 		return productService.productDetail(productNo);
 	}
 
+	@GetMapping
+	public Slice<ProductListResponse> productList(
+		Authentication authentication,
+		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false) Long category, Pageable pageable) {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return productService.productList(memberNo, keyword, category, pageable);
+	}
+
 	@GetMapping("/sale")
-	public Slice<ProductListResponse> myProductList(Authentication authentication, @RequestParam("status") int status, Pageable pageable)
-		throws IOException {
+	public Slice<MyProductListResponse> myProductList(Authentication authentication, @RequestParam("status") int status,
+		Pageable pageable) {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
 		return productService.myProductList(memberNo, status, pageable);
