@@ -57,12 +57,18 @@ public class MemberController {
 	}
 
 	@PostMapping("/id")
-	public Map<String, Object> idDuplicate(@RequestBody MemberIdRequest id) {
+	public Map<String, Object> idDuplicate(@Validated @RequestBody MemberIdRequest id, Errors errors) {
+		if (errors.hasErrors()) {
+			throw new ValidationCheckException(errors);
+		}
 		return memberService.idDuplicate(id);
 	}
 
 	@PostMapping("/nickname")
-	public Map<String, Object> nicknameDuplicate(@RequestBody MemberNicknameRequest nickname) {
+	public Map<String, Object> nicknameDuplicate(@Validated @RequestBody MemberNicknameRequest nickname, Errors errors) {
+		if (errors.hasErrors()) {
+			throw new ValidationCheckException(errors);
+		}
 		return memberService.nicknameDuplicate(nickname);
 	}
 
