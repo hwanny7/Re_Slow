@@ -141,7 +141,7 @@ public class KnowhowService {
 			KnowhowContent preContent = preContentList.get(i);
 			KnowhowUpdateContent updateContent = nowContentList.get(i);
 
-			String imageUrl = "";
+			String imageUrl;
 			if (updateContent.isImageChange()) {
 				// image가 바뀌었으면 이전껄 s3에서 삭제한다.
 				s3StorageClient.deleteFile(preContent.getImage());
@@ -194,6 +194,8 @@ public class KnowhowService {
 	public List<KnowhowList> getKnowhowList(Pageable pageable, Long category, String keyword) {
 		List<KnowhowList> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category, pageable);
 		list.forEach(knowhowList -> knowhowList.setLikeCnt(likeCount(knowhowList.getKnowhowNo())));
+
+		return list;
 	}
 
 	public List<KnowhowList> getMyKnowhowList(Pageable pageable, Long memberNo){
