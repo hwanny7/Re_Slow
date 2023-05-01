@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
+import com.ssafy.reslow.domain.order.dto.OrderUpdateCarrierRequest;
 import com.ssafy.reslow.domain.product.entity.OrderStatusConverter;
 import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
@@ -54,7 +55,7 @@ public class Order extends BaseEntity {
 	private String memo;
 
 	@Column(name = "CARRIER_COMPANY")
-	private String company;
+	private String carrierCompany;
 
 	@Column(name = "CARRIER_TRACK")
 	private int carrierTrack;
@@ -82,5 +83,11 @@ public class Order extends BaseEntity {
 
 	public void updateStatus(OrderStatus status) {
 		this.status = status;
+	}
+
+	public void updateCarrier(OrderUpdateCarrierRequest request) {
+		this.status = OrderStatus.PROGRESS_DELIVERY;
+		this.carrierCompany = request.getCarrierCompany();
+		this.carrierTrack = request.getCarrierTrack();
 	}
 }
