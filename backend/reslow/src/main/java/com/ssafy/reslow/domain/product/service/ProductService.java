@@ -5,6 +5,8 @@ import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,26 +56,6 @@ public class ProductService {
 	private final ProductImageRepository productImageRepository;
 	private final S3StorageClient s3Service;
 	private final RedisTemplate redisTemplate;
-
-	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		setOperations.add(productNo, memberNo);
-		setOperations.add(memberNo + "_like_product", productNo);
-
-		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(productNo));
-		return map;
-	}
-
-	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		setOperations.remove(productNo, memberNo);
-		setOperations.remove(memberNo + "_like_product", productNo);
-
-		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(productNo));
-		return map;
-	}
 
 	public Map<String, Long> registProduct(Long memberNo, ProductRegistRequest request, List<MultipartFile> files)
 		throws IOException {
@@ -169,7 +152,7 @@ public class ProductService {
 			.map((productImage) -> productImage.getUrl())
 			.collect(Collectors.toList());
 		ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product, product.getProductCategory()
-			.getCategory(), product.getMember().getNo() == memberNo ? true : false, images);
+			.getCategory(), product.getMember().getNo() == memberNo, images);
 		return productDetailResponse;
 	}
 
@@ -201,5 +184,51 @@ public class ProductService {
 			}
 		);
 		return new SliceImpl<>(responses, pageable, list.hasNext());
+	}
+
+	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
+		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<Object, Long> zSetOperations = redisTemplate.opsForZSet();
+		setOperations.add(productNo, memberNo);
+		zSetOperations.add(memberNo + "_like_product", productNo, System.currentTimeMillis());
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", setOperations.size(productNo));
+		return map;
+	}
+
+	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
+		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<Object, Long> zSetOperations = redisTemplate.opsForZSet();
+		setOperations.remove(productNo, memberNo);
+		zSetOperations.remove(memberNo + "_like_product", productNo);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", setOperations.size(productNo));
+		return map;
+	}
+
+	public Slice<ProductListResponse> likeProductList(Long memberNo, Pageable pageable) {
+		ZSetOperations<Object, Long> zSetOperations = redisTemplate.opsForZSet();
+		String key = memberNo + "_like_product";
+		int start = pageable.getPageSize() * pageable.getPageSize();
+		int end = start + pageable.getPageSize();
+		List<Long> pkList = new ArrayList<>(zSetOperations.reverseRange(key, start, end));
+
+		List<Product> productList = productRepository.findByIdIn(pkList);
+		Collections.sort(productList, new Comparator<Product>() {
+			@Override
+			public int compare(Product o1, Product o2) {
+				return pkList.indexOf(o1.getNo()) - pkList.indexOf(o2.getNo());
+			}
+		});
+
+		List<ProductListResponse> productListResponseList = productList
+			.stream()
+			.map(ProductListResponse::of)
+			.collect(Collectors.toList());
+
+		boolean hasNext = zSetOperations.size(key) > end + 1;
+		return new SliceImpl<>(productListResponseList, pageable, hasNext);
 	}
 }

@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.product.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	Slice<ProductListProjection> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category,
 		Pageable pageable);
+
+	List<Product> findByIdIn(List<Long> pkList);
 }
