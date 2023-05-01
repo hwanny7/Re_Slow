@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.knowhow.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
@@ -20,6 +21,24 @@ public class KnowhowList {
 
 	public static KnowhowList ofEntity(Knowhow knowhow, List<String> pictureList, int pictureCnt, Long likeCnt,
 		Long commentCnt) {
+		return KnowhowList.builder()
+			.writer(knowhow.getMember().getNickname())
+			.profile(knowhow.getMember().getProfilePic())
+			.title(knowhow.getTitle())
+			.pictureList(pictureList)
+			.pictureCnt(pictureCnt)
+			.likeCnt(likeCnt)
+			.commentCnt(commentCnt)
+			.build();
+	}
+
+	public static KnowhowList of(Knowhow knowhow, Long likeCnt, Long commentCnt) {
+		List<String> pictureList = new ArrayList<>();
+		int pictureCnt = Math.min(4, knowhow.getKnowhowContents().size());
+		for (int p = 0; p < pictureCnt; p++) {
+			pictureList.add(knowhow.getKnowhowContents().get(p).getImage());
+		}
+
 		return KnowhowList.builder()
 			.writer(knowhow.getMember().getNickname())
 			.profile(knowhow.getMember().getProfilePic())
