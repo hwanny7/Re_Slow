@@ -13,6 +13,6 @@ import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 @Repository
 public interface KnowhowRepository extends JpaRepository<Knowhow, Long>, KnowhowRepositoryCustom {
 	Page<Knowhow> findAll(Pageable pageable);
-
+	Page<Knowhow> findAllByMember_No(Pageable pageable, Long memberNo);
 	List<KnowhowList> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category, Pageable pageable);
 }

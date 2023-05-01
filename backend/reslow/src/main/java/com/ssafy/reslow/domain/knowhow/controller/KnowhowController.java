@@ -77,7 +77,13 @@ public class KnowhowController {
 	@GetMapping("")
 	public List<KnowhowList> getKnowhowPostingList(Pageable pageable, @RequestParam("category") Long category,
 		@RequestParam("keyword") String keyword) {
-		return knowhowService.knowhowList(pageable, category, keyword);
+		return knowhowService.getKnowhowList(pageable, category, keyword);
+	}
+
+	@GetMapping("/mylist")
+	public List<KnowhowList> getKMynowhowPostingList(Authentication authentication, Pageable pageable) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return knowhowService.getMyKnowhowList(pageable, memberNo);
 	}
 
 	@PostMapping("/{knowhowNo}/like")
