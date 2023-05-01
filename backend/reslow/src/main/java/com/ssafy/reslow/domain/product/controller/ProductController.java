@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
 import com.ssafy.reslow.domain.product.dto.MyProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
@@ -34,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
 
-	private final KnowhowService knowhowService;
 	private final ProductService productService;
 
 	@PostMapping
@@ -96,7 +94,7 @@ public class ProductController {
 	) {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
-		return knowhowService.likeKnowhow(memberNo, productNo);
+		return productService.likeProduct(memberNo, productNo);
 	}
 
 	@DeleteMapping("/{productNo}/like")
@@ -105,6 +103,14 @@ public class ProductController {
 	) {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
-		return knowhowService.unlikeKnowhow(memberNo, productNo);
+		return productService.unlikeProduct(memberNo, productNo);
 	}
+
+	@GetMapping("/likes")
+	public Slice<ProductListResponse> likeProductList(Authentication authentication, Pageable pageable) {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return productService.likeProductList(memberNo, pageable);
+	}
+
 }

@@ -5,15 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
@@ -58,7 +65,8 @@ public class KnowhowController {
 	}
 
 	@DeleteMapping("/{knowhowNo}")
-	public ResponseEntity<Map<String, Object>> deleteKnowhowPosting(Authentication authentication, @PathVariable("knowhowNo") Long knowhowNo){
+	public ResponseEntity<Map<String, Object>> deleteKnowhowPosting(Authentication authentication,
+		@PathVariable("knowhowNo") Long knowhowNo) {
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
@@ -66,9 +74,16 @@ public class KnowhowController {
 		return ResponseEntity.ok(responseMap);
 	}
 
-	@GetMapping("/")
-	public ResponseEntity<KnowhowListResponse> getKnowhowPostingList(Pageable pageable){
-		return ResponseEntity.ok(knowhowService.knowhowList(pageable));
+	@GetMapping("")
+	public ResponseEntity<KnowhowListResponse> getKnowhowPostingList(Pageable pageable) {
+		return ResponseEntity.ok(knowhowService.knowhowList(pageable, -1L));
+	}
+
+	@GetMapping("/mylist")
+	public ResponseEntity<KnowhowListResponse> getMyKnowhowPostingList(Authentication authentication,
+		Pageable pageable) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return ResponseEntity.ok(knowhowService.knowhowList(pageable, memberNo));
 	}
 
 	@PostMapping("/{knowhowNo}/like")
