@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.knowhow.service;
 
+import static com.ssafy.reslow.domain.knowhow.entity.Knowhow.*;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class KnowhowService {
 			.orElseThrow(() -> new NoSuchElementException("category 존재하지 않음"));
 
 		// 노하우 테이블 저장
-		Knowhow knowhow = Knowhow.ofEntity(knowhowRequest, member, category);
+		Knowhow knowhow = ofEntity(knowhowRequest, member, category);
 		knowhowRepository.save(knowhow);
 
 		// 노하우 글 저장
@@ -92,19 +93,10 @@ public class KnowhowService {
 		List<KnowhowContentDetail> detailList = new ArrayList<>();
 		for (int i = 1; i <= contentList.size(); i++) {
 			KnowhowContent content = contentList.get(i - 1);
-			detailList.add(KnowhowContentDetail.builder()
-				.order(Long.valueOf(i))
-				.knowhowNo(content.getNo())
-				.image(content.getImage())
-				.content(content.getContent())
-				.build());
+			detailList.add(KnowhowContentDetail.ofEntity(Long.valueOf(i), content));
 		}
 
-		return KnowhowDetailResponse.builder()
-			.writer(knowhow.getMember().getNickname())
-			.date(knowhow.getCreatedDate())
-			.title(knowhow.getTitle())
-			.contentList(detailList).build();
+		return KnowhowDetailResponse.ofEntity(knowhow, detailList);
 	}
 
 	public String updateKnowhow(Long memberNo, List<MultipartFile> imageList,
