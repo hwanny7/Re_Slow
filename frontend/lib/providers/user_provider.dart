@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:reslow/models/user.dart';
 
 class UserProvider with ChangeNotifier {
-  late User _user;
+  User _user = User();
 
   User get user => _user;
 

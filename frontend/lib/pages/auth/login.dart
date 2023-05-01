@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:reslow/models/user.dart';
+import 'package:reslow/pages/auth/register.dart';
+import 'package:reslow/providers/auth_provider.dart';
+import 'package:reslow/providers/user_provider.dart';
+import 'package:reslow/utils/navigator.dart';
+import 'package:reslow/widgets/common/loading_circle.dart';
 
 // import 'package:fluttertoast/fluttertoast.dart';
 
@@ -13,43 +19,28 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   // form key
-  final _formKey = GlobalKey<FormState>();
 
-  // editing controller
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  // firebase
-
-  // string for displaying the error Message
-  String? errorMessage;
+  String id = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
-    //email field
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+    final userProvider = context.read<UserProvider>();
+
     final emailField = TextFormField(
         autofocus: false,
-        controller: emailController,
         keyboardType: TextInputType.text,
-        validator: (value) {
-          if (value!.isEmpty) {
-            return ("Please Enter Your Email");
-          }
-          // reg expression for email validation
-          if (!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
-              .hasMatch(value)) {
-            return ("Please Enter a valid email");
-          }
-          return null;
-        },
-        onSaved: (value) {
-          emailController.text = value!;
+        onChanged: (value) {
+          setState(() {
+            id = value;
+          });
         },
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.mail),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "아이디",
+          labelText: '아이디',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
           ),
@@ -63,25 +54,17 @@ class _LoginState extends State<Login> {
     //password field
     final passwordField = TextFormField(
         autofocus: false,
-        controller: passwordController,
         obscureText: true,
-        validator: (value) {
-          RegExp regex = RegExp(r'^.{6,}$');
-          if (value!.isEmpty) {
-            return ("Password is required for login");
-          }
-          if (!regex.hasMatch(value)) {
-            return ("Enter Valid Password(Min. 6 Character)");
-          }
-        },
-        onSaved: (value) {
-          passwordController.text = value!;
+        onChanged: (value) {
+          setState(() {
+            password = value;
+          });
         },
         textInputAction: TextInputAction.done,
         decoration: InputDecoration(
           prefixIcon: const Icon(Icons.vpn_key),
           contentPadding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-          hintText: "비밀번호",
+          labelText: '비밀번호',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
           ),
@@ -92,23 +75,44 @@ class _LoginState extends State<Login> {
               )),
         ));
 
+    void submit() async {
+      if (auth.loggedInStatus != Status.Authenticating) {
+        Map<String, dynamic> response = await auth.login(id, password);
+
+        if (response['status'] == true) {
+          User user = User.fromJson(response['user']);
+          userProvider.setUser(user);
+          Navigator.pushReplacementNamed(context, '/main');
+        } else {
+          print(response['message']);
+        }
+      }
+    }
+
     final loginButton = Material(
       elevation: 5,
       borderRadius: BorderRadius.circular(4),
-      color: const Color(0xFF165B40),
+      color: id.isNotEmpty && password.isNotEmpty
+          ? const Color(0xFF165B40)
+          : Colors.grey,
       child: MaterialButton(
           padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
           minWidth: MediaQuery.of(context).size.width,
-          onPressed: () {
-            signIn(emailController.text.toString(),
-                passwordController.text.toString());
-          },
-          child: const Text(
-            "로그인하기",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-          )),
+          onPressed: id.isNotEmpty && password.isNotEmpty
+              ? () {
+                  submit();
+                }
+              : null,
+          child: auth.loggedInStatus == Status.Authenticating
+              ? LoadingCircle()
+              : const Text(
+                  "로그인하기",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold),
+                )),
     );
 
     return Scaffold(
@@ -120,17 +124,16 @@ class _LoginState extends State<Login> {
             child: Padding(
               padding: const EdgeInsets.all(36.0),
               child: Form(
-                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(
-                        height: 200,
-                        child: Image.asset(
-                          "assets/logo.png",
-                          fit: BoxFit.contain,
-                        )),
+                    // SizedBox(
+                    //     height: 200,
+                    //     child: Image.asset(
+                    //       "assets/Logo_Reslow.png",
+                    //       fit: BoxFit.contain,
+                    //     )),
                     const SizedBox(
                       height: 45,
                     ),
@@ -146,11 +149,7 @@ class _LoginState extends State<Login> {
                           const Text("계정이 없으신가요? "),
                           GestureDetector(
                             onTap: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //             RegistrationScreen()));
+                              leftToRightNavigator(const Register(), context);
                             },
                             child: const Text(
                               "회원가입",
@@ -169,25 +168,6 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
-  }
-
-  void signIn(String email, String password) async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        Response response = await post(Uri.parse('https://reqres.in/api/login'),
-            body: {'email': email, 'password': password});
-
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body.toString());
-          print(data['token']);
-          print('Login successfully');
-        } else {
-          print('failed');
-        }
-      } catch (e) {
-        print(e.toString());
-      }
-    }
   }
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class NotificationSetting extends StatefulWidget {
   @override
@@ -15,10 +16,9 @@ class _NotificationSettingState extends State<NotificationSetting> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('알림 설정'),
-      ),
+    return SafeArea(
+        child: Scaffold(
+      appBar: CustomAppBar(title: '알림 설정'),
       body: Container(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -130,6 +130,6 @@ class _NotificationSettingState extends State<NotificationSetting> {
           ],
         ),
       ),
-    );
+    ));
   }
 }
