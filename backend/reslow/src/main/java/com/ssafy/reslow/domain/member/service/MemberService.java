@@ -12,11 +12,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
 import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
@@ -103,9 +103,9 @@ public class MemberService {
 		return map;
 	}
 
-	public MemberUpdateResponse updateUser(UserDetails user, MemberUpdateRequest request, MultipartFile file)
+	public MemberUpdateResponse updateUser(Long memberNo, MemberUpdateRequest request, MultipartFile file)
 		throws IOException {
-		Member member = memberRepository.findById(user.getUsername())
+		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		String imageUrl = null;
 		if (!file.isEmpty()) {
@@ -120,5 +120,16 @@ public class MemberService {
 		MemberAddress memberAddress = MemberAddress.toEntity(request);
 		MemberUpdateResponse updateUser = MemberUpdateResponse.of(member, memberAddress);
 		return updateUser;
+	}
+
+	public MemberAddressResponse userAddress(Long memberNo) {
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		MemberAddress memberAddress = member.getMemberAddress();
+		if (memberAddress == null) {
+			throw new CustomException(ADDRESS_NOT_FOUND);
+		}
+		MemberAddressResponse response = MemberAddressResponse.of(memberAddress);
+		return response;
 	}
 }
