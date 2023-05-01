@@ -76,7 +76,14 @@ public class KnowhowController {
 
 	@GetMapping("")
 	public ResponseEntity<KnowhowListResponse> getKnowhowPostingList(Pageable pageable) {
-		return ResponseEntity.ok(knowhowService.knowhowList(pageable));
+		return ResponseEntity.ok(knowhowService.knowhowList(pageable, -1L));
+	}
+
+	@GetMapping("/mylist")
+	public ResponseEntity<KnowhowListResponse> getMyKnowhowPostingList(Authentication authentication,
+		Pageable pageable) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return ResponseEntity.ok(knowhowService.knowhowList(pageable, memberNo));
 	}
 
 	@PostMapping("/{knowhowNo}/like")

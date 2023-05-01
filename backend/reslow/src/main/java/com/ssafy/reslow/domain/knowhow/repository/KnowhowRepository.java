@@ -10,4 +10,6 @@ import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 @Repository
 public interface KnowhowRepository extends JpaRepository<Knowhow, Long> {
 	Page<Knowhow> findAll(Pageable pageable);
+
+	Page<Knowhow> findAllByMember_No(Pageable pageable, Long memberNo);
 }

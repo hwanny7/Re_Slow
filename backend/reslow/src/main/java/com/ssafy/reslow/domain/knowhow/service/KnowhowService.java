@@ -186,8 +186,13 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public KnowhowListResponse knowhowList(Pageable pageable) {
-		List<Knowhow> knowhowList = knowhowRepository.findAll(pageable).getContent();
+	public KnowhowListResponse knowhowList(Pageable pageable, Long memberNo) {
+		List<Knowhow> knowhowList;
+		if (memberNo == -1L) {
+			knowhowList = knowhowRepository.findAll(pageable).getContent();
+		} else {
+			knowhowList = knowhowRepository.findAllByMember_No(pageable, memberNo).getContent();
+		}
 
 		List<String> pictureList;
 		List<KnowhowList> list = new ArrayList<>();
