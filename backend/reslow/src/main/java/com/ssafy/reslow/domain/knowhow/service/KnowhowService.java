@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import com.ssafy.reslow.domain.knowhow.dto.*;
-import com.ssafy.reslow.domain.knowhow.repository.KnowhowCommentRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
@@ -18,10 +16,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowContentDetail;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateContent;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowContent;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
+import com.ssafy.reslow.domain.knowhow.repository.KnowhowCommentRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowContentRepository;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
@@ -79,7 +85,8 @@ public class KnowhowService {
 	}
 
 	public KnowhowDetailResponse getKnowhowDetail(Long knowhowNo) {
-		Knowhow knowhow = knowhowRepository.findById(knowhowNo).orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
+			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
 
 		List<KnowhowContent> contentList = knowhow.getKnowhowContents();
 		List<KnowhowContentDetail> detailList = new ArrayList<>();
@@ -176,9 +183,10 @@ public class KnowhowService {
 		return "글 수정 완료";
 	}
 
-	public String deleteKnowhow(Long memberNo, Long knowhowNo){
-		Knowhow knowhow = knowhowRepository.findById(knowhowNo).orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
-		if(knowhow.getMember().getNo().equals(memberNo)){
+	public String deleteKnowhow(Long memberNo, Long knowhowNo) {
+		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
+			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+		if (knowhow.getMember().getNo().equals(memberNo)) {
 			throw new CustomException(FORBIDDEN);
 		}
 
@@ -186,17 +194,18 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public KnowhowListResponse knowhowList(Pageable pageable){
-		List<Knowhow> knowhowList = (List<Knowhow>) knowhowRepository.findAll(pageable);
+	public KnowhowListResponse knowhowList(Pageable pageable) {
+		List<Knowhow> knowhowList = knowhowRepository.findAll(pageable).getContent();
 
 		List<String> pictureList;
 		List<KnowhowList> list = new ArrayList<>();
-		for(Knowhow knowhow : knowhowList){
+		for (Knowhow knowhow : knowhowList) {
 			// 사진 리스트에 넣기
 			pictureList = new ArrayList<>();
-			List<KnowhowContent> contentList = knowhowContentRepository.findKnowhowContentsByKnowhow(knowhow).orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+			List<KnowhowContent> contentList = knowhowContentRepository.findKnowhowContentsByKnowhow(knowhow)
+				.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
 			int pictureCnt = Math.min(4, contentList.size());
-			for(int p=0; p<pictureCnt; p++){
+			for (int p = 0; p < pictureCnt; p++) {
 				pictureList.add(contentList.get(p).getImage());
 			}
 
@@ -213,7 +222,7 @@ public class KnowhowService {
 		return new KnowhowListResponse(list);
 	}
 
-	public Long likeCount(Long knowhowNo){
+	public Long likeCount(Long knowhowNo) {
 		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
 		return setOperations.size(knowhowNo);
 	}
