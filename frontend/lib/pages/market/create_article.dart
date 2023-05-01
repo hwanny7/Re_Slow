@@ -47,18 +47,18 @@ class _CreateArticleState extends State<CreateArticle> {
                       onPressed: _openMultiImagePicker,
                       child: Text('Select Images'),
                     ),
-                    Container(
-                        height: 200,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: selectedImages.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.file(selectedImages[index]),
-                            );
-                          },
-                        ))
+                    // Container(
+                    //     height: 200,
+                    //     child: ListView.builder(
+                    //       scrollDirection: Axis.horizontal,
+                    //       itemCount: selectedImages.length,
+                    //       itemBuilder: (context, index) {
+                    //         return Padding(
+                    //           padding: const EdgeInsets.all(8.0),
+                    //           child: Image.file(selectedImages[index]),
+                    //         );
+                    //       },
+                    //     ))
                   ],
                 ),
                 TextField(
