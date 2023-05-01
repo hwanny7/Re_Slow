@@ -80,14 +80,17 @@ class _CreateArticleState extends State<CreateArticle> {
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.photo_camera),
+                                          Icon(
+                                            Icons.photo_camera,
+                                            color: Color(0xff3C9F61),
+                                          ),
                                           Text('${selectedImages.length}/10')
                                         ],
                                       ))),
                               width: width * 0.25,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: Colors.blue, // Border color
+                                  color: Color(0xff3C9F61), // Border color
                                   width: 2.0, // Border width
                                 ),
                               ));
@@ -169,6 +172,7 @@ class _CreateArticleState extends State<CreateArticle> {
                   },
                 ),
                 TextField(
+                  maxLines: null,
                   decoration: InputDecoration(
                     hintText: '게시글 내용을 작성해주세요.',
                     focusedBorder: const UnderlineInputBorder(
