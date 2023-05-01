@@ -11,7 +11,7 @@ class DioClient {
 
   DioClient._internal() {
     dio.interceptors.add(_TokenInterceptor());
-    dio.options.contentType = Headers.jsonContentType;
+    // dio.options.contentType = Headers.jsonContentType;
     dio.options.baseUrl =
         'http://k8b306.p.ssafy.io:8080'; // Set your base URL here
   }

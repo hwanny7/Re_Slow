@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/profile/myKnowhow.dart';
 
 class KnowHowDetail extends StatefulWidget {
   const KnowHowDetail({Key? key}) : super(key: key);
@@ -70,6 +71,16 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
       Expanded(
           child: Column(
         children: [
+          TextButton(
+              onPressed: () {
+                // Navigate to my account settings page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyKnowhow()), //나의 노하우 글 페이지로 이동
+                );
+              },
+              child: Text("나의 노하우 글 보기")),
           Container(
               margin: const EdgeInsets.all(12),
               width: MediaQuery.of(context).size.width * 0.7,
