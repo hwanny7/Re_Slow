@@ -215,7 +215,7 @@ public class ProductService {
 		int end = start + pageable.getPageSize();
 		List<Long> pkList = new ArrayList<>(zSetOperations.reverseRange(key, start, end));
 
-		List<Product> productList = productRepository.findByIdIn(pkList);
+		List<Product> productList = productRepository.findByNoIn(pkList);
 		Collections.sort(productList, new Comparator<Product>() {
 			@Override
 			public int compare(Product o1, Product o2) {
