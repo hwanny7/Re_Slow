@@ -45,6 +45,7 @@ class _MainPageState extends State<MainPage> {
         leftToRightNavigator(const CreateArticle(), context);
         return;
       case 2:
+        Navigator.pushNamed(context, '/knowhow/register');
         return;
     }
     ;
