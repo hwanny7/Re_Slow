@@ -10,49 +10,26 @@ class KnowhowRegister extends StatefulWidget {
 }
 
 class _KnowhowRegisterState extends State<KnowhowRegister> {
-  final formKey = GlobalKey<FormState>();
   int selected = -1;
   String title = "";
 
   int number = 1;
-  List<List<XFile>> pickedImgs = [[]];
-  List<String?> contentTexts = [""];
+
+  List<List<XFile>> pickedImgs = [];
+  List<Widget> fields = [];
+  List<TextEditingController> textCtr = [];
 
   final ImagePicker _picker = ImagePicker();
-  Future<void> _pickImg(int index) async {
+  Future<void> _pickImg() async {
     final List<XFile>? images = await _picker.pickMultiImage();
     print("이미지${images}");
+
+    ///
     if (images != null && images.length != 0) {
       setState(() {
-        pickedImgs[index] = images;
+        pickedImgs.add(images);
       });
-    print(pickedImgs[index][0].path);
     }
-  }
-
-  Future<void> _changeText(int index, String? text) async {
-    setState(() {
-      contentTexts[index] = text;
-    });
-    print(contentTexts);
-  }
-
-  Future<void> _makeImgAndText() async {
-    setState(() {
-      pickedImgs.add([]);
-      contentTexts.add("");
-    });
-    number++;
-    print(number);
-  }
-
-  Future<void> _deleteImgAndText(int index) async {
-    setState(() {
-      pickedImgs.removeAt(index);
-      contentTexts.removeAt(index);
-    });
-    number--;
-    print(number);
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -65,17 +42,11 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
 
   Widget picAndText(int index) {
     return Column(
-      key: Key("content$index"),
       children: [
-        index != 0 ? 
-        InkWell(onTap:() => {
-          _deleteImgAndText(index)
-        }, 
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Container(margin: const EdgeInsets.all(16), child: Image.asset("assets/image/close.png", width: 20)),])) : const Text(""),
         InkWell(
-            onTap: () => {_pickImg(index)},
+            onTap: () => {_pickImg()},
             child: SingleChildScrollView(
-                child: pickedImgs[index].isEmpty
+                child: pickedImgs.length <= index
                     ? Container(
                         margin: const EdgeInsets.all(16),
                         color: Colors.grey.withOpacity(0.2),
@@ -102,15 +73,11 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
                           fit: BoxFit.cover,
                         )))),
         SizedBox(
-            child: TextFormField(
-          onSaved: (text) {
-            _changeText(index, text);
-          },
-          validator:(value) {
-            if (value == "") {
-              return "내용은 한 글자 이상이어야 합니다.";
-            }
-            return null;
+            child: TextField(
+          onChanged: (text) {
+            setState(() {
+              title = text;
+            });
           },
           decoration: const InputDecoration(
             hintText: '내용을 입력해주세요.',
@@ -134,7 +101,6 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
 
   Widget categoryTag(int index, String tagname) {
     return Container(
-      key: Key("category$index"),
       margin: const EdgeInsets.only(left: 10.0),
       child: TextButton(
         style: ButtonStyle(
@@ -163,7 +129,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Column(children: [
         Container(
             margin: const EdgeInsets.all(12),
@@ -232,18 +198,16 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
           keyboardType: TextInputType.text,
         )),
         Expanded(
-          child: Form(
-            key: formKey,
-            child: ListView.builder(
+          child: ListView.builder(
               itemCount: number,
               itemBuilder: ((context, index) {
                 return picAndText(index);
-              }))),
+              })),
         ),
         TextButton(
             onPressed: () => {
                   setState(() {
-                    _makeImgAndText();
+                    number++;
                   })
                 },
             child: Text("사진 + 글 추가")),
