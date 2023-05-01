@@ -11,14 +11,12 @@ public class ProductListResponse {
 
 	private String title;
 	private int price;
-	private Long memberNo;
 	private Long productNo;
 	private LocalDate date;
 	private String image;
 
-	public static ProductListResponse of(ProductListProjection product, Long memberNo) {
+	public static ProductListResponse of(ProductListProjection product) {
 		return ProductListResponse.builder()
-			.memberNo(memberNo)
 			.productNo(product.getProductNo())
 			.date(product.getDate())
 			.price(product.getPrice())
