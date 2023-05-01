@@ -224,7 +224,6 @@ public class ProductService {
 			.collect(Collectors.toList());
 
 		List<Product> productList = productRepository.findByNoIn(pkList);
-		System.out.println(productList);
 		Collections.sort(productList, new Comparator<Product>() {
 			@Override
 			public int compare(Product o1, Product o2) {
