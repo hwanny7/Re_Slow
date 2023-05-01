@@ -40,9 +40,9 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
     return Container(
         key: tabsContainerKey,
         padding: EdgeInsets.all(10.0),
-        margin: const EdgeInsets.only(
-          top: 12.0,
-        ),
+        // margin: const EdgeInsets.only(
+        //   top: 4.0,
+        // ),
         height: 55,
         decoration: BoxDecoration(
             border: Border.all(color: const Color(0xffF4F2F2), width: 2.0)),
@@ -92,7 +92,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('의류'),
+                child: Text('가구/인테리어'),
                 onPressed: () {
                   _scrollToButton(containerKey2, 1);
                 },
@@ -116,7 +116,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('서적'),
+                child: Text('여성잡화'),
                 onPressed: () {
                   _scrollToButton(containerKey3, 2);
                 },
@@ -140,7 +140,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('바나나'),
+                child: Text('여성의류'),
                 onPressed: () {
                   _scrollToButton(containerKey4, 3);
                 },
@@ -164,7 +164,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('수영장'),
+                child: Text('남성잡화'),
                 onPressed: () {
                   _scrollToButton(containerKey5, 4);
                 },
@@ -188,7 +188,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('전체'),
+                child: Text('남성의류'),
                 onPressed: () {
                   _scrollToButton(containerKey6, 5);
                 },
@@ -212,7 +212,7 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
                     ),
                   ),
                 ),
-                child: Text('전체'),
+                child: Text('뷰티/미용'),
                 onPressed: () {
                   _scrollToButton(containerKey7, 6);
                 },
