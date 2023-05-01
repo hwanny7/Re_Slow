@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,7 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowContentDetail;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateContent;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
@@ -186,32 +186,45 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public KnowhowListResponse knowhowList(Pageable pageable) {
-		List<Knowhow> knowhowList = knowhowRepository.findAll(pageable).getContent();
+	// public List<KnowhowList> searchKnowhow(String keyword, Long category, Pageable pageable) {
+	// 	List<KnowhowList> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category, pageable);
+	// 	list.stream()
+	// 		.map(knowhowList -> new KnowhowList(likeCount(knowhowList.getKnowhowNo())))
+	// 		.collect(Collectors.toList());
+	//
+	// 	return list;
+	// }
 
-		List<String> pictureList;
-		List<KnowhowList> list = new ArrayList<>();
-		for (Knowhow knowhow : knowhowList) {
-			// 사진 리스트에 넣기
-			pictureList = new ArrayList<>();
-			List<KnowhowContent> contentList = knowhowContentRepository.findKnowhowContentsByKnowhow(knowhow)
-				.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
-			int pictureCnt = Math.min(4, contentList.size());
-			for (int p = 0; p < pictureCnt; p++) {
-				pictureList.add(contentList.get(p).getImage());
-			}
+	public List<KnowhowList> knowhowList(Pageable pageable, Long category, String keyword) {
+		// List<Knowhow> knowhowList = knowhowRepository.findAll(pageable).getContent();
+		//
+		// List<String> pictureList;
+		// List<KnowhowList> list = new ArrayList<>();
+		// for (Knowhow knowhow : knowhowList) {
+		// 	// 사진 리스트에 넣기
+		// 	pictureList = new ArrayList<>();
+		// 	List<KnowhowContent> contentList = knowhow.getKnowhowContents();
+		// 	int pictureCnt = Math.min(4, contentList.size());
+		// 	for (int p = 0; p < pictureCnt; p++) {
+		// 		pictureList.add(contentList.get(p).getImage());
+		// 	}
+		//
+		// 	// 해당 글 좋아요 개수 세기
+		// 	Long likeCnt = likeCount(knowhow.getNo());
+		//
+		// 	// 해당 글 댓글 개수 세기
+		// 	Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
+		//
+		// 	// 노하우 리스트에 저장하기
+		// 	list.add(KnowhowList.of(knowhow, pictureList, contentList.size(), likeCnt, commentCnt));
+		// }
 
-			// 해당 글 좋아요 개수 세기
-			Long likeCnt = likeCount(knowhow.getNo());
+		List<KnowhowList> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category, pageable);
+		list.stream()
+			.map(knowhowList -> new KnowhowList(likeCount(knowhowList.getKnowhowNo())))
+			.collect(Collectors.toList());
 
-			// 해당 글 댓글 개수 세기
-			Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
-
-			// 노하우 리스트에 저장하기
-			list.add(KnowhowList.ofEntity(knowhow, pictureList, contentList.size(), likeCnt, commentCnt));
-		}
-
-		return new KnowhowListResponse(list);
+		return list;
 	}
 
 	public Long likeCount(Long knowhowNo) {

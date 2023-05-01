@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,12 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
@@ -34,7 +34,7 @@ public class KnowhowController {
 	private final KnowhowService knowhowService;
 
 	@PostMapping("/")
-	public ResponseEntity<Map<String, Object>> writeKnowhowPosting(
+	public Map<String, Object> writeKnowhowPosting(
 		@RequestPart("imageList") List<MultipartFile> multipartFileList,
 		@RequestPart("knowhowRequest") KnowhowRequest request, Authentication authentication) throws IOException {
 		Long memberNo = Long.parseLong(authentication.getName());
@@ -42,17 +42,17 @@ public class KnowhowController {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, multipartFileList, request));
 
-		return ResponseEntity.ok(responseMap);
+		return responseMap;
 	}
 
 	@GetMapping("/detail/{knowhowNo}")
-	public ResponseEntity<KnowhowDetailResponse> getKnowhowDetail(@PathVariable("knowhowNo") Long knowhowNo) {
+	public KnowhowDetailResponse getKnowhowDetail(@PathVariable("knowhowNo") Long knowhowNo) {
 
-		return ResponseEntity.ok(knowhowService.getKnowhowDetail(knowhowNo));
+		return knowhowService.getKnowhowDetail(knowhowNo);
 	}
 
 	@PutMapping("/")
-	public ResponseEntity<Map<String, Object>> updateKnowhowPosting(
+	public Map<String, Object> updateKnowhowPosting(
 		@RequestPart("imageList") List<MultipartFile> multipartFileList,
 		@RequestPart("knowhowUpdateRequest") KnowhowUpdateRequest updateRequest, Authentication authentication) throws
 		IOException {
@@ -61,22 +61,23 @@ public class KnowhowController {
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.updateKnowhow(memberNo, multipartFileList, updateRequest));
 
-		return ResponseEntity.ok(responseMap);
+		return responseMap;
 	}
 
 	@DeleteMapping("/{knowhowNo}")
-	public ResponseEntity<Map<String, Object>> deleteKnowhowPosting(Authentication authentication,
+	public Map<String, Object> deleteKnowhowPosting(Authentication authentication,
 		@PathVariable("knowhowNo") Long knowhowNo) {
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.deleteKnowhow(memberNo, knowhowNo));
-		return ResponseEntity.ok(responseMap);
+		return responseMap;
 	}
 
 	@GetMapping("")
-	public ResponseEntity<KnowhowListResponse> getKnowhowPostingList(Pageable pageable) {
-		return ResponseEntity.ok(knowhowService.knowhowList(pageable));
+	public List<KnowhowList> getKnowhowPostingList(Pageable pageable, @RequestParam("category") Long category,
+		@RequestParam("keyword") String keyword) {
+		return knowhowService.knowhowList(pageable, category, keyword);
 	}
 
 	@PostMapping("/{knowhowNo}/like")

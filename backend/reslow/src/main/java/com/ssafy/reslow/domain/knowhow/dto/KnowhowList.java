@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class KnowhowList {
+	Long knowhowNo;
 	String writer;
 	String profile;
 	String title;
@@ -18,9 +19,10 @@ public class KnowhowList {
 	Long likeCnt;
 	Long commentCnt;
 
-	public static KnowhowList ofEntity(Knowhow knowhow, List<String> pictureList, int pictureCnt, Long likeCnt,
+	public static KnowhowList of(Knowhow knowhow, List<String> pictureList, int pictureCnt, Long likeCnt,
 		Long commentCnt) {
 		return KnowhowList.builder()
+			.knowhowNo(knowhow.getNo())
 			.writer(knowhow.getMember().getNickname())
 			.profile(knowhow.getMember().getProfilePic())
 			.title(knowhow.getTitle())
@@ -29,5 +31,9 @@ public class KnowhowList {
 			.likeCnt(likeCnt)
 			.commentCnt(commentCnt)
 			.build();
+	}
+
+	public KnowhowList(Long likeCnt) {
+		this.likeCnt = likeCnt;
 	}
 }
