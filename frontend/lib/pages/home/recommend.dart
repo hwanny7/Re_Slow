@@ -139,11 +139,11 @@ class _RecommendState extends State<Recommend>
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'path/to/bubble_background.png'),
-                                  fit: BoxFit.cover,
-                                ),
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //       'path/to/bubble_background.png'),
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                           ),
@@ -192,8 +192,8 @@ class _RecommendState extends State<Recommend>
                                               padding: EdgeInsets.all(8),
                                               child: ClipOval(
                                                 child: Container(
-                                                  width: 48,
-                                                  height: 48,
+                                                  width: 60,
+                                                  height: 60,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
@@ -294,11 +294,11 @@ class _RecommendState extends State<Recommend>
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'path/to/bubble_background.png'),
-                                  fit: BoxFit.cover,
-                                ),
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //       'path/to/bubble_background.png'),
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                           ),
@@ -325,7 +325,7 @@ class _RecommendState extends State<Recommend>
                                         ),
                                         image: DecorationImage(
                                           image: AssetImage(
-                                              'assets/image/image 1.png'),
+                                              'assets/image/image 4.png'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -347,8 +347,8 @@ class _RecommendState extends State<Recommend>
                                               padding: EdgeInsets.all(8),
                                               child: ClipOval(
                                                 child: Container(
-                                                  width: 48,
-                                                  height: 48,
+                                                  width: 60,
+                                                  height: 60,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
@@ -384,7 +384,7 @@ class _RecommendState extends State<Recommend>
                                             ),
                                             SizedBox(height: 16),
                                             Text(
-                                              '톡톡튀는 청바지 리폼 Tip!',
+                                              '나만의 다꾸 Tip!',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
@@ -400,7 +400,7 @@ class _RecommendState extends State<Recommend>
                                                   children: [
                                                     Icon(Icons.favorite_border),
                                                     SizedBox(width: 8),
-                                                    Text('27'),
+                                                    Text('33'),
                                                   ],
                                                 ),
                                                 SizedBox(width: 16),
@@ -408,7 +408,7 @@ class _RecommendState extends State<Recommend>
                                                   children: [
                                                     Icon(Icons.comment),
                                                     SizedBox(width: 8),
-                                                    Text('57'),
+                                                    Text('5'),
                                                   ],
                                                 ),
                                               ],
@@ -448,11 +448,11 @@ class _RecommendState extends State<Recommend>
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  image: AssetImage(
-                                      'path/to/bubble_background.png'),
-                                  fit: BoxFit.cover,
-                                ),
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //       'assets/image/image 1.png'),
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                           ),
@@ -479,7 +479,7 @@ class _RecommendState extends State<Recommend>
                                         ),
                                         image: DecorationImage(
                                           image: AssetImage(
-                                              'assets/image/image 1.png'),
+                                              'assets/image/image 5.png'),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -501,8 +501,8 @@ class _RecommendState extends State<Recommend>
                                               padding: EdgeInsets.all(8),
                                               child: ClipOval(
                                                 child: Container(
-                                                  width: 48,
-                                                  height: 48,
+                                                  width: 60,
+                                                  height: 60,
                                                   decoration: BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
@@ -538,7 +538,7 @@ class _RecommendState extends State<Recommend>
                                             ),
                                             SizedBox(height: 16),
                                             Text(
-                                              '톡톡튀는 청바지 리폼 Tip!',
+                                              '성경책 커스터마이징 Tip!',
                                               style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold,
@@ -554,7 +554,7 @@ class _RecommendState extends State<Recommend>
                                                   children: [
                                                     Icon(Icons.favorite_border),
                                                     SizedBox(width: 8),
-                                                    Text('27'),
+                                                    Text('44'),
                                                   ],
                                                 ),
                                                 SizedBox(width: 16),
@@ -562,7 +562,7 @@ class _RecommendState extends State<Recommend>
                                                   children: [
                                                     Icon(Icons.comment),
                                                     SizedBox(width: 8),
-                                                    Text('57'),
+                                                    Text('12'),
                                                   ],
                                                 ),
                                               ],
