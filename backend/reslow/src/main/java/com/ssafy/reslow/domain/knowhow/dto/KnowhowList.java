@@ -33,7 +33,7 @@ public class KnowhowList {
 			.build();
 	}
 
-	public KnowhowList(Long likeCnt) {
+	public void setLikeCnt(Long likeCnt){
 		this.likeCnt = likeCnt;
 	}
 }
