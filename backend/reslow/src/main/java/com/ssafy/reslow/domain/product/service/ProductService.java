@@ -187,35 +187,44 @@ public class ProductService {
 	}
 
 	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		ZSetOperations<Object, Long> zSetOperations = redisTemplate.opsForZSet();
-		setOperations.add(productNo, memberNo);
-		zSetOperations.add(memberNo + "_like_product", productNo, System.currentTimeMillis());
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String product = String.valueOf(productNo);
+		String member = String.valueOf(memberNo);
+		setOperations.add(product, member);
+		zSetOperations.add(memberNo + "_like_product", product, System.currentTimeMillis());
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(productNo));
+		map.put("count", setOperations.size(product));
 		return map;
 	}
 
 	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		ZSetOperations<Object, Long> zSetOperations = redisTemplate.opsForZSet();
-		setOperations.remove(productNo, memberNo);
-		zSetOperations.remove(memberNo + "_like_product", productNo);
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String product = String.valueOf(productNo);
+		String member = String.valueOf(memberNo);
+		setOperations.remove(product, member);
+		zSetOperations.remove(memberNo + "_like_product", product);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(productNo));
+		map.put("count", setOperations.size(product));
 		return map;
 	}
 
 	public Slice<ProductListResponse> likeProductList(Long memberNo, Pageable pageable) {
-		ZSetOperations<Object, Long> zSetOperations = redisTemplate.opsForZSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String key = memberNo + "_like_product";
-		int start = pageable.getPageSize() * pageable.getPageSize();
+		int start = pageable.getPageNumber() * pageable.getPageSize();
 		int end = start + pageable.getPageSize();
-		List<Long> pkList = new ArrayList<>(zSetOperations.reverseRange(key, start, end));
+
+		List<Long> pkList = zSetOperations.reverseRange(key, start, end)
+			.stream()
+			.map(Long::parseLong)
+			.collect(Collectors.toList());
 
 		List<Product> productList = productRepository.findByNoIn(pkList);
+		System.out.println(productList);
 		Collections.sort(productList, new Comparator<Product>() {
 			@Override
 			public int compare(Product o1, Product o2) {
