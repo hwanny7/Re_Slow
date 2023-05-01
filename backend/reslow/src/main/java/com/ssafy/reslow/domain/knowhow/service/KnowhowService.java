@@ -216,7 +216,7 @@ public class KnowhowService {
 			Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
 
 			// 노하우 리스트에 저장하기
-			list.add(KnowhowList.ofEntity(knowhow, pictureList, likeCnt, commentCnt));
+			list.add(KnowhowList.ofEntity(knowhow, pictureList, contentList.size(), likeCnt, commentCnt));
 		}
 
 		return new KnowhowListResponse(list);
