@@ -5,14 +5,20 @@ import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -220,27 +226,67 @@ public class KnowhowService {
 	}
 
 	public Long likeCount(Long knowhowNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		return setOperations.size(knowhowNo);
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		return setOperations.size(String.valueOf(knowhowNo));
 	}
 
 	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		setOperations.add(knowhowNo, memberNo);
-		setOperations.add(memberNo + "_like_knowhow", knowhowNo);
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String knowhow = String.valueOf(knowhowNo);
+		String member = String.valueOf(memberNo);
+
+		setOperations.add(knowhow, member);
+		zSetOperations.add(memberNo + "_like_knowhow", knowhow, System.currentTimeMillis());
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(knowhowNo));
+		map.put("count", setOperations.size(knowhow));
 		return map;
 	}
 
 	public Map<String, Long> unlikeKnowhow(Long memberNo, Long knowhowNo) {
-		SetOperations<Object, Long> setOperations = redisTemplate.opsForSet();
-		setOperations.remove(knowhowNo, memberNo);
-		setOperations.remove(memberNo + "_like_knowhow", knowhowNo);
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String product = String.valueOf(knowhowNo);
+		String member = String.valueOf(memberNo);
+
+		setOperations.remove(product, member);
+		zSetOperations.remove(memberNo + "_like_knowhow", product);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(knowhowNo));
+		map.put("count", setOperations.size(product));
 		return map;
+	}
+
+	public Slice<KnowhowList> likeKnowhowList(Long memberNo, Pageable pageable) {
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String key = memberNo + "_like_knowhow";
+		int start = pageable.getPageNumber() * pageable.getPageSize();
+		int end = start + pageable.getPageSize();
+
+		List<Long> pkList = zSetOperations.reverseRange(key, start, end)
+			.stream()
+			.map(Long::parseLong)
+			.collect(Collectors.toList());
+
+		List<Knowhow> knowhowList = knowhowRepository.findByNoIn(pkList);
+		Collections.sort(knowhowList, new Comparator<Knowhow>() {
+			@Override
+			public int compare(Knowhow o1, Knowhow o2) {
+				return pkList.indexOf(o1.getNo()) - pkList.indexOf(o2.getNo());
+			}
+		});
+
+		List<KnowhowList> knowhowListResponse = knowhowList
+			.stream()
+			.map(knowhow -> {
+				Long likeCnt = likeCount(knowhow.getNo());
+				Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
+				return KnowhowList.of(knowhow, likeCnt, commentCnt);
+			})
+			.collect(Collectors.toList());
+
+		boolean hasNext = zSetOperations.size(key) > end + 1;
+		return new SliceImpl<>(knowhowListResponse, pageable, hasNext);
 	}
 }
