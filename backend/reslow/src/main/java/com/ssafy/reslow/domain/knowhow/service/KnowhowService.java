@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowContentDetail;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateContent;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
@@ -99,7 +98,7 @@ public class KnowhowService {
 		List<KnowhowContentDetail> detailList = new ArrayList<>();
 		for (int i = 1; i <= contentList.size(); i++) {
 			KnowhowContent content = contentList.get(i - 1);
-			detailList.add(KnowhowContentDetail.ofEntity(Long.valueOf(i), content));
+			detailList.add(KnowhowContentDetail.ofEntity((long)i, content));
 		}
 
 		return KnowhowDetailResponse.ofEntity(knowhow, detailList);
@@ -192,21 +191,20 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public KnowhowListResponse knowhowList(Pageable pageable, Long memberNo) {
-		List<Knowhow> knowhowList;
-		if (memberNo == -1L) {
-			knowhowList = knowhowRepository.findAll(pageable).getContent();
-		} else {
-			knowhowList = knowhowRepository.findAllByMember_No(pageable, memberNo).getContent();
-		}
+	public List<KnowhowList> getKnowhowList(Pageable pageable, Long category, String keyword) {
+		List<KnowhowList> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category, pageable);
+		list.forEach(knowhowList -> knowhowList.setLikeCnt(likeCount(knowhowList.getKnowhowNo())));
+	}
 
+	public List<KnowhowList> getMyKnowhowList(Pageable pageable, Long memberNo){
+		List<Knowhow> knowhowList = knowhowRepository.findAllByMember_No(pageable, memberNo).getContent();
 		List<String> pictureList;
 		List<KnowhowList> list = new ArrayList<>();
 		for (Knowhow knowhow : knowhowList) {
 			// 사진 리스트에 넣기
 			pictureList = new ArrayList<>();
-			List<KnowhowContent> contentList = knowhowContentRepository.findKnowhowContentsByKnowhow(knowhow)
-				.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+			List<KnowhowContent> contentList = knowhow.getKnowhowContents();
+
 			int pictureCnt = Math.min(4, contentList.size());
 			for (int p = 0; p < pictureCnt; p++) {
 				pictureList.add(contentList.get(p).getImage());
@@ -219,10 +217,10 @@ public class KnowhowService {
 			Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
 
 			// 노하우 리스트에 저장하기
-			list.add(KnowhowList.ofEntity(knowhow, pictureList, contentList.size(), likeCnt, commentCnt));
+			list.add(KnowhowList.of(knowhow, pictureList, contentList.size(), likeCnt, commentCnt));
 		}
 
-		return new KnowhowListResponse(list);
+		return list;
 	}
 
 	public Long likeCount(Long knowhowNo) {
