@@ -18,6 +18,7 @@ import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.order.dto.OrderListResponse;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
+import com.ssafy.reslow.domain.order.dto.OrderUpdateCarrierRequest;
 import com.ssafy.reslow.domain.order.dto.OrderUpdateStatusRequest;
 import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
@@ -75,6 +76,16 @@ public class OrderService {
 		Order order = orderRepository.findById(orderNo)
 			.orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
 		order.updateStatus(OrderStatus.ofValue(request.getStatus()));
+		Map<String, Long> map = new HashMap<>();
+		map.put("orderNo", orderNo);
+		return map;
+	}
+
+	@Transactional
+	public Map<String, Long> updateCarrier(Long orderNo, OrderUpdateCarrierRequest request) {
+		Order order = orderRepository.findById(orderNo)
+			.orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
+		order.updateCarrier(request);
 		Map<String, Long> map = new HashMap<>();
 		map.put("orderNo", orderNo);
 		return map;

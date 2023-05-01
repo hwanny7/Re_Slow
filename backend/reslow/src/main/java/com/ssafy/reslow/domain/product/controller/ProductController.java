@@ -72,12 +72,9 @@ public class ProductController {
 
 	@GetMapping
 	public Slice<ProductListResponse> productList(
-		Authentication authentication,
 		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long category, Pageable pageable) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
-		return productService.productList(memberNo, keyword, category, pageable);
+		return productService.productList(keyword, category, pageable);
 	}
 
 	@GetMapping("/sale")
