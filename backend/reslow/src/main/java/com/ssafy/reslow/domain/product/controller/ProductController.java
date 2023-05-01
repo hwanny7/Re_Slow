@@ -24,6 +24,7 @@ import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
+import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
 import com.ssafy.reslow.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,11 +43,12 @@ public class ProductController {
 		@RequestPart List<MultipartFile> files)
 		throws IOException {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		return productService.registProduct(principal, request, files);
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return productService.registProduct(memberNo, request, files);
 	}
 
 	@PostMapping("/{productNo}")
-	public ProductDetailResponse updateProduct(Authentication authentication, @PathVariable("productNo") Long productNo,
+	public ProductUpdateResponse updateProduct(Authentication authentication, @PathVariable("productNo") Long productNo,
 		@RequestPart(value = "Update") ProductUpdateRequest request,
 		@RequestPart List<MultipartFile> files)
 		throws IOException {
@@ -63,8 +65,11 @@ public class ProductController {
 	}
 
 	@GetMapping("/{productNo}")
-	public ProductDetailResponse productDetail(@PathVariable("productNo") Long productNo) {
-		return productService.productDetail(productNo);
+	public ProductDetailResponse productDetail(Authentication authentication,
+		@PathVariable("productNo") Long productNo) {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return productService.productDetail(memberNo, productNo);
 	}
 
 	@GetMapping

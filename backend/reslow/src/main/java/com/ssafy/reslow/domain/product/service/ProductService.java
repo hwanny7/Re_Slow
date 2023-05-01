@@ -16,7 +16,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +30,7 @@ import com.ssafy.reslow.domain.product.dto.ProductListProjection;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
+import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
 import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.domain.product.entity.ProductCategory;
 import com.ssafy.reslow.domain.product.entity.ProductImage;
@@ -74,9 +74,9 @@ public class ProductService {
 		return map;
 	}
 
-	public Map<String, Long> registProduct(UserDetails user, ProductRegistRequest request, List<MultipartFile> files)
+	public Map<String, Long> registProduct(Long memberNo, ProductRegistRequest request, List<MultipartFile> files)
 		throws IOException {
-		Member member = memberRepository.findById(Long.parseLong(user.getUsername()))
+		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		ProductCategory productCategory = productCategoryRepository.findById(request.getCategory())
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
@@ -96,7 +96,7 @@ public class ProductService {
 		return map;
 	}
 
-	public ProductDetailResponse updateProduct(Long memberNo, Long productNo, ProductUpdateRequest request,
+	public ProductUpdateResponse updateProduct(Long memberNo, Long productNo, ProductUpdateRequest request,
 		List<MultipartFile> files) throws
 		IOException {
 		Product product = productRepository.findById(productNo)
@@ -135,7 +135,7 @@ public class ProductService {
 		List<String> images = product.getProductImages().stream()
 			.map((productImage) -> productImage.getUrl())
 			.collect(Collectors.toList());
-		ProductDetailResponse updatedProduct = ProductDetailResponse.of(product,
+		ProductUpdateResponse updatedProduct = ProductUpdateResponse.of(product,
 			product.getProductCategory().getCategory(), images);
 		return updatedProduct;
 	}
@@ -155,17 +155,13 @@ public class ProductService {
 	public Slice<ProductListResponse> productList(Long memberNo, String keyword, Long category, Pageable pageable) {
 		Slice<ProductListProjection> list = productRepository.findByMemberIsNotAndCategoryAndKeyword(
 			keyword, category, pageable);
-		list.forEach(
-			System.out::println
-		);
 		List<ProductListResponse> productListResponses = list.stream()
-			.map((product) -> ProductListResponse.of(product,
-				memberNo == product.getMemberNo() ? null : product.getMemberNo()))
+			.map((product) -> ProductListResponse.of(product))
 			.collect(Collectors.toList());
 		return new SliceImpl<>(productListResponses, pageable, list.hasNext());
 	}
 
-	public ProductDetailResponse productDetail(Long productNo) {
+	public ProductDetailResponse productDetail(Long memberNo, Long productNo) {
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
@@ -173,7 +169,7 @@ public class ProductService {
 			.map((productImage) -> productImage.getUrl())
 			.collect(Collectors.toList());
 		ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product, product.getProductCategory()
-			.getCategory(), images);
+			.getCategory(), product.getMember().getNo() == memberNo ? true : false, images);
 		return productDetailResponse;
 	}
 
