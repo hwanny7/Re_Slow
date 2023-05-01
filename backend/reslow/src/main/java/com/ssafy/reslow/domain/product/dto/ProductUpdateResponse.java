@@ -10,9 +10,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProductDetailResponse {
+public class ProductUpdateResponse {
 
-	private boolean mine;
 	private String title;
 	private String description;
 	private int deliveryFee;
@@ -21,14 +20,13 @@ public class ProductDetailResponse {
 	private LocalDate date;
 	private List<String> images;
 
-	public static ProductDetailResponse of(Product product, String category, boolean mine, List<String> images) {
-		return ProductDetailResponse.builder()
+	public static ProductUpdateResponse of(Product product, String category, List<String> images) {
+		return ProductUpdateResponse.builder()
 			.title(product.getTitle())
 			.description(product.getDescription())
 			.deliveryFee(product.getDeliveryFee())
 			.price(product.getPrice())
 			.category(category)
-			.mine(mine)
 			.date(product.getCreatedDate().toLocalDate())
 			.images(images)
 			.build();
