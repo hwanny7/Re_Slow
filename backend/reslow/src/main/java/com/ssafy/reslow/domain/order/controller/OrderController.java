@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.reslow.domain.order.dto.OrderListResponse;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
+import com.ssafy.reslow.domain.order.dto.OrderUpdateCarrierRequest;
 import com.ssafy.reslow.domain.order.dto.OrderUpdateStatusRequest;
 import com.ssafy.reslow.domain.order.service.OrderService;
 
@@ -49,5 +50,11 @@ public class OrderController {
 	public Map<String, Long> updateStatus(@PathVariable("orderNo") Long orderNo,
 		@RequestBody OrderUpdateStatusRequest request) {
 		return orderService.updateStatus(orderNo, request);
+	}
+
+	@PatchMapping("/{orderNo}/carrier")
+	public Map<String, Long> updateCarrier(@PathVariable("orderNo") Long orderNo,
+		@RequestBody OrderUpdateCarrierRequest request) {
+		return orderService.updateCarrier(orderNo, request);
 	}
 }

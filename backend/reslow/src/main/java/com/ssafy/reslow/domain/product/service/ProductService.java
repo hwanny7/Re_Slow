@@ -135,7 +135,7 @@ public class ProductService {
 		return map;
 	}
 
-	public Slice<ProductListResponse> productList(Long memberNo, String keyword, Long category, Pageable pageable) {
+	public Slice<ProductListResponse> productList(String keyword, Long category, Pageable pageable) {
 		Slice<ProductListProjection> list = productRepository.findByMemberIsNotAndCategoryAndKeyword(
 			keyword, category, pageable);
 		List<ProductListResponse> productListResponses = list.stream()
