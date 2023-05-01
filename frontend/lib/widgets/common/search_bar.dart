@@ -4,7 +4,7 @@ class MySearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 15.0),
+      margin: const EdgeInsets.only(top: 15.0, bottom: 15.0),
       width: MediaQuery.of(context).size.width * 0.92,
       decoration: BoxDecoration(
         color: Colors.grey[200],
