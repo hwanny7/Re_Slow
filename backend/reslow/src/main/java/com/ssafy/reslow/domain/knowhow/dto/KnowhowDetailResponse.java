@@ -20,6 +20,7 @@ public class KnowhowDetailResponse {
 	public static KnowhowDetailResponse ofEntity(Knowhow knowhow, List<KnowhowContentDetail> detailList) {
 		return KnowhowDetailResponse.builder()
 			.writer(knowhow.getMember().getNickname())
+			.profilePic(knowhow.getMember().getProfilePic())
 			.date(knowhow.getCreatedDate())
 			.title(knowhow.getTitle())
 			.contentList(detailList).build();
