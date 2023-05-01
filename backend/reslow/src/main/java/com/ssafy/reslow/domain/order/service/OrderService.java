@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.order.dto.OrderComfirmationResponse;
 import com.ssafy.reslow.domain.order.dto.OrderListResponse;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
 import com.ssafy.reslow.domain.order.dto.OrderUpdateCarrierRequest;
@@ -89,5 +90,12 @@ public class OrderService {
 		Map<String, Long> map = new HashMap<>();
 		map.put("orderNo", orderNo);
 		return map;
+	}
+
+	public OrderComfirmationResponse orderConfirmation(Long orderNo) {
+		Order order = orderRepository.findById(orderNo)
+			.orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
+		OrderComfirmationResponse response = OrderComfirmationResponse.of(order.getProduct(), order);
+		return response;
 	}
 }
