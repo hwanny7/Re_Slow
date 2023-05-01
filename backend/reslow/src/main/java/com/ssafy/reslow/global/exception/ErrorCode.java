@@ -22,8 +22,9 @@ public enum ErrorCode {
 	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, -12, "카테고리를 찾을 수 없습니다."),
 	PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, -13, "상품을 찾을 수 없습니다."),
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, -14, "상품을 찾을 수 없습니다."),
-	USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, -15, "사용자 접근 권한이 없습니다."),
-	VALIDATION_CHECK(HttpStatus.UNAUTHORIZED, -16, "유효성 검사를 다시 실시해주세요.");
+	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, -15, "기본 주소지가 없습니다."),
+	USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, -16, "사용자 접근 권한이 없습니다."),
+	VALIDATION_CHECK(HttpStatus.UNAUTHORIZED, -17, "유효성 검사를 다시 실시해주세요.");
 
 	private final HttpStatus status;
 	private final int code;

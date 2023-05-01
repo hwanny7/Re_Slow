@@ -1,6 +1,5 @@
 package com.ssafy.reslow.domain.product.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,21 +10,21 @@ import lombok.Getter;
 @Getter
 public class ProductListProjection {
 
-	private String title;
-	private int price;
-	private Long memberNo;
-	private Long productNo;
-	private LocalDate date;
-	private List<String> image;
+	private final String title;
+	private final int price;
+	private final Long memberNo;
+	private final Long productNo;
+	private final LocalDateTime datetime;
+	private final List<String> image;
 
 	@QueryProjection
-	public ProductListProjection(Long memberNo, Long productNo, String title, int price, LocalDateTime date,
+	public ProductListProjection(Long memberNo, Long productNo, String title, int price, LocalDateTime datetime,
 		List<String> image) {
 		this.memberNo = memberNo;
 		this.productNo = productNo;
 		this.title = title;
 		this.price = price;
-		this.date = date.toLocalDate();
+		this.datetime = datetime;
 		this.image = image;
 	}
 }
