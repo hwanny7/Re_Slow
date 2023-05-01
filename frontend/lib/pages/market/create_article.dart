@@ -175,8 +175,7 @@ class _CreateArticleState extends State<CreateArticle> {
                   maxLines: null,
                   decoration: InputDecoration(
                     hintText: '게시글 내용을 작성해주세요.',
-                    focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFBDBDBD))),
+                    border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                         vertical: 0, horizontal: width * 0.04),
                   ),
