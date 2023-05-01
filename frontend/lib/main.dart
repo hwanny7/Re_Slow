@@ -35,9 +35,9 @@ class MyApp extends StatelessWidget {
                   return const CircularProgressIndicator();
                 } else {
                   if (snapshot.data == true) {
-                    return const MainPage();
-                  } else {
                     return SplashScreen();
+                  } else {
+                    return const Login();
                   }
                 }
               }),
