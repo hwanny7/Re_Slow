@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +17,7 @@ class CreateArticle extends StatefulWidget {
 class _CreateArticleState extends State<CreateArticle> {
   List<String> selectedImages = [];
   ScrollController? scrollController;
+  final DioClient dioClient = DioClient();
   final int maxImageCount = 10;
 
   @override
@@ -52,25 +53,47 @@ class _CreateArticleState extends State<CreateArticle> {
     }
   }
 
+  void fetchData(formData) async {
+    // Perform the HTTP GET request here
+    // For example, using the http package
+
+    Response response = await dioClient.dio.post('/products',
+        data: formData, options: Options(contentType: 'multipart/form-data'));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      print(jsonData);
+
+      // setState(() {
+      //   // Update the state with the fetched data
+      //   itemList = List<MarketItem>.from(jsonData['content']
+      //       .map((itemJson) => MarketItem.fromJson(itemJson)));
+      // });
+    } else {
+      // Handle any errors or display an error message
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
+
   void _printing() async {
     var formData = FormData();
     Map<String, dynamic> jsonData = {
-      'Regist': {
-        "title": "고양이 밥그릇",
-        "description": "냐옹이 밥그릇 예쁘게 리폼했어요~",
-        "deliveryFee": 3000,
-        "price": 20000,
-        "stock": 2,
-        "category": 1
-      },
-      'files': []
+      "title": "고양이 밥그릇",
+      "description": "냐옹이 밥그릇 예쁘게 리폼했어요~",
+      "deliveryFee": 3000,
+      "price": 20000,
+      "stock": 2,
+      "category": 1
     };
-    formData.fields.add(MapEntry('data', jsonEncode(jsonData)));
+    formData.fields.add(MapEntry('Regist', jsonEncode(jsonData)));
+    List<MapEntry<String, MultipartFile>> fileList = [];
     for (var imageFile in selectedImages) {
-      // var file = await MultipartFile.fromFile(imageFile)
+      var file = await MultipartFile.fromFile(imageFile);
+      fileList.add(MapEntry('files', file));
     }
-    print(selectedImages);
-    print(formData);
+    formData.files.addAll(fileList);
+
+    fetchData(formData);
   }
 
   @override
