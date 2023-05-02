@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -187,34 +186,36 @@ public class ProductService {
 	}
 
 	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
-		Product product = productRepository.findById(productNo).orElseThrow(()->new CustomException(PRODUCT_NOT_FOUND));
-		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String productString = String.valueOf(productNo);
-		String memberString = String.valueOf(memberNo);
 
-		setOperations.add(productString, memberString);
-		zSetOperations.add(memberNo + "_like_product", productString, System.currentTimeMillis());
-		zSetOperations.incrementScore("product_"+memberNo, String.valueOf(product.getProductCategory().getNo()), 1);
+		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
+			System.currentTimeMillis());
+		if (added) {
+			zSetOperations.incrementScore("product", productString, 1);
+			zSetOperations.incrementScore("product" + memberNo, String.valueOf(product.getProductCategory().getNo()),
+				1);
+		}
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(productString));
+		map.put("count", (long)Math.floor(zSetOperations.score("product", productString)));
 		return map;
 	}
 
 	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
-		Product product = productRepository.findById(productNo).orElseThrow(()->new CustomException(PRODUCT_NOT_FOUND));
-		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String productString = String.valueOf(productNo);
-		String memberString = String.valueOf(memberNo);
 
-		setOperations.remove(productString, memberString);
 		zSetOperations.remove(memberNo + "_like_product", productString);
-		zSetOperations.incrementScore("product_"+memberNo, String.valueOf(product.getProductCategory().getNo()), -1);
+		zSetOperations.incrementScore("product", productString, -1);
+		zSetOperations.incrementScore("product_" + memberNo, String.valueOf(product.getProductCategory().getNo()), -1);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(productString));
+		map.put("count", (long)Math.floor(zSetOperations.score("product", productString)));
 		return map;
 	}
 

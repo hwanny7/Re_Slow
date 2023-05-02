@@ -222,34 +222,34 @@ public class KnowhowService {
 	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
 		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
 			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
-		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String knowhowString = String.valueOf(knowhowNo);
-		String memberString = String.valueOf(memberNo);
 
-		setOperations.add(knowhowString, memberString);
-		zSetOperations.add(memberNo + "_like_knowhow", knowhowString, System.currentTimeMillis());
-		zSetOperations.incrementScore("knowhow_" + memberNo, String.valueOf(knowhow.getKnowhowCategory().getNo()), 1);
+		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_knowhow", knowhowString,
+			System.currentTimeMillis());
+		if (added) {
+			zSetOperations.incrementScore("knowhow", knowhowString, 1);
+			zSetOperations.incrementScore("knowhow_" + memberNo, String.valueOf(knowhow.getKnowhowCategory().getNo()),
+				1);
+		}
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(knowhowString));
+		map.put("count", (long)Math.floor(zSetOperations.score("knowhow", knowhowString)));
 		return map;
 	}
 
 	public Map<String, Long> unlikeKnowhow(Long memberNo, Long knowhowNo) {
 		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
 			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
-		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-		String product = String.valueOf(knowhowNo);
-		String member = String.valueOf(memberNo);
+		String knowhowString = String.valueOf(knowhowNo);
 
-		setOperations.remove(product, member);
-		zSetOperations.remove(memberNo + "_like_knowhow", product);
+		zSetOperations.remove(memberNo + "_like_knowhow", knowhowString);
+		zSetOperations.incrementScore("knowhow", knowhowString, -1);
 		zSetOperations.incrementScore("knowhow_" + memberNo, String.valueOf(knowhow.getKnowhowCategory().getNo()), -1);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(product));
+		map.put("count", (long)Math.floor(zSetOperations.score("knowhow", knowhowString)));
 		return map;
 	}
 
