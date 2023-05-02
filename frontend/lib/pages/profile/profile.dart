@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'calendarselection.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
 import 'couponlist.dart';
 import 'package:reslow/pages/home/recommend.dart';
+import 'calendarselection.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -180,24 +180,36 @@ class _ProfileState extends State<Profile> {
                   alignment: Alignment.centerLeft,
                 ),
                 // 정산 컨테이너
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    children: [
-                      Icon(Icons.attach_money),
-                      SizedBox(
-                        width: 10,
-                      ), // for spacing between icon and text
-                      Text(
-                        '정산 내역',
-                        style: TextStyle(fontSize: 15),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to the CalendarSelection page when the icon is clicked
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CalendarSelection(
+                          onDateRangeSelected: (startDate, endDate) {
+                            // Handle the date range selection here
+                          },
+                        ),
                       ),
-                    ],
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      children: [
+                        Icon(Icons.attach_money),
+                        SizedBox(width: 10),
+                        Text(
+                          '정산 현황',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.centerLeft,
                   ),
-                  alignment: Alignment.centerLeft,
                 ),
-                // flee market ended
-                // add Divider here
+
                 Divider(),
                 // Settings
                 Container(

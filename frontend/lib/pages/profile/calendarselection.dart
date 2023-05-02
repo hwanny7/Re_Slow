@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class CalendarSelection extends StatefulWidget {
   final void Function(DateTime startDate, DateTime endDate) onDateRangeSelected;
@@ -35,56 +36,134 @@ class _CalendarSelectionState extends State<CalendarSelection> {
 
   void _filterToday() {
     final today = DateTime.now();
-    widget.onDateRangeSelected(today, today);
+    setState(() {
+      _startDate = today;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   void _filterOneWeek() {
     final today = DateTime.now();
     final oneWeekAgo = today.subtract(Duration(days: 7));
-    widget.onDateRangeSelected(oneWeekAgo, today);
+    setState(() {
+      _startDate = oneWeekAgo;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   void _filterOneMonth() {
     final today = DateTime.now();
     final oneMonthAgo = DateTime(today.year, today.month - 1, today.day);
-    widget.onDateRangeSelected(oneMonthAgo, today);
+    setState(() {
+      _startDate = oneMonthAgo;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   void _filterOneYear() {
     final today = DateTime.now();
     final oneYearAgo = DateTime(today.year - 1, today.month, today.day);
-    widget.onDateRangeSelected(oneYearAgo, today);
+    setState(() {
+      _startDate = oneYearAgo;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () => _selectDateRange(context),
-          child: Text(
-            'From ${_startDate.toString().substring(0, 10)} to ${_endDate.toString().substring(0, 10)}',
-            style: TextStyle(fontSize: 16.0),
+    return Scaffold(
+        appBar: CustomAppBar(title: '정산 내역'),
+        body: SafeArea(
+            child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 16.0), // add vertical padding here
+              // From
+              Row(
+                children: [
+                  SizedBox(width: 10.0),
+                  Text(
+                    'From',
+                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  ),
+                  SizedBox(width: 10.0),
+                  GestureDetector(
+                    onTap: () => _selectDateRange(context),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Text(
+                        '${_startDate.toString().substring(0, 10)}',
+                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.0),
+                  Text(
+                    '~',
+                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  ),
+                  SizedBox(width: 10.0),
+                  Text(
+                    'To',
+                    style: TextStyle(fontSize: 16.0, color: Colors.black),
+                  ),
+                  SizedBox(width: 10.0),
+                  GestureDetector(
+                    onTap: () => _selectDateRange(context),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Text(
+                        '${_endDate.toString().substring(0, 10)}',
+                        style: TextStyle(fontSize: 16.0, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // 달력 부분 끝
+              SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: _filterToday,
+                    child: Text('Today'),
+                  ),
+                  SizedBox(width: 10), // Add a 10 pixel space
+                  ElevatedButton(
+                    onPressed: _filterOneWeek,
+                    child: Text('1 Week'),
+                  ),
+                  SizedBox(width: 10), // Add a 10 pixel space
+                  ElevatedButton(
+                    onPressed: _filterOneMonth,
+                    child: Text('1 Month'),
+                  ),
+                  SizedBox(width: 10), // Add a 10 pixel space
+                  ElevatedButton(
+                    onPressed: _filterOneYear,
+                    child: Text('1 Year'),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ),
-        ElevatedButton(
-          onPressed: _filterToday,
-          child: Text('Today'),
-        ),
-        ElevatedButton(
-          onPressed: _filterOneWeek,
-          child: Text('1 Week'),
-        ),
-        ElevatedButton(
-          onPressed: _filterOneMonth,
-          child: Text('1 Month'),
-        ),
-        ElevatedButton(
-          onPressed: _filterOneYear,
-          child: Text('1 Year'),
-        ),
-      ],
-    );
+        )));
   }
 }
