@@ -220,20 +220,23 @@ public class KnowhowService {
 	}
 
 	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
+		Knowhow knowhow = knowhowRepository.findById(knowhowNo).orElseThrow(()-> new CustomException(KNOWHOW_NOT_FOUND));
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-		String knowhow = String.valueOf(knowhowNo);
-		String member = String.valueOf(memberNo);
+		String knowhowString = String.valueOf(knowhowNo);
+		String memberString = String.valueOf(memberNo);
 
-		setOperations.add(knowhow, member);
-		zSetOperations.add(memberNo + "_like_knowhow", knowhow, System.currentTimeMillis());
+		setOperations.add(knowhowString, memberString);
+		zSetOperations.add(memberNo + "_like_knowhow", knowhowString, System.currentTimeMillis());
+		zSetOperations.incrementScore("knowhow_"+memberNo, String.valueOf(knowhow.getKnowhowCategory().getNo()), 1);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(knowhow));
+		map.put("count", setOperations.size(knowhowString));
 		return map;
 	}
 
 	public Map<String, Long> unlikeKnowhow(Long memberNo, Long knowhowNo) {
+		Knowhow knowhow = knowhowRepository.findById(knowhowNo).orElseThrow(()-> new CustomException(KNOWHOW_NOT_FOUND));
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String product = String.valueOf(knowhowNo);
@@ -241,6 +244,7 @@ public class KnowhowService {
 
 		setOperations.remove(product, member);
 		zSetOperations.remove(memberNo + "_like_knowhow", product);
+		zSetOperations.incrementScore("knowhow_"+memberNo, String.valueOf(knowhow.getKnowhowCategory().getNo()), -1);
 
 		Map<String, Long> map = new HashMap<>();
 		map.put("count", setOperations.size(product));

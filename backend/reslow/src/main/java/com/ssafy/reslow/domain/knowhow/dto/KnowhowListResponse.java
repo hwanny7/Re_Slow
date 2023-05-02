@@ -28,6 +28,7 @@ public class KnowhowListResponse {
 		}
 
 		return KnowhowListResponse.builder()
+			.knowhowNo(knowhow.getNo())
 			.writer(knowhow.getMember().getNickname())
 			.profile(knowhow.getMember().getProfilePic())
 			.title(knowhow.getTitle())
