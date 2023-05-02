@@ -69,9 +69,9 @@ public class KnowhowController {
 
 	@PostMapping("/test")
 	public String test(@RequestPart List<MultipartFile> files) {
-		log.debug("라라라랄라라라라라 여기기기여기 밑에 보자1!!!!!!!!!!!!!");
+		log.error("라라라랄라라라라라 여기기기여기 밑에 보자1!!!!!!!!!!!!!");
 		for (MultipartFile file : files)
-			log.debug(file.getOriginalFilename());
+			log.error(file.getOriginalFilename());
 
 		return "받았나?";
 	}
