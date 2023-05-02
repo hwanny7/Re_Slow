@@ -44,3 +44,5 @@ cloud:
       auto: false
   profiles:
     include: aws
+
+default-image-s3: ${DEFAULT_PROGILE_IMAGE}

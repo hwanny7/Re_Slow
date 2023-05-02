@@ -131,12 +131,13 @@ public class Member extends BaseEntity implements UserDetails {
 		return false;
 	}
 
-	public static Member toEntity(MemberSignUpRequest signUp, String password) {
+	public static Member toEntity(MemberSignUpRequest signUp, String profilePic, String password) {
 		return Member.builder()
 			.id(signUp.getId())
 			.password(password)
 			.nickname(signUp.getNickname())
 			.roles(Collections.singletonList(Authority.USER.name()))
+			.profilePic(profilePic)
 			.build();
 	}
 
