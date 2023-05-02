@@ -33,5 +33,7 @@ public class IssuedCoupon extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COUPON_PK")
 	private Coupon coupon;
-	
+
+	@Column(name = "USED")
+	private boolean used;
 }

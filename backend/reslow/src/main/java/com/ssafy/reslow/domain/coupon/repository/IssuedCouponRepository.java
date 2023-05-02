@@ -11,6 +11,6 @@ import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 
 public interface IssuedCouponRepository extends JpaRepository<IssuedCoupon, Long> {
 
-	@Query("SELECT i FROM IssuedCoupon i INNER JOIN Coupon c WHERE i.member.no=:memberNo AND c.startDate <= :now AND :now <= c.endDate")
+	@Query("SELECT i FROM IssuedCoupon i INNER JOIN Coupon c WHERE i.member.no=:memberNo AND i.used=false AND c.startDate <= :now AND :now <= c.endDate")
 	Slice<IssuedCoupon> findMyValidCoupon(Long memberNo, LocalDateTime now, Pageable pageable);
 }
