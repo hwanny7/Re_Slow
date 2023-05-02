@@ -9,14 +9,14 @@ import lombok.Getter;
 @Builder
 public class KnowhowContentDetail {
 	Long order;
-	Long knowhowNo;
+	Long contentNo;
 	String image;
 	String content;
 
 	public static KnowhowContentDetail ofEntity(Long order, KnowhowContent knowhowContent) {
 		return KnowhowContentDetail.builder()
 			.order(order)
-			.knowhowNo(knowhowContent.getNo())
+			.contentNo(knowhowContent.getNo())
 			.image(knowhowContent.getImage())
 			.content(knowhowContent.getContent())
 			.build();
