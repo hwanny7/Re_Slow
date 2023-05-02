@@ -8,10 +8,14 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
+import com.ssafy.reslow.domain.manager.entity.Manager;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -59,11 +63,15 @@ public class Coupon extends BaseEntity {
 	@Column(name = "REMAINING_QUANTITY")
 	private int remainQuantity;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MANAGER_PK")
+	private Manager manager;
+
 	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
 
-	public static Coupon of(CouponCreateRequest couponCreateRequest) {
+	public static Coupon of(Manager manager, CouponCreateRequest couponCreateRequest) {
 		return Coupon.builder()
 			.name(couponCreateRequest.getName())
 			.content(couponCreateRequest.getContent())
@@ -75,6 +83,7 @@ public class Coupon extends BaseEntity {
 			.endDate(couponCreateRequest.getEndDate())
 			.totalQuantity(couponCreateRequest.getTotalQuantity())
 			.remainQuantity(couponCreateRequest.getTotalQuantity())
+			.manager(manager)
 			.build();
 	}
 }

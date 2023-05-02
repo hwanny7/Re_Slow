@@ -36,4 +36,12 @@ public class IssuedCoupon extends BaseEntity {
 
 	@Column(name = "USED")
 	private boolean used;
+
+	public static IssuedCoupon of(Member member, Coupon coupon) {
+		return IssuedCoupon.builder()
+			.member(member)
+			.coupon(coupon)
+			.used(false)
+			.build();
+	}
 }

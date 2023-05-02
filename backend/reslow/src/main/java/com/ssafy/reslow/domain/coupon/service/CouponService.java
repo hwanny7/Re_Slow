@@ -36,9 +36,9 @@ import lombok.RequiredArgsConstructor;
 public class CouponService {
 
 	private final CouponRepository couponRepository;
-	private final ManagerRepository managerRepository;
-	private final MemberRepository memberRepository;
 	private final IssuedCouponRepository issuedCouponRepository;
+	private final MemberRepository memberRepository;
+	private final ManagerRepository managerRepository;
 
 	public Slice<CouponListResponse> getAllValidCoupons(Pageable pageable) {
 		LocalDateTime now = LocalDateTime.now();
@@ -57,7 +57,6 @@ public class CouponService {
 	}
 
 	public Slice<IssuedCouponListResponse> getMyValidCoupons(Long memberNo, Pageable pageable) {
-		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		LocalDateTime now = LocalDateTime.now();
 		Slice<IssuedCoupon> coupons = issuedCouponRepository.findMyValidCoupon(memberNo, now, pageable);
 		List<IssuedCouponListResponse> couponListResponses = coupons.getContent()
@@ -68,21 +67,36 @@ public class CouponService {
 	}
 
 	public Map<String, Long> createCoupon(Long managerNo, CouponCreateRequest couponCreateRequest) {
-		Manager manager = managerRepository.findById(managerNo).orElseThrow(() -> new CustomException(FORBIDDEN));
-		Coupon coupon = Coupon.of(couponCreateRequest);
-		Coupon createdCoupon = couponRepository.save(coupon);
+		Manager manager = managerRepository.getReferenceById(managerNo);
+		Coupon coupon = Coupon.of(manager, couponCreateRequest);
+		coupon = couponRepository.save(coupon);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("couponNo", createdCoupon.getNo());
+		map.put("couponNo", coupon.getNo());
 		return map;
 	}
 
 	public Map<String, Long> deleteCoupon(Long managerNo, Long couponNo) {
-		Manager manager = managerRepository.findById(managerNo).orElseThrow(() -> new CustomException(FORBIDDEN));
-		couponRepository.deleteById(couponNo);
+		Coupon coupon = couponRepository.findById(couponNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		if (!managerNo.equals(coupon.getManager().getNo())) {
+			throw new CustomException(USER_NOT_MATCH);
+		}
+		couponRepository.delete(coupon);
 
 		Map<String, Long> map = new HashMap<>();
 		map.put("couponNo", couponNo);
+		return map;
+	}
+
+	public Map<String, Long> issueCoupon(Long memberNo, Long couponNo) {
+		Member member = memberRepository.getReferenceById(memberNo);
+		Coupon coupon = couponRepository.findById(couponNo).orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
+		IssuedCoupon issuedCoupon = IssuedCoupon.of(member, coupon);
+		issuedCoupon = issuedCouponRepository.save(issuedCoupon);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("issuedCouponNo", issuedCoupon.getNo());
 		return map;
 	}
 

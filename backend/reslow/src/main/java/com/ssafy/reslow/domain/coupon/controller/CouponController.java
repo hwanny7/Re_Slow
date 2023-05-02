@@ -55,4 +55,10 @@ public class CouponController {
 		return couponService.getMyValidCoupons(memberNo, pageable);
 	}
 
+	@PostMapping("/{couponNo}/issuance")
+	public Map<String, Long> issueCoupon(Authentication authentication, @PathVariable Long couponNo) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return couponService.issueCoupon(memberNo, couponNo);
+	}
+
 }
