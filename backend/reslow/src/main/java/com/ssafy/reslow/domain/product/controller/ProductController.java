@@ -3,6 +3,7 @@ package com.ssafy.reslow.domain.product.controller;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -37,21 +38,31 @@ public class ProductController {
 
 	@PostMapping
 	public Map<String, Long> registProduct(Authentication authentication,
-		@RequestPart(value = "Regist") ProductRegistRequest request,
-		@RequestPart List<MultipartFile> files)
+		@RequestParam String title,
+		@RequestParam String description,
+		@RequestParam int deliveryFee,
+		@RequestParam int price,
+		@RequestParam Long category,
+		@RequestParam List<MultipartFile> files)
 		throws IOException {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
+		ProductRegistRequest request = ProductRegistRequest.of(title, description, deliveryFee, price, category);
 		return productService.registProduct(memberNo, request, files);
 	}
 
 	@PostMapping("/{productNo}")
 	public ProductUpdateResponse updateProduct(Authentication authentication, @PathVariable("productNo") Long productNo,
-		@RequestPart(value = "Update") ProductUpdateRequest request,
+		@RequestParam String title,
+		@RequestParam String description,
+		@RequestParam int deliveryFee,
+		@RequestParam int price,
+		@RequestParam Long category,
+		@RequestParam Set<Long> productImages,
 		@RequestPart List<MultipartFile> files)
 		throws IOException {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
+		ProductUpdateRequest request = ProductUpdateRequest.of(title, description, deliveryFee, price, category,
+			productImages);
 		return productService.updateProduct(memberNo, productNo, request, files);
 	}
 
