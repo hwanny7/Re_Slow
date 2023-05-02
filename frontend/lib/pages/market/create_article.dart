@@ -49,6 +49,10 @@ class _CreateArticleState extends State<CreateArticle> {
     }
   }
 
+  void _printing() {
+    print('hello');
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -59,6 +63,8 @@ class _CreateArticleState extends State<CreateArticle> {
         child: Scaffold(
             appBar: CustomAppBar(
               title: '내 물건 등록',
+              actions: '완료',
+              callback: _printing,
             ),
             body: SingleChildScrollView(
                 child: Column(
