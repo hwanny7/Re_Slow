@@ -16,10 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
+import com.ssafy.reslow.domain.member.dto.MemberAccountRequest;
 import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
@@ -28,6 +30,7 @@ import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
 import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.member.entity.MemberAccount;
 import com.ssafy.reslow.domain.member.entity.MemberAddress;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.product.entity.ProductCategory;
@@ -95,17 +98,17 @@ public class MemberService {
 		return tokenInfo;
 	}
 
-	public Map<String, Object> logout(Authentication authentication) {
+	public Map<String, String> logout(Authentication authentication) {
 		if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
 			redisTemplate.delete("RT:" + authentication.getName());
 		}
-		Map<String, Object> map = new HashMap<>();
+		Map<String, String> map = new HashMap<>();
 		map.put("no", authentication.getName());
 		return map;
 	}
 
-	public Map<String, Object> idDuplicate(MemberIdRequest id) {
-		Map<String, Object> map = new HashMap<>();
+	public Map<String, String> idDuplicate(MemberIdRequest id) {
+		Map<String, String> map = new HashMap<>();
 		if (memberRepository.existsById(id.getId())) {
 			map.put("isPossible", "NO");
 		} else {
@@ -114,8 +117,8 @@ public class MemberService {
 		return map;
 	}
 
-	public Map<String, Object> nicknameDuplicate(MemberNicknameRequest nickname) {
-		Map<String, Object> map = new HashMap<>();
+	public Map<String, String> nicknameDuplicate(MemberNicknameRequest nickname) {
+		Map<String, String> map = new HashMap<>();
 		if (memberRepository.existsByNickname(nickname.getNickname())) {
 			map.put("isPossible", "NO");
 		} else {
@@ -152,5 +155,16 @@ public class MemberService {
 		}
 		MemberAddressResponse response = MemberAddressResponse.of(memberAddress);
 		return response;
+	}
+
+	@Transactional
+	public Map<String, Long> registAccount(Long memberNo, MemberAccountRequest request) {
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		MemberAccount memberAccount = MemberAccount.of(request);
+		member.registAccount(memberAccount);
+		Map<String, Long> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		return map;
 	}
 }
