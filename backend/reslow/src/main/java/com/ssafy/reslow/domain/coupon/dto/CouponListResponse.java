@@ -11,13 +11,13 @@ import lombok.Getter;
 @Builder
 public class CouponListResponse {
 
-	Long couponNo;
-	String name;
-	String content;
-	int discountType;
-	int discountAmount;
-	int discountPercent;
-	LocalDateTime startDate;
+	private Long couponNo;
+	private String name;
+	private String content;
+	private int discountType;
+	private int discountAmount;
+	private int discountPercent;
+	private LocalDateTime startDate;
 
 	public static CouponListResponse of(Coupon coupon) {
 		return CouponListResponse.builder()

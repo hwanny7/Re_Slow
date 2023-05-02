@@ -2,14 +2,12 @@ package com.ssafy.reslow.domain.coupon.dto;
 
 import java.time.LocalDateTime;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Builder
-public class CouponDetailResponse {
-
-	private Long couponNo;
+@NoArgsConstructor
+public class CouponCreateRequest {
 	private String name;
 	private String content;
 	private int discountType;
@@ -18,5 +16,5 @@ public class CouponDetailResponse {
 	private int minimumOrderAmount;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
-
+	private int totalQuantity;
 }

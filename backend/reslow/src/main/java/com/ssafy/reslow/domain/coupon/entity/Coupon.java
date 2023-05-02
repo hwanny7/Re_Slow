@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -61,4 +62,19 @@ public class Coupon extends BaseEntity {
 	@Builder.Default
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
+
+	public static Coupon of(CouponCreateRequest couponCreateRequest) {
+		return Coupon.builder()
+			.name(couponCreateRequest.getName())
+			.content(couponCreateRequest.getContent())
+			.discountType(couponCreateRequest.getDiscountType())
+			.discountAmount(couponCreateRequest.getDiscountAmount())
+			.discountPercent(couponCreateRequest.getDiscountPercent())
+			.minimumOrderAmount(couponCreateRequest.getMinimumOrderAmount())
+			.startDate(couponCreateRequest.getStartDate())
+			.endDate(couponCreateRequest.getEndDate())
+			.totalQuantity(couponCreateRequest.getTotalQuantity())
+			.remainQuantity(couponCreateRequest.getTotalQuantity())
+			.build();
+	}
 }
