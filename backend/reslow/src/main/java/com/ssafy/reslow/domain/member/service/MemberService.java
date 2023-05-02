@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,12 +57,14 @@ public class MemberService {
 	private final RedisTemplate redisTemplate;
 	private final AuthenticationManager authenticationManager;
 	private final S3StorageClient s3Service;
+	@Value("${default-image-s3}")
+	private String DEFAULT_IMAGE_S3;
 
 	public Map<String, Object> signUp(MemberSignUpRequest signUp) {
 		if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(signUp.getId())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
-		Member member = memberRepository.save(Member.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
+		Member member = memberRepository.save(Member.toEntity(signUp, DEFAULT_IMAGE_S3, passwordEncoder.encode(signUp.getPassword())));
 
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		List<ProductCategory> productCategories = productCategoryRepository.findAll();
@@ -131,7 +134,7 @@ public class MemberService {
 		throws IOException {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		String imageUrl = null;
+		String imageUrl = DEFAULT_IMAGE_S3;
 		if (!file.isEmpty()) {
 			String preImg = member.getProfilePic();
 			s3Service.deleteFile(preImg);

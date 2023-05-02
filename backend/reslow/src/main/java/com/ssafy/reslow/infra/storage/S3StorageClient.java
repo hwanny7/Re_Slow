@@ -37,6 +37,8 @@ public class S3StorageClient implements StorageClient {
 
 	@Value("${cloud.aws.region.static}")
 	private String region;
+	@Value("${default-image-s3}")
+	private String DEFAULT_IMAGE_S3;
 
 	@PostConstruct
 	public void setS3Client() {
@@ -62,10 +64,9 @@ public class S3StorageClient implements StorageClient {
 	}
 
 	@Override
-	public void deleteFile(String fileUrl) {
+	public void deleteFile(String key) {
 		try {
-			String key = fileUrl;
-			if (fileUrl == null) {
+			if (key == null || key.equals(DEFAULT_IMAGE_S3)) {
 				return;
 			}
 			s3Client.deleteObject(bucket, (key).substring(54));
