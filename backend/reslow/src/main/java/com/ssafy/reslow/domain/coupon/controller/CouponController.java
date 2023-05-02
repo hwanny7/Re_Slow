@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
 import com.ssafy.reslow.domain.coupon.dto.CouponListResponse;
+import com.ssafy.reslow.domain.coupon.dto.IssuedCouponListResponse;
 import com.ssafy.reslow.domain.coupon.service.CouponService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,12 @@ public class CouponController {
 	public Map<String, Long> deleteCoupon(Authentication authentication, @PathVariable Long couponNo) {
 		Long managerNo = Long.parseLong(authentication.getName());
 		return couponService.deleteCoupon(managerNo, couponNo);
+	}
+
+	@GetMapping("/my")
+	public Slice<IssuedCouponListResponse> getMyValidCoupons(Authentication authentication, Pageable pageable) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return couponService.getMyValidCoupons(memberNo, pageable);
 	}
 
 }
