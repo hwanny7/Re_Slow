@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
@@ -76,13 +76,13 @@ public class KnowhowController {
 	}
 
 	@GetMapping("")
-	public List<KnowhowList> getKnowhowPostingList(Pageable pageable, @RequestParam("category") Long category,
+	public List<KnowhowListResponse> getKnowhowPostingList(Pageable pageable, @RequestParam("category") Long category,
 		@RequestParam("keyword") String keyword) {
 		return knowhowService.getKnowhowList(pageable, category, keyword);
 	}
 
 	@GetMapping("/mylist")
-	public List<KnowhowList> getKMynowhowPostingList(Authentication authentication, Pageable pageable) {
+	public List<KnowhowListResponse> getKMynowhowPostingList(Authentication authentication, Pageable pageable) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		return knowhowService.getMyKnowhowList(pageable, memberNo);
 	}
@@ -104,7 +104,7 @@ public class KnowhowController {
 	}
 
 	@GetMapping("/likes")
-	public Slice<KnowhowList> likeProductList(Authentication authentication, Pageable pageable) {
+	public Slice<KnowhowListResponse> likeProductList(Authentication authentication, Pageable pageable) {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
 		return knowhowService.likeKnowhowList(memberNo, pageable);
