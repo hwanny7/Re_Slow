@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'calendarselection.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
 import 'couponlist.dart';
@@ -184,20 +183,17 @@ class _ProfileState extends State<Profile> {
                   padding: EdgeInsets.all(5),
                   child: Row(
                     children: [
-                      Icon(Icons.attach_money),
-                      SizedBox(
-                        width: 10,
-                      ), // for spacing between icon and text
+                      Icon(Icons.shopping_cart),
+                      SizedBox(width: 10), // for spacing between icon and text
                       Text(
-                        '정산 내역',
+                        '정산 현황',
                         style: TextStyle(fontSize: 15),
                       ),
                     ],
                   ),
                   alignment: Alignment.centerLeft,
                 ),
-                // flee market ended
-                // add Divider here
+
                 Divider(),
                 // Settings
                 Container(
