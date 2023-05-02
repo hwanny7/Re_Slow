@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,7 @@ import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
+import com.ssafy.reslow.domain.knowhow.dto.testDto;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,14 +36,30 @@ import lombok.RequiredArgsConstructor;
 public class KnowhowController {
 	private final KnowhowService knowhowService;
 
+	// @PostMapping("/")
+	// public Map<String, Object> writeKnowhowPosting(
+	// 	@RequestPart("imageList") List<MultipartFile> multipartFileList,
+	// 	@RequestPart("knowhowRequest") KnowhowRequest request, Authentication authentication) throws IOException {
+	// 	Long memberNo = Long.parseLong(authentication.getName());
+	//
+	// 	HashMap<String, Object> responseMap = new HashMap<>();
+	// 	responseMap.put("msg", knowhowService.saveKnowhow(memberNo, multipartFileList, request));
+	//
+	// 	return responseMap;
+	// }
+
 	@PostMapping("/")
 	public Map<String, Object> writeKnowhowPosting(
-		@RequestPart("imageList") List<MultipartFile> multipartFileList,
-		@RequestPart("knowhowRequest") KnowhowRequest request, Authentication authentication) throws IOException {
+		@ModelAttribute testDto request, Authentication authentication) throws IOException {
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, multipartFileList, request));
+		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, request.getImageList(), KnowhowRequest.builder()
+			.boardNo(request.getBoardNo())
+			.contentList(request.getContentList())
+			.title(request.getTitle())
+			.categoryNo(request.getCategoryNo()).build())
+		);
 
 		return responseMap;
 	}
