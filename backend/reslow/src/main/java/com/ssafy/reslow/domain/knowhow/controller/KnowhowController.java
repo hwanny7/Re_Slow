@@ -11,10 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -25,7 +25,6 @@ import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
-import com.ssafy.reslow.domain.knowhow.dto.testDto;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
 
 import lombok.RequiredArgsConstructor;
@@ -50,15 +49,18 @@ public class KnowhowController {
 
 	@PostMapping("/")
 	public Map<String, Object> writeKnowhowPosting(
-		@ModelAttribute("knowhowRequest") testDto request, Authentication authentication) throws IOException {
+		@RequestPart List<MultipartFile> imageList, @RequestBody List<String> contentList, @RequestBody String title,
+		@RequestBody Long categoryNo,
+		Authentication authentication) throws
+		IOException {
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, request.getImageList(), KnowhowRequest.builder()
-			.contentList(request.getContentList())
-			.title(request.getTitle())
-			.categoryNo(request.getCategoryNo()).build())
-		);
+		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, imageList, KnowhowRequest.builder()
+			.contentList(contentList)
+			.title(title)
+			.categoryNo(categoryNo)
+			.build()));
 
 		return responseMap;
 	}
