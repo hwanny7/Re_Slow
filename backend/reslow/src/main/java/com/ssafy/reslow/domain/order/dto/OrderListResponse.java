@@ -1,6 +1,6 @@
 package com.ssafy.reslow.domain.order.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.product.entity.Product;
@@ -15,7 +15,7 @@ public class OrderListResponse {
 	private Long orderNo;
 	private String title;
 	private int price;
-	private LocalDate date;
+	private LocalDateTime date;
 	private String image;
 	private int status;
 
@@ -24,7 +24,7 @@ public class OrderListResponse {
 			.title(product.getTitle())
 			.orderNo(order.getNo())
 			.price(product.getPrice())
-			.date(order.getCreatedDate().toLocalDate())
+			.date(order.getCreatedDate())
 			.status(status)
 			.image(image)
 			.build();

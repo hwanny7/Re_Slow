@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.reslow.domain.member.dto.MemberAccountRequest;
 import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
@@ -56,12 +57,12 @@ public class MemberController {
 	}
 
 	@PostMapping("/logout")
-	public Map<String, Object> logout(Authentication authentication) {
+	public Map<String, String> logout(Authentication authentication) {
 		return memberService.logout(authentication);
 	}
 
 	@PostMapping("/id")
-	public Map<String, Object> idDuplicate(@Validated @RequestBody MemberIdRequest id, Errors errors) {
+	public Map<String, String> idDuplicate(@Validated @RequestBody MemberIdRequest id, Errors errors) {
 		if (errors.hasErrors()) {
 			throw new ValidationCheckException(VALIDATION_CHECK);
 		}
@@ -69,7 +70,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/nickname")
-	public Map<String, Object> nicknameDuplicate(@Validated @RequestBody MemberNicknameRequest nickname,
+	public Map<String, String> nicknameDuplicate(@Validated @RequestBody MemberNicknameRequest nickname,
 		Errors errors) {
 		if (errors.hasErrors()) {
 			throw new ValidationCheckException(VALIDATION_CHECK);
@@ -92,5 +93,12 @@ public class MemberController {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
 		return memberService.userAddress(memberNo);
+	}
+
+	@PostMapping("/account")
+	public Map<String, Long> registAccount(Authentication authentication, @RequestBody MemberAccountRequest request) {
+		UserDetails principal = (UserDetails)authentication.getPrincipal();
+		Long memberNo = Long.parseLong(principal.getUsername());
+		return memberService.registAccount(memberNo, request);
 	}
 }

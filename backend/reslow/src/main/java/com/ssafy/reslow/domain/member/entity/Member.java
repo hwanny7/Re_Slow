@@ -63,7 +63,7 @@ public class Member extends BaseEntity implements UserDetails {
 	@Column(name = "IS_CERTIFICATION")
 	private boolean isCertification;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "MEMBER_ACCOUNT_PK")
 	private MemberAccount memberAccount;
 
@@ -143,5 +143,9 @@ public class Member extends BaseEntity implements UserDetails {
 	public void updateMember(String nickname, String profilePic) {
 		this.nickname = nickname;
 		this.profilePic = profilePic;
+	}
+
+	public void registAccount(MemberAccount memberAccount) {
+		this.memberAccount = memberAccount;
 	}
 }
