@@ -6,9 +6,8 @@ import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class ItemDetail extends StatefulWidget {
   final int itemPk;
-  final MarketItemDetail? item;
 
-  ItemDetail({required this.itemPk, this.item});
+  ItemDetail({required this.itemPk});
 
   @override
   _ItemDetailState createState() => _ItemDetailState();
@@ -16,6 +15,8 @@ class ItemDetail extends StatefulWidget {
 
 class _ItemDetailState extends State<ItemDetail> {
   final DioClient dioClient = DioClient();
+  MarketItemDetail? item;
+  bool isLiked = false;
 
   @override
   void initState() {
@@ -31,7 +32,7 @@ class _ItemDetailState extends State<ItemDetail> {
       print(jsonData);
 
       setState(() {
-        MarketItemDetail item = MarketItemDetail.fromJson(jsonData);
+        item = MarketItemDetail.fromJson(jsonData);
         print(item);
       });
     } else {
@@ -42,9 +43,101 @@ class _ItemDetailState extends State<ItemDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Text('itemPk'),
-    );
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(backgroundColor: Colors.black.withOpacity(0.2)),
+      body: item == null
+          ? const Center(child: CircularProgressIndicator())
+          : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(
+                    item!.profileImg,
+                  ),
+                ),
+                title: Text(
+                  item!.nickname,
+                  style: const TextStyle(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const Divider(
+                color: Color(0xFFBDBDBD),
+                thickness: 0.5,
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(children: [
+                  Text(
+                    item!.title,
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  Text(item!.date)
+                ]),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  item!.description,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ),
+            ]),
+      bottomNavigationBar: item == null
+          ? null
+          : BottomAppBar(
+              child: Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Color(0xFFBDBDBD), // Set the top border color
+                      width: 0.5, // Set the top border thickness
+                    ),
+                  ),
+                ),
+                height: 60.0,
+                child: Row(children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        right: BorderSide(
+                          color: Color(0xFFBDBDBD), // Set the top border color
+                          width: 0.5, // Set the top border thickness
+                        ),
+                      ),
+                    ),
+                    height: 60.0,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.favorite,
+                        color: isLiked
+                            ? Colors.red
+                            : Colors.grey, // Change color based on condition
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isLiked = !isLiked; // Toggle the liked state
+                        });
+                      },
+                    ),
+                  ),
+                  Text(
+                    '${item!.price}원',
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
+                  )
+                ]),
+              ),
+            ),
+    ));
   }
 }

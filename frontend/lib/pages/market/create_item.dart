@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
@@ -12,7 +15,7 @@ class CreateArticle extends StatefulWidget {
 }
 
 class _CreateArticleState extends State<CreateArticle> {
-  List<File> selectedImages = [];
+  List<String> selectedImages = [];
   ScrollController? scrollController;
   final int maxImageCount = 10;
 
@@ -39,7 +42,7 @@ class _CreateArticleState extends State<CreateArticle> {
     final pickedFiles = await picker.pickMultiImage();
     if (pickedFiles.isNotEmpty) {
       for (var pickedFile in pickedFiles) {
-        File imageFile = File(pickedFile.path);
+        String imageFile = pickedFile.path;
         setState(() {
           selectedImages.add(imageFile);
         });
@@ -49,8 +52,25 @@ class _CreateArticleState extends State<CreateArticle> {
     }
   }
 
-  void _printing() {
-    print('hello');
+  void _printing() async {
+    var formData = FormData();
+    Map<String, dynamic> jsonData = {
+      'Regist': {
+        "title": "고양이 밥그릇",
+        "description": "냐옹이 밥그릇 예쁘게 리폼했어요~",
+        "deliveryFee": 3000,
+        "price": 20000,
+        "stock": 2,
+        "category": 1
+      },
+      'files': []
+    };
+    formData.fields.add(MapEntry('data', jsonEncode(jsonData)));
+    for (var imageFile in selectedImages) {
+      // var file = await MultipartFile.fromFile(imageFile)
+    }
+    print(selectedImages);
+    print(formData);
   }
 
   @override
@@ -106,7 +126,7 @@ class _CreateArticleState extends State<CreateArticle> {
                               Container(
                                 margin: const EdgeInsets.only(left: 8.0),
                                 child: Image.file(
-                                  selectedImages[index - 1],
+                                  File(selectedImages[index - 1]),
                                   width: width * 0.25,
                                   height: width * 0.25,
                                   fit: BoxFit.cover,

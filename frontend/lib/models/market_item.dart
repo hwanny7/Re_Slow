@@ -29,9 +29,11 @@ class MarketItemDetail {
   final String description;
   final int deliveryFee;
   final int price;
-  final int category;
+  final String category;
   final String date;
   final bool mine;
+  final String nickname;
+  final String profileImg;
 
   MarketItemDetail({
     required this.images,
@@ -42,6 +44,8 @@ class MarketItemDetail {
     required this.category,
     required this.date,
     required this.mine,
+    required this.nickname,
+    required this.profileImg,
   });
 
   factory MarketItemDetail.fromJson(Map<String, dynamic> responseData) {
@@ -53,6 +57,8 @@ class MarketItemDetail {
         deliveryFee: responseData['deliveryFee'],
         category: responseData['category'],
         mine: responseData['mine'],
+        nickname: responseData['nickname'],
+        profileImg: responseData['profileImg'],
         description: responseData['description']);
   }
 }
