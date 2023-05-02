@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class KnowhowList {
+public class KnowhowListResponse {
 	Long knowhowNo;
 	String writer;
 	String profile;
@@ -20,32 +20,14 @@ public class KnowhowList {
 	Long likeCnt;
 	Long commentCnt;
 
-	public static KnowhowList of(Knowhow knowhow, List<String> pictureList, int pictureCnt, Long likeCnt,
-		Long commentCnt) {
-		return KnowhowList.builder()
-			.knowhowNo(knowhow.getNo())
-			.writer(knowhow.getMember().getNickname())
-			.profile(knowhow.getMember().getProfilePic())
-			.title(knowhow.getTitle())
-			.pictureList(pictureList)
-			.pictureCnt(pictureCnt)
-			.likeCnt(likeCnt)
-			.commentCnt(commentCnt)
-			.build();
-	}
-
-	public void setLikeCnt(Long likeCnt){
-		this.likeCnt = likeCnt;
-	}
-
-	public static KnowhowList of(Knowhow knowhow, Long likeCnt, Long commentCnt) {
+	public static KnowhowListResponse of(Knowhow knowhow, Long likeCnt, Long commentCnt) {
 		List<String> pictureList = new ArrayList<>();
 		int pictureCnt = Math.min(4, knowhow.getKnowhowContents().size());
 		for (int p = 0; p < pictureCnt; p++) {
 			pictureList.add(knowhow.getKnowhowContents().get(p).getImage());
 		}
 
-		return KnowhowList.builder()
+		return KnowhowListResponse.builder()
 			.writer(knowhow.getMember().getNickname())
 			.profile(knowhow.getMember().getProfilePic())
 			.title(knowhow.getTitle())
@@ -54,5 +36,9 @@ public class KnowhowList {
 			.likeCnt(likeCnt)
 			.commentCnt(commentCnt)
 			.build();
+	}
+
+	public void setLikeCnt(Long likeCnt) {
+		this.likeCnt = likeCnt;
 	}
 }

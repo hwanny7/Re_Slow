@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 
 public interface KnowhowRepositoryCustom {
-	List<KnowhowList> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category, Pageable pageable);
+	List<KnowhowListResponse> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category, Pageable pageable);
 }
