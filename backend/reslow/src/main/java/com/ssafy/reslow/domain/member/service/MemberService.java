@@ -4,10 +4,12 @@ import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
+import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
 import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
@@ -26,6 +30,8 @@ import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.entity.MemberAddress;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.product.entity.ProductCategory;
+import com.ssafy.reslow.domain.product.repository.ProductCategoryRepository;
 import com.ssafy.reslow.global.auth.jwt.JwtTokenProvider;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.global.exception.CustomException;
@@ -40,6 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberService {
 
 	private final MemberRepository memberRepository;
+	private final ProductCategoryRepository productCategoryRepository;
+	private final KnowhowCategoryRepository knowhowCategoryRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisTemplate redisTemplate;
@@ -51,6 +59,17 @@ public class MemberService {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
 		Member member = memberRepository.save(Member.toEntity(signUp, passwordEncoder.encode(signUp.getPassword())));
+
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		List<ProductCategory> productCategories = productCategoryRepository.findAll();
+		productCategories.forEach((productCategory -> {
+			zSetOperations.add("product_" + member.getNo(), String.valueOf(productCategory.getNo()), 0);
+		}));
+		List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
+		knowhowCategoryies.forEach((knowhowCategory -> {
+			zSetOperations.add("knowhow_" + member.getNo(), String.valueOf(knowhowCategory.getNo()), 0);
+		}));
+
 		Map<String, Object> map = new HashMap<>();
 		map.put("nickname", member.getNickname());
 		return map;
