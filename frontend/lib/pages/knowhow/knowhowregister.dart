@@ -20,53 +20,39 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
   Future<void> _requestRegister() async {
     final Dio dio = Dio();
 
-    dio.options.contentType = 'multipart/form-data';
-    FormData formData = FormData();
-
-    formData.fields.add(MapEntry(
-        "knowhowRequest",
-        jsonEncode({
-          "categoryNo": 1,
-          "title": title,
-          "contentList": contentTexts,
-        })));
+    List<dynamic> imageList = [];
 
     for (int i = 0; i < pickedImgs.length; i++) {
-      formData.files.add(MapEntry(
-          'imageList',
-          await MultipartFile.fromFile(
-            pickedImgs[i][0].path,
-          )));
+      final String filename = pickedImgs[i][0].path.split('/').last;
+      final List<int> bytes = await pickedImgs[i][0].readAsBytes();
+      imageList.add(await MultipartFile.fromBytes(bytes, filename: filename));
     }
+    FormData formData = FormData.fromMap({
+      "categoryNo": 1,
+      "title": title,
+      "contentList": contentTexts,
+      "imageList": imageList
+    });
 
-    // List<dynamic> imageList = [];
-
-    // for (int i = 0; i < pickedImgs.length; i++) {
-    //   imageList.add(pickedImgs[i][0].path);
-    // }
-    // Map formData = {
-    //   "knowhowRequest": jsonEncode({
-    //     "categoryNo": 1,
-    //     "title": title,
-    //     "contentList": contentTexts,
-    //   }),
-    //   "imageList": imageList
-    // };
-    // print(formData);
+    // FormData formData = FormData.fromMap({"knowhowNo": 1, "files": imageList});
+    print(formData);
 
     final token = await _getTokenFromSharedPreferences();
     print("token $token");
-    final response = await dio.post(
-      'http://k8b306.p.ssafy.io:8080/knowhows/',
-      data: formData,
-      options: Options(
-        headers: {
-          'Authorization': 'Bearer $token',
-        },
-      ),
-    ); // Use the appended endpoint
 
-    print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ${response.data}");
+    try {
+      final response = await dio.post(
+        'http://k8b306.p.ssafy.io:8080/knowhows/',
+        data: formData,
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      ); // Use the appended endpoint
+
+      print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ${response.data}");
+    } on DioError catch (e) {
+      print('error: $e');
+    }
   }
 
   Future<String?> _getTokenFromSharedPreferences() async {

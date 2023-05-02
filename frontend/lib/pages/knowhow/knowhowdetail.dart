@@ -1,5 +1,9 @@
+// import 'dart:html';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/profile/myKnowhow.dart';
+import 'package:reslow/widgets/common/profile_small.dart';
 
 class KnowHowDetail extends StatefulWidget {
   const KnowHowDetail({Key? key}) : super(key: key);
@@ -8,63 +12,70 @@ class KnowHowDetail extends StatefulWidget {
 }
 
 Map<dynamic, dynamic> content = {
-  "id": 1,
+  "knowhowNo": 1,
   "title": "톡톡 튀는 청바지 리폼 Tip!",
-  "userimage": "assets/image/test.jpg",
-  "username": "리폼왕춘식이",
-  "content": [
+  "profilePic": "assets/image/test.jpg",
+  "writer": "리폼왕춘식이",
+  "contentList": [
     {
+      "order": 1,
+      "contentNo": 1,
       "image": "assets/image/image 1.png",
-      "text": "청바지를 잘라서 만든 청치마예요^^ 아랫 단은 자연스럽게 잘랐더니 더 예쁜 것 같아요~~"
+      "content": "청바지를 잘라서 만든 청치마예요^^ 아랫 단은 자연스럽게 잘랐더니 더 예쁜 것 같아요~~"
     },
     {
+      "order": 2,
+      "contentNo": 1,
       "image": "assets/image/image 2.png",
-      "text": "이건 긴바지로 입다가 여름에 입으려고 잘라봤어요~ 레이스 붙이니까 더 특별한 것 같아요!"
+      "content": "이건 긴바지로 입다가 여름에 입으려고 잘라봤어요~ 레이스 붙이니까 더 특별해요!"
     },
     {
+      "order": 3,
+      "contentNo": 3,
       "image": "assets/image/image 3.png",
-      "text": "진회색 청바지인데 제가 발톱으로 긁어놔서 자연스럽게 스크래치가 생겼어요^^"
+      "content": "진회색 청바지인데 제가 발톱으로 긁어놔서 자연스럽게 스크래치가 생겼어요^^"
     },
     {
+      "order": 4,
+      "contentNo": 4,
       "image": "assets/image/image 10.png",
-      "text": "이것도...^^ 저보다 스크래치 잘 만들 수 있는 고양 나와봐요~~ "
+      "content": "이것도...^^ 저보다 스크래치 잘 만들 수 있는 고양 나와봐요~~ "
     },
   ],
-  "created_at": "2023-04-27",
+  "date": "2023-04-27",
   "heart": 5,
   "comment": 10
 };
 
 Map heartYN = {"YN": true};
 
+var url = Uri.base.toString();
+
 class _KnowHowDetailState extends State<KnowHowDetail> {
-  Widget smallProfile(String imageaddress, String name) {
-    return Row(
-      children: [
-        Container(
-            margin: const EdgeInsets.fromLTRB(8, 8, 12, 8),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  imageaddress,
-                  width: 50,
-                ))),
-        Text(
-          name,
-          style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              fontFamily: "NanumSquare"),
-        )
-      ],
-    );
+  Dio dio = Dio();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _requestKnowhow().then((data) {
+      print(data);
+      setState(() {
+        content = data as Map;
+      });
+    });
+    super.initState();
+  }
+
+  Future<List> _requestKnowhow() async {
+    final response = await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/');
+    return response.data;
   }
 
   @override
   Widget build(BuildContext context) {
     final Map arguments = ModalRoute.of(context)!.settings.arguments as Map;
     final int id = arguments['id'];
+
     return SafeArea(
         child: Scaffold(
             body: Column(children: [
@@ -97,11 +108,11 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              smallProfile(content["userimage"], content["username"]),
+              ProfileSmall(url: content["profilePic"], name: content["writer"]),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 0, 16, 0),
                   child: Text(
-                    content["created_at"],
+                    content["date"],
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w100,
@@ -115,7 +126,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
               color: const Color(0xffDBDBDB)),
           Expanded(
               child: ListView.builder(
-                  itemCount: content["content"].length,
+                  itemCount: content["contentList"].length,
                   itemBuilder: (context, index) {
                     return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -127,7 +138,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
                           Container(
                               margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                               child: Image.asset(
-                                content["content"][index]["image"],
+                                content["contentList"][index]["image"],
                                 width: MediaQuery.of(context).size.width,
                                 fit: BoxFit.cover,
                               )),
@@ -138,7 +149,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
                                   children: [
                                     Expanded(
                                         child: Text(
-                                      content["content"][index]["text"],
+                                      content["contentList"][index]["content"],
                                       style: const TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.w100,

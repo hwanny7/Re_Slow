@@ -1,7 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:reslow/pages/knowhow/knowhowdetail.dart';
+import 'package:reslow/widgets/common/profile_small.dart';
+import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class KnowHow extends StatefulWidget {
   const KnowHow({Key? key}) : super(key: key);
@@ -9,35 +12,7 @@ class KnowHow extends StatefulWidget {
   _KnowHowState createState() => _KnowHowState();
 }
 
-List<dynamic> content = [
-  {
-    "id": 1,
-    "title": "톡톡 튀는 청바지 리폼 Tip!",
-    "userimage": "assets/image/test.jpg",
-    "username": "리폼왕춘식이",
-    "imagelist": [
-      "assets/image/image 1.png",
-      "assets/image/image 2.png",
-      "assets/image/image 3.png",
-      "assets/image/image 10.png"
-    ],
-    "heart": 5,
-    "comment": 10
-  },
-  {
-    "id": 2,
-    "title": "춘식의 서적 리폼 노하우\u{1f60d}",
-    "userimage": "assets/image/test.jpg",
-    "username": "리폼왕춘식이",
-    "imagelist": [
-      "assets/image/image 4.png",
-      "assets/image/image 5.png",
-      "assets/image/image 6.png",
-    ],
-    "heart": 7,
-    "comment": 10
-  },
-];
+List<dynamic> content = [];
 
 List<dynamic> heartYN = [
   {"YN": true},
@@ -47,240 +22,44 @@ List<dynamic> heartYN = [
 int _selectedindex = -1;
 
 class _KnowHowState extends State<KnowHow> {
-  late double fullWidth;
-  late double fullHeight;
-  // 사진 개수에 따라 사진 배치
-  Widget imageGrid(List images) {
-    fullWidth = MediaQuery.of(context).size.width * 0.98;
-    fullHeight = MediaQuery.of(context).size.height * 0.3;
-    int imagenumber = images.length;
-    // 사진 없을 때
-    if (imagenumber == 0) {
-      return const Text("사진이 없는 게시물입니다.");
-      // 사진 한 개일 때
-    } else if (imagenumber == 1) {
-      return ClipRRect(
-          borderRadius: BorderRadius.circular(0.0),
-          child: Image.asset(
-            images[0],
-            width: fullWidth,
-            height: fullHeight,
-            fit: BoxFit.cover,
-          ));
-      // 사진 두 개일 때
-    } else if (imagenumber == 2) {
-      return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Container(
-            margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(0.0),
-                child: Image.asset(
-                  images[0],
-                  width: fullWidth / 2,
-                  height: fullHeight,
-                  fit: BoxFit.cover,
-                ))),
-        Container(
-            margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(0.0),
-                child: Image.asset(
-                  images[1],
-                  width: fullWidth / 2,
-                  height: fullHeight,
-                  fit: BoxFit.cover,
-                )))
-      ]);
-      // 사진 세 개일 때
-    } else if (imagenumber == 3) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(0.0),
-                  child: Image.asset(
-                    images[0],
-                    width: fullWidth / 2,
-                    height: fullHeight,
-                    fit: BoxFit.cover,
-                  ))),
-          Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.fromLTRB(2, 0, 0, 2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[1],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.fromLTRB(2, 2, 0, 0),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[2],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
-            ],
-          )
-        ],
-      );
-      // 사진이 네 개일 때
-    } else if (imagenumber == 4) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[0],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[1],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
-            ],
-          ),
-          Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[2],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[3],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
-            ],
-          )
-        ],
-      );
-      // 사진이 다섯 개 이상일 때
-    } else {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[0],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[1],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
-            ],
-          ),
-          Column(
-            children: [
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
-                        images[2],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
-              Container(
-                  margin: const EdgeInsets.all(2),
-                  child: Stack(
-                    children: [
-                      ClipRRect(
-                          borderRadius: BorderRadius.circular(0.0),
-                          child: Image.asset(
-                            images[3],
-                            width: fullWidth / 2,
-                            height: fullHeight / 2,
-                            fit: BoxFit.cover,
-                          )),
-                      Positioned(
-                          top: (fullHeight - 120) / 2,
-                          left: (fullWidth - 120) / 2,
-                          child: Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                  color: Color(0xffDBDBDB).withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(50)),
-                              child: Center(
-                                  child: Text(
-                                "+${imagenumber - 4}",
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ))))
-                    ],
-                  ))
-            ],
-          )
-        ],
-      );
+  Dio dio = Dio();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _requestKnowhow().then((data) {
+      print(data);
+      setState(() {
+        content = data;
+      });
+    });
+    super.initState();
+  }
+
+  Future<List> _requestKnowhow() async {
+    try {
+      final token = await _getTokenFromSharedPreferences();
+      print("token $token");
+      final response = await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }),
+          queryParameters: {
+            "page": 1,
+            "size": 10,
+            "category": null,
+            "keyword": null
+          });
+      return response.data;
+    } on DioError catch (e) {
+      print('error: $e');
+      return [];
     }
   }
 
-  Widget smallProfile(String imageaddress, String name) {
-    return Row(
-      children: [
-        Container(
-            margin: const EdgeInsets.fromLTRB(8, 8, 12, 8),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  imageaddress,
-                  width: 50,
-                ))),
-        Text(
-          name,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        )
-      ],
-    );
+  Future<String?> _getTokenFromSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken');
   }
 
   @override
@@ -299,8 +78,9 @@ class _KnowHowState extends State<KnowHow> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            smallProfile(content[index]["userimage"],
-                                content[index]["username"]),
+                            ProfileSmall(
+                                url: content[index]["profilePic"],
+                                name: content[index]["writer"]),
                             Image.asset(
                               "assets/image/share.png",
                               width: 24,
@@ -314,7 +94,9 @@ class _KnowHowState extends State<KnowHow> {
                     InkWell(
                         onTap: () => {
                               Navigator.pushNamed(context, '/knowhow/:id',
-                                  arguments: {'id': content[index]["id"]})
+                                  arguments: {
+                                    'id': content[index]["knowhowNo"]
+                                  })
                             },
                         child: Column(children: [
                           Container(
@@ -323,8 +105,10 @@ class _KnowHowState extends State<KnowHow> {
                               child: Center(
                                   child: Column(children: [
                                 Center(
-                                    child:
-                                        imageGrid(content[index]["imagelist"]))
+                                    child: KnowHowGrid(
+                                  images: content[index]["pictureList"],
+                                  imageLTH: content[index]["pictureCnt"],
+                                ))
                               ]))),
                           Container(
                               margin: const EdgeInsets.all(16),
@@ -359,7 +143,7 @@ class _KnowHowState extends State<KnowHow> {
                                                     width: 24,
                                                   )),
                                               Text(
-                                                "${content[index]["heart"]}",
+                                                "${content[index]["likeCnt"]}",
                                                 style: const TextStyle(
                                                     fontSize: 18),
                                               )
@@ -380,7 +164,7 @@ class _KnowHowState extends State<KnowHow> {
                                                     width: 24,
                                                   )),
                                               Text(
-                                                "${content[index]["comment"]}",
+                                                "${content[index]["commentCnt"]}",
                                                 style: const TextStyle(
                                                     fontSize: 18),
                                               )

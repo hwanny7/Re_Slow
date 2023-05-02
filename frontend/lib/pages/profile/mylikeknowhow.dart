@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
 
-class MyKnowhow extends StatefulWidget {
-  const MyKnowhow({Key? key}) : super(key: key);
+class Mylikeknowhow extends StatefulWidget {
+  const Mylikeknowhow({Key? key}) : super(key: key);
 
   @override
-  _MyKnowhowState createState() => _MyKnowhowState();
+  _MylikeknowhowState createState() => _MylikeknowhowState();
 }
 
 List<dynamic> content = [
@@ -48,7 +48,7 @@ List<dynamic> heartYN = [
 
 int _selectedindex = -1;
 
-class _MyKnowhowState extends State<MyKnowhow> {
+class _MylikeknowhowState extends State<Mylikeknowhow> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -59,7 +59,7 @@ class _MyKnowhowState extends State<MyKnowhow> {
             margin: const EdgeInsets.all(12),
             width: MediaQuery.of(context).size.width * 0.7,
             child: const Text(
-              "내가 쓴 노하우 글",
+              "관심 노하우 글",
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 24,
@@ -85,7 +85,7 @@ class _MyKnowhowState extends State<MyKnowhow> {
                           children: [
                             ProfileSmall(
                                 url: content[index]["profilePic"],
-                                name: content[index]["writer"]),
+                                name: content[index]["wirter"]),
                             Image.asset(
                               "assets/image/share.png",
                               width: 24,
