@@ -55,7 +55,6 @@ public class KnowhowController {
 
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, request.getImageList(), KnowhowRequest.builder()
-			.boardNo(request.getBoardNo())
 			.contentList(request.getContentList())
 			.title(request.getTitle())
 			.categoryNo(request.getCategoryNo()).build())

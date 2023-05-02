@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class KnowhowRequest {
-	Long boardNo;
 	Long categoryNo;
 	String title;
 	List<String> contentList;
