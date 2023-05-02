@@ -6,6 +6,7 @@ import lombok.Getter;
 public class OrderRegistRequest {
 
 	private Long productNo;
+	private Long issuedCouponNo;
 	private String recipient;
 	private int zipcode;
 	private String address;
