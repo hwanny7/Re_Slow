@@ -86,6 +86,8 @@ public class MemberService {
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		TokenResponse tokenInfo = jwtTokenProvider.generateToken(authentication);
+		boolean existAccount = member.getMemberAccount() == null ? false : true;
+		tokenInfo.setExistAccount(existAccount);
 
 		redisTemplate.opsForValue()
 			.set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(),
