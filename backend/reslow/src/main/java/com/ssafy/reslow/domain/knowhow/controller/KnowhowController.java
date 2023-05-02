@@ -28,10 +28,12 @@ import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("knowhows")
 @RequiredArgsConstructor
+@Slf4j
 public class KnowhowController {
 	private final KnowhowService knowhowService;
 
@@ -63,6 +65,15 @@ public class KnowhowController {
 			.build()));
 
 		return responseMap;
+	}
+
+	@PostMapping("/test")
+	public String test(@RequestPart List<MultipartFile> files) {
+		log.debug("라라라랄라라라라라 여기기기여기 밑에 보자1!!!!!!!!!!!!!");
+		for (MultipartFile file : files)
+			log.debug(file.getOriginalFilename());
+
+		return "받았나?";
 	}
 
 	@GetMapping("/detail/{knowhowNo}")
