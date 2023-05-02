@@ -1,6 +1,5 @@
 package com.ssafy.reslow.domain.knowhow.service;
 
-import static com.ssafy.reslow.domain.knowhow.entity.Knowhow.*;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
@@ -57,8 +56,7 @@ public class KnowhowService {
 	private final S3StorageClient s3StorageClient;
 
 	// 게시글 정보 저장
-	public String saveKnowhow(Long memberNo, List<MultipartFile> imageList,
-		KnowhowRequest knowhowRequest) throws IOException {
+	public String saveKnowhow(Long memberNo, KnowhowRequest knowhowRequest) throws IOException {
 		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		// 카테고리 객체 만들기
@@ -66,11 +64,11 @@ public class KnowhowService {
 			.orElseThrow(() -> new NoSuchElementException("category 존재하지 않음"));
 
 		// 노하우 테이블 저장
-		Knowhow knowhow = ofEntity(knowhowRequest, member, category);
+		Knowhow knowhow = Knowhow.of(knowhowRequest, member, category);
 		knowhowRepository.save(knowhow);
 
 		// 노하우 글 저장
-		saveKnowhowContent(knowhowRequest.getContentList(), imageList, knowhow);
+		saveKnowhowContent(knowhowRequest.getContentList(), knowhowRequest.getImageList(), knowhow);
 
 		return "글 작성 완료";
 	}
@@ -122,7 +120,7 @@ public class KnowhowService {
 			.orElseThrow(() -> new NoSuchElementException("category 존재하지 않음"));
 
 		// 글 제목, 카테고리 등 수정
-		knowhow.update(KnowhowRequest.ofEntity(updateRequest), member, category);
+		knowhow.update(KnowhowUpdateRequest.of(updateRequest), member, category);
 
 		// 글 내용 수정
 		// 이전 글 내용 리스트
@@ -212,6 +210,19 @@ public class KnowhowService {
 		}
 
 		return list;
+	}
+
+	public Long PersonalMostLikeCategory(Long memberNo) {
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String mostLikeCategory = String.valueOf(zSetOperations.range("knowhow_" + memberNo, 0, 1));
+
+		// 좋아요한 글이 없으면 모든 글 중 좋아요가 많은 글, 좋아요가 같으면 최신 글을 보여준다.
+		if (zSetOperations.score("knowhow_" + memberNo, mostLikeCategory) == 0D) {
+
+		} else {
+
+		}
+		return null;
 	}
 
 	public Long likeCount(Long knowhowNo) {
