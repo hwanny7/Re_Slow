@@ -3,6 +3,7 @@ package com.ssafy.reslow.domain.product.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.product.entity.Product;
 
 import lombok.Builder;
@@ -12,6 +13,8 @@ import lombok.Getter;
 @Builder
 public class ProductDetailResponse {
 
+	private String nickname;
+	private String profileImg;
 	private boolean mine;
 	private String title;
 	private String description;
@@ -23,6 +26,8 @@ public class ProductDetailResponse {
 
 	public static ProductDetailResponse of(Product product, String category, boolean mine, List<String> images) {
 		return ProductDetailResponse.builder()
+			.nickname(product.getMember().getNickname())
+			.profileImg(product.getMember().getProfilePic())
 			.title(product.getTitle())
 			.description(product.getDescription())
 			.deliveryFee(product.getDeliveryFee())
