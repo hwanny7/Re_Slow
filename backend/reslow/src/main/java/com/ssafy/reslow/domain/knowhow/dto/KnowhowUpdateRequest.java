@@ -12,4 +12,8 @@ public class KnowhowUpdateRequest {
 	Long categoryNo;
 	String title;
 	List<KnowhowUpdateContent> contentList;
+
+	public static KnowhowUpdateRequest of(KnowhowUpdateRequest updateRequest) {
+		return KnowhowUpdateRequest.builder().categoryNo(updateRequest.categoryNo).title(updateRequest.title).build();
+	}
 }
