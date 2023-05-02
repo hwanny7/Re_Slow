@@ -68,7 +68,8 @@ public class KnowhowController {
 	}
 
 	@PostMapping("/test")
-	public String test(@RequestPart List<MultipartFile> files) {
+	public String test(@RequestPart List<MultipartFile> files, @RequestParam("knowhowNo") Long knowhowNo) {
+		log.error("이 글의 번호는 : " + knowhowNo);
 		log.error("라라라랄라라라라라 여기기기여기 밑에 보자1!!!!!!!!!!!!!");
 		for (MultipartFile file : files)
 			log.error(file.getOriginalFilename());
