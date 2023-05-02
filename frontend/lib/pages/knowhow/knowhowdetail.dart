@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reslow/widgets/common/search_bar.dart';
-import 'package:reslow/widgets/common/category_tap_bar.dart';
 
 class KnowHowDetail extends StatefulWidget {
   const KnowHowDetail({Key? key}) : super(key: key);
@@ -35,6 +33,8 @@ Map<dynamic, dynamic> content = {
   "heart": 5,
   "comment": 10
 };
+
+Map heartYN = {"YN": true};
 
 class _KnowHowDetailState extends State<KnowHowDetail> {
   Widget smallProfile(String imageaddress, String name) {
@@ -136,7 +136,62 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
                                     ))
                                   ])),
                         ]);
-                  }))
+                  })),
+          Container(
+              width: MediaQuery.of(context).size.width,
+              height: 1,
+              color: const Color(0xffDBDBDB)),
+          Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 16, 0),
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            setState(() {
+                              heartYN["YN"] = !heartYN["YN"];
+                            });
+                          },
+                          child: Row(children: [
+                            Container(
+                                margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: Image.asset(
+                                  heartYN["YN"]
+                                      ? "assets/image/full_heart.png"
+                                      : "assets/image/heart.png",
+                                  width: 24,
+                                )),
+                            Text(
+                              "${content["heart"]}",
+                              style: const TextStyle(fontSize: 18),
+                            )
+                          ])),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      InkWell(
+                          onTap: () => {},
+                          child: Row(children: [
+                            Container(
+                                margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: Image.asset(
+                                  "assets/image/comment.png",
+                                  width: 24,
+                                )),
+                            Text(
+                              "${content["comment"]}",
+                              style: const TextStyle(fontSize: 18),
+                            )
+                          ])),
+                    ],
+                  )
+                ],
+              ))
         ],
       ))
     ])));

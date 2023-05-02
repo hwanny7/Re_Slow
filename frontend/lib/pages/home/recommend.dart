@@ -131,32 +131,148 @@ class _RecommendState extends State<Recommend>
                 child: Column(
                   children: [
                     // Bubble 1
-                    SizedBox(height: 20),
                     SlideTransition(
                       position: _animation,
-                      child: Transform.translate(
-                        offset: Offset(-20, 0),
-                        child: Container(
-                          width: 280,
-                          height: 280,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue.shade200.withOpacity(0.6),
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'bubble1',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //       'path/to/bubble_background.png'),
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                           ),
-                        ),
+                          // flexible rectangular box
+                          Transform.translate(
+                            offset: Offset(-20, 0),
+                            child: Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // container start
+                                    Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/image/image 1.png'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            bottom: 0,
+                                            left: 0,
+                                            right: 0,
+                                            child: Container(
+                                              height: 1,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 110,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8),
+                                              child: ClipOval(
+                                                child: Container(
+                                                  width: 60,
+                                                  height: 60,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/image/test.jpg'),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    //container end
+
+                                    Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '리폼왕 춘식이',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Text(
+                                              '톡톡튀는 청바지 리폼 Tip!',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.favorite_border),
+                                                    SizedBox(width: 8),
+                                                    Text('27'),
+                                                  ],
+                                                ),
+                                                SizedBox(width: 16),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.comment),
+                                                    SizedBox(width: 8),
+                                                    Text('57'),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //flexible rectangular box
+                        ],
                       ),
                     ),
+
                     // Bubble1 end
                     // Turtle
                     Padding(
@@ -170,32 +286,148 @@ class _RecommendState extends State<Recommend>
                       ),
                     ),
                     // Bubble 2
-                    SizedBox(height: 50),
                     SlideTransition(
                       position: _animation,
-                      child: Transform.translate(
-                        offset: Offset(20, 0),
-                        child: Container(
-                          width: 280,
-                          height: 280,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue.shade400.withOpacity(0.6),
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'bubble2',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //       'path/to/bubble_background.png'),
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                           ),
-                        ),
+                          // flexible rectangular box
+                          Transform.translate(
+                            offset: Offset(20, 0),
+                            child: Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // container start
+                                    Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/image/image 4.png'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            bottom: 0,
+                                            left: 0,
+                                            right: 0,
+                                            child: Container(
+                                              height: 1,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 110,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8),
+                                              child: ClipOval(
+                                                child: Container(
+                                                  width: 60,
+                                                  height: 60,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/image/test.jpg'),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    //container end
+
+                                    Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '리폼왕 춘식이',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Text(
+                                              '나만의 다꾸 Tip!',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.favorite_border),
+                                                    SizedBox(width: 8),
+                                                    Text('33'),
+                                                  ],
+                                                ),
+                                                SizedBox(width: 16),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.comment),
+                                                    SizedBox(width: 8),
+                                                    Text('5'),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //flexible rectangular box
+                        ],
                       ),
                     ),
+                    // Bubble 2 end
                     // Turtle_reversed
                     Padding(
                       padding: EdgeInsets.only(right: 180.0, top: 30),
@@ -207,32 +439,146 @@ class _RecommendState extends State<Recommend>
                         ),
                       ),
                     ),
-                    // Bubble 2 end
                     // Bubble 3
-                    SizedBox(height: 50),
                     SlideTransition(
                       position: _animation,
-                      child: Transform.translate(
-                        offset: Offset(0, 0),
-                        child: Container(
-                          width: 280,
-                          height: 280,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue.shade600.withOpacity(0.6),
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              'bubble3',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                // image: DecorationImage(
+                                //   image: AssetImage(
+                                //       'assets/image/image 1.png'),
+                                //   fit: BoxFit.cover,
+                                // ),
                               ),
                             ),
                           ),
-                        ),
+                          // flexible rectangular box
+                          Transform.translate(
+                            offset: Offset(0, 0),
+                            child: Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // container start
+                                    Container(
+                                      height: 200,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10),
+                                        ),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/image/image 5.png'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                            bottom: 0,
+                                            left: 0,
+                                            right: 0,
+                                            child: Container(
+                                              height: 1,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            bottom: 0,
+                                            right: 110,
+                                            child: Padding(
+                                              padding: EdgeInsets.all(8),
+                                              child: ClipOval(
+                                                child: Container(
+                                                  width: 60,
+                                                  height: 60,
+                                                  decoration: BoxDecoration(
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                          'assets/image/test.jpg'),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    //container end
+
+                                    Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              '리폼왕 춘식이',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Text(
+                                              '성경책 커스터마이징 Tip!',
+                                              style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 16),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.favorite_border),
+                                                    SizedBox(width: 8),
+                                                    Text('44'),
+                                                  ],
+                                                ),
+                                                SizedBox(width: 16),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.comment),
+                                                    SizedBox(width: 8),
+                                                    Text('12'),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //flexible rectangular box
+                        ],
                       ),
                     ),
                     // Bubble 3 end
