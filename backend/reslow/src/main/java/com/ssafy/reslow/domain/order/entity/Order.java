@@ -1,6 +1,7 @@
 package com.ssafy.reslow.domain.order.entity;
 
 import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
 import com.ssafy.reslow.domain.order.dto.OrderUpdateCarrierRequest;
@@ -60,6 +62,9 @@ public class Order extends BaseEntity {
 	@Column(name = "CARRIER_TRACK")
 	private int carrierTrack;
 
+	@Column(name = "TOTAL_PRICE")
+	private int totalPrice;
+
 	@OneToOne(mappedBy = "order")
 	private Product product;
 
@@ -67,7 +72,13 @@ public class Order extends BaseEntity {
 	@JoinColumn(name = "MEMBER_PK")
 	private Member buyer;
 
-	public static Order of(OrderRegistRequest request, Product product, Member buyer) {
+	@OneToOne(cascade = CascadeType.ALL)
+	private IssuedCoupon issuedCoupon;
+
+	public static Order of(OrderRegistRequest request, Product product, Member buyer, IssuedCoupon issuedCoupon) {
+		double discount = issuedCoupon.getCoupon().getDiscountPercent() * 0.01;
+		int originPrice = product.getPrice() + product.getDeliveryFee();
+		int totalPrice = originPrice - (int)(originPrice * discount);
 		return Order.builder()
 			.status(OrderStatus.COMPLETE_PAYMENT)
 			.recipient(request.getRecipient())
@@ -78,6 +89,8 @@ public class Order extends BaseEntity {
 			.memo(request.getMemo())
 			.product(product)
 			.buyer(buyer)
+			.totalPrice(totalPrice)
+			.issuedCoupon(issuedCoupon)
 			.build();
 	}
 

@@ -14,6 +14,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
+import com.ssafy.reslow.domain.coupon.repository.IssuedCouponRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.order.dto.OrderComfirmationResponse;
@@ -38,6 +40,7 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final OrderRepository orderRepository;
 	private final ProductRepository productRepository;
+	private final IssuedCouponRepository issuedCouponRepository;
 
 	public Slice<OrderListResponse> myOrderList(Long memberNo, int status, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).get();
@@ -61,11 +64,16 @@ public class OrderService {
 		return new SliceImpl<>(responses, pageable, list.hasNext());
 	}
 
+	@Transactional
 	public Map<String, Long> registOrder(Long memberNo, OrderRegistRequest request) {
 		Product product = productRepository.findById(request.getProductNo())
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		Order order = Order.of(request, product, member);
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		IssuedCoupon issuedCoupon = issuedCouponRepository.findById(request.getIssuedCouponNo())
+			.orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
+		issuedCoupon.use();
+		Order order = Order.of(request, product, member, issuedCoupon);
 		Order savedOrder = orderRepository.save(order);
 		Map<String, Long> map = new HashMap<>();
 		map.put("orderNo", savedOrder.getNo());
