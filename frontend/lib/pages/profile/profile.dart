@@ -180,35 +180,21 @@ class _ProfileState extends State<Profile> {
                   alignment: Alignment.centerLeft,
                 ),
                 // 정산 컨테이너
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to privacy settings page
-                    Navigator.pushNamed(
-                      context,
-                      '/calendar_selection',
-                      arguments: {
-                        'onDateRangeSelected': (DateTime start, DateTime end) {
-                          // handle date range selection
-                        }
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(5),
-                    child: Row(
-                      children: [
-                        Icon(Icons.attach_money),
-                        SizedBox(
-                          width: 10,
-                        ), // for spacing between icon and text
-                        Text(
-                          '정산 내역',
-                          style: TextStyle(fontSize: 15),
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.centerLeft,
+                Container(
+                  padding: EdgeInsets.all(5),
+                  child: Row(
+                    children: [
+                      Icon(Icons.attach_money),
+                      SizedBox(
+                        width: 10,
+                      ), // for spacing between icon and text
+                      Text(
+                        '정산 내역',
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ],
                   ),
+                  alignment: Alignment.centerLeft,
                 ),
                 // flee market ended
                 // add Divider here
