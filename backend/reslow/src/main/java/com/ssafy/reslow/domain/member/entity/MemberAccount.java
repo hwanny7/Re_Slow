@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.ssafy.reslow.domain.member.dto.MemberAccountRequest;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -23,11 +24,19 @@ import lombok.NoArgsConstructor;
 public class MemberAccount extends BaseEntity {
 
 	@Column(name = "BANK")
-	private String back;
+	private String bank;
 
 	@Column(name = "ACCOUNT_NUMBER")
 	private String accountNumber;
 
 	@Column(name = "ACCOUNT_HOLDER")
 	private String accountHolder;
+
+	public static MemberAccount of(MemberAccountRequest request) {
+		return MemberAccount.builder()
+			.accountHolder(request.getAccountHolder())
+			.accountNumber(request.getAccountNumber())
+			.bank(request.getBank())
+			.build();
+	}
 }
