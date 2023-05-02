@@ -14,7 +14,6 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
-import com.ssafy.reslow.domain.knowhow.entity.KnowhowContent;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,28 +38,11 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 
 		List<Knowhow> knowhows = results.getResults();
 		List<KnowhowListResponse> list = knowhows.stream()
-			.map(x -> KnowhowListResponse.of(x, getImages(x).subList(0, Math.min(getImages(x).size(), 4)),
-				getImages(x).size(),
+			.map(x -> KnowhowListResponse.of(x,
 				1L, (long)x.getKnowhowComments().size()))
 			.collect(
 				Collectors.toList());
 
-		boolean hasNext = false;
-		if (list.size() > pageable.getPageSize()) {
-			list.remove(pageable.getPageSize());
-			hasNext = true;
-		}
-
 		return list;
 	}
-
-	private List<String> getImages(Knowhow knowhow) {
-		List<KnowhowContent> contents = knowhow.getKnowhowContents();
-		List<String> images = contents.stream()
-			.map(KnowhowContent::getImage)
-			.filter(image -> image != null && !image.isEmpty())
-			.collect(Collectors.toList());
-		return images;
-	}
-
 }
