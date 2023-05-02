@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -37,44 +36,19 @@ import lombok.extern.slf4j.Slf4j;
 public class KnowhowController {
 	private final KnowhowService knowhowService;
 
-	// @PostMapping("/")
-	// public Map<String, Object> writeKnowhowPosting(
-	// 	@RequestPart("imageList") List<MultipartFile> multipartFileList,
-	// 	@RequestPart("knowhowRequest") KnowhowRequest request, Authentication authentication) throws IOException {
-	// 	Long memberNo = Long.parseLong(authentication.getName());
-	//
-	// 	HashMap<String, Object> responseMap = new HashMap<>();
-	// 	responseMap.put("msg", knowhowService.saveKnowhow(memberNo, multipartFileList, request));
-	//
-	// 	return responseMap;
-	// }
-
 	@PostMapping("/")
 	public Map<String, Object> writeKnowhowPosting(
-		@RequestPart List<MultipartFile> imageList, @RequestBody List<String> contentList, @RequestBody String title,
-		@RequestBody Long categoryNo,
+		@RequestPart List<MultipartFile> imageList, @RequestParam List<String> contentList, @RequestParam String title,
+		@RequestParam Long categoryNo,
 		Authentication authentication) throws
 		IOException {
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
-		responseMap.put("msg", knowhowService.saveKnowhow(memberNo, imageList, KnowhowRequest.builder()
-			.contentList(contentList)
-			.title(title)
-			.categoryNo(categoryNo)
-			.build()));
+		responseMap.put("msg",
+			knowhowService.saveKnowhow(memberNo, KnowhowRequest.of(categoryNo, title, contentList, imageList)));
 
 		return responseMap;
-	}
-
-	@PostMapping("/test")
-	public String test(@RequestPart List<MultipartFile> files, @RequestParam("knowhowNo") Long knowhowNo) {
-		log.error("이 글의 번호는 : " + knowhowNo);
-		log.error("라라라랄라라라라라 여기기기여기 밑에 보자1!!!!!!!!!!!!!");
-		for (MultipartFile file : files)
-			log.error(file.getOriginalFilename());
-
-		return "받았나?";
 	}
 
 	@GetMapping("/detail/{knowhowNo}")
