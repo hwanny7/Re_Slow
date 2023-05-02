@@ -7,7 +7,7 @@ class CustomAppBar extends AppBar {
     String? register,
     Widget? leading,
     String actions = '',
-    void Function()? callback,
+    dynamic Function()? callback,
     // List<Widget>? actions,
   }) : super(
           key: key,
