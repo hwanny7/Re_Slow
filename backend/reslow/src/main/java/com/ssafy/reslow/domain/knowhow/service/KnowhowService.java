@@ -25,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowContentDetail;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
-import com.ssafy.reslow.domain.knowhow.dto.KnowhowList;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateContent;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
@@ -191,35 +191,24 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public List<KnowhowList> getKnowhowList(Pageable pageable, Long category, String keyword) {
-		List<KnowhowList> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category, pageable);
+	public List<KnowhowListResponse> getKnowhowList(Pageable pageable, Long category, String keyword) {
+		List<KnowhowListResponse> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category,
+			pageable);
 		list.forEach(knowhowList -> knowhowList.setLikeCnt(likeCount(knowhowList.getKnowhowNo())));
 
 		return list;
 	}
 
-	public List<KnowhowList> getMyKnowhowList(Pageable pageable, Long memberNo){
+	public List<KnowhowListResponse> getMyKnowhowList(Pageable pageable, Long memberNo) {
 		List<Knowhow> knowhowList = knowhowRepository.findAllByMember_No(pageable, memberNo).getContent();
-		List<String> pictureList;
-		List<KnowhowList> list = new ArrayList<>();
+		List<KnowhowListResponse> list = new ArrayList<>();
 		for (Knowhow knowhow : knowhowList) {
-			// 사진 리스트에 넣기
-			pictureList = new ArrayList<>();
-			List<KnowhowContent> contentList = knowhow.getKnowhowContents();
-
-			int pictureCnt = Math.min(4, contentList.size());
-			for (int p = 0; p < pictureCnt; p++) {
-				pictureList.add(contentList.get(p).getImage());
-			}
-
 			// 해당 글 좋아요 개수 세기
 			Long likeCnt = likeCount(knowhow.getNo());
-
 			// 해당 글 댓글 개수 세기
 			Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
-
 			// 노하우 리스트에 저장하기
-			list.add(KnowhowList.of(knowhow, pictureList, contentList.size(), likeCnt, commentCnt));
+			list.add(KnowhowListResponse.of(knowhow, likeCnt, commentCnt));
 		}
 
 		return list;
@@ -258,7 +247,7 @@ public class KnowhowService {
 		return map;
 	}
 
-	public Slice<KnowhowList> likeKnowhowList(Long memberNo, Pageable pageable) {
+	public Slice<KnowhowListResponse> likeKnowhowList(Long memberNo, Pageable pageable) {
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String key = memberNo + "_like_knowhow";
 		int start = pageable.getPageNumber() * pageable.getPageSize();
@@ -277,12 +266,12 @@ public class KnowhowService {
 			}
 		});
 
-		List<KnowhowList> knowhowListResponse = knowhowList
+		List<KnowhowListResponse> knowhowListResponse = knowhowList
 			.stream()
 			.map(knowhow -> {
 				Long likeCnt = likeCount(knowhow.getNo());
 				Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
-				return KnowhowList.of(knowhow, likeCnt, commentCnt);
+				return KnowhowListResponse.of(knowhow, likeCnt, commentCnt);
 			})
 			.collect(Collectors.toList());
 
