@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
 import 'package:reslow/widgets/market/item_info.dart';
@@ -10,17 +13,41 @@ class Market extends StatefulWidget {
 }
 
 class _MarketState extends State<Market> {
-  List<MarketItem> itemList = [
-    MarketItem(name: '청바지', price: '540원'),
-    MarketItem(name: '니트', price: '700원'),
-    MarketItem(name: '치마', price: '1900원'),
-    MarketItem(name: '신발', price: '5200원'),
-    MarketItem(name: '핸드폰', price: '500원'),
-    MarketItem(name: '텀블러', price: '3500원'),
-    MarketItem(name: '명품가방', price: '2500원'),
-    MarketItem(name: '양말', price: '9500원'),
-    MarketItem(name: '레이스', price: '1500원'),
-  ];
+  List<MarketItem> itemList = [];
+  final DioClient dioClient = DioClient();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    // Perform the HTTP GET request here
+    // For example, using the http package
+    Map<String, dynamic> queryParams = {
+      'page': 0,
+      'size': 10,
+      'category': '',
+      'keyword': '',
+    };
+    Response response =
+        await dioClient.dio.get('/products', queryParameters: queryParams);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      // print(jsonData);
+
+      setState(() {
+        // Update the state with the fetched data
+        itemList = List<MarketItem>.from(jsonData['content']
+            .map((itemJson) => MarketItem.fromJson(itemJson)));
+      });
+    } else {
+      // Handle any errors or display an error message
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

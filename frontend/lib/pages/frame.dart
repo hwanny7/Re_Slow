@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/home/recommend.dart';
-import 'package:reslow/pages/market/create_article.dart';
+import 'package:reslow/pages/market/create_item.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'chat/chat.dart';
 import 'home/home.dart';
