@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-	ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, -1,"만료된 Access Token 입니다."),
+	ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, -1, "만료된 Access Token 입니다."),
 	BAD_REQUEST(HttpStatus.BAD_REQUEST, -2, "잘못된 요청입니다."),
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, -3, "허용되지 않은 메서드입니다."),
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, -4, "내부 서버 오류입니다."),
@@ -24,7 +24,8 @@ public enum ErrorCode {
 	ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, -14, "상품을 찾을 수 없습니다."),
 	ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, -15, "기본 주소지가 없습니다."),
 	USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, -16, "사용자 접근 권한이 없습니다."),
-	VALIDATION_CHECK(HttpStatus.UNAUTHORIZED, -17, "유효성 검사를 다시 실시해주세요.");
+	VALIDATION_CHECK(HttpStatus.UNAUTHORIZED, -17, "유효성 검사를 다시 실시해주세요."),
+	COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, -18, "쿠폰을 찾을 수 없습니다.");
 
 	private final HttpStatus status;
 	private final int code;

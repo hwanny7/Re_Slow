@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
+import com.ssafy.reslow.domain.coupon.dto.CouponDetailResponse;
 import com.ssafy.reslow.domain.coupon.dto.CouponListResponse;
 import com.ssafy.reslow.domain.coupon.dto.IssuedCouponListResponse;
 import com.ssafy.reslow.domain.coupon.service.CouponService;
@@ -29,6 +30,11 @@ public class CouponController {
 	@GetMapping("/all")
 	public Slice<CouponListResponse> getAllValidCoupons(Pageable pageable) {
 		return couponService.getAllValidCoupons(pageable);
+	}
+
+	@GetMapping("/{couponNo}")
+	public CouponDetailResponse getCouponDetail(@PathVariable Long couponNo) {
+		return couponService.getCouponDetail(couponNo);
 	}
 
 	@PostMapping

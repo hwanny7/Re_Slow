@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
+import com.ssafy.reslow.domain.coupon.dto.CouponDetailResponse;
 import com.ssafy.reslow.domain.coupon.dto.CouponListResponse;
 import com.ssafy.reslow.domain.coupon.dto.IssuedCouponListResponse;
 import com.ssafy.reslow.domain.coupon.entity.Coupon;
@@ -50,9 +51,13 @@ public class CouponService {
 		return new SliceImpl<>(couponListResponses, pageable, coupons.hasNext());
 	}
 
+	public CouponDetailResponse getCouponDetail(Long couponNo) {
+		Coupon coupon = couponRepository.findById(couponNo).orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
+		return CouponDetailResponse.of(coupon);
+	}
+
 	public Slice<IssuedCouponListResponse> getMyValidCoupons(Long memberNo, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-
 		LocalDateTime now = LocalDateTime.now();
 		Slice<IssuedCoupon> coupons = issuedCouponRepository.findMyValidCoupon(memberNo, now, pageable);
 		List<IssuedCouponListResponse> couponListResponses = coupons.getContent()
