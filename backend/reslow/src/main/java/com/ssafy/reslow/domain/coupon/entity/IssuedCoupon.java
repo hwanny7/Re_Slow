@@ -44,4 +44,8 @@ public class IssuedCoupon extends BaseEntity {
 			.used(false)
 			.build();
 	}
+
+	public void use() {
+		used = true;
+	}
 }

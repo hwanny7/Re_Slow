@@ -100,4 +100,17 @@ public class CouponService {
 		return map;
 	}
 
+	public Map<String, Long> useIssuedCoupon(Long memberNo, Long issuedCouponNo) {
+		IssuedCoupon issuedCoupon = issuedCouponRepository.findById(issuedCouponNo)
+			.orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
+		if (!memberNo.equals(issuedCoupon.getMember().getNo())) {
+			throw new CustomException(USER_NOT_MATCH);
+		}
+		issuedCoupon.use();
+		issuedCouponRepository.save(issuedCoupon);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("issuedCouponNo", issuedCoupon.getNo());
+		return map;
+	}
 }

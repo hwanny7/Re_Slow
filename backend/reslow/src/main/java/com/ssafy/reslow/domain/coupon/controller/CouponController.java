@@ -7,6 +7,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,12 @@ public class CouponController {
 	public Map<String, Long> issueCoupon(Authentication authentication, @PathVariable Long couponNo) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		return couponService.issueCoupon(memberNo, couponNo);
+	}
+
+	@PatchMapping("/{issuedCouponNo}")
+	public Map<String, Long> useIssuedCoupon(Authentication authentication, @PathVariable Long issuedCouponNo) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return couponService.useIssuedCoupon(memberNo, issuedCouponNo);
 	}
 
 }
