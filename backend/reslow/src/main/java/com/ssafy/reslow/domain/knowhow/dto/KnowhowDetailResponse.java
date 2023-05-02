@@ -11,14 +11,16 @@ import lombok.Getter;
 @Getter
 @Builder
 public class KnowhowDetailResponse {
+	Long knowhowNo;
 	String writer;
 	String profilePic;
 	LocalDateTime date;
 	String title;
 	List<KnowhowContentDetail> contentList;
 
-	public static KnowhowDetailResponse ofEntity(Knowhow knowhow, List<KnowhowContentDetail> detailList) {
+	public static KnowhowDetailResponse of(Knowhow knowhow, List<KnowhowContentDetail> detailList) {
 		return KnowhowDetailResponse.builder()
+			.knowhowNo(knowhow.getNo())
 			.writer(knowhow.getMember().getNickname())
 			.profilePic(knowhow.getMember().getProfilePic())
 			.date(knowhow.getCreatedDate())
