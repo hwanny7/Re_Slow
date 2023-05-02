@@ -8,7 +8,6 @@ import lombok.Getter;
 
 @Getter
 public class testDto {
-	Long boardNo;
 	Long categoryNo;
 	String title;
 	List<String> contentList;
