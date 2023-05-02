@@ -36,25 +36,41 @@ class _CalendarSelectionState extends State<CalendarSelection> {
 
   void _filterToday() {
     final today = DateTime.now();
-    widget.onDateRangeSelected(today, today);
+    setState(() {
+      _startDate = today;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   void _filterOneWeek() {
     final today = DateTime.now();
     final oneWeekAgo = today.subtract(Duration(days: 7));
-    widget.onDateRangeSelected(oneWeekAgo, today);
+    setState(() {
+      _startDate = oneWeekAgo;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   void _filterOneMonth() {
     final today = DateTime.now();
     final oneMonthAgo = DateTime(today.year, today.month - 1, today.day);
-    widget.onDateRangeSelected(oneMonthAgo, today);
+    setState(() {
+      _startDate = oneMonthAgo;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   void _filterOneYear() {
     final today = DateTime.now();
     final oneYearAgo = DateTime(today.year - 1, today.month, today.day);
-    widget.onDateRangeSelected(oneYearAgo, today);
+    setState(() {
+      _startDate = oneYearAgo;
+      _endDate = today;
+    });
+    widget.onDateRangeSelected(_startDate, _endDate);
   }
 
   @override
