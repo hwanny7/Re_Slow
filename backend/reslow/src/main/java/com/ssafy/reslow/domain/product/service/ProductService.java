@@ -187,28 +187,34 @@ public class ProductService {
 	}
 
 	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo).orElseThrow(()->new CustomException(PRODUCT_NOT_FOUND));
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-		String product = String.valueOf(productNo);
-		String member = String.valueOf(memberNo);
-		setOperations.add(product, member);
-		zSetOperations.add(memberNo + "_like_product", product, System.currentTimeMillis());
+		String productString = String.valueOf(productNo);
+		String memberString = String.valueOf(memberNo);
+
+		setOperations.add(productString, memberString);
+		zSetOperations.add(memberNo + "_like_product", productString, System.currentTimeMillis());
+		zSetOperations.incrementScore("product_"+memberNo, String.valueOf(product.getProductCategory().getNo()), 1);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(product));
+		map.put("count", setOperations.size(productString));
 		return map;
 	}
 
 	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo).orElseThrow(()->new CustomException(PRODUCT_NOT_FOUND));
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-		String product = String.valueOf(productNo);
-		String member = String.valueOf(memberNo);
-		setOperations.remove(product, member);
-		zSetOperations.remove(memberNo + "_like_product", product);
+		String productString = String.valueOf(productNo);
+		String memberString = String.valueOf(memberNo);
+
+		setOperations.remove(productString, memberString);
+		zSetOperations.remove(memberNo + "_like_product", productString);
+		zSetOperations.incrementScore("product_"+memberNo, String.valueOf(product.getProductCategory().getNo()), -1);
 
 		Map<String, Long> map = new HashMap<>();
-		map.put("count", setOperations.size(product));
+		map.put("count", setOperations.size(productString));
 		return map;
 	}
 
