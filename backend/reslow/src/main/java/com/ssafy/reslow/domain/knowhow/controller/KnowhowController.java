@@ -50,7 +50,7 @@ public class KnowhowController {
 
 	@PostMapping("/")
 	public Map<String, Object> writeKnowhowPosting(
-		@ModelAttribute testDto request, Authentication authentication) throws IOException {
+		@ModelAttribute("knowhowRequest") testDto request, Authentication authentication) throws IOException {
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
