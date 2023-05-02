@@ -39,9 +39,7 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 
 		List<Knowhow> knowhows = results.getResults();
 		List<KnowhowListResponse> list = knowhows.stream()
-			.map(x -> KnowhowListResponse.of(x, getImages(x).subList(0, Math.min(getImages(x).size(), 4)),
-				getImages(x).size(),
-				1L, (long)x.getKnowhowComments().size()))
+			.map(x -> KnowhowListResponse.of(x, 1L, (long)x.getKnowhowComments().size()))
 			.collect(
 				Collectors.toList());
 
