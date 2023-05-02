@@ -5,7 +5,9 @@ import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,4 +35,11 @@ public class CouponController {
 		Long managerNo = Long.parseLong(authentication.getName());
 		return couponService.createCoupon(managerNo, couponCreateRequest);
 	}
+
+	@DeleteMapping("/{couponNo}")
+	public Map<String, Long> deleteCoupon(Authentication authentication, @PathVariable Long couponNo) {
+		Long managerNo = Long.parseLong(authentication.getName());
+		return couponService.deleteCoupon(managerNo, couponNo);
+	}
+
 }

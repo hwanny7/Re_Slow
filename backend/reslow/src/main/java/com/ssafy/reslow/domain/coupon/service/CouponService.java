@@ -52,4 +52,13 @@ public class CouponService {
 		map.put("couponNo", createdCoupon.getNo());
 		return map;
 	}
+
+	public Map<String, Long> deleteCoupon(Long managerNo, Long couponNo) {
+		Manager manager = managerRepository.findById(managerNo).orElseThrow(() -> new CustomException(FORBIDDEN));
+		couponRepository.deleteById(couponNo);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("couponNo", couponNo);
+		return map;
+	}
 }
