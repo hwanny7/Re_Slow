@@ -24,7 +24,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
-	private final KnowhowCategoryRepository knowhowCategoryRepository;
 
 	@Override
 	public List<KnowhowListResponse> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category,
