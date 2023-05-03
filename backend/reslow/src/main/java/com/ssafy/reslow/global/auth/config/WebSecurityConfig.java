@@ -108,7 +108,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				Authentication authentication = createAuthentication((HttpServletRequest)req);
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-				System.out.println(authentication.getName()+ "!!!!!!!!!!!!!!!!!!");
 				if (log.isDebugEnabled()) {
 					log.debug("Anonymous user:{}", SecurityContextHolder.getContext().getAuthentication());
 				}
