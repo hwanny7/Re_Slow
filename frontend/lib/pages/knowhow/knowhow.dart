@@ -118,7 +118,6 @@ class _KnowHowState extends State<KnowHow> {
   Widget build(BuildContext context) {
     return Column(children: [
       Align(alignment: Alignment.center, child: MySearchBar()),
-      const CategoryTapBar(),
       Expanded(
           child: ListView.builder(
               itemCount: content.length,
