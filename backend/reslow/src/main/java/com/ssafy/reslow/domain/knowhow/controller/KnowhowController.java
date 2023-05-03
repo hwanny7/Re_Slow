@@ -81,11 +81,9 @@ public class KnowhowController {
 	}
 
 	@GetMapping("")
-	public List<KnowhowListResponse> getKnowhowPostingList(Pageable pageable, @RequestParam("category") Long category,
-		@RequestParam("keyword") String keyword) {
-		log.error("로그확인!!!!!!!!!!!!!!!!!!!!!");
-		log.error("categoryNo: " + category + ", title: " + keyword);
-		log.error("category type: " + category.getClass().getName());
+	public List<KnowhowListResponse> getKnowhowPostingList(Pageable pageable,
+		@RequestParam(required = false) Long category,
+		@RequestParam(required = false) String keyword) {
 		return knowhowService.getKnowhowList(pageable, category, keyword);
 	}
 
