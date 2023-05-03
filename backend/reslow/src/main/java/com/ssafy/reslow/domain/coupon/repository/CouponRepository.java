@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.ssafy.reslow.domain.coupon.entity.Coupon;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
-	Slice<Coupon> findByStartDateGreaterThanEqualAndEndDateLessThanEqual(LocalDateTime now, LocalDateTime now1,
+	Slice<Coupon> findByStartDateLessThanEqualAndEndDateGreaterThanEqual(LocalDateTime now, LocalDateTime now1,
 		Pageable pageable);
 }

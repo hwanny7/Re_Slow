@@ -42,7 +42,7 @@ public class CouponService {
 
 	public Slice<CouponListResponse> getAllValidCoupons(Pageable pageable) {
 		LocalDateTime now = LocalDateTime.now();
-		Slice<Coupon> coupons = couponRepository.findByStartDateGreaterThanEqualAndEndDateLessThanEqual(now, now,
+		Slice<Coupon> coupons = couponRepository.findByStartDateLessThanEqualAndEndDateGreaterThanEqual(now, now,
 			pageable);
 		List<CouponListResponse> couponListResponses = coupons.getContent()
 			.stream()
@@ -57,8 +57,7 @@ public class CouponService {
 	}
 
 	public Slice<IssuedCouponListResponse> getMyValidCoupons(Long memberNo, Pageable pageable) {
-		LocalDateTime now = LocalDateTime.now();
-		Slice<IssuedCoupon> coupons = issuedCouponRepository.findMyValidCoupon(memberNo, now, pageable);
+		Slice<IssuedCoupon> coupons = issuedCouponRepository.findMyValidCoupon(memberNo, LocalDateTime.now(), pageable);
 		List<IssuedCouponListResponse> couponListResponses = coupons.getContent()
 			.stream()
 			.map(IssuedCouponListResponse::of)
@@ -90,6 +89,10 @@ public class CouponService {
 	}
 
 	public Map<String, Long> issueCoupon(Long memberNo, Long couponNo) {
+		Long count = issuedCouponRepository.countByMemberNoAndCouponNo(memberNo, couponNo);
+		if (count > 0)
+			throw new CustomException(COUPON_ALREADY_ISSUED);
+
 		Member member = memberRepository.getReferenceById(memberNo);
 		Coupon coupon = couponRepository.findById(couponNo).orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
 		IssuedCoupon issuedCoupon = IssuedCoupon.of(member, coupon);
