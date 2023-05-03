@@ -41,10 +41,12 @@ import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.infra.storage.S3StorageClient;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class KnowhowService {
 
 	private final RedisTemplate redisTemplate;
@@ -193,6 +195,12 @@ public class KnowhowService {
 		List<KnowhowListResponse> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category,
 			pageable);
 		list.forEach(knowhowList -> knowhowList.setLikeCnt(likeCount(knowhowList.getKnowhowNo())));
+
+		log.error("가져온 리스트 확인!!!!!!!!!!!!");
+		for (int i = 0; i < list.size(); i++) {
+
+			log.error(list.get(i).getTitle());
+		}
 
 		return list;
 	}

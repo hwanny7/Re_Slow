@@ -42,6 +42,8 @@ public class KnowhowController {
 		@RequestParam Long categoryNo,
 		Authentication authentication) throws
 		IOException {
+		log.error("로그확인!!!!!!!!!!!!!!!!!!!!!");
+		log.error("categoryNo: " + categoryNo + ", title: " + title);
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
