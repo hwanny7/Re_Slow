@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -122,7 +123,7 @@ public class ProductService {
 		return updatedProduct;
 	}
 
-	public Map<String, Long> deleteroduct(Long memberNo, Long productNo) {
+	public Map<String, Long> deleteProduct(Long memberNo, Long productNo) {
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		if (memberNo != product.getMember().getNo()) {
@@ -134,11 +135,12 @@ public class ProductService {
 		return map;
 	}
 
-	public Slice<ProductListResponse> productList(String keyword, Long category, Pageable pageable) {
+	public Slice<ProductListResponse> productList(Long memberNo, String keyword, Long category, Pageable pageable) {
 		Slice<ProductListProjection> list = productRepository.findByMemberIsNotAndCategoryAndKeyword(
 			keyword, category, pageable);
 		List<ProductListResponse> productListResponses = list.stream()
-			.map((product) -> ProductListResponse.of(product))
+			.map((product) -> ProductListResponse.of(product, checkLiked(memberNo, product.getProductNo()),
+				likeCount(product.getProductNo())))
 			.collect(Collectors.toList());
 		return new SliceImpl<>(productListResponses, pageable, list.hasNext());
 	}
@@ -150,8 +152,10 @@ public class ProductService {
 		List<String> images = productImages.stream()
 			.map((productImage) -> productImage.getUrl())
 			.collect(Collectors.toList());
+		boolean myHeart = checkLiked(memberNo, productNo);
+		Long heartCount = likeCount(productNo);
 		ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product, product.getProductCategory()
-			.getCategory(), product.getMember().getNo() == memberNo, images);
+			.getCategory(), product.getMember().getNo() == memberNo, myHeart, heartCount, images);
 		return productDetailResponse;
 	}
 
@@ -189,8 +193,10 @@ public class ProductService {
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String productString = String.valueOf(productNo);
 
+		setOperations.add(productString, String.valueOf(memberNo));
 		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
 			System.currentTimeMillis());
 		if (added) {
@@ -208,7 +214,10 @@ public class ProductService {
 		Product product = productRepository.findById(productNo)
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String productString = String.valueOf(productNo);
+
+		setOperations.remove(productString, String.valueOf(memberNo));
 
 		zSetOperations.remove(memberNo + "_like_product", productString);
 		zSetOperations.incrementScore("product", productString, -1);
@@ -240,10 +249,23 @@ public class ProductService {
 
 		List<ProductListResponse> productListResponseList = productList
 			.stream()
-			.map(ProductListResponse::of)
+			.map(product -> {
+				Long likeCnt = likeCount(product.getNo());
+				return ProductListResponse.of(product, likeCnt);
+			})
 			.collect(Collectors.toList());
 
 		boolean hasNext = zSetOperations.size(key) > end + 1;
 		return new SliceImpl<>(productListResponseList, pageable, hasNext);
+	}
+
+	public Long likeCount(Long productNo) {
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		return setOperations.size(String.valueOf(productNo));
+	}
+
+	public boolean checkLiked(Long memberNo, Long productNo) {
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		return setOperations.isMember(String.valueOf(productNo), String.valueOf(memberNo));
 	}
 }
