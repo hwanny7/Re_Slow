@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,11 +81,18 @@ public class MemberController {
 
 	@PostMapping("/info")
 	public MemberUpdateResponse updateUser(Authentication authentication,
-		@RequestPart(value = "Update") MemberUpdateRequest request,
-		@RequestPart(value = "file", required = false) MultipartFile file)
+		@RequestParam String nickname,
+		@RequestParam String recipient,
+		@RequestParam int zipCode,
+		@RequestParam String address,
+		@RequestParam String addressDetail,
+		@RequestParam String phoneNum,
+		@RequestParam String memo,
+		@RequestPart MultipartFile file)
 		throws IOException {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
+		MemberUpdateRequest request = MemberUpdateRequest.of(nickname, recipient, zipCode, address, addressDetail,
+			phoneNum, memo);
 		return memberService.updateUser(memberNo, request, file);
 	}
 
