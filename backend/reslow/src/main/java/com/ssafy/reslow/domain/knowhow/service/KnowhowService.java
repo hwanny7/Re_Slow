@@ -90,7 +90,7 @@ public class KnowhowService {
 		knowhowContentRepository.saveAll(knowhowContentList);
 	}
 
-	public KnowhowDetailResponse getKnowhowDetail(Long knowhowNo) {
+	public KnowhowDetailResponse getKnowhowDetail(Long memberNo, Long knowhowNo) {
 		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
 			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
 
@@ -101,7 +101,7 @@ public class KnowhowService {
 			detailList.add(KnowhowContentDetail.ofEntity((long)i, content));
 		}
 
-		return KnowhowDetailResponse.of(knowhow, detailList);
+		return KnowhowDetailResponse.of(knowhow, detailList, checkLiked(memberNo, knowhowNo), likeCount(knowhowNo));
 	}
 
 	public String updateKnowhow(Long memberNo, List<MultipartFile> imageList,
@@ -191,40 +191,37 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public List<KnowhowListResponse> getKnowhowList(Pageable pageable, Long category, String keyword) {
+	public List<KnowhowListResponse> getKnowhowList(Long memberNo, Pageable pageable, Long category, String keyword) {
 		List<KnowhowListResponse> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category,
 			pageable);
-		list.forEach(knowhowList -> knowhowList.setLikeCnt(likeCount(knowhowList.getKnowhowNo())));
+		list.forEach(knowhowList -> knowhowList.setLike(likeCount(knowhowList.getKnowhowNo()),
+			checkLiked(memberNo, knowhowList.getKnowhowNo())));
 
 		return list;
 	}
 
 	public List<KnowhowListResponse> getMyKnowhowList(Pageable pageable, Long memberNo) {
 		List<Knowhow> knowhowList = knowhowRepository.findAllByMember_No(pageable, memberNo).getContent();
-		List<KnowhowListResponse> list = new ArrayList<>();
-		for (Knowhow knowhow : knowhowList) {
-			// 해당 글 좋아요 개수 세기
-			Long likeCnt = likeCount(knowhow.getNo());
-			// 해당 글 댓글 개수 세기
-			Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
-			// 노하우 리스트에 저장하기
-			list.add(KnowhowListResponse.of(knowhow, likeCnt, commentCnt));
-		}
+		List<KnowhowListResponse> list = knowhowList
+			.stream()
+			.map(knowhow -> {
+				// 해당 글 좋아요 개수 세기
+				Long likeCnt = likeCount(knowhow.getNo());
+				// 해당 글 댓글 개수 세기
+				Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
+				// 노하우 리스트에 저장하기
+				return KnowhowListResponse.of(knowhow, likeCnt, commentCnt, checkLiked(memberNo, knowhow.getNo()));
+			})
+			.collect(Collectors.toList());
 
 		return list;
 	}
 
-	public Long PersonalMostLikeCategory(Long memberNo) {
+	public Long mostLikeCategory(Long memberNo) {
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String mostLikeCategory = String.valueOf(zSetOperations.range("knowhow_" + memberNo, 0, 1));
 
-		// 좋아요한 글이 없으면 모든 글 중 좋아요가 많은 글, 좋아요가 같으면 최신 글을 보여준다.
-		if (zSetOperations.score("knowhow_" + memberNo, mostLikeCategory) == 0D) {
-
-		} else {
-
-		}
-		return null;
+		return checkMostLikedCategory(memberNo);
 	}
 
 	public Long likeCount(Long knowhowNo) {
@@ -240,9 +237,7 @@ public class KnowhowService {
 	public Long checkMostLikedCategory(Long memberNo) {
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		String mostLikeCategory = String.valueOf(zSetOperations.range("knowhow_" + memberNo, 0, 1));
-
-		// if(zSetOperations.score())
-		return null;
+		return Long.parseLong(mostLikeCategory);
 	}
 
 	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
@@ -310,7 +305,7 @@ public class KnowhowService {
 			.map(knowhow -> {
 				Long likeCnt = likeCount(knowhow.getNo());
 				Long commentCnt = knowhowCommentRepository.countByKnowhow(knowhow).orElse(0L);
-				return KnowhowListResponse.of(knowhow, likeCnt, commentCnt);
+				return KnowhowListResponse.of(knowhow, likeCnt, commentCnt, checkLiked(memberNo, knowhow.getNo()));
 			})
 			.collect(Collectors.toList());
 
