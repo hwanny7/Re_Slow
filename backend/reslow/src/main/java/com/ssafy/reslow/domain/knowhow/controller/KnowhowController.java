@@ -42,8 +42,6 @@ public class KnowhowController {
 		@RequestParam Long categoryNo,
 		Authentication authentication) throws
 		IOException {
-		log.error("로그확인!!!!!!!!!!!!!!!!!!!!!");
-		log.error("categoryNo: " + categoryNo + ", title: " + title);
 		Long memberNo = Long.parseLong(authentication.getName());
 
 		HashMap<String, Object> responseMap = new HashMap<>();
@@ -85,6 +83,9 @@ public class KnowhowController {
 	@GetMapping("")
 	public List<KnowhowListResponse> getKnowhowPostingList(Pageable pageable, @RequestParam("category") Long category,
 		@RequestParam("keyword") String keyword) {
+		log.error("로그확인!!!!!!!!!!!!!!!!!!!!!");
+		log.error("categoryNo: " + category + ", title: " + keyword);
+		log.error("category type: " + category.getClass().getName());
 		return knowhowService.getKnowhowList(pageable, category, keyword);
 	}
 
