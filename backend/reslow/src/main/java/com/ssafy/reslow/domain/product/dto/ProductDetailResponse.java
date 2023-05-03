@@ -3,7 +3,6 @@ package com.ssafy.reslow.domain.product.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.product.entity.Product;
 
 import lombok.Builder;
@@ -23,8 +22,11 @@ public class ProductDetailResponse {
 	private String category;
 	private LocalDateTime date;
 	private List<String> images;
+	private boolean myHeart;
+	private Long heartCount;
 
-	public static ProductDetailResponse of(Product product, String category, boolean mine, List<String> images) {
+	public static ProductDetailResponse of(Product product, String category, boolean mine, boolean myHeart,
+		Long heartCount, List<String> images) {
 		return ProductDetailResponse.builder()
 			.nickname(product.getMember().getNickname())
 			.profileImg(product.getMember().getProfilePic())
@@ -34,6 +36,8 @@ public class ProductDetailResponse {
 			.price(product.getPrice())
 			.category(category)
 			.mine(mine)
+			.myHeart(myHeart)
+			.heartCount(heartCount)
 			.date(product.getCreatedDate())
 			.images(images)
 			.build();

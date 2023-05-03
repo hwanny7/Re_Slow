@@ -26,7 +26,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
 	@Override
 	public Slice<ProductListProjection> findByMemberIsNotAndCategoryAndKeyword(String keyword,
-		Long category, Pageable pageable) { // order가 없는 상품, member의 id
+		Long category, Pageable pageable) {
 		List<ProductListProjection> result = queryFactory
 			.selectFrom(product)
 			.leftJoin(product.productImages, productImage)
