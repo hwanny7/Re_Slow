@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
@@ -121,8 +122,15 @@ public class KnowhowController {
 		return knowhowService.likeKnowhowList(memberNo, pageable);
 	}
 
+	/**
+	 * 키워드별 추천
+	 * @param authentication
+	 * @param keywords
+	 * @return List<KnowhowListResponse>
+	 */
 	@PostMapping("/recommends")
-	public Long recommendKnowhowPosting(Authentication authentication, @RequestBody List<String> keywords) {
+	public Long recommendKnowhowPosting(Authentication authentication,
+		@RequestBody KnowhowRecommendRequest keywords) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		return knowhowService.checkMostLikedCategory(memberNo);
 	}
