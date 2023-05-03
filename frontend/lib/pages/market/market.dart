@@ -15,6 +15,7 @@ class Market extends StatefulWidget {
 class _MarketState extends State<Market> {
   List<MarketItem> itemList = [];
   final DioClient dioClient = DioClient();
+  ScrollController _scrollController = ScrollController();
   int category = 0;
 
   void _getCategory(int index) {
@@ -26,6 +27,13 @@ class _MarketState extends State<Market> {
   void initState() {
     super.initState();
     fetchData();
+    _scrollController.addListener(() {
+      print('hi');
+      if (_scrollController.position.atEdge &&
+          _scrollController.position.pixels > 0) {
+        print('hi');
+      }
+    });
   }
 
   void fetchData() async {
@@ -66,6 +74,7 @@ class _MarketState extends State<Market> {
         ),
         Expanded(
             child: ListView.builder(
+          controller: _scrollController,
           itemCount: itemList.length,
           itemBuilder: (context, idx) {
             return ItemInfo(
