@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.product.controller;
 
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +9,11 @@ import java.util.Set;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +31,8 @@ import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
 import com.ssafy.reslow.domain.product.service.ProductService;
+import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 
@@ -74,7 +82,11 @@ public class ProductController {
 	@GetMapping("/{productNo}")
 	public ProductDetailResponse productDetail(Authentication authentication,
 		@PathVariable("productNo") Long productNo) {
-		Long memberNo = Long.parseLong(authentication.getName());
+		Long memberNo = null;
+		System.out.println(authentication+"###################");
+		if(authentication != null){
+			memberNo = Long.parseLong(authentication.getName());
+		}
 		return productService.productDetail(memberNo, productNo);
 	}
 
@@ -83,10 +95,18 @@ public class ProductController {
 		Authentication authentication,
 		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long category, Pageable pageable) {
-		Long memberNo = Long.parseLong(authentication.getName());
+		Long memberNo = null;
+		if(authentication instanceof AnonymousAuthenticationToken){
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+
+		}
+		if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("USER"))){
+			memberNo = Long.parseLong(authentication.getName());
+		}
 		return productService.productList(memberNo, keyword, category, pageable);
 	}
 
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/sale")
 	public Slice<MyProductListResponse> myProductList(Authentication authentication, @RequestParam("status") int status,
 		Pageable pageable) {

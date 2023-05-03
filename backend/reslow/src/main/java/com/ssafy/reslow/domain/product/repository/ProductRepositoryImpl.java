@@ -35,6 +35,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 				category == null ? null : product.productCategory.no.eq(category),
 				product.order.isNull()
 			)
+			.orderBy(product.createdDate.desc())
 			.transform(
 				groupBy(product.no).list(
 					new QProductListProjection(
