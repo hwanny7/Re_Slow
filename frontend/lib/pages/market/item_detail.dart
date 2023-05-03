@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/utils/dio_client.dart';
-import 'package:reslow/widgets/common/custom_app_bar.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 
 class ItemDetail extends StatefulWidget {
   final int itemPk;
@@ -17,6 +17,8 @@ class _ItemDetailState extends State<ItemDetail> {
   final DioClient dioClient = DioClient();
   MarketItemDetail? item;
   bool isLiked = false;
+  final PageController _pageController = PageController();
+  int _currentPicture = 0;
 
   @override
   void initState() {
@@ -52,18 +54,50 @@ class _ItemDetailState extends State<ItemDetail> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 300,
-                      child: PageView.builder(
-                        // controller: _pageController,
-                        itemCount: item!.images.length,
-                        itemBuilder: (context, index) {
-                          return Image.network(
-                            item!.images[index],
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      ),
+                    Stack(
+                      children: [
+                        Container(
+                          height: 300,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentPicture = index;
+                              });
+                            },
+                            itemCount: item!.images.length,
+                            itemBuilder: (context, index) {
+                              return Image.network(
+                                item!.images[index],
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        ),
+                        Positioned(
+                            bottom: 20,
+                            left: 0,
+                            right: 0,
+                            child: DotsIndicator(
+                              dotsCount: item!.images.length,
+                              position: _currentPicture.toDouble(),
+                              decorator: DotsDecorator(
+                                color: Colors.grey, // Color of the dots
+                                activeColor:
+                                    Colors.blue, // Color of the active dot
+                                size:
+                                    const Size.square(9.0), // Size of the dots
+                                activeSize: const Size(
+                                    18.0, 9.0), // Size of the active dot
+                                spacing:
+                                    EdgeInsets.all(4.0), // Spacing between dots
+                                activeShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      5.0), // Shape of the active dot
+                                ),
+                              ),
+                            ))
+                      ],
                     ),
                     ListTile(
                       leading: CircleAvatar(

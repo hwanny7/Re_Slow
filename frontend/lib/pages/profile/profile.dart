@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
 import 'couponlist.dart';
@@ -310,33 +311,36 @@ class _ProfileState extends State<Profile> {
                       ),
                       // 신고하기 끝
                       GestureDetector(
-                        onTap: () {
-                          // Navigate to privacy settings page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  NotificationSetting(), // 로그아웃 시키고 로그인 창으로 이동
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout),
-                              SizedBox(
-                                width: 10,
-                              ), // for spacing between icon and text
-                              Text(
-                                '로그아웃',
-                                style: TextStyle(fontSize: 15),
+                          onTap: () {
+                            // Navigate to privacy settings page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    NotificationSetting(), // 로그아웃 시키고 로그인 창으로 이동
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.centerLeft,
-                        ),
-                      ),
+                            );
+                          },
+                          child: GestureDetector(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.logout),
+                                    SizedBox(
+                                      width: 10,
+                                    ), // for spacing between icon and text
+                                    Text(
+                                      '로그아웃',
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                alignment: Alignment.centerLeft,
+                              ),
+                              onTap: () {
+                                UserPreferences().removeUser();
+                              })),
                       // 로그아웃 끝
                     ],
                   ),
