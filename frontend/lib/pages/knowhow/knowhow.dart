@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
+import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
@@ -16,6 +17,30 @@ class KnowHow extends StatefulWidget {
 List<dynamic> content = [];
 
 List<dynamic> heartYN = [
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
+  {"YN": true},
+  {"YN": false},
   {"YN": true},
   {"YN": false},
 ];
@@ -46,7 +71,7 @@ class _KnowHowState extends State<KnowHow> {
             'Authorization': 'Bearer $token',
           }),
           queryParameters: {
-            "page": 1,
+            "page": 0,
             "size": 10,
             "category": "",
             "keyword": ""
@@ -61,6 +86,32 @@ class _KnowHowState extends State<KnowHow> {
   Future<String?> _getTokenFromSharedPreferences() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('accessToken');
+  }
+
+  Future<void> _requestKnowhowLike(int KnowhowNo, bool isLike) async {
+    try {
+      if (isLike) {
+        final token = await _getTokenFromSharedPreferences();
+        print("token $token");
+        final response = await dio.post(
+            'http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
+            options: Options(headers: {
+              'Authorization': 'Bearer $token',
+            }));
+        print(response.data);
+      } else {
+        final token = await _getTokenFromSharedPreferences();
+        print("token $token");
+        final response = await dio.delete(
+            'http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
+            options: Options(headers: {
+              'Authorization': 'Bearer $token',
+            }));
+        print(response.data);
+      }
+    } on DioError catch (e) {
+      print('error: $e');
+    }
   }
 
   @override
@@ -94,10 +145,13 @@ class _KnowHowState extends State<KnowHow> {
                         color: const Color(0xffDBDBDB)),
                     InkWell(
                         onTap: () => {
-                              Navigator.pushNamed(context, '/knowhow/:id',
-                                  arguments: {
-                                    'id': content[index]["knowhowNo"]
-                                  })
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => KnowHowDetail(
+                                      knowhowNo: content[index]["knowhowNo"]),
+                                ),
+                              )
                             },
                         child: Column(children: [
                           Container(
@@ -117,20 +171,37 @@ class _KnowHowState extends State<KnowHow> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      content[index]["title"],
-                                      style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                                    Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.6,
+                                        child: Text(
+                                          content[index]["title"],
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        )),
                                     Row(
                                       children: [
                                         InkWell(
                                             onTap: () {
                                               setState(() {
-                                                heartYN[index]["YN"] =
-                                                    !heartYN[index]["YN"];
+                                                content[index]["like"] =
+                                                    !content[index]["like"];
                                               });
+                                              setState(() {
+                                                if (content[index]["like"]) {
+                                                  content[index]["likeCnt"] +=
+                                                      1;
+                                                } else {
+                                                  content[index]["likeCnt"] -=
+                                                      1;
+                                                }
+                                              });
+                                              _requestKnowhowLike(
+                                                  content[index]["knowhowNo"],
+                                                  content[index]["like"]);
                                             },
                                             child: Row(children: [
                                               Container(
@@ -138,7 +209,8 @@ class _KnowHowState extends State<KnowHow> {
                                                       const EdgeInsets.fromLTRB(
                                                           8, 0, 8, 0),
                                                   child: Image.asset(
-                                                    heartYN[index]["YN"]
+                                                    (content[index]["like"] ??
+                                                            false)
                                                         ? "assets/image/full_heart.png"
                                                         : "assets/image/heart.png",
                                                     width: 24,

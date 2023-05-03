@@ -10,7 +10,7 @@
 import 'package:flutter/material.dart';
 
 class ProfileSmall extends StatefulWidget {
-  final String url;
+  final String? url;
   final String name;
 
   const ProfileSmall({Key? key, required this.url, required this.name})
@@ -29,10 +29,12 @@ class _ProfileSmallState extends State<ProfileSmall> {
             margin: const EdgeInsets.fromLTRB(8, 8, 12, 8),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                  widget.url ?? "assets/image/user.png",
-                  width: 50,
-                ))),
+                child: widget.url == null
+                    ? Image.asset(
+                        "assets/image/user.png",
+                        width: 50,
+                      )
+                    : Image.network(widget.url.toString(), width: 50))),
         Text(
           widget.name,
           style: const TextStyle(

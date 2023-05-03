@@ -36,7 +36,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
     } else if (imagenumber == 1) {
       return ClipRRect(
           borderRadius: BorderRadius.circular(0.0),
-          child: Image.asset(
+          child: Image.network(
             widget.images[0],
             width: fullWidth,
             height: fullHeight,
@@ -49,7 +49,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
             margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(0.0),
-                child: Image.asset(
+                child: Image.network(
                   widget.images[0],
                   width: fullWidth / 2,
                   height: fullHeight,
@@ -59,7 +59,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
             margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(0.0),
-                child: Image.asset(
+                child: Image.network(
                   widget.images[1],
                   width: fullWidth / 2,
                   height: fullHeight,
@@ -75,7 +75,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
               margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(0.0),
-                  child: Image.asset(
+                  child: Image.network(
                     widget.images[0],
                     width: fullWidth / 2,
                     height: fullHeight,
@@ -87,7 +87,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.fromLTRB(2, 0, 0, 2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[1],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -97,7 +97,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.fromLTRB(2, 2, 0, 0),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[2],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -118,7 +118,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[0],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -128,7 +128,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[1],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -142,7 +142,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[2],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -152,7 +152,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[3],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -173,7 +173,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[0],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -183,7 +183,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[1],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -197,7 +197,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.asset(
+                      child: Image.network(
                         widget.images[2],
                         width: fullWidth / 2,
                         height: fullHeight / 2,
@@ -209,7 +209,7 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(0.0),
-                          child: Image.asset(
+                          child: Image.network(
                             widget.images[3],
                             width: fullWidth / 2,
                             height: fullHeight / 2,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/frame.dart';
 import 'package:reslow/pages/knowhow/knowhow.dart';
-import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
@@ -46,7 +45,6 @@ class MyApp extends StatelessWidget {
             '/splash': (context) => SplashScreen(),
             '/login': (context) => Login(key: key),
             '/knowhow': (context) => const KnowHow(),
-            '/knowhow/:id': (context) => const KnowHowDetail(),
             '/knowhow/register': (context) => const KnowhowRegister(),
           },
         ));
