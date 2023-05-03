@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
@@ -47,8 +48,8 @@ class _KnowHowState extends State<KnowHow> {
           queryParameters: {
             "page": 1,
             "size": 10,
-            "category": null,
-            "keyword": null
+            "category": "",
+            "keyword": ""
           });
       return response.data;
     } on DioError catch (e) {
@@ -153,7 +154,18 @@ class _KnowHowState extends State<KnowHow> {
                                     Row(
                                       children: [
                                         InkWell(
-                                            onTap: () => {},
+                                            onTap: () => {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Knowhowcomment(
+                                                              knowhowid: content[
+                                                                      index][
+                                                                  "knowhowNo"]),
+                                                    ),
+                                                  )
+                                                },
                                             child: Row(children: [
                                               Container(
                                                   margin:

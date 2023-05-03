@@ -2,6 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/pages/profile/myKnowhow.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 
@@ -197,7 +198,15 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
                   Row(
                     children: [
                       InkWell(
-                          onTap: () => {},
+                          onTap: () => {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        Knowhowcomment(knowhowid: id),
+                                  ),
+                                )
+                              },
                           child: Row(children: [
                             Container(
                                 margin: const EdgeInsets.fromLTRB(8, 0, 8, 0),

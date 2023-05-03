@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
 
@@ -157,7 +158,18 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                     Row(
                                       children: [
                                         InkWell(
-                                            onTap: () => {},
+                                            onTap: () => {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Knowhowcomment(
+                                                              knowhowid: content[
+                                                                      index][
+                                                                  "knowhowNo"]),
+                                                    ),
+                                                  )
+                                                },
                                             child: Row(children: [
                                               Container(
                                                   margin:
