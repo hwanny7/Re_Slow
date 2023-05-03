@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -52,9 +53,10 @@ public class KnowhowController {
 	}
 
 	@GetMapping("/detail/{knowhowNo}")
-	public KnowhowDetailResponse getKnowhowDetail(@PathVariable("knowhowNo") Long knowhowNo) {
-
-		return knowhowService.getKnowhowDetail(knowhowNo);
+	public KnowhowDetailResponse getKnowhowDetail(Authentication authentication,
+		@PathVariable("knowhowNo") Long knowhowNo) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return knowhowService.getKnowhowDetail(memberNo, knowhowNo);
 	}
 
 	@PutMapping("/")
@@ -81,10 +83,13 @@ public class KnowhowController {
 	}
 
 	@GetMapping("")
-	public List<KnowhowListResponse> getKnowhowPostingList(Pageable pageable,
+	public List<KnowhowListResponse> getKnowhowPostingList(
+		Authentication authentication,
+		Pageable pageable,
 		@RequestParam(required = false) Long category,
 		@RequestParam(required = false) String keyword) {
-		return knowhowService.getKnowhowList(pageable, category, keyword);
+		Long memberNo = Long.parseLong(authentication.getName());
+		return knowhowService.getKnowhowList(memberNo, pageable, category, keyword);
 	}
 
 	@GetMapping("/mylist")
@@ -114,5 +119,11 @@ public class KnowhowController {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
 		return knowhowService.likeKnowhowList(memberNo, pageable);
+	}
+
+	@PostMapping("/recommends")
+	public Long recommendKnowhowPosting(Authentication authentication, @RequestBody List<String> keywords) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return knowhowService.checkMostLikedCategory(memberNo);
 	}
 }

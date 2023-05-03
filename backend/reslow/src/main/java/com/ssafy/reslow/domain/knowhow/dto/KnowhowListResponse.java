@@ -18,9 +18,10 @@ public class KnowhowListResponse {
 	List<String> pictureList;
 	int pictureCnt;
 	Long likeCnt;
+	boolean like;
 	Long commentCnt;
 
-	public static KnowhowListResponse of(Knowhow knowhow, Long likeCnt, Long commentCnt) {
+	public static KnowhowListResponse of(Knowhow knowhow, Long likeCnt, Long commentCnt, boolean like) {
 		List<String> pictureList = new ArrayList<>();
 		int pictureCnt = Math.min(4, knowhow.getKnowhowContents().size());
 		for (int p = 0; p < pictureCnt; p++) {
@@ -35,11 +36,13 @@ public class KnowhowListResponse {
 			.pictureList(pictureList)
 			.pictureCnt(pictureCnt)
 			.likeCnt(likeCnt)
+			.like(like)
 			.commentCnt(commentCnt)
 			.build();
 	}
 
-	public void setLikeCnt(Long likeCnt) {
+	public void setLike(Long likeCnt, boolean like) {
 		this.likeCnt = likeCnt;
+		this.like = like;
 	}
 }
