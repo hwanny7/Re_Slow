@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reslow/utils/dio_client.dart';
 import 'dart:io';
 
 import 'package:reslow/pages/knowhow/knowhow.dart';
@@ -12,6 +17,49 @@ class KnowhowRegister extends StatefulWidget {
 }
 
 class _KnowhowRegisterState extends State<KnowhowRegister> {
+  Future<void> _requestRegister() async {
+    final Dio dio = Dio();
+
+    List<dynamic> imageList = [];
+
+    for (int i = 0; i < pickedImgs.length; i++) {
+      final String filename = pickedImgs[i][0].path.split('/').last;
+      final List<int> bytes = await pickedImgs[i][0].readAsBytes();
+      imageList.add(await MultipartFile.fromBytes(bytes, filename: filename));
+    }
+    FormData formData = FormData.fromMap({
+      "categoryNo": 1,
+      "title": title,
+      "contentList": contentTexts,
+      "imageList": imageList
+    });
+
+    // FormData formData = FormData.fromMap({"knowhowNo": 1, "files": imageList});
+    print(formData);
+
+    final token = await _getTokenFromSharedPreferences();
+    print("token $token");
+
+    try {
+      final response = await dio.post(
+        'http://k8b306.p.ssafy.io:8080/knowhows/',
+        data: formData,
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      ); // Use the appended endpoint
+
+      print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ${response.data}");
+    } on DioError catch (e) {
+      print('error: $e');
+    }
+  }
+
+  Future<String?> _getTokenFromSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken');
+  }
+
   final formKey = GlobalKey<FormState>();
   int selected = -1;
   String title = "";
@@ -59,7 +107,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
       textCtr.removeAt(index);
     });
     number--;
-    print("DELETE");
+    // print("DELETE");
     // print(index);
     // print(number);
   }
@@ -179,18 +227,27 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
         child: Scaffold(
       resizeToAvoidBottomInset: true,
       body: Column(children: [
-        Container(
-            margin: const EdgeInsets.all(12),
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: const Text(
-              "노하우 글쓰기",
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            )),
+        Row(children: [
+          Container(
+              margin: const EdgeInsets.all(12),
+              width: MediaQuery.of(context).size.width * 0.7,
+              child: const Text(
+                "노하우 글쓰기",
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              )),
+          TextButton(
+              onPressed: () => {
+                    setState(() {
+                      _requestRegister();
+                    })
+                  },
+              child: Text("완료")),
+        ]),
         Container(
             width: MediaQuery.of(context).size.width,
             height: 1,
