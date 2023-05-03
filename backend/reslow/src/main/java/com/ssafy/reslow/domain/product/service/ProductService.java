@@ -265,6 +265,7 @@ public class ProductService {
 	}
 
 	public boolean checkLiked(Long memberNo, Long productNo) {
+		if(memberNo == null) return false;
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		return setOperations.isMember(String.valueOf(productNo), String.valueOf(memberNo));
 	}
