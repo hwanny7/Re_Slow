@@ -8,7 +8,6 @@ import java.util.Set;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,31 +67,30 @@ public class ProductController {
 
 	@DeleteMapping("/{productNo}")
 	public Map<String, Long> deleteProduct(Authentication authentication, @PathVariable("productNo") Long productNo) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
-		return productService.deleteroduct(memberNo, productNo);
+		Long memberNo = Long.parseLong(authentication.getName());
+		return productService.deleteProduct(memberNo, productNo);
 	}
 
 	@GetMapping("/{productNo}")
 	public ProductDetailResponse productDetail(Authentication authentication,
 		@PathVariable("productNo") Long productNo) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return productService.productDetail(memberNo, productNo);
 	}
 
 	@GetMapping
 	public Slice<ProductListResponse> productList(
+		Authentication authentication,
 		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long category, Pageable pageable) {
-		return productService.productList(keyword, category, pageable);
+		Long memberNo = Long.parseLong(authentication.getName());
+		return productService.productList(memberNo, keyword, category, pageable);
 	}
 
 	@GetMapping("/sale")
 	public Slice<MyProductListResponse> myProductList(Authentication authentication, @RequestParam("status") int status,
 		Pageable pageable) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return productService.myProductList(memberNo, status, pageable);
 	}
 
@@ -100,8 +98,7 @@ public class ProductController {
 	public Map<String, Long> likeProduct(Authentication authentication, @PathVariable("productNo") Long
 		productNo
 	) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return productService.likeProduct(memberNo, productNo);
 	}
 
@@ -109,15 +106,13 @@ public class ProductController {
 	public Map<String, Long> unlikeProduct(Authentication authentication, @PathVariable("productNo") Long
 		productNo
 	) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return productService.unlikeProduct(memberNo, productNo);
 	}
 
 	@GetMapping("/likes")
 	public Slice<ProductListResponse> likeProductList(Authentication authentication, Pageable pageable) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return productService.likeProductList(memberNo, pageable);
 	}
 
