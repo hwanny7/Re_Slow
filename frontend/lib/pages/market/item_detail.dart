@@ -48,50 +48,67 @@ class _ItemDetailState extends State<ItemDetail> {
       appBar: AppBar(backgroundColor: Colors.black.withOpacity(0.2)),
       body: item == null
           ? const Center(child: CircularProgressIndicator())
-          : Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              ListTile(
-                leading: CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage(
-                    item!.profileImg,
-                  ),
-                ),
-                title: Text(
-                  item!.nickname,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const Divider(
-                color: Color(0xFFBDBDBD),
-                thickness: 0.5,
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(children: [
-                  Text(
-                    item!.title,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  Text(item!.date)
-                ]),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  item!.description,
-                  style: const TextStyle(fontSize: 15),
-                ),
-              ),
-            ]),
+          : SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 300,
+                      child: PageView.builder(
+                        // controller: _pageController,
+                        itemCount: item!.images.length,
+                        itemBuilder: (context, index) {
+                          return Image.network(
+                            item!.images[index],
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
+                    ListTile(
+                      leading: CircleAvatar(
+                        radius: 25,
+                        backgroundImage: NetworkImage(
+                          item!.profileImg,
+                        ),
+                      ),
+                      title: Text(
+                        item!.nickname,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const Divider(
+                      color: Color(0xFFBDBDBD),
+                      thickness: 0.5,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(children: [
+                        Text(
+                          item!.title,
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                        const Spacer(),
+                        Text(item!.date)
+                      ]),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        item!.description,
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ]),
+            ),
       bottomNavigationBar: item == null
           ? null
           : BottomAppBar(

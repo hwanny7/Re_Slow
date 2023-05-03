@@ -19,7 +19,7 @@ class _MarketState extends State<Market> {
 
   void _getCategory(int index) {
     category = index;
-    print(category);
+    fetchData();
   }
 
   @override
@@ -34,7 +34,7 @@ class _MarketState extends State<Market> {
     Map<String, dynamic> queryParams = {
       'page': 0,
       'size': 10,
-      'category': '',
+      'category': category == 0 ? '' : category,
       'keyword': '',
     };
     Response response =

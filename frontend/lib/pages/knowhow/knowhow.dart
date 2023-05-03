@@ -49,13 +49,6 @@ int _selectedindex = -1;
 class _KnowHowState extends State<KnowHow> {
   late double fullWidth;
   late double fullHeight;
-  int category = 0;
-  // 사진 개수에 따라 사진 배치
-
-  void _getCategory(int index) {
-    category = index;
-    print(category);
-  }
 
   Widget imageGrid(List images) {
     fullWidth = MediaQuery.of(context).size.width * 0.98;
@@ -294,10 +287,6 @@ class _KnowHowState extends State<KnowHow> {
   Widget build(BuildContext context) {
     return Column(children: [
       Align(alignment: Alignment.center, child: MySearchBar()),
-      CategoryTapBar(
-        callback: _getCategory,
-        initNumber: category,
-      ),
       Expanded(
           child: ListView.builder(
               itemCount: content.length,

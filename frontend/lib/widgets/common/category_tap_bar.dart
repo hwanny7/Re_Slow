@@ -24,8 +24,11 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
   void initState() {
     super.initState();
     scrollController = ScrollController();
-    containerKeys = generateContainerKeys();
     selectedIndex = widget.initNumber;
+    if (selectedIndex != null) {
+      categories.insert(0, '전체');
+    }
+    containerKeys = generateContainerKeys();
   }
 
   List<GlobalKey> generateContainerKeys() {
@@ -43,7 +46,6 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
   }
 
   final List<String> categories = [
-    '전체',
     '가구/인테리어',
     '여성잡화',
     '여성의류',

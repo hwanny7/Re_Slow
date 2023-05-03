@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/market/item_detail.dart';
 import 'package:reslow/utils/dio_client.dart';
+import 'package:reslow/utils/navigator.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,7 +50,6 @@ class _CreateArticleState extends State<CreateArticle> {
 
   void _getCategory(int index) {
     category = index;
-    print(category);
   }
 
   Future<void> _openMultiImagePicker() async {
@@ -66,7 +67,9 @@ class _CreateArticleState extends State<CreateArticle> {
     }
   }
 
-  void fetchData(formData) async {
+  void fetchData(
+    formData,
+  ) async {
     // Perform the HTTP GET request here
     // For example, using the http package
 
@@ -75,7 +78,11 @@ class _CreateArticleState extends State<CreateArticle> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      print(jsonData);
+      if (jsonData.containsKey('productNo')) {
+        leftToRightNavigator(
+            ItemDetail(itemPk: jsonData['productNo']), context);
+      }
+      // print(jsonData.productNo);
     } else {
       // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
@@ -94,6 +101,9 @@ class _CreateArticleState extends State<CreateArticle> {
     // if (category) {
 
     //
+    if (category == null) {
+      errorMessage.add('카테고리');
+    }
     if (selectedImages.isEmpty) {
       errorMessage.add('사진');
     }
@@ -110,14 +120,14 @@ class _CreateArticleState extends State<CreateArticle> {
     if (errorMessage.isNotEmpty) {
       String combinedError = errorMessage.join(', ') +
           (errorMessage.last == "카테고리" ? '는 필수 입력 항목이에요.' : '은 필수 입력 항목이에요.');
-      print(combinedError);
+      showErrorModal(context, combinedError);
     } else {
       FormData formData = FormData.fromMap({
-        "category": 1,
+        "category": category! + 1,
         "title": title,
         "price": price,
         "description": description,
-        "deliveryFee": deliveryFee
+        "deliveryFee": deliveryFee.isEmpty ? 0 : deliveryFee
       });
 
       for (var image in selectedImages) {
@@ -131,6 +141,26 @@ class _CreateArticleState extends State<CreateArticle> {
 
       fetchData(formData);
     }
+  }
+
+  void showErrorModal(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
