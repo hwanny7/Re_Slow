@@ -39,8 +39,7 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 			.leftJoin(knowhow.knowhowContents, knowhowContent)
 			.where(
 				(hasText(keyword) ? knowhow.title.contains(keyword) : null),
-				category == null ? null : knowhow.knowhowCategory.no.eq(category),
-				builder
+				category == null ? null : knowhow.knowhowCategory.no.eq(category)
 			)
 			.distinct()
 			.offset(pageable.getOffset())
