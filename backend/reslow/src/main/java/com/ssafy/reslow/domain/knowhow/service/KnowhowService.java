@@ -232,12 +232,28 @@ public class KnowhowService {
 		return setOperations.size(String.valueOf(knowhowNo));
 	}
 
+	public boolean checkLiked(Long memberNo, Long knowhowNo) {
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		return setOperations.isMember(String.valueOf(knowhowNo), String.valueOf(memberNo));
+	}
+
+	public Long checkMostLikedCategory(Long memberNo) {
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String mostLikeCategory = String.valueOf(zSetOperations.range("knowhow_" + memberNo, 0, 1));
+
+		// if(zSetOperations.score())
+		return null;
+	}
+
 	public Map<String, Long> likeKnowhow(Long memberNo, Long knowhowNo) {
 		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
 			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String knowhowString = String.valueOf(knowhowNo);
 
+		// key: knowhowNo, value: memberNo
+		setOperations.add(knowhowString, String.valueOf(memberNo));
 		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_knowhow", knowhowString,
 			System.currentTimeMillis());
 		if (added) {
@@ -255,7 +271,11 @@ public class KnowhowService {
 		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
 			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String knowhowString = String.valueOf(knowhowNo);
+
+		// 노하우 글에 있는 사용자 목록에서 사용자 삭제
+		setOperations.remove(knowhowString, String.valueOf(memberNo));
 
 		zSetOperations.remove(memberNo + "_like_knowhow", knowhowString);
 		zSetOperations.incrementScore("knowhow", knowhowString, -1);
