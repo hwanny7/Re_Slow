@@ -15,20 +15,28 @@ class CreateArticle extends StatefulWidget {
 }
 
 class _CreateArticleState extends State<CreateArticle> {
-  List<String> selectedImages = [];
-  ScrollController? scrollController;
+  List<File> selectedImages = [];
+  int? category;
+
   final DioClient dioClient = DioClient();
   final int maxImageCount = 10;
+
+  TextEditingController titleController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController deliveryFeeController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController();
   }
 
   @override
   void dispose() {
-    scrollController!.dispose();
+    titleController.dispose();
+    priceController.dispose();
+    deliveryFeeController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -38,12 +46,17 @@ class _CreateArticleState extends State<CreateArticle> {
     });
   }
 
+  void _getCategory(int index) {
+    category = index;
+    print(category);
+  }
+
   Future<void> _openMultiImagePicker() async {
     final picker = ImagePicker();
     final pickedFiles = await picker.pickMultiImage();
     if (pickedFiles.isNotEmpty) {
       for (var pickedFile in pickedFiles) {
-        String imageFile = pickedFile.path;
+        File imageFile = File(pickedFile.path);
         setState(() {
           selectedImages.add(imageFile);
         });
@@ -63,37 +76,61 @@ class _CreateArticleState extends State<CreateArticle> {
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
       print(jsonData);
-
-      // setState(() {
-      //   // Update the state with the fetched data
-      //   itemList = List<MarketItem>.from(jsonData['content']
-      //       .map((itemJson) => MarketItem.fromJson(itemJson)));
-      // });
     } else {
       // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
     }
   }
 
-  void _printing() async {
-    var formData = FormData();
-    Map<String, dynamic> jsonData = {
-      "title": "고양이 밥그릇",
-      "description": "냐옹이 밥그릇 예쁘게 리폼했어요~",
-      "deliveryFee": 3000,
-      "price": 20000,
-      "stock": 2,
-      "category": 1
-    };
-    formData.fields.add(MapEntry('Regist', jsonEncode(jsonData)));
-    List<MapEntry<String, MultipartFile>> fileList = [];
-    for (var imageFile in selectedImages) {
-      var file = await MultipartFile.fromFile(imageFile);
-      fileList.add(MapEntry('files', file));
-    }
-    formData.files.addAll(fileList);
+  void _submit() async {
+    // var formData = FormData();
+    List<String> errorMessage = [];
 
-    fetchData(formData);
+    final title = titleController.text;
+    final description = descriptionController.text;
+    final deliveryFee = deliveryFeeController.text;
+    final price = priceController.text;
+
+    // if (category) {
+
+    //
+    if (selectedImages.isEmpty) {
+      errorMessage.add('사진');
+    }
+    if (title.isEmpty) {
+      errorMessage.add('제목');
+    }
+    if (price.isEmpty) {
+      errorMessage.add('가격');
+    }
+    if (description.isEmpty) {
+      errorMessage.add('내용');
+    }
+
+    if (errorMessage.isNotEmpty) {
+      String combinedError = errorMessage.join(', ') +
+          (errorMessage.last == "카테고리" ? '는 필수 입력 항목이에요.' : '은 필수 입력 항목이에요.');
+      print(combinedError);
+    } else {
+      FormData formData = FormData.fromMap({
+        "category": 1,
+        "title": title,
+        "price": price,
+        "description": description,
+        "deliveryFee": deliveryFee
+      });
+
+      for (var image in selectedImages) {
+        formData.files.add(
+          MapEntry(
+            'files',
+            await MultipartFile.fromFile(image.path),
+          ),
+        );
+      }
+
+      fetchData(formData);
+    }
   }
 
   @override
@@ -101,13 +138,12 @@ class _CreateArticleState extends State<CreateArticle> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
-    String title = '';
     return SafeArea(
         child: Scaffold(
             appBar: CustomAppBar(
               title: '내 물건 등록',
               actions: '완료',
-              callback: _printing,
+              callback: _submit,
             ),
             body: SingleChildScrollView(
                 child: Column(
@@ -116,7 +152,6 @@ class _CreateArticleState extends State<CreateArticle> {
                     height: height * 0.15,
                     padding: EdgeInsets.all(16.0),
                     child: ListView.builder(
-                      controller: scrollController,
                       scrollDirection: Axis.horizontal,
                       itemCount: selectedImages.length + 1,
                       itemBuilder: (context, index) {
@@ -149,7 +184,7 @@ class _CreateArticleState extends State<CreateArticle> {
                               Container(
                                 margin: const EdgeInsets.only(left: 8.0),
                                 child: Image.file(
-                                  File(selectedImages[index - 1]),
+                                  selectedImages[index - 1],
                                   width: width * 0.25,
                                   height: width * 0.25,
                                   fit: BoxFit.cover,
@@ -177,8 +212,12 @@ class _CreateArticleState extends State<CreateArticle> {
                         }
                       },
                     )),
-                const CategoryTapBar(),
+                CategoryTapBar(
+                  callback: _getCategory,
+                  initNumber: category,
+                ),
                 TextField(
+                  controller: titleController,
                   decoration: InputDecoration(
                     hintText: '글제목',
                     focusedBorder: const UnderlineInputBorder(
@@ -186,13 +225,10 @@ class _CreateArticleState extends State<CreateArticle> {
                     contentPadding: EdgeInsets.symmetric(
                         vertical: 0, horizontal: width * 0.04),
                   ),
-                  onChanged: (value) => {
-                    setState(() {
-                      title = value;
-                    })
-                  },
                 ),
                 TextField(
+                  controller: priceController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText: '가격',
                     focusedBorder: const UnderlineInputBorder(
@@ -200,27 +236,20 @@ class _CreateArticleState extends State<CreateArticle> {
                     contentPadding: EdgeInsets.symmetric(
                         vertical: 0, horizontal: width * 0.04),
                   ),
-                  onChanged: (value) => {
-                    setState(() {
-                      title = value;
-                    })
-                  },
                 ),
                 TextField(
+                  controller: deliveryFeeController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    hintText: '배송비',
+                    hintText: '배송비 (선택사항)',
                     focusedBorder: const UnderlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFBDBDBD))),
                     contentPadding: EdgeInsets.symmetric(
                         vertical: 0, horizontal: width * 0.04),
                   ),
-                  onChanged: (value) => {
-                    setState(() {
-                      title = value;
-                    })
-                  },
                 ),
                 TextField(
+                  controller: descriptionController,
                   maxLines: null,
                   decoration: InputDecoration(
                     hintText: '게시글 내용을 작성해주세요.',
@@ -228,11 +257,6 @@ class _CreateArticleState extends State<CreateArticle> {
                     contentPadding: EdgeInsets.symmetric(
                         vertical: 0, horizontal: width * 0.04),
                   ),
-                  onChanged: (value) => {
-                    setState(() {
-                      title = value;
-                    })
-                  },
                 ),
               ],
             ))));

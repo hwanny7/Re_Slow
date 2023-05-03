@@ -15,6 +15,12 @@ class Market extends StatefulWidget {
 class _MarketState extends State<Market> {
   List<MarketItem> itemList = [];
   final DioClient dioClient = DioClient();
+  int category = 0;
+
+  void _getCategory(int index) {
+    category = index;
+    print(category);
+  }
 
   @override
   void initState() {
@@ -54,7 +60,10 @@ class _MarketState extends State<Market> {
     return Column(
       children: [
         Align(alignment: Alignment.center, child: MySearchBar()),
-        const CategoryTapBar(),
+        CategoryTapBar(
+          callback: _getCategory,
+          initNumber: category,
+        ),
         Expanded(
             child: ListView.builder(
           itemCount: itemList.length,
