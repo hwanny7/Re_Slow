@@ -2,27 +2,41 @@ import 'package:flutter/material.dart';
 // import 'package:buttons_tabbar/buttons_tabbar.dart';
 
 class CategoryTapBar extends StatefulWidget {
-  const CategoryTapBar({super.key});
+  final void Function(int) callback;
+  final int? initNumber;
+
+  const CategoryTapBar({
+    required this.callback,
+    this.initNumber,
+  });
+
   @override
   _CategoryTapBarState createState() => _CategoryTapBarState();
 }
 
 class _CategoryTapBarState extends State<CategoryTapBar> {
-  final GlobalKey containerKey1 = GlobalKey();
-  final GlobalKey containerKey2 = GlobalKey();
-  final GlobalKey containerKey3 = GlobalKey();
-  final GlobalKey containerKey4 = GlobalKey();
-  final GlobalKey containerKey5 = GlobalKey();
-  final GlobalKey containerKey6 = GlobalKey();
-  final GlobalKey containerKey7 = GlobalKey();
+  List<GlobalKey> containerKeys = [];
   final GlobalKey tabsContainerKey = GlobalKey();
-
   ScrollController? scrollController;
+  int? selectedIndex;
 
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
+    selectedIndex = widget.initNumber;
+    if (selectedIndex != null) {
+      categories.insert(0, '전체');
+    }
+    containerKeys = generateContainerKeys();
+  }
+
+  List<GlobalKey> generateContainerKeys() {
+    List<GlobalKey> keys = [];
+    for (int i = 0; i < categories.length; i++) {
+      keys.add(GlobalKey());
+    }
+    return keys;
   }
 
   @override
@@ -31,195 +45,60 @@ class _CategoryTapBarState extends State<CategoryTapBar> {
     super.dispose();
   }
 
-  // final scrollController = ScrollController();
-
-  int selectedIndex = 0;
+  final List<String> categories = [
+    '가구/인테리어',
+    '여성잡화',
+    '여성의류',
+    '남성잡화',
+    '남성의류',
+    '뷰티/미용',
+    '반려동물용품',
+    '생활용품',
+    '기타',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        key: tabsContainerKey,
-        padding: EdgeInsets.all(10.0),
-        // margin: const EdgeInsets.only(
-        //   top: 4.0,
-        // ),
-        height: 55,
-        decoration: BoxDecoration(
-            border: Border.all(color: const Color(0xffF4F2F2), width: 2.0)),
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          controller: scrollController,
-          children: <Widget>[
-            Container(
-              key: containerKey1,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 0
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
+      key: tabsContainerKey,
+      padding: const EdgeInsets.all(10.0),
+      height: 55,
+      decoration: BoxDecoration(
+          border: Border.all(color: const Color(0xffF4F2F2), width: 2.0)),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        controller: scrollController,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          return Container(
+            key: containerKeys[index],
+            margin: const EdgeInsets.only(left: 10.0),
+            child: TextButton(
+              style: ButtonStyle(
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff555555)),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32.0),
+                    side: BorderSide(
+                      width: 2,
+                      color: selectedIndex == index
+                          ? const Color(0xff165B40)
+                          : const Color(0xffE0E0E0),
                     ),
                   ),
                 ),
-                child: Text('전체'),
-                onPressed: () {
-                  _scrollToButton(containerKey1, 0);
-                },
               ),
+              child: Text(categories[index]),
+              onPressed: () {
+                _scrollToButton(containerKeys[index], index);
+                widget.callback(index);
+              },
             ),
-            Container(
-              key: containerKey2,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 1
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
-                    ),
-                  ),
-                ),
-                child: Text('가구/인테리어'),
-                onPressed: () {
-                  _scrollToButton(containerKey2, 1);
-                },
-              ),
-            ),
-            Container(
-              key: containerKey3,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 2
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
-                    ),
-                  ),
-                ),
-                child: Text('여성잡화'),
-                onPressed: () {
-                  _scrollToButton(containerKey3, 2);
-                },
-              ),
-            ),
-            Container(
-              key: containerKey4,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 3
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
-                    ),
-                  ),
-                ),
-                child: Text('여성의류'),
-                onPressed: () {
-                  _scrollToButton(containerKey4, 3);
-                },
-              ),
-            ),
-            Container(
-              key: containerKey5,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 4
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
-                    ),
-                  ),
-                ),
-                child: Text('남성잡화'),
-                onPressed: () {
-                  _scrollToButton(containerKey5, 4);
-                },
-              ),
-            ),
-            Container(
-              key: containerKey6,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 5
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
-                    ),
-                  ),
-                ),
-                child: Text('남성의류'),
-                onPressed: () {
-                  _scrollToButton(containerKey6, 5);
-                },
-              ),
-            ),
-            Container(
-              key: containerKey7,
-              margin: const EdgeInsets.only(left: 10.0),
-              child: TextButton(
-                style: ButtonStyle(
-                  foregroundColor:
-                      MaterialStateProperty.all<Color>(const Color(0xff555555)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32.0),
-                      side: BorderSide(
-                          width: 2,
-                          color: selectedIndex == 6
-                              ? const Color(0xff165B40)
-                              : const Color(0xffE0E0E0)),
-                    ),
-                  ),
-                ),
-                child: Text('뷰티/미용'),
-                onPressed: () {
-                  _scrollToButton(containerKey7, 6);
-                },
-              ),
-            ),
-          ],
-        ));
+          );
+        },
+      ),
+    );
   }
 
   void _scrollToButton(GlobalKey containerKey, int index) {

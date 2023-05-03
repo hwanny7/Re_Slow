@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/market/item_detail.dart';
+import 'package:reslow/utils/navigator.dart';
 
 class ItemInfo extends StatelessWidget {
   final double mediaWidth;
@@ -14,48 +16,52 @@ class ItemInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        color: Colors.white,
-        child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
-            child: Row(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    "assets/image/jean.jpg",
-                    width: mediaWidth * 0.3,
-                    height: mediaHeight * 0.15,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Container(
-                    height: mediaHeight * 0.15,
-                    padding: EdgeInsets.only(
-                      left: mediaWidth * 0.03,
+    return GestureDetector(
+        child: Card(
+            color: Colors.white,
+            child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        item.image,
+                        width: mediaWidth * 0.3,
+                        height: mediaHeight * 0.15,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('${item.name}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: mediaWidth * 0.05,
-                            )),
-                        SizedBox(height: mediaHeight * 0.01),
-                        Text('도안동'),
-                        Text('23.04.19'),
-                        SizedBox(height: mediaHeight * 0.02),
-                        Text('${item.price}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: mediaWidth * 0.05,
-                            )),
-                      ],
-                    ))
-              ],
-            )));
+                    Container(
+                        height: mediaHeight * 0.15,
+                        padding: EdgeInsets.only(
+                          left: mediaWidth * 0.03,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(item.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: mediaWidth * 0.05,
+                                )),
+                            SizedBox(height: mediaHeight * 0.01),
+                            SizedBox(height: mediaHeight * 0.04),
+                            SizedBox(height: mediaHeight * 0.02),
+                            Text(item.datetime),
+                            Text('${item.price}원',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: mediaWidth * 0.05,
+                                )),
+                          ],
+                        ))
+                  ],
+                ))),
+        onTap: () {
+          leftToRightNavigator(ItemDetail(itemPk: item.productNo), context);
+        });
   }
 }
 
