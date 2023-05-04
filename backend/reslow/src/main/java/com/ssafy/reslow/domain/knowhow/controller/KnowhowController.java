@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
 import com.ssafy.reslow.domain.knowhow.service.KnowhowService;
@@ -133,6 +134,11 @@ public class KnowhowController {
 	public List<KnowhowListResponse> recommendKnowhowPosting(Authentication authentication,
 		@RequestBody KnowhowRecommendRequest keywords) {
 		Long memberNo = Long.parseLong(authentication.getName());
-		return knowhowService.getKnowhowList(memberNo, PageRequest.of(0, 3), -1L, keywords);
+		return knowhowService.getRecommendKnowhowList(memberNo, PageRequest.of(0, 100), keywords);
+	}
+
+	@GetMapping("/recommends/main")
+	public List<KnowhowRecommendResponse> recommendMainKnowhow() {
+		return knowhowService.getMainKnowhowList();
 	}
 }
