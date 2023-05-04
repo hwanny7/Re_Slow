@@ -50,7 +50,7 @@ class ItemInfo extends StatelessWidget {
                             SizedBox(height: mediaHeight * 0.01),
                             SizedBox(height: mediaHeight * 0.04),
                             Text(formatTimeDifference(item.datetime)),
-                            Text('${item.price}원',
+                            Text(item.price,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: mediaWidth * 0.05,
@@ -64,25 +64,3 @@ class ItemInfo extends StatelessWidget {
         });
   }
 }
-
-
-
-
-
-
-
-
-
-// Row(
-//           children: [
-//             Container(
-//                 child: Image.asset("assets/image/image 1.png"),
-//                 margin: const EdgeInsets.all(8)),
-//             Container(
-//                 child: Image.asset("assets/image/image 2.png"),
-//                 margin: const EdgeInsets.all(8)),
-//             Container(
-//                 child: Image.asset("assets/image/image 3.png"),
-//                 margin: const EdgeInsets.all(8)),
-//           ],
-// )

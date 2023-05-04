@@ -21,3 +21,19 @@ String formatTimeDifference(String dateTimeString) {
     return '$years년 전';
   }
 }
+
+String priceDot(int price) {
+  String priceString = price.toString();
+
+  String formattedPrice = '';
+  int length = priceString.length - 1;
+  for (int i = length; i >= 0; i--) {
+    formattedPrice += priceString[length - i];
+
+    if (i % 3 == 0 && i > 0) {
+      formattedPrice += ',';
+    }
+  }
+  formattedPrice += '원';
+  return formattedPrice;
+}

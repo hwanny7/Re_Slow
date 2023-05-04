@@ -32,7 +32,7 @@ class _ItemDetailState extends State<ItemDetail> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      // print(jsonData);
+      print(jsonData);
 
       setState(() {
         item = MarketItemDetail.fromJson(jsonData);
@@ -40,6 +40,34 @@ class _ItemDetailState extends State<ItemDetail> {
     } else {
       // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
+
+  void changeHeart(bool status) async {
+    if (status) {
+      Response response =
+          await dioClient.dio.delete('/products/${widget.itemPk}/like');
+      if (response.statusCode == 200) {
+        setState(() {
+          item!.myHeart = false;
+          item!.heartCount -= 1;
+        });
+      } else {
+        // Handle any errors or display an error message
+        print('HTTP request failed with status: ${response.statusCode}');
+      }
+    } else {
+      Response response =
+          await dioClient.dio.post('/products/${widget.itemPk}/like');
+      if (response.statusCode == 200) {
+        setState(() {
+          item!.myHeart = true;
+          item!.heartCount += 1;
+        });
+      } else {
+        // Handle any errors or display an error message
+        print('HTTP request failed with status: ${response.statusCode}');
+      }
     }
   }
 
@@ -141,6 +169,9 @@ class _ItemDetailState extends State<ItemDetail> {
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),
+                    Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text('관심 ${item!.heartCount}'))
                   ]),
             ),
       bottomNavigationBar: item == null
@@ -170,22 +201,20 @@ class _ItemDetailState extends State<ItemDetail> {
                     child: IconButton(
                       icon: Icon(
                         Icons.favorite,
-                        color: isLiked
+                        color: item!.myHeart
                             ? Colors.red
                             : Colors.grey, // Change color based on condition
                       ),
                       onPressed: () {
-                        setState(() {
-                          isLiked = !isLiked; // Toggle the liked state
-                        });
+                        changeHeart(item!.myHeart);
                       },
                     ),
                   ),
                   Text(
-                    '${item!.price}원',
+                    item!.price,
                     style: const TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold),
-                  )
+                  ),
                 ]),
               ),
             ),
