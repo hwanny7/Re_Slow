@@ -39,7 +39,7 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 
 		return queryFactory.selectFrom(knowhow)
 			.where(searchBuilder, category == null ? null : knowhow.knowhowCategory.no.eq(category))
-			.orderBy(knowhow.createdDate.asc())
+			.orderBy(knowhow.createdDate.desc())
 			.offset(pageable.getOffset())   // 페이지 번호
 			.limit(pageable.getPageSize())  // 페이지 사이즈
 			.fetch();
