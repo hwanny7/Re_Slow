@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/item_detail.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/navigator.dart';
 
 class ItemInfo extends StatelessWidget {
@@ -48,7 +49,7 @@ class ItemInfo extends StatelessWidget {
                                 )),
                             SizedBox(height: mediaHeight * 0.01),
                             SizedBox(height: mediaHeight * 0.04),
-                            Text(item.datetime),
+                            Text(formatTimeDifference(item.datetime)),
                             Text('${item.price}원',
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,

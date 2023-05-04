@@ -1,3 +1,5 @@
+import 'package:reslow/utils/date.dart';
+
 class MarketItem {
   final int productNo;
   final String title;
@@ -53,7 +55,7 @@ class MarketItemDetail {
         images: responseData['images'],
         title: responseData['title'],
         price: responseData['price'],
-        date: responseData['date'],
+        date: formatTimeDifference(responseData['date']),
         deliveryFee: responseData['deliveryFee'],
         category: responseData['category'],
         mine: responseData['mine'],
