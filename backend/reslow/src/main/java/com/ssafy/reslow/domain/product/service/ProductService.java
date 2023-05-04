@@ -225,14 +225,19 @@ public class ProductService {
 	public List<ProductRecommendResponse> recommendMyProduct(Long memberNo) {
 		List<ProductRecommendResponse> list = null;
 		if (memberNo == null) {
-			list = productRepository.findTop10ByOrderByCreatedDate()
+			list = productRepository.findTop10ByAndOrderIsNotNullOrderByCreatedDate()
 				.stream()
 				.map(product -> {
 					Long no = product.getNo();
 					return ProductRecommendResponse.of(product, likeCount(no));
 				}).collect(Collectors.toList());
 		} else {
-
+			ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+			ProductCategory category = productRepository.findTopBy1OrderIsNotNullOrderByCreatedDate().getProductCategory();
+			Long myCategoryNo = Long.parseLong(String.valueOf(zSetOperations.range("product_" + memberNo, 0, 1)));
+			ProductCategory myCategory = productCategoryRepository.findById(myCategoryNo)
+				.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+			productRepository.findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(category, myCategory);
 		}
 		return list;
 	}
@@ -247,7 +252,7 @@ public class ProductService {
 		setOperations.add(productString, String.valueOf(memberNo));
 
 		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
-			System.currentTimeMillis()); // 내가 누른 글인지
+			System.currentTimeMillis());
 		if (added) {
 			zSetOperations.incrementScore("product", productString, 1);
 			zSetOperations.incrementScore("product_" + memberNo,
