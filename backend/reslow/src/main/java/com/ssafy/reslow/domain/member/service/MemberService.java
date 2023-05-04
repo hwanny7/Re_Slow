@@ -64,7 +64,8 @@ public class MemberService {
 		if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(signUp.getId())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
-		Member member = memberRepository.save(Member.toEntity(signUp, DEFAULT_IMAGE_S3, passwordEncoder.encode(signUp.getPassword())));
+		Member member = memberRepository.save(
+			Member.toEntity(signUp, DEFAULT_IMAGE_S3, passwordEncoder.encode(signUp.getPassword())));
 
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		List<ProductCategory> productCategories = productCategoryRepository.findAll();
@@ -165,6 +166,19 @@ public class MemberService {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		MemberAccount memberAccount = MemberAccount.of(request);
+		member.registAccount(memberAccount);
+		Map<String, Long> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		return map;
+	}
+
+	@Transactional
+	public Map<String, Long> updateAccount(Long memberNo, MemberAccountRequest request) {
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		MemberAccount memberAccount = member.getMemberAccount();
+		MemberAccount updatedMemberAccount = MemberAccount.of(request);
+		memberAccount.updateAccount(updatedMemberAccount);
 		member.registAccount(memberAccount);
 		Map<String, Long> map = new HashMap<>();
 		map.put("memberNo", memberNo);
