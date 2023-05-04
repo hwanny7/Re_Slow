@@ -37,13 +37,12 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 			}
 		}
 
-		List<Knowhow> knowhowList = queryFactory.selectFrom(knowhow)
-			.where(searchBuilder, category == null || category == -1L ? null : knowhow.knowhowCategory.no.eq(category))
+		return queryFactory.selectFrom(knowhow)
+			.where(searchBuilder, category == null ? null : knowhow.knowhowCategory.no.eq(category))
 			.orderBy(knowhow.createdDate.asc())
 			.offset(pageable.getOffset())   // 페이지 번호
 			.limit(pageable.getPageSize())  // 페이지 사이즈
 			.fetch();
 
-		return knowhowList;
 	}
 }
