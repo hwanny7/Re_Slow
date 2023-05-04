@@ -9,7 +9,8 @@ import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-	Slice<Order> findByBuyerAndStatusIsGreaterThanEqual(Member member, OrderStatus status, Pageable pageable);
+	Slice<Order> findByBuyerAndStatusIsGreaterThanEqualOrderByCreatedDate(Member member, OrderStatus status,
+		Pageable pageable);
 
-	Slice<Order> findByBuyerAndStatus(Member member, OrderStatus ofValue, Pageable pageable);
+	Slice<Order> findByBuyerAndStatusOrderByCreatedDate(Member member, OrderStatus ofValue, Pageable pageable);
 }
