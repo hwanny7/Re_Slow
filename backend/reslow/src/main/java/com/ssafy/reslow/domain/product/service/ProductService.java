@@ -75,6 +75,10 @@ public class ProductService {
 
 		product.setProductImages(productImages);
 		Product savedProduct = productRepository.save(product);
+
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		zSetOperations.incrementScore("product", String.valueOf(savedProduct.getNo()), 0);
+
 		Map<String, Long> map = new HashMap<>();
 		map.put("productNo", savedProduct.getNo());
 		return map;
@@ -131,6 +135,14 @@ public class ProductService {
 		if (memberNo != product.getMember().getNo()) {
 			throw new CustomException(USER_NOT_MATCH);
 		}
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		setOperations.remove(String.valueOf(productNo));
+		zSetOperations.remove(memberNo + "_like_product", String.valueOf(productNo));
+		zSetOperations.remove(memberNo + "product", String.valueOf(productNo));
+		zSetOperations.incrementScore("product_" + memberNo,
+			String.valueOf(product.getProductCategory().getNo()),
+			-1);
 		productRepository.delete(product);
 		Map<String, Long> map = new HashMap<>();
 		map.put("productNo", productNo);
@@ -233,8 +245,9 @@ public class ProductService {
 		String productString = String.valueOf(productNo);
 
 		setOperations.add(productString, String.valueOf(memberNo));
+
 		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
-			System.currentTimeMillis());
+			System.currentTimeMillis()); // 내가 누른 글인지
 		if (added) {
 			zSetOperations.incrementScore("product", productString, 1);
 			zSetOperations.incrementScore("product_" + memberNo,
