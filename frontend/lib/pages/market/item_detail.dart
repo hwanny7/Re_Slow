@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
@@ -31,11 +32,10 @@ class _ItemDetailState extends State<ItemDetail> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      print(jsonData);
+      // print(jsonData);
 
       setState(() {
         item = MarketItemDetail.fromJson(jsonData);
-        print(item);
       });
     } else {
       // Handle any errors or display an error message
@@ -128,7 +128,7 @@ class _ItemDetailState extends State<ItemDetail> {
                               fontSize: 22, fontWeight: FontWeight.bold),
                         ),
                         const Spacer(),
-                        Text(item!.date)
+                        Text(item!.date),
                       ]),
                     ),
                     const SizedBox(
