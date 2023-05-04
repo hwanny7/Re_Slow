@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -98,15 +98,19 @@ public class MemberController {
 
 	@GetMapping("/address")
 	public MemberAddressResponse userAddress(Authentication authentication) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return memberService.userAddress(memberNo);
 	}
 
 	@PostMapping("/account")
 	public Map<String, Long> registAccount(Authentication authentication, @RequestBody MemberAccountRequest request) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return memberService.registAccount(memberNo, request);
+	}
+
+	@PutMapping("/account")
+	public Map<String, Long> updateAccount(Authentication authentication, @RequestBody MemberAccountRequest request) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return memberService.updateAccount(memberNo, request);
 	}
 }

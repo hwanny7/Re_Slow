@@ -39,4 +39,10 @@ public class MemberAccount extends BaseEntity {
 			.bank(request.getBank())
 			.build();
 	}
+
+	public void updateAccount(MemberAccount account) {
+		this.accountHolder = account.getAccountHolder();
+		this.accountNumber = account.getAccountNumber();
+		this.bank = account.getBank();
+	}
 }
