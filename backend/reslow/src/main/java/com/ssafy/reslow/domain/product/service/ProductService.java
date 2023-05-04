@@ -254,6 +254,9 @@ public class ProductService {
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String productString = String.valueOf(productNo);
 
+		if (setOperations.isMember(productString, String.valueOf(memberNo)) == null) {
+			throw new CustomException(MEMBER_NOT_FOUND);
+		}
 		setOperations.remove(productString, String.valueOf(memberNo));
 
 		zSetOperations.remove(memberNo + "_like_product", productString);
