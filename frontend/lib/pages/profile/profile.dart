@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/auth/selfAuth.dart';
 import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
@@ -287,8 +288,7 @@ class _ProfileState extends State<Profile> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  NotificationSetting(), // 신고하기 페이지로 이동
+                              builder: (context) => SelfAuth(), // 신고하기 페이지로 이동
                             ),
                           );
                         },
