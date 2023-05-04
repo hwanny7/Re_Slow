@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.knowhow.repository;
 
+import static com.ssafy.reslow.domain.knowhow.entity.QKnowhow.*;
+
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -9,7 +11,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
-import com.ssafy.reslow.domain.knowhow.entity.QKnowhow;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +22,6 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 	@Override
 	public List<Knowhow> findByMemberIsNotAndCategoryAndKeyword(KnowhowRecommendRequest keywords, Long category,
 		Pageable pageable) {
-
-		QKnowhow knowhow = QKnowhow.knowhow;
 
 		BooleanBuilder searchBuilder = null;
 
@@ -39,7 +38,9 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 		}
 
 		List<Knowhow> knowhowList = queryFactory.selectFrom(knowhow)
-			.where(searchBuilder)
+			.where(searchBuilder, category == null || category == -1L ? null : knowhow.knowhowCategory.no.eq(category))
+			.offset(pageable.getOffset())   // 페이지 번호
+			.limit(pageable.getPageSize())  // 페이지 사이즈
 			.fetch();
 
 		return knowhowList;

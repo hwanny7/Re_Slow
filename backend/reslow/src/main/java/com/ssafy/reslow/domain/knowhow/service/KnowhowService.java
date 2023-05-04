@@ -194,6 +194,10 @@ public class KnowhowService {
 
 	public List<KnowhowListResponse> getKnowhowList(Long memberNo, Pageable pageable, Long category,
 		KnowhowRecommendRequest keywords) {
+		if (category == -1L) {
+			category = checkMostLikedCategory(memberNo);
+		}
+
 		List<Knowhow> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keywords, category,
 			pageable);
 
