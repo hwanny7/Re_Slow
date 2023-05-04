@@ -105,13 +105,19 @@ class _CouponDownloadState extends State<CouponDownload> {
                         //   Uri.parse(
                         //       'http://k8b306.p.ssafy.io:8080/coupons/${coupon?.couponNo}/issuance'),
                         // );
+                        Response response = await dioClient.dio
+                            .post('/coupons//${coupon?.couponNo}/issuance');
 
-                        // // handle the response based on its status code
-                        // if (response.statusCode == 200) {
-                        //   // show a success message or perform other actions
-                        // } else {
-                        //   // show an error message or perform other actions
-                        // }
+                        // handle the response based on its status code
+                        if (response.statusCode == 200) {
+                          Map<String, dynamic> jsonData = response.data;
+                          print(jsonData);
+                          // show a success message or perform other actions
+                        } else {
+                          print(
+                              'HTTP request failed with status: ${response.statusCode}');
+                          // show an error message or perform other actions
+                        }
                       },
                       icon: Icon(Icons.download),
                       label: Text('다운로드'),
