@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
@@ -24,21 +24,22 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 
 		QKnowhow knowhow = QKnowhow.knowhow;
 
-		BooleanExpression searchExpressions = null;
+		BooleanBuilder searchBuilder = null;
 
 		for (String keyword : keywords.getKeywords()) {
-			BooleanExpression keywordExpression = knowhow.title.containsIgnoreCase(keyword)
-				.or(knowhow.knowhowContents.any().content.containsIgnoreCase(keyword));
+			BooleanBuilder keywordBuilder = new BooleanBuilder();
+			keywordBuilder.and(knowhow.title.containsIgnoreCase(keyword)
+				.or(knowhow.knowhowContents.any().content.containsIgnoreCase(keyword)));
 
-			if (searchExpressions == null) {
-				searchExpressions = keywordExpression;
+			if (searchBuilder == null) {
+				searchBuilder = keywordBuilder;
 			} else {
-				searchExpressions = searchExpressions.and(keywordExpression);
+				searchBuilder = searchBuilder.and(keywordBuilder);
 			}
 		}
 
 		List<Knowhow> knowhowList = queryFactory.selectFrom(knowhow)
-			.where(searchExpressions)
+			.where(searchBuilder)
 			.fetch();
 
 		return knowhowList;
