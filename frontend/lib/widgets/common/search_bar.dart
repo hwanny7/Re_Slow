@@ -21,7 +21,7 @@ class _MySearchBarState extends State<MySearchBar> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: TextField(
-        onChanged: (value) {
+        onSubmitted: (value) {
           widget.searchcallback(value);
         },
         decoration: const InputDecoration(

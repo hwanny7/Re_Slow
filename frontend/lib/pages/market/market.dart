@@ -15,48 +15,85 @@ class Market extends StatefulWidget {
 class _MarketState extends State<Market> {
   List<MarketItem> itemList = [];
   final DioClient dioClient = DioClient();
+  final ScrollController _scrollController = ScrollController();
+  bool isLoading = false;
+  bool isLast = false;
   int category = 0;
+  int page = 0;
   String searchText = "";
 
   void _getCategory(int index) {
     category = index;
-    fetchData();
+    fetchData(false);
   }
 
   void _getSearchText(String text) {
     searchText = text;
-    fetchData();
+    fetchData(false);
   }
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    _scrollController.addListener(_scrollListener);
+    fetchData(false);
   }
 
-  void fetchData() async {
-    // Perform the HTTP GET request here
-    // For example, using the http package
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() async {
+    if (!isLast &&
+        !isLoading &&
+        _scrollController.position.pixels >
+            _scrollController.position.maxScrollExtent * 0.8) {
+      isLoading = true;
+      page += 1;
+      await fetchData(true);
+      isLoading = false;
+    }
+  }
+
+  Future<void> fetchData(bool isInfinite) async {
+    if (!isInfinite) {
+      page = 0;
+      isLast = false;
+    }
+
     Map<String, dynamic> queryParams = {
-      'page': 0,
-      'size': 10,
+      'page': page,
+      'size': 4,
       'category': category == 0 ? '' : category,
       'keyword': searchText,
     };
+
     Response response =
-        await dioClient.dio.get('/products', queryParameters: queryParams);
+        await dioClient.dio.get('/products/', queryParameters: queryParams);
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = {"content": response.data};
-      // print(jsonData);
-
-      setState(() {
-        // Update the state with the fetched data
-        itemList = List<MarketItem>.from(jsonData['content']
-            .map((itemJson) => MarketItem.fromJson(itemJson)));
-      });
+      List<dynamic> jsonData = response.data;
+      if (isInfinite) {
+        if (jsonData.isEmpty) {
+          isLast = true;
+        } else {
+          setState(() {
+            itemList.addAll(List<MarketItem>.from(
+                jsonData.map((itemJson) => MarketItem.fromJson(itemJson))));
+            // 높이를 처음으로 변경하기
+          });
+        }
+      } else {
+        _scrollController.jumpTo(0);
+        setState(() {
+          itemList = List<MarketItem>.from(
+              jsonData.map((itemJson) => MarketItem.fromJson(itemJson)));
+        });
+      }
     } else {
-      // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
     }
   }
@@ -74,6 +111,7 @@ class _MarketState extends State<Market> {
         ),
         Expanded(
             child: ListView.builder(
+          controller: _scrollController,
           itemCount: itemList.length,
           itemBuilder: (context, idx) {
             return ItemInfo(
