@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reslow/pages/auth/selfAuth.dart';
+
 import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
 import 'notificationpage.dart';
@@ -283,15 +283,7 @@ class _ProfileState extends State<Profile> {
                       ),
                       // 개인정보 끝
                       GestureDetector(
-                        onTap: () {
-                          // Navigate to privacy settings page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SelfAuth(), // 신고하기 페이지로 이동
-                            ),
-                          );
-                        },
+                        onTap: () {},
                         child: Container(
                           padding: EdgeInsets.all(5),
                           child: Row(
