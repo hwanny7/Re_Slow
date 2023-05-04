@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import com.ssafy.reslow.domain.knowhow.dto.KnowhowContentDetail;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateContent;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
@@ -69,10 +72,14 @@ public class KnowhowService {
 
 		// 노하우 테이블 저장
 		Knowhow knowhow = Knowhow.of(knowhowRequest, member, category);
-		knowhowRepository.save(knowhow);
+		Knowhow newKnowhow = knowhowRepository.save(knowhow);
 
 		// 노하우 글 저장
 		saveKnowhowContent(knowhowRequest.getContentList(), knowhowRequest.getImageList(), knowhow);
+
+		// 노하우 글 좋아요 개수 0으로 레디스에 저장
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		zSetOperations.add("knowhow", String.valueOf(newKnowhow.getNo()), 0);
 
 		return "글 작성 완료";
 	}
@@ -190,6 +197,11 @@ public class KnowhowService {
 		}
 
 		knowhowRepository.deleteById(knowhowNo);
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+
+		setOperations.remove(String.valueOf(knowhowNo), String.valueOf(memberNo));
+		zSetOperations.incrementScore("knowhow", String.valueOf(knowhowNo), -1);
 		return "글 삭제 완료";
 	}
 
@@ -230,6 +242,27 @@ public class KnowhowService {
 		}
 
 		return knowhowListResponseList;
+	}
+
+	/**
+	 * 메인화면 노하우 추천
+	 * 전체 글 최신순 100개 중에서 좋아요가 많은 노하우 글 추천
+	 * @return List<KnowhowRecommendResponse>
+	 */
+	public List<KnowhowRecommendResponse> getMainKnowhowList() {
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		Set<String> KnowhowNoSet = zSetOperations.reverseRange("knowhow", 0, 4); // 4개 넘겨줌
+
+		Iterator<String> itor = KnowhowNoSet.iterator();
+		List<KnowhowRecommendResponse> knowhowRecommendResponseList = new ArrayList<>();
+		while (itor.hasNext()) {
+			Long knowhowNo = Long.valueOf(itor.next());
+			Knowhow knowhow = knowhowRepository.findById(knowhowNo)
+				.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
+
+			knowhowRecommendResponseList.add(KnowhowRecommendResponse.of(knowhow));
+		}
+		return knowhowRecommendResponseList;
 	}
 
 	public List<KnowhowListResponse> getMyKnowhowList(Pageable pageable, Long memberNo) {
