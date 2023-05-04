@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.Authentication;
@@ -90,7 +91,7 @@ public class KnowhowController {
 		@RequestParam(required = false) Long category,
 		@RequestParam(required = false) String keyword) {
 		Long memberNo = Long.parseLong(authentication.getName());
-		return knowhowService.getKnowhowList(memberNo, pageable, category, new KnowhowRecommendRequest(keyword));
+		return knowhowService.getKnowhowList(memberNo, pageable, category, KnowhowRecommendRequest.of(keyword));
 	}
 
 	@GetMapping("/mylist")
@@ -129,9 +130,9 @@ public class KnowhowController {
 	 * @return List<KnowhowListResponse>
 	 */
 	@PostMapping("/recommends")
-	public Long recommendKnowhowPosting(Authentication authentication,
+	public List<KnowhowListResponse> recommendKnowhowPosting(Authentication authentication,
 		@RequestBody KnowhowRecommendRequest keywords) {
 		Long memberNo = Long.parseLong(authentication.getName());
-		return knowhowService.checkMostLikedCategory(memberNo);
+		return knowhowService.getKnowhowList(memberNo, PageRequest.of(0, 3), -1L, keywords);
 	}
 }
