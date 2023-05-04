@@ -21,25 +21,26 @@ int _selectedindex = -1;
 class _KnowHowState extends State<KnowHow> {
   Dio dio = Dio();
   int category = 0;
+  String searchText = "";
   // 사진 개수에 따라 사진 배치
 
   void _getCategory(int index) {
     category = index;
   }
 
+  void _getSearchText(String text) {
+    searchText = text;
+    _requestKnowhow();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
-    _requestKnowhow().then((data) {
-      print(data);
-      setState(() {
-        content = data;
-      });
-    });
+    _requestKnowhow();
     super.initState();
   }
 
-  Future<List> _requestKnowhow() async {
+  void _requestKnowhow() async {
     try {
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
@@ -51,12 +52,16 @@ class _KnowHowState extends State<KnowHow> {
             "page": 0,
             "size": 10,
             "category": category == 0 ? "" : category,
-            "keyword": ""
+            "keyword": searchText
+          }).then(
+        (value) {
+          setState(() {
+            content = value.data;
           });
-      return response.data;
+        },
+      );
     } on DioError catch (e) {
       print('error: $e');
-      return [];
     }
   }
 
@@ -105,7 +110,11 @@ class _KnowHowState extends State<KnowHow> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Align(alignment: Alignment.center, child: MySearchBar()),
+      Align(
+          alignment: Alignment.center,
+          child: MySearchBar(
+            searchcallback: _getSearchText,
+          )),
       CategoryTapBar(
         callback: _getCategory,
         initNumber: category,

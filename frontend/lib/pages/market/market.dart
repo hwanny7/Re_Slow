@@ -16,9 +16,15 @@ class _MarketState extends State<Market> {
   List<MarketItem> itemList = [];
   final DioClient dioClient = DioClient();
   int category = 0;
+  String searchText = "";
 
   void _getCategory(int index) {
     category = index;
+    fetchData();
+  }
+
+  void _getSearchText(String text) {
+    searchText = text;
     fetchData();
   }
 
@@ -35,13 +41,13 @@ class _MarketState extends State<Market> {
       'page': 0,
       'size': 10,
       'category': category == 0 ? '' : category,
-      'keyword': '',
+      'keyword': searchText,
     };
     Response response =
         await dioClient.dio.get('/products', queryParameters: queryParams);
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = response.data;
+      Map<String, dynamic> jsonData = {"content": response.data};
       // print(jsonData);
 
       setState(() {
@@ -59,7 +65,9 @@ class _MarketState extends State<Market> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Align(alignment: Alignment.center, child: MySearchBar()),
+        Align(
+            alignment: Alignment.center,
+            child: MySearchBar(searchcallback: _getSearchText)),
         CategoryTapBar(
           callback: _getCategory,
           initNumber: category,

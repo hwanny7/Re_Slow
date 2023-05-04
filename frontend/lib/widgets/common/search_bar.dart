@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
-class MySearchBar extends StatelessWidget {
+class MySearchBar extends StatefulWidget {
+  final void Function(String) searchcallback;
+
+  const MySearchBar({Key? key, required this.searchcallback}) : super(key: key);
+
+  @override
+  _MySearchBarState createState() => _MySearchBarState();
+}
+
+class _MySearchBarState extends State<MySearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,8 +20,11 @@ class MySearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      child: const TextField(
-        decoration: InputDecoration(
+      child: TextField(
+        onChanged: (value) {
+          widget.searchcallback(value);
+        },
+        decoration: const InputDecoration(
           hintText: '상품을 검색해보세요.',
           border: InputBorder.none,
           icon: Icon(Icons.search),
