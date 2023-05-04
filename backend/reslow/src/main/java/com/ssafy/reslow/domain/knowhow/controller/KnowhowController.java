@@ -133,6 +133,6 @@ public class KnowhowController {
 	public List<KnowhowListResponse> recommendKnowhowPosting(Authentication authentication,
 		@RequestBody KnowhowRecommendRequest keywords) {
 		Long memberNo = Long.parseLong(authentication.getName());
-		return knowhowService.getKnowhowList(memberNo, PageRequest.of(0, 3), -1L, keywords);
+		return knowhowService.getRecommendKnowhowList(memberNo, PageRequest.of(0, 100), keywords);
 	}
 }

@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
@@ -194,18 +195,39 @@ public class KnowhowService {
 
 	public List<KnowhowListResponse> getKnowhowList(Long memberNo, Pageable pageable, Long category,
 		KnowhowRecommendRequest keywords) {
-		if (category == -1L) {
-			category = checkMostLikedCategory(memberNo);
-		}
 
 		List<Knowhow> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keywords, category,
 			pageable);
 
 		List<KnowhowListResponse> knowhowListResponseList = new ArrayList<>();
+
 		list.forEach(
 			knowhow -> knowhowListResponseList.add(KnowhowListResponse.of(knowhow, likeCount(knowhow.getNo()),
 				(long)knowhow.getKnowhowComments().size(),
 				checkLiked(memberNo, knowhow.getNo()))));
+
+		return knowhowListResponseList;
+	}
+
+	public List<KnowhowListResponse> getRecommendKnowhowList(Long memberNo, Pageable pageable,
+		KnowhowRecommendRequest keywords) {
+		Long category = checkMostLikedCategory(memberNo);
+
+		List<Knowhow> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keywords, category,
+			pageable);
+
+		List<KnowhowListResponse> knowhowListResponseList = new ArrayList<>();
+		PriorityQueue<KnowhowListResponse> pq = new PriorityQueue<>(
+			(o1, o2) -> Long.compare(o2.getLikeCnt(), o1.getLikeCnt()));
+
+		list.forEach(knowhow ->
+			pq.add(KnowhowListResponse.of(knowhow, likeCount(knowhow.getNo()),
+				(long)knowhow.getKnowhowComments().size(),
+				checkLiked(memberNo, knowhow.getNo()))));
+
+		for (int i = 0; i < Math.min(list.size(), 3); i++) {
+			knowhowListResponseList.add(pq.poll());
+		}
 
 		return knowhowListResponseList;
 	}
@@ -250,7 +272,7 @@ public class KnowhowService {
 		// 좋아요를 누른게 없으면
 		Double mostLikeScore = zSetOperations.score("knowhow_" + memberNo, mostLikeCategory);
 		if (mostLikeScore == null || mostLikeScore == 0.0)
-			return -1L;
+			return null;
 
 		return Long.parseLong(mostLikeCategory);
 	}
@@ -284,6 +306,10 @@ public class KnowhowService {
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String knowhowString = String.valueOf(knowhowNo);
 
+		// 사용자가 좋아요하지 않은 게시글이라면
+		if (!setOperations.isMember(knowhowString, String.valueOf(memberNo))) {
+			throw new CustomException(KNOWHOW_NOT_FOUND);
+		}
 		// 노하우 글에 있는 사용자 목록에서 사용자 삭제
 		setOperations.remove(knowhowString, String.valueOf(memberNo));
 
