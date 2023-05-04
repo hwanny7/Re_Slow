@@ -30,7 +30,7 @@ class MarketItemDetail {
   final String title;
   final String description;
   final int deliveryFee;
-  final String price;
+  final int price;
   final String category;
   final String date;
   final bool mine;
@@ -58,7 +58,7 @@ class MarketItemDetail {
     return MarketItemDetail(
         images: responseData['images'],
         title: responseData['title'],
-        price: priceDot(responseData['price']),
+        price: responseData['price'],
         myHeart: responseData['myHeart'],
         heartCount: responseData['heartCount'],
         date: formatTimeDifference(responseData['date']),

@@ -20,6 +20,7 @@ class _ItemDetailState extends State<ItemDetail> {
   bool isLiked = false;
   final PageController _pageController = PageController();
   int _currentPicture = 0;
+  String price = '';
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _ItemDetailState extends State<ItemDetail> {
 
       setState(() {
         item = MarketItemDetail.fromJson(jsonData);
+        price = priceDot(item!.price);
       });
     } else {
       // Handle any errors or display an error message
@@ -211,7 +213,7 @@ class _ItemDetailState extends State<ItemDetail> {
                     ),
                   ),
                   Text(
-                    item!.price,
+                    price,
                     style: const TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),

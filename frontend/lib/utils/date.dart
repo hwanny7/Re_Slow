@@ -1,9 +1,7 @@
 String formatTimeDifference(String dateTimeString) {
   DateTime dateTime = DateTime.parse(dateTimeString);
   DateTime now = DateTime.now();
-
   Duration difference = now.difference(dateTime);
-  print(difference);
 
   if (difference < const Duration(minutes: 1)) {
     return '${difference.inSeconds}초 전';
@@ -23,6 +21,7 @@ String formatTimeDifference(String dateTimeString) {
 }
 
 String priceDot(int price) {
+  print('hello');
   String priceString = price.toString();
 
   String formattedPrice = '';
