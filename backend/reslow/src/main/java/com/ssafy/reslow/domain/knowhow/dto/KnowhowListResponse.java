@@ -40,9 +40,4 @@ public class KnowhowListResponse {
 			.commentCnt(commentCnt)
 			.build();
 	}
-
-	public void setLike(Long likeCnt, boolean like) {
-		this.likeCnt = likeCnt;
-		this.like = like;
-	}
 }
