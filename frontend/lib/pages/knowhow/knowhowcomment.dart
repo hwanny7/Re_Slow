@@ -1,59 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-List<Map<String, dynamic>> content = [
-  {
-    "commentNo": 1,
-    "memberNo": 1,
-    "parentNo": null,
-    "profilePic": null,
-    "nickname": "리폼왕춘식이1",
-    "datetime": "2023-04-27 12:00",
-    "content": "댓글1",
-    "children": [
-      {
-        "commentNo": 2,
-        "memberNo": 1,
-        "parentNo": 1,
-        "profilePic": null,
-        "nickname": "리폼왕춘식이111",
-        "datetime": "2023-04-27 12:00",
-        "content": "댓글2",
-        "children": null
-      },
-      {
-        "commentNo": 2,
-        "memberNo": 1,
-        "parentNo": 1,
-        "profilePic": null,
-        "nickname": "리폼왕춘식이222",
-        "datetime": "2023-04-27 12:00",
-        "content": "댓글2-1",
-        "children": null
-      }
-    ]
-  },
-  {
-    "commentNo": 1,
-    "memberNo": 1,
-    "parentNo": null,
-    "profilePic": null,
-    "nickname": "리폼왕춘식이2",
-    "datetime": "2023-04-27 12:00",
-    "content": "댓글3",
-    "children": [
-      {
-        "commentNo": 2,
-        "memberNo": 1,
-        "parentNo": 1,
-        "profilePic": null,
-        "nickname": "리폼왕춘식이333",
-        "datetime": "2023-04-27 12:00",
-        "content": "댓글4",
-        "children": null
-      }
-    ]
-  }
-];
+List<dynamic> content = [];
 
 class Knowhowcomment extends StatefulWidget {
   final int knowhowid;
@@ -65,9 +15,73 @@ class Knowhowcomment extends StatefulWidget {
 }
 
 class _KnowhowcommentState extends State<Knowhowcomment> {
+  Dio dio = Dio();
+
+  int category = 0;
+  String commentText = "";
+  String cocommentText = "";
+
+  void _getCategory(int index) {
+    category = index;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _requestComment();
+    super.initState();
+  }
+
+  Future<void> _requestComment() async {
+    try {
+      final token = await _getTokenFromSharedPreferences();
+      print("token $token");
+      final response = await dio.get(
+          'http://k8b306.p.ssafy.io:8080/knowhows/comments/',
+          queryParameters: {"knowhowNo": widget.knowhowid}).then(
+        (value) {
+          setState(() {
+            content = value.data["content"];
+          });
+        },
+      );
+    } on DioError catch (e) {
+      print('error: $e');
+    }
+  }
+
+  Future<void> _registerComment() async {
+    try {
+      final token = await _getTokenFromSharedPreferences();
+      print("token $token");
+      final response = await dio.post(
+        'http://k8b306.p.ssafy.io:8080/knowhows/comments/',
+        data: {"knowhowNo": widget.knowhowid, "content": commentText},
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+      setState(() {
+        commentText = "";
+      });
+      _requestComment();
+    } on DioError catch (e) {
+      print('error: $e');
+    }
+  }
+
+  Future<String?> _getTokenFromSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken');
+  }
+
   Widget cocomment(Map item) {
     return Row(children: [
       Container(
+          decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: Colors.grey, style: BorderStyle.solid, width: 0.5)),
           margin: EdgeInsets.fromLTRB(48, 16, 16, 16),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(50),
@@ -112,6 +126,10 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
     return Column(children: [
       Row(children: [
         Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: Colors.grey, style: BorderStyle.solid, width: 0.5)),
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),
@@ -132,7 +150,7 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
                       Container(
                           margin: const EdgeInsets.fromLTRB(4, 0, 4, 4),
                           child: Text(
-                            content[index]["nickname"],
+                            content[index]["nickname"] ?? "",
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
@@ -140,7 +158,7 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
                       Container(
                           margin: const EdgeInsets.fromLTRB(4, 0, 4, 4),
                           child: Text(
-                            content[index]["datetime"],
+                            content[index]["datetime"] ?? "",
                             style: const TextStyle(
                                 fontSize: 12, fontWeight: FontWeight.w100),
                           ))
@@ -148,15 +166,17 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
             Container(
                 margin: const EdgeInsets.fromLTRB(4, 4, 4, 4),
                 child: Text(
-                  content[index]["content"],
+                  content[index]["content"] ?? "",
                   style: const TextStyle(fontSize: 14),
                 )),
           ],
         ),
       ]),
       Column(
-          children: List<Widget>.from(
-              content[index]["children"].map((item) => cocomment(item))))
+          children: content[index]["children"] != null
+              ? List<Widget>.from(
+                  content[index]["children"].map((item) => cocomment(item)))
+              : [])
     ]);
   }
 
@@ -164,34 +184,65 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+            appBar: CustomAppBar(
+              title: "댓글${content.length}",
+            ),
             body: Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Container(
-            margin: const EdgeInsets.all(12),
-            width: MediaQuery.of(context).size.width * 0.7,
-            child: Text(
-              "댓글${content.length}",
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            )),
-      ]),
-      Container(
-          width: MediaQuery.of(context).size.width,
-          height: 1,
-          color: const Color(0xffDBDBDB)),
-      Expanded(
-          child: ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemCount: content.length,
-              itemBuilder: (context, index) {
-                return comment(index);
-              })),
-      TextField()
-    ])));
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 1,
+                  color: const Color(0xffDBDBDB)),
+              Expanded(
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: content.length,
+                      itemBuilder: (context, index) {
+                        return comment(index);
+                      })),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.838,
+                    child: TextFormField(
+                      onChanged: (text) {
+                        setState(() {
+                          commentText = text;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == "") {
+                          return "내용은 한 글자 이상이어야 합니다.";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        hintText: '댓글을 입력해주세요!',
+                        labelStyle: TextStyle(color: Color(0xffDBDBDB)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Color(0xffDBDBDB)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Color(0xffDBDBDB)),
+                        ),
+                        border: OutlineInputBorder(),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                    )),
+                Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 1, color: Colors.grey.withOpacity(0.4))),
+                    height: 94,
+                    child: TextButton(
+                        onPressed: () {
+                          _registerComment();
+                        },
+                        child: Text("완료")))
+              ])
+            ])));
   }
 }

@@ -16,53 +16,31 @@ class KnowHow extends StatefulWidget {
 
 List<dynamic> content = [];
 
-List<dynamic> heartYN = [
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-  {"YN": true},
-  {"YN": false},
-];
-
 int _selectedindex = -1;
 
 class _KnowHowState extends State<KnowHow> {
   Dio dio = Dio();
+  int category = 0;
+  String searchText = "";
+  // 사진 개수에 따라 사진 배치
+
+  void _getCategory(int index) {
+    category = index;
+  }
+
+  void _getSearchText(String text) {
+    searchText = text;
+    _requestKnowhow();
+  }
 
   @override
   void initState() {
     // TODO: implement initState
-    _requestKnowhow().then((data) {
-      print(data);
-      setState(() {
-        content = data;
-      });
-    });
+    _requestKnowhow();
     super.initState();
   }
 
-  Future<List> _requestKnowhow() async {
+  void _requestKnowhow() async {
     try {
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
@@ -73,13 +51,17 @@ class _KnowHowState extends State<KnowHow> {
           queryParameters: {
             "page": 0,
             "size": 10,
-            "category": "",
-            "keyword": ""
+            "category": category == 0 ? "" : category,
+            "keyword": searchText
+          }).then(
+        (value) {
+          setState(() {
+            content = value.data;
           });
-      return response.data;
+        },
+      );
     } on DioError catch (e) {
       print('error: $e');
-      return [];
     }
   }
 
@@ -88,26 +70,37 @@ class _KnowHowState extends State<KnowHow> {
     return prefs.getString('accessToken');
   }
 
-  Future<void> _requestKnowhowLike(int KnowhowNo, bool isLike) async {
+  Future<void> _requestKnowhowLike(
+      int KnowhowNo, bool isLike, int index) async {
     try {
       if (isLike) {
         final token = await _getTokenFromSharedPreferences();
         print("token $token");
-        final response = await dio.post(
-            'http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
-            options: Options(headers: {
-              'Authorization': 'Bearer $token',
-            }));
-        print(response.data);
+        final response = await dio
+            .post('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
+                options: Options(headers: {
+                  'Authorization': 'Bearer $token',
+                }))
+            .then((value) {
+          setState(() {
+            content[index]["likeCnt"] = value.data["count"];
+          });
+        });
+        print(response);
       } else {
         final token = await _getTokenFromSharedPreferences();
         print("token $token");
-        final response = await dio.delete(
-            'http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
-            options: Options(headers: {
-              'Authorization': 'Bearer $token',
-            }));
-        print(response.data);
+        final response = await dio
+            .delete('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
+                options: Options(headers: {
+                  'Authorization': 'Bearer $token',
+                }))
+            .then((value) {
+          setState(() {
+            content[index]["likeCnt"] = value.data["count"];
+          });
+        });
+        print(response);
       }
     } on DioError catch (e) {
       print('error: $e');
@@ -117,7 +110,15 @@ class _KnowHowState extends State<KnowHow> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      Align(alignment: Alignment.center, child: MySearchBar()),
+      Align(
+          alignment: Alignment.center,
+          child: MySearchBar(
+            searchcallback: _getSearchText,
+          )),
+      CategoryTapBar(
+        callback: _getCategory,
+        initNumber: category,
+      ),
       Expanded(
           child: ListView.builder(
               itemCount: content.length,
@@ -189,18 +190,10 @@ class _KnowHowState extends State<KnowHow> {
                                                 content[index]["like"] =
                                                     !content[index]["like"];
                                               });
-                                              setState(() {
-                                                if (content[index]["like"]) {
-                                                  content[index]["likeCnt"] +=
-                                                      1;
-                                                } else {
-                                                  content[index]["likeCnt"] -=
-                                                      1;
-                                                }
-                                              });
                                               _requestKnowhowLike(
                                                   content[index]["knowhowNo"],
-                                                  content[index]["like"]);
+                                                  content[index]["like"],
+                                                  index);
                                             },
                                             child: Row(children: [
                                               Container(

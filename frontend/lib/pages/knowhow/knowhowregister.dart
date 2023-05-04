@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -225,29 +226,13 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      appBar: CustomAppBar(
+        title: '노하우 글쓰기',
+        actions: '완료',
+        callback: _requestRegister,
+      ),
       resizeToAvoidBottomInset: true,
       body: Column(children: [
-        Row(children: [
-          Container(
-              margin: const EdgeInsets.all(12),
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: const Text(
-                "노하우 글쓰기",
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              )),
-          TextButton(
-              onPressed: () => {
-                    setState(() {
-                      _requestRegister();
-                    })
-                  },
-              child: Text("완료")),
-        ]),
         Container(
             width: MediaQuery.of(context).size.width,
             height: 1,

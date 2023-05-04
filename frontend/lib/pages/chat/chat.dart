@@ -5,9 +5,17 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
+List<Map> content = [];
+
 class _ChatState extends State<Chat> {
+  Widget _ChatList() {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Text('채팅입니다.');
+    return Column(children: [
+      Text('채팅입니다.'),
+    ]);
   }
 }

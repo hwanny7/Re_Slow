@@ -26,6 +26,10 @@ class _ProfileSmallState extends State<ProfileSmall> {
     return Row(
       children: [
         Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: Colors.grey, style: BorderStyle.solid, width: 0.5)),
             margin: const EdgeInsets.fromLTRB(8, 8, 12, 8),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(50),

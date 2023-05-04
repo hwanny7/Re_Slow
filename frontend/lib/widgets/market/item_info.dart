@@ -48,7 +48,6 @@ class ItemInfo extends StatelessWidget {
                                 )),
                             SizedBox(height: mediaHeight * 0.01),
                             SizedBox(height: mediaHeight * 0.04),
-                            SizedBox(height: mediaHeight * 0.02),
                             Text(item.datetime),
                             Text('${item.price}원',
                                 style: TextStyle(
