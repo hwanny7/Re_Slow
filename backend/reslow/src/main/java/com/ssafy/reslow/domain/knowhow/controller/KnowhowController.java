@@ -90,7 +90,7 @@ public class KnowhowController {
 		@RequestParam(required = false) Long category,
 		@RequestParam(required = false) String keyword) {
 		Long memberNo = Long.parseLong(authentication.getName());
-		return knowhowService.getKnowhowList(memberNo, pageable, category, keyword);
+		return knowhowService.getKnowhowList(memberNo, pageable, category, new KnowhowRecommendRequest(keyword));
 	}
 
 	@GetMapping("/mylist")

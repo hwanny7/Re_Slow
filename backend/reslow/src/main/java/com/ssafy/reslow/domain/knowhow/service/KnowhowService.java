@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowContentDetail;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowDetailResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowListResponse;
+import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateContent;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowUpdateRequest;
@@ -191,13 +192,18 @@ public class KnowhowService {
 		return "글 삭제 완료";
 	}
 
-	public List<KnowhowListResponse> getKnowhowList(Long memberNo, Pageable pageable, Long category, String keyword) {
-		List<KnowhowListResponse> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keyword, category,
+	public List<KnowhowListResponse> getKnowhowList(Long memberNo, Pageable pageable, Long category,
+		KnowhowRecommendRequest keywords) {
+		List<Knowhow> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keywords, category,
 			pageable);
-		list.forEach(knowhowList -> knowhowList.setLike(likeCount(knowhowList.getKnowhowNo()),
-			checkLiked(memberNo, knowhowList.getKnowhowNo())));
 
-		return list;
+		List<KnowhowListResponse> knowhowListResponseList = new ArrayList<>();
+		list.forEach(
+			knowhow -> knowhowListResponseList.add(KnowhowListResponse.of(knowhow, likeCount(knowhow.getNo()),
+				(long)knowhow.getKnowhowComments().size(),
+				checkLiked(memberNo, knowhow.getNo()))));
+
+		return knowhowListResponseList;
 	}
 
 	public List<KnowhowListResponse> getMyKnowhowList(Pageable pageable, Long memberNo) {
