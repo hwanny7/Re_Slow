@@ -148,5 +148,6 @@ public class Member extends BaseEntity implements UserDetails {
 
 	public void registAccount(MemberAccount memberAccount) {
 		this.memberAccount = memberAccount;
+		this.isCertification = true;
 	}
 }
