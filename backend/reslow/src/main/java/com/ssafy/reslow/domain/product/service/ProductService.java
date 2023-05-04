@@ -1,11 +1,27 @@
 package com.ssafy.reslow.domain.product.service;
 
-import static com.ssafy.reslow.domain.order.entity.OrderStatus.COMPLETE_DELIVERY;
-import static com.ssafy.reslow.domain.order.entity.OrderStatus.COMPLETE_PAYMENT;
-import static com.ssafy.reslow.global.exception.ErrorCode.CATEGORY_NOT_FOUND;
-import static com.ssafy.reslow.global.exception.ErrorCode.MEMBER_NOT_FOUND;
-import static com.ssafy.reslow.global.exception.ErrorCode.PRODUCT_NOT_FOUND;
-import static com.ssafy.reslow.global.exception.ErrorCode.USER_NOT_MATCH;
+import static com.ssafy.reslow.domain.order.entity.OrderStatus.*;
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
@@ -26,272 +42,271 @@ import com.ssafy.reslow.domain.product.repository.ProductImageRepository;
 import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.infra.storage.S3StorageClient;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final MemberRepository memberRepository;
-    private final ProductRepository productRepository;
-    private final ProductCategoryRepository productCategoryRepository;
-    private final ProductImageRepository productImageRepository;
-    private final S3StorageClient s3Service;
-    private final RedisTemplate redisTemplate;
+	private final MemberRepository memberRepository;
+	private final ProductRepository productRepository;
+	private final ProductCategoryRepository productCategoryRepository;
+	private final ProductImageRepository productImageRepository;
+	private final S3StorageClient s3Service;
+	private final RedisTemplate redisTemplate;
 
-    public Map<String, Long> registProduct(Long memberNo, ProductRegistRequest request,
-        List<MultipartFile> files)
-        throws IOException {
-        Member member = memberRepository.findById(memberNo)
-            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-        ProductCategory productCategory = productCategoryRepository.findById(request.getCategory())
-            .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+	public Map<String, Long> registProduct(Long memberNo, ProductRegistRequest request,
+		List<MultipartFile> files)
+		throws IOException {
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		ProductCategory productCategory = productCategoryRepository.findById(request.getCategory())
+			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
-        Product product = Product.of(member, request, productCategory);
-        List<ProductImage> productImages = new ArrayList<>();
-        for (MultipartFile file : files) {
-            String imageSrc = s3Service.uploadFile(file);
-            ProductImage productImage = ProductImage.of(product, imageSrc);
-            productImages.add(productImage);
-        }
+		Product product = Product.of(member, request, productCategory);
+		List<ProductImage> productImages = new ArrayList<>();
+		for (MultipartFile file : files) {
+			String imageSrc = s3Service.uploadFile(file);
+			ProductImage productImage = ProductImage.of(product, imageSrc);
+			productImages.add(productImage);
+		}
 
-        product.setProductImages(productImages);
-        Product savedProduct = productRepository.save(product);
-        Map<String, Long> map = new HashMap<>();
-        map.put("productNo", savedProduct.getNo());
-        return map;
-    }
+		product.setProductImages(productImages);
+		Product savedProduct = productRepository.save(product);
+		Map<String, Long> map = new HashMap<>();
+		map.put("productNo", savedProduct.getNo());
+		return map;
+	}
 
-    public ProductUpdateResponse updateProduct(Long memberNo, Long productNo,
-        ProductUpdateRequest request,
-        List<MultipartFile> files) throws
-        IOException {
-        Product product = productRepository.findById(productNo)
-            .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-        ProductCategory productCategory = productCategoryRepository.findById(request.getCategory())
-            .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
-        if (memberNo != product.getMember().getNo()) {
-            throw new CustomException(USER_NOT_MATCH);
-        }
-        product.updateProduct(request, productCategory);
+	public ProductUpdateResponse updateProduct(Long memberNo, Long productNo,
+		ProductUpdateRequest request,
+		List<MultipartFile> files) throws
+		IOException {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		ProductCategory productCategory = productCategoryRepository.findById(request.getCategory())
+			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+		if (memberNo != product.getMember().getNo()) {
+			throw new CustomException(USER_NOT_MATCH);
+		}
+		product.updateProduct(request, productCategory);
 
-        List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
-        List<ProductImage> newImages = new ArrayList<>();
-        Set<Long> newImageNoSet = request.getProductImages();
-        for (ProductImage img : productImages) {
-            if (!newImageNoSet.contains(img.getNo())) {
-                s3Service.deleteFile(img.getUrl());
-                productImageRepository.deleteById(img.getNo());
-            } else {
-                newImages.add(img);
-            }
-        }
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                String imageSrc = s3Service.uploadFile(file);
-                ProductImage productImage = ProductImage.builder()
-                    .product(product)
-                    .url(imageSrc)
-                    .build();
-                newImages.add(productImage);
-            }
-        }
-        product.setProductImages(newImages);
+		List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
+		List<ProductImage> newImages = new ArrayList<>();
+		Set<Long> newImageNoSet = request.getProductImages();
+		for (ProductImage img : productImages) {
+			if (!newImageNoSet.contains(img.getNo())) {
+				s3Service.deleteFile(img.getUrl());
+				productImageRepository.deleteById(img.getNo());
+			} else {
+				newImages.add(img);
+			}
+		}
+		for (MultipartFile file : files) {
+			if (!file.isEmpty()) {
+				String imageSrc = s3Service.uploadFile(file);
+				ProductImage productImage = ProductImage.builder()
+					.product(product)
+					.url(imageSrc)
+					.build();
+				newImages.add(productImage);
+			}
+		}
+		product.setProductImages(newImages);
 
-        productRepository.save(product);
-        List<String> images = product.getProductImages().stream()
-            .map((productImage) -> productImage.getUrl())
-            .collect(Collectors.toList());
-        ProductUpdateResponse updatedProduct = ProductUpdateResponse.of(product,
-            product.getProductCategory().getCategory(), images);
-        return updatedProduct;
-    }
+		productRepository.save(product);
+		List<String> images = product.getProductImages().stream()
+			.map((productImage) -> productImage.getUrl())
+			.collect(Collectors.toList());
+		ProductUpdateResponse updatedProduct = ProductUpdateResponse.of(product,
+			product.getProductCategory().getCategory(), images);
+		return updatedProduct;
+	}
 
-    public Map<String, Long> deleteProduct(Long memberNo, Long productNo) {
-        Product product = productRepository.findById(productNo)
-            .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-        if (memberNo != product.getMember().getNo()) {
-            throw new CustomException(USER_NOT_MATCH);
-        }
-        productRepository.delete(product);
-        Map<String, Long> map = new HashMap<>();
-        map.put("productNo", productNo);
-        return map;
-    }
+	public Map<String, Long> deleteProduct(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		if (memberNo != product.getMember().getNo()) {
+			throw new CustomException(USER_NOT_MATCH);
+		}
+		productRepository.delete(product);
+		Map<String, Long> map = new HashMap<>();
+		map.put("productNo", productNo);
+		return map;
+	}
 
-    public List<ProductListResponse> productList(Long memberNo, String keyword, Long category,
-        Pageable pageable) {
-        List<ProductListResponse> list = productRepository.findByMemberIsNotAndCategoryAndKeyword(
-            keyword, category, pageable);
-        list.forEach(product -> product.setLike(checkLiked(memberNo, product.getProductNo()),
-            likeCount(product.getProductNo())));
-        return list;
-    }
+	public List<ProductListResponse> productList(Long memberNo, String keyword, Long category,
+		Pageable pageable) {
+		List<ProductListResponse> list = productRepository.findByMemberIsNotAndCategoryAndKeyword(
+			keyword, category, pageable);
+		list.forEach(product -> product.setLike(checkLiked(memberNo, product.getProductNo()),
+			likeCount(product.getProductNo())));
+		return list;
+	}
 
-    public ProductDetailResponse productDetail(Long memberNo, Long productNo) {
-        Product product = productRepository.findById(productNo)
-            .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-        List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
-        List<String> images = productImages.stream()
-            .map((productImage) -> productImage.getUrl())
-            .collect(Collectors.toList());
-        boolean myHeart = checkLiked(memberNo, productNo);
-        Long heartCount = likeCount(productNo);
-        ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product,
-            product.getProductCategory()
-                .getCategory(), product.getMember().getNo() == memberNo, myHeart, heartCount,
-            images);
-        return productDetailResponse;
-    }
+	public ProductDetailResponse productDetail(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		List<ProductImage> productImages = productImageRepository.findByProductNo(product.getNo());
+		List<String> images = productImages.stream()
+			.map((productImage) -> productImage.getUrl())
+			.collect(Collectors.toList());
+		boolean myHeart = checkLiked(memberNo, productNo);
+		Long heartCount = likeCount(productNo);
+		ProductDetailResponse productDetailResponse = ProductDetailResponse.of(product,
+			product.getProductCategory()
+				.getCategory(), product.getMember().getNo() == memberNo, myHeart, heartCount,
+			images);
+		return productDetailResponse;
+	}
 
-    public Slice<MyProductListResponse> myProductList(Long memberNo, int status,
-        Pageable pageable) {
-        Member member = memberRepository.findById(memberNo)
-            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-        Slice<Product> list = null;
-        if (status == COMPLETE_PAYMENT.getValue()) {
-            list = productRepository.findByMemberAndOrder_StatusOrOrderIsNull(member,
-                OrderStatus.ofValue(status),
-                pageable);
-        } else if (status == COMPLETE_DELIVERY.getValue()) {
-            list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqual(member,
-                OrderStatus.ofValue(status),
-                pageable);
-        } else {
-            list = productRepository.findByMemberAndOrder_Status(member,
-                OrderStatus.ofValue(status), pageable);
-        }
+	public Slice<MyProductListResponse> myProductList(Long memberNo, int status,
+		Pageable pageable) {
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		Slice<Product> list = null;
+		if (status == COMPLETE_PAYMENT.getValue()) {
+			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDate(member,
+				OrderStatus.ofValue(status),
+				pageable);
+		} else if (status == COMPLETE_DELIVERY.getValue()) {
+			list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDate(member,
+				OrderStatus.ofValue(status),
+				pageable);
+		} else {
+			list = productRepository.findByMemberAndOrder_StatusOrderByCreatedDate(member,
+				OrderStatus.ofValue(status), pageable);
+		}
 
-        List<MyProductListResponse> responses = new ArrayList<>();
-        list.stream().forEach(
-            product -> {
-                Order order = product.getOrder();
-                String imageResource =
-                    product.getProductImages().isEmpty() ? null
-                        : product.getProductImages().get(0).getUrl();
-                if (status == COMPLETE_PAYMENT.getValue()) {
-                    responses.add(MyProductListResponse.of(product, imageResource,
-                        order == null ? 0 : order.getStatus().getValue()));
-                } else if (order != null) {
-                    responses.add(MyProductListResponse.of(product, imageResource,
-                        order.getStatus().getValue()));
-                }
-            }
-        );
-        return new SliceImpl<>(responses, pageable, list.hasNext());
-    }
+		List<MyProductListResponse> responses = new ArrayList<>();
+		list.stream().forEach(
+			product -> {
+				Order order = product.getOrder();
+				String imageResource =
+					product.getProductImages().isEmpty() ? null
+						: product.getProductImages().get(0).getUrl();
+				if (status == COMPLETE_PAYMENT.getValue()) {
+					responses.add(MyProductListResponse.of(product, imageResource,
+						order == null ? 0 : order.getStatus().getValue()));
+				} else if (order != null) {
+					responses.add(MyProductListResponse.of(product, imageResource,
+						order.getStatus().getValue()));
+				}
+			}
+		);
+		return new SliceImpl<>(responses, pageable, list.hasNext());
+	}
 
-    public List<ProductRecommendResponse> recommendProduct() {
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-        Set<String> range = zSetOperations.reverseRange("product", 0, 9);
-        List<ProductRecommendResponse> list = range.stream().map(productNo -> {
-            Product product = productRepository.getReferenceById(Long.parseLong(productNo));
-            return ProductRecommendResponse.of(product);
-        }).collect(Collectors.toList());
-        return list;
-    }
+	public List<ProductRecommendResponse> recommendProduct() {
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		Set<String> range = zSetOperations.reverseRange("product", 0, 9);
+		List<ProductRecommendResponse> list = range.stream().map(productNo -> {
+			Long no = Long.parseLong(productNo);
+			Product product = productRepository.getReferenceById(no);
+			return ProductRecommendResponse.of(product, likeCount(no));
+		}).collect(Collectors.toList());
+		return list;
+	}
 
-    public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
-        Product product = productRepository.findById(productNo)
-            .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-        String productString = String.valueOf(productNo);
+	public List<ProductRecommendResponse> recommendMyProduct(Long memberNo) {
+		List<ProductRecommendResponse> list = null;
+		if (memberNo == null) {
+			list = productRepository.findTop10ByOrderByCreatedDate()
+				.stream()
+				.map(product -> {
+					Long no = product.getNo();
+					return ProductRecommendResponse.of(product, likeCount(no));
+				}).collect(Collectors.toList());
+		} else {
 
-        setOperations.add(productString, String.valueOf(memberNo));
-        boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
-            System.currentTimeMillis());
-        if (added) {
-            zSetOperations.incrementScore("product", productString, 1);
-            zSetOperations.incrementScore("product_" + memberNo,
-                String.valueOf(product.getProductCategory().getNo()),
-                1);
-        }
+		}
+		return list;
+	}
 
-        Map<String, Long> map = new HashMap<>();
-        map.put("count", (long) Math.floor(zSetOperations.score("product", productString)));
-        return map;
-    }
+	public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		String productString = String.valueOf(productNo);
 
-    public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
-        Product product = productRepository.findById(productNo)
-            .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-        String productString = String.valueOf(productNo);
+		setOperations.add(productString, String.valueOf(memberNo));
+		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
+			System.currentTimeMillis());
+		if (added) {
+			zSetOperations.incrementScore("product", productString, 1);
+			zSetOperations.incrementScore("product_" + memberNo,
+				String.valueOf(product.getProductCategory().getNo()),
+				1);
+		}
 
-        setOperations.remove(productString, String.valueOf(memberNo));
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", (long)Math.floor(zSetOperations.score("product", productString)));
+		return map;
+	}
 
-        zSetOperations.remove(memberNo + "_like_product", productString);
-        zSetOperations.incrementScore("product", productString, -1);
-        zSetOperations.incrementScore("product_" + memberNo,
-            String.valueOf(product.getProductCategory().getNo()), -1);
+	public Map<String, Long> unlikeProduct(Long memberNo, Long productNo) {
+		Product product = productRepository.findById(productNo)
+			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		String productString = String.valueOf(productNo);
 
-        Map<String, Long> map = new HashMap<>();
-        map.put("count", (long) Math.floor(zSetOperations.score("product", productString)));
-        return map;
-    }
+		setOperations.remove(productString, String.valueOf(memberNo));
 
-    public Slice<ProductListResponse> likeProductList(Long memberNo, Pageable pageable) {
-        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-        String key = memberNo + "_like_product";
-        int start = pageable.getPageNumber() * pageable.getPageSize();
-        int end = start + pageable.getPageSize();
+		zSetOperations.remove(memberNo + "_like_product", productString);
+		zSetOperations.incrementScore("product", productString, -1);
+		zSetOperations.incrementScore("product_" + memberNo,
+			String.valueOf(product.getProductCategory().getNo()), -1);
 
-        List<Long> pkList = zSetOperations.reverseRange(key, start, end)
-            .stream()
-            .map(Long::parseLong)
-            .collect(Collectors.toList());
+		Map<String, Long> map = new HashMap<>();
+		map.put("count", (long)Math.floor(zSetOperations.score("product", productString)));
+		return map;
+	}
 
-        List<Product> productList = productRepository.findByNoIn(pkList);
-        Collections.sort(productList, new Comparator<Product>() {
-            @Override
-            public int compare(Product o1, Product o2) {
-                return pkList.indexOf(o1.getNo()) - pkList.indexOf(o2.getNo());
-            }
-        });
+	public Slice<ProductListResponse> likeProductList(Long memberNo, Pageable pageable) {
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		String key = memberNo + "_like_product";
+		int start = pageable.getPageNumber() * pageable.getPageSize();
+		int end = start + pageable.getPageSize();
 
-        List<ProductListResponse> productListResponseList = productList
-            .stream()
-            .map(product -> {
-                Long likeCnt = likeCount(product.getNo());
-                return ProductListResponse.of(product, likeCnt);
-            })
-            .collect(Collectors.toList());
+		List<Long> pkList = zSetOperations.reverseRange(key, start, end)
+			.stream()
+			.map(Long::parseLong)
+			.collect(Collectors.toList());
 
-        boolean hasNext = zSetOperations.size(key) > end + 1;
-        return new SliceImpl<>(productListResponseList, pageable, hasNext);
-    }
+		List<Product> productList = productRepository.findByNoIn(pkList);
+		Collections.sort(productList, new Comparator<Product>() {
+			@Override
+			public int compare(Product o1, Product o2) {
+				return pkList.indexOf(o1.getNo()) - pkList.indexOf(o2.getNo());
+			}
+		});
 
-    public Long likeCount(Long productNo) {
-        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-        return setOperations.size(String.valueOf(productNo));
-    }
+		List<ProductListResponse> productListResponseList = productList
+			.stream()
+			.map(product -> {
+				Long likeCnt = likeCount(product.getNo());
+				return ProductListResponse.of(product, likeCnt);
+			})
+			.collect(Collectors.toList());
 
-    public boolean checkLiked(Long memberNo, Long productNo) {
-        if (memberNo == null) {
-            return false;
-        }
-        SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-        return setOperations.isMember(String.valueOf(productNo), String.valueOf(memberNo));
-    }
+		boolean hasNext = zSetOperations.size(key) > end + 1;
+		return new SliceImpl<>(productListResponseList, pageable, hasNext);
+	}
+
+	public Long likeCount(Long productNo) {
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		return setOperations.size(String.valueOf(productNo));
+	}
+
+	public boolean checkLiked(Long memberNo, Long productNo) {
+		if (memberNo == null) {
+			return false;
+		}
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		return setOperations.isMember(String.valueOf(productNo), String.valueOf(memberNo));
+	}
 }

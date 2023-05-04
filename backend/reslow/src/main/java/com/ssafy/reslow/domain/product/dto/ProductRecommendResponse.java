@@ -13,12 +13,14 @@ public class ProductRecommendResponse {
 	private String title;
 	private int price;
 	private String image;
+	private Long heartCount;
 
-	public static ProductRecommendResponse of(Product product) {
+	public static ProductRecommendResponse of(Product product, Long heartCount) {
 		return ProductRecommendResponse.builder()
 			.productNo(product.getNo())
 			.title(product.getTitle())
 			.price(product.getPrice())
+			.heartCount(heartCount)
 			.image(product.getProductImages() == null ? null : product.getProductImages().get(0).getUrl())
 			.build();
 	}
