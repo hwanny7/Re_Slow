@@ -18,12 +18,12 @@ class _RecommendState extends State<Recommend>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: 2),
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
     _animation = Tween<Offset>(
       begin: Offset.zero,
-      end: Offset(0.0, 0.08),
+      end: const Offset(0.0, 0.08),
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInOut,
@@ -64,7 +64,7 @@ class _RecommendState extends State<Recommend>
       appBar: CustomAppBar(title: '추천'),
       body: Column(
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +82,7 @@ class _RecommendState extends State<Recommend>
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
@@ -94,7 +94,7 @@ class _RecommendState extends State<Recommend>
               child: TextField(
                 textAlign: TextAlign.center,
                 controller: _textController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: '사용하실 재료를 입력해주세요!',
                   border: InputBorder.none,
                 ),
@@ -105,7 +105,7 @@ class _RecommendState extends State<Recommend>
               ),
             ),
           ),
-          SizedBox(height: 16.0),
+          const SizedBox(height: 16.0),
 
           Wrap(
             spacing: 8.0,
@@ -137,7 +137,7 @@ class _RecommendState extends State<Recommend>
                         children: [
                           Positioned.fill(
                             child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 // image: DecorationImage(
                                 //   image: AssetImage(
@@ -149,7 +149,7 @@ class _RecommendState extends State<Recommend>
                           ),
                           // flexible rectangular box
                           Transform.translate(
-                            offset: Offset(-20, 0),
+                            offset: const Offset(-20, 0),
                             child: Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -163,7 +163,7 @@ class _RecommendState extends State<Recommend>
                                     // container start
                                     Container(
                                       height: 200,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(10),
                                           topRight: Radius.circular(10),
@@ -189,12 +189,13 @@ class _RecommendState extends State<Recommend>
                                             bottom: 0,
                                             right: 110,
                                             child: Padding(
-                                              padding: EdgeInsets.all(8),
+                                              padding: const EdgeInsets.all(8),
                                               child: ClipOval(
                                                 child: Container(
                                                   width: 60,
                                                   height: 60,
-                                                  decoration: BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
                                                           'assets/image/test.jpg'),
@@ -211,7 +212,7 @@ class _RecommendState extends State<Recommend>
 
                                     //container end
 
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.all(16),
                                       child: Align(
                                         alignment: Alignment.center,
@@ -276,7 +277,7 @@ class _RecommendState extends State<Recommend>
                     // Bubble1 end
                     // Turtle
                     Padding(
-                      padding: EdgeInsets.only(left: 180.0, top: 30),
+                      padding: const EdgeInsets.only(left: 180.0, top: 30),
                       child: SlideTransition(
                         position: _animation,
                         child: Image.asset(
@@ -292,7 +293,7 @@ class _RecommendState extends State<Recommend>
                         children: [
                           Positioned.fill(
                             child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 // image: DecorationImage(
                                 //   image: AssetImage(
@@ -304,7 +305,7 @@ class _RecommendState extends State<Recommend>
                           ),
                           // flexible rectangular box
                           Transform.translate(
-                            offset: Offset(20, 0),
+                            offset: const Offset(20, 0),
                             child: Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -318,7 +319,7 @@ class _RecommendState extends State<Recommend>
                                     // container start
                                     Container(
                                       height: 200,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(10),
                                           topRight: Radius.circular(10),
@@ -344,12 +345,13 @@ class _RecommendState extends State<Recommend>
                                             bottom: 0,
                                             right: 110,
                                             child: Padding(
-                                              padding: EdgeInsets.all(8),
+                                              padding: const EdgeInsets.all(8),
                                               child: ClipOval(
                                                 child: Container(
                                                   width: 60,
                                                   height: 60,
-                                                  decoration: BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
                                                           'assets/image/test.jpg'),
@@ -366,7 +368,7 @@ class _RecommendState extends State<Recommend>
 
                                     //container end
 
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.all(16),
                                       child: Align(
                                         alignment: Alignment.center,
@@ -430,7 +432,7 @@ class _RecommendState extends State<Recommend>
                     // Bubble 2 end
                     // Turtle_reversed
                     Padding(
-                      padding: EdgeInsets.only(right: 180.0, top: 30),
+                      padding: const EdgeInsets.only(right: 180.0, top: 30),
                       child: SlideTransition(
                         position: _animation,
                         child: Image.asset(
@@ -446,7 +448,7 @@ class _RecommendState extends State<Recommend>
                         children: [
                           Positioned.fill(
                             child: Container(
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 // image: DecorationImage(
                                 //   image: AssetImage(
@@ -458,7 +460,7 @@ class _RecommendState extends State<Recommend>
                           ),
                           // flexible rectangular box
                           Transform.translate(
-                            offset: Offset(0, 0),
+                            offset: const Offset(0, 0),
                             child: Expanded(
                               child: Container(
                                 decoration: BoxDecoration(
@@ -472,7 +474,7 @@ class _RecommendState extends State<Recommend>
                                     // container start
                                     Container(
                                       height: 200,
-                                      decoration: BoxDecoration(
+                                      decoration: const BoxDecoration(
                                         borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(10),
                                           topRight: Radius.circular(10),
@@ -498,12 +500,13 @@ class _RecommendState extends State<Recommend>
                                             bottom: 0,
                                             right: 110,
                                             child: Padding(
-                                              padding: EdgeInsets.all(8),
+                                              padding: const EdgeInsets.all(8),
                                               child: ClipOval(
                                                 child: Container(
                                                   width: 60,
                                                   height: 60,
-                                                  decoration: BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     image: DecorationImage(
                                                       image: AssetImage(
                                                           'assets/image/test.jpg'),
@@ -520,7 +523,7 @@ class _RecommendState extends State<Recommend>
 
                                     //container end
 
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.all(16),
                                       child: Align(
                                         alignment: Alignment.center,
@@ -582,7 +585,7 @@ class _RecommendState extends State<Recommend>
                       ),
                     ),
                     // Bubble 3 end
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
