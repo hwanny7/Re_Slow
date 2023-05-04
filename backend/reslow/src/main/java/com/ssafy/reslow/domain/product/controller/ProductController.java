@@ -3,6 +3,7 @@ package com.ssafy.reslow.domain.product.controller;
 import com.ssafy.reslow.domain.product.dto.MyProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
+import com.ssafy.reslow.domain.product.dto.ProductRecommendResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
@@ -97,6 +98,11 @@ public class ProductController {
         return productService.productList(memberNo, keyword, category, pageable);
     }
 
+    @GetMapping("/recommends")
+    public List<ProductRecommendResponse> recommendProduct() {
+        return productService.recommendProduct();
+    }
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/sale")
     public Slice<MyProductListResponse> myProductList(Authentication authentication,
@@ -130,5 +136,4 @@ public class ProductController {
         Long memberNo = Long.parseLong(authentication.getName());
         return productService.likeProductList(memberNo, pageable);
     }
-
 }

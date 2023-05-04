@@ -14,6 +14,7 @@ import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import com.ssafy.reslow.domain.product.dto.MyProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
+import com.ssafy.reslow.domain.product.dto.ProductRecommendResponse;
 import com.ssafy.reslow.domain.product.dto.ProductRegistRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateRequest;
 import com.ssafy.reslow.domain.product.dto.ProductUpdateResponse;
@@ -164,7 +165,8 @@ public class ProductService {
 
     public Slice<MyProductListResponse> myProductList(Long memberNo, int status,
         Pageable pageable) {
-        Member member = memberRepository.findById(memberNo).get();
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         Slice<Product> list = null;
         if (status == COMPLETE_PAYMENT.getValue()) {
             list = productRepository.findByMemberAndOrder_StatusOrOrderIsNull(member,
@@ -198,6 +200,16 @@ public class ProductService {
         return new SliceImpl<>(responses, pageable, list.hasNext());
     }
 
+    public List<ProductRecommendResponse> recommendProduct() {
+        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        Set<String> range = zSetOperations.reverseRange("product", 0, 9);
+        List<ProductRecommendResponse> list = range.stream().map(productNo -> {
+            Product product = productRepository.getReferenceById(Long.parseLong(productNo));
+            return ProductRecommendResponse.of(product);
+        }).collect(Collectors.toList());
+        return list;
+    }
+
     public Map<String, Long> likeProduct(Long memberNo, Long productNo) {
         Product product = productRepository.findById(productNo)
             .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
@@ -210,7 +222,7 @@ public class ProductService {
             System.currentTimeMillis());
         if (added) {
             zSetOperations.incrementScore("product", productString, 1);
-            zSetOperations.incrementScore("product" + memberNo,
+            zSetOperations.incrementScore("product_" + memberNo,
                 String.valueOf(product.getProductCategory().getNo()),
                 1);
         }
