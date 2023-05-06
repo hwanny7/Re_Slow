@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,13 +16,13 @@ class ChatDetail extends StatefulWidget {
 Map<dynamic, dynamic> content = {
   "id": 3,
   "userimage": "assets/image/user.png",
-  "username": "춘식이 집사3",
+  "username": "리폼왕춘식이",
   "otherimage": "assets/image/user.png",
   "othername": "춘식이 집사3",
   "chat": [
     {
       "sender": 0,
-      "chatText": "우앵우앵",
+      "chatText": "우앵우앵 이렇게 써도 밖으로 안 튀어나가게 하고 싶어요 가능할까요?",
       "time": "2023-05-03T00:00:00",
     },
     {
@@ -87,7 +88,53 @@ class _ChatDetailState extends State<ChatDetail> {
   }
 
   Widget _Chat(int index) {
-    return Container();
+    if (content["chat"][index]["sender"] == 0) {
+      return Container(
+        margin: const EdgeInsets.all(4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+            child: Text(formatTimeDifference(content["chat"][index]["time"]))),
+        Container(
+          width: MediaQuery.of(context).size.width *0.7,
+          decoration: BoxDecoration(color: Color(0xffCDE8E8), borderRadius: BorderRadius.circular(4)), margin: const EdgeInsets.all(8), padding: const EdgeInsets.all(12),
+        child: Flexible(
+          child: RichText(
+            maxLines: 100,
+            text: TextSpan(
+              text: content["chat"][index]["chatText"],
+              style: const TextStyle(color: Colors.black)))))
+      ],));
+    } else {
+      return Container(
+          margin: const EdgeInsets.all(4),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: Image.asset(
+                        "assets/image/user.png",
+                        width: 50,
+                      )),
+        Container(
+          width: MediaQuery.of(context).size.width *0.6,
+          decoration: BoxDecoration(color: Color(0xffF1F1F1), borderRadius: BorderRadius.circular(4)), margin: const EdgeInsets.all(8), padding: const EdgeInsets.all(12),
+        child: Flexible(
+          child: RichText(
+            maxLines: 100,
+            text: TextSpan(
+              text: content["chat"][index]["chatText"],
+              style: const TextStyle(color: Colors.black))))),
+        Container(
+            margin: const EdgeInsets.fromLTRB(0, 8, 16, 8),
+            child: Text(formatTimeDifference(content["chat"][index]["time"]))),
+      ],));
+    }
   }
 
   @override
@@ -103,100 +150,55 @@ class _ChatDetailState extends State<ChatDetail> {
                 children: [
                   Expanded(
                       child: ListView.builder(
-                          itemCount: content["contentList"] == null
-                              ? 0
-                              : content["contentList"].length,
+                          itemCount: content["chat"].length,
                           itemBuilder: (context, index) {
-                            return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                      margin: const EdgeInsets.fromLTRB(
-                                          0, 16, 0, 16),
-                                      child: Image.asset(
-                                          "assets/image/dots.png",
-                                          width: 30)),
-                                  Container(
-                                      margin:
-                                          const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                                      child: content["contentList"][index]
-                                                  ["image"] ==
-                                              null
-                                          ? Image.asset(
-                                              "assets/image/error.png",
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              fit: BoxFit.cover,
-                                            )
-                                          : Image.network(
-                                              content["contentList"][index]
-                                                  ["image"],
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              fit: BoxFit.cover,
-                                            )),
-                                  Container(
-                                      margin: const EdgeInsets.all(16),
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                                child: Text(
-                                              content["contentList"][index]
-                                                      ["content"] ??
-                                                  "",
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w100,
-                                                height: 1.4,
-                                              ),
-                                            ))
-                                          ])),
-                                ]);
+                            return _Chat(index);
                           })),
                   Container(
                       width: MediaQuery.of(context).size.width,
                       height: 1,
                       color: const Color(0xffDBDBDB)),
-                  Container(
-                      margin: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                      width: MediaQuery.of(context).size.width,
-                      height: 60,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      heartYN["YN"] = !heartYN["YN"];
-                                    });
-                                  },
-                                  child: Row(children: [
-                                    Container(
-                                        margin: const EdgeInsets.fromLTRB(
-                                            8, 0, 8, 0),
-                                        child: Image.asset(
-                                          (content["like"] ?? false)
-                                              ? "assets/image/full_heart.png"
-                                              : "assets/image/heart.png",
-                                          width: 24,
-                                        )),
-                                    Text(
-                                      "${content["likecnt"] ?? ""}",
-                                      style: const TextStyle(fontSize: 18),
-                                    )
-                                  ])),
-                            ],
-                          ),
-                        ],
-                      ))
                 ],
-              ))
+              )),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Container(
+                    width: MediaQuery.of(context).size.width * 0.838,
+                    child: TextFormField(
+                      onChanged: (text) {
+                      },
+                      validator: (value) {
+                        if (value == "") {
+                          return "내용은 한 글자 이상이어야 합니다.";
+                        }
+                        return null;
+                      },
+                      decoration: const InputDecoration(
+                        hintText: '',
+                        labelStyle: TextStyle(color: Color(0xffDBDBDB)),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Color(0xffDBDBDB)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(width: 1, color: Color(0xffDBDBDB)),
+                        ),
+                        border: OutlineInputBorder(),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      ),
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 2,
+                    )),
+                Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 1, color: Colors.grey.withOpacity(0.4))),
+                    height: 75,
+                    child: TextButton(
+                        onPressed: () {
+                        },
+                        child: Text("완료")))
+              ])
             ])));
   }
 }
