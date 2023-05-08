@@ -13,17 +13,23 @@ class _CouponlistState extends State<Couponlist> {
   List<Coupon> coupons = [];
 
   Future<void> fetchData() async {
-    Response response = await dioClient.dio.get('/coupons/my');
+    Map<String, dynamic> queryParams = {
+      'page': 0,
+      'size': 10,
+      'sort': 'number.desc', // What should I put for the field???
+    };
+    Response response =
+        await dioClient.dio.get('/coupons/my', queryParameters: queryParams);
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = response.data;
+      Map<String, dynamic> jsonData = {"content": response.data};
       print(jsonData);
 
       setState(() {
         // Update the state with the fetched data
+        // 데이터의 콘텐트의 쿠폰
         coupons = List<Coupon>.from(
             jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
-
         // jsonData 안에서 키값 확인하고 바꾸기
       });
     } else {
@@ -40,7 +46,42 @@ class _CouponlistState extends State<Couponlist> {
 
   @override
   Widget build(BuildContext context) {
-    return Text("hello");
+    return SafeArea(
+        child: Scaffold(
+      appBar: CustomAppBar(title: '보유 쿠폰'),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            height: MediaQuery.of(context).padding.top,
+          ),
+          Expanded(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+              child: ListView.builder(
+                itemCount: coupons.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Coupon coupon = coupons[index];
+                  return Card(
+                    color: Colors.green.shade200,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                      child: ListTile(
+                        title: Text('${coupon.discountAmount}% off'),
+                        subtitle:
+                            Text('${coupon.startDate} ~ ${coupon.endDate}'),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }
 
@@ -78,16 +119,8 @@ class _CouponlistState extends State<Couponlist> {
 //   // @override
 //   // Widget build(BuildContext context) {
 //   //   List<Coupon> coupons = [
-//   //     Coupon(discount: 50, startDate: '2023-04-01', endDate: '2023-04-30'),
-//   //     Coupon(discount: 30, startDate: '2023-05-01', endDate: '2023-05-31'),
-//   //     Coupon(discount: 20, startDate: '2023-06-01', endDate: '2023-06-30'),
-//   //     Coupon(discount: 10, startDate: '2023-07-01', endDate: '2023-07-31'),
-//   //     Coupon(discount: 15, startDate: '2023-08-01', endDate: '2023-08-31'),
-//   //     Coupon(discount: 22, startDate: '2023-04-01', endDate: '2023-04-30'),
-//   //     Coupon(discount: 11, startDate: '2023-05-01', endDate: '2023-05-31'),
-//   //     Coupon(discount: 44, startDate: '2023-06-01', endDate: '2023-06-30'),
-//   //     Coupon(discount: 22, startDate: '2023-07-01', endDate: '2023-07-31'),
-//   //     Coupon(discount: 33, startDate: '2023-08-01', endDate: '2023-08-31'),
+//   //     Coupon(discountAmount: 22, startDate: '2023-07-01', endDate: '2023-07-31'),
+//   //     Coupon(discountAmount: 33, startDate: '2023-08-01', endDate: '2023-08-31'),
 //   //   ];
 
 //     return SafeArea(
@@ -113,7 +146,7 @@ class _CouponlistState extends State<Couponlist> {
 //                       padding:
 //                           EdgeInsets.symmetric(vertical: 10, horizontal: 16),
 //                       child: ListTile(
-//                         title: Text('${coupon.discount}% off'),
+//                         title: Text('${coupon.discountAmount}% off'),
 //                         subtitle:
 //                             Text('${coupon.startDate} ~ ${coupon.endDate}'),
 //                       ),
@@ -130,16 +163,18 @@ class _CouponlistState extends State<Couponlist> {
 // }
 
 class Coupon {
-  final int discount;
+  final int discountAmount;
   final String startDate;
   final String endDate;
 
   Coupon(
-      {required this.discount, required this.startDate, required this.endDate});
+      {required this.discountAmount,
+      required this.startDate,
+      required this.endDate});
 
   factory Coupon.fromJson(Map<String, dynamic> responseData) {
     return Coupon(
-        discount: responseData['discount'],
+        discountAmount: responseData['discountAmount'], // 수정
         startDate: responseData['startDate'],
         endDate: responseData['endDate']);
   }
