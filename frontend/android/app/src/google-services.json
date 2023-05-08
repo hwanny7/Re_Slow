@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "359228838357",
+    "project_id": "reslow-70e4c",
+    "storage_bucket": "reslow-70e4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359228838357:android:204d02b0d621d7c76a2d5c",
+        "android_client_info": {
+          "package_name": "com.ssafy.reslow.reslow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359228838357-mo08g40up0kghjvjakg2ds7hr28ucvo6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtbHrRXzM49GcBwxIYd2_sRiAOoZyxWA8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359228838357-mo08g40up0kghjvjakg2ds7hr28ucvo6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -103,7 +103,7 @@ class _KnowHowState extends State<KnowHow> {
         print(response);
       }
     } on DioError catch (e) {
-      print('error: $e');
+      print('likeerror: $e');
     }
   }
 
