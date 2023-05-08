@@ -27,6 +27,7 @@ import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
+import com.ssafy.reslow.domain.order.repository.OrderRepository;
 import com.ssafy.reslow.domain.product.dto.MyProductListResponse;
 import com.ssafy.reslow.domain.product.dto.ProductDetailResponse;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
@@ -52,6 +53,7 @@ public class ProductService {
 
 	private final MemberRepository memberRepository;
 	private final ProductRepository productRepository;
+	private final OrderRepository orderRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final ProductImageRepository productImageRepository;
 	private final S3StorageClient s3Service;
@@ -180,15 +182,15 @@ public class ProductService {
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Slice<Product> list = null;
 		if (status == COMPLETE_PAYMENT.getValue()) {
-			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDate(member,
+			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDateDesc(member,
 				OrderStatus.ofValue(status),
 				pageable);
 		} else if (status == COMPLETE_DELIVERY.getValue()) {
-			list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDate(member,
+			list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDateDesc(member,
 				OrderStatus.ofValue(status),
 				pageable);
 		} else {
-			list = productRepository.findByMemberAndOrder_StatusOrderByCreatedDate(member,
+			list = productRepository.findByMemberAndOrder_StatusOrderByCreatedDateDesc(member,
 				OrderStatus.ofValue(status), pageable);
 		}
 
@@ -225,19 +227,29 @@ public class ProductService {
 	public List<ProductRecommendResponse> recommendMyProduct(Long memberNo) {
 		List<ProductRecommendResponse> list = null;
 		if (memberNo == null) {
-			list = productRepository.findTop10ByAndOrderIsNotNullOrderByCreatedDate()
+			list = productRepository.findTop10ByOrderIsNullOrderByCreatedDateDesc()
 				.stream()
 				.map(product -> {
-					Long no = product.getNo();
-					return ProductRecommendResponse.of(product, likeCount(no));
+					return ProductRecommendResponse.of(product, likeCount(product.getNo()));
 				}).collect(Collectors.toList());
 		} else {
-			// ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-			// ProductCategory category = productRepository.findTopBy1OrderIsNotNullOrderByCreatedDate().getProductCategory();
-			// Long myCategoryNo = Long.parseLong(String.valueOf(zSetOperations.range("product_" + memberNo, 0, 1)));
-			// ProductCategory myCategory = productCategoryRepository.findById(myCategoryNo)
-			// 	.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-			// productRepository.findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(category, myCategory);
+			ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+			Member member = memberRepository.findById(memberNo)
+				.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+			String myCategory = String.valueOf(zSetOperations.range("product_" + memberNo, 0, 0));
+			myCategory = myCategory.substring(1, myCategory.length() - 1);
+			ProductCategory myProductCategory = productCategoryRepository.findById(Long.parseLong(myCategory))
+				.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+			ProductCategory category = null;
+			if (orderRepository.existsByBuyer(member)) {
+				category = orderRepository.findTop1ByBuyerOrderByCreatedDateDesc(member).getProduct()
+					.getProductCategory();
+			}
+			list = productRepository.findTop10ByOrderIsNullAndProductCategoryOrProductCategoryOrderByCreatedDateDesc(
+					category, myProductCategory)
+				.stream().map(product -> {
+					return ProductRecommendResponse.of(product, likeCount(product.getNo()));
+				}).collect(Collectors.toList());
 		}
 		return list;
 	}
