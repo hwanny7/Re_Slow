@@ -75,6 +75,10 @@ public class ProductService {
 
 		product.setProductImages(productImages);
 		Product savedProduct = productRepository.save(product);
+
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		zSetOperations.incrementScore("product", String.valueOf(savedProduct.getNo()), 0);
+
 		Map<String, Long> map = new HashMap<>();
 		map.put("productNo", savedProduct.getNo());
 		return map;
@@ -131,6 +135,14 @@ public class ProductService {
 		if (memberNo != product.getMember().getNo()) {
 			throw new CustomException(USER_NOT_MATCH);
 		}
+		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		setOperations.remove(String.valueOf(productNo));
+		zSetOperations.remove(memberNo + "_like_product", String.valueOf(productNo));
+		zSetOperations.remove(memberNo + "product", String.valueOf(productNo));
+		zSetOperations.incrementScore("product_" + memberNo,
+			String.valueOf(product.getProductCategory().getNo()),
+			-1);
 		productRepository.delete(product);
 		Map<String, Long> map = new HashMap<>();
 		map.put("productNo", productNo);
@@ -213,14 +225,19 @@ public class ProductService {
 	public List<ProductRecommendResponse> recommendMyProduct(Long memberNo) {
 		List<ProductRecommendResponse> list = null;
 		if (memberNo == null) {
-			list = productRepository.findTop10ByOrderByCreatedDate()
+			list = productRepository.findTop10ByAndOrderIsNotNullOrderByCreatedDate()
 				.stream()
 				.map(product -> {
 					Long no = product.getNo();
 					return ProductRecommendResponse.of(product, likeCount(no));
 				}).collect(Collectors.toList());
 		} else {
-
+			ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+			ProductCategory category = productRepository.findTopBy1OrderIsNotNullOrderByCreatedDate().getProductCategory();
+			Long myCategoryNo = Long.parseLong(String.valueOf(zSetOperations.range("product_" + memberNo, 0, 1)));
+			ProductCategory myCategory = productCategoryRepository.findById(myCategoryNo)
+				.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+			productRepository.findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(category, myCategory);
 		}
 		return list;
 	}
@@ -233,6 +250,7 @@ public class ProductService {
 		String productString = String.valueOf(productNo);
 
 		setOperations.add(productString, String.valueOf(memberNo));
+
 		boolean added = zSetOperations.addIfAbsent(memberNo + "_like_product", productString,
 			System.currentTimeMillis());
 		if (added) {
@@ -254,6 +272,9 @@ public class ProductService {
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		String productString = String.valueOf(productNo);
 
+		if (setOperations.isMember(productString, String.valueOf(memberNo)) == null) {
+			throw new CustomException(MEMBER_NOT_FOUND);
+		}
 		setOperations.remove(productString, String.valueOf(memberNo));
 
 		zSetOperations.remove(memberNo + "_like_product", productString);

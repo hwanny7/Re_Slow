@@ -82,7 +82,6 @@ public class ProductController {
 	public ProductDetailResponse productDetail(Authentication authentication,
 		@PathVariable("productNo") Long productNo) {
 		Long memberNo = null;
-		System.out.println(authentication + "###################");
 		if (authentication != null) {
 			memberNo = Long.parseLong(authentication.getName());
 		}

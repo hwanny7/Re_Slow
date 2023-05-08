@@ -11,6 +11,7 @@ import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.entity.Product;
+import com.ssafy.reslow.domain.product.entity.ProductCategory;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -29,5 +30,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	List<Product> findByNoIn(List<Long> pkList);
 
-	List<Product> findTop10ByOrderByCreatedDate();
+	List<Product> findTop10ByAndOrderIsNotNullOrderByCreatedDate();
+	List<Product> findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(ProductCategory category1, ProductCategory category2);
+
+	Product findTopBy1OrderIsNotNullOrderByCreatedDate();
 }
