@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
             '/knowhow': (context) => const KnowHow(),
             '/knowhow/register': (context) => const KnowhowRegister(),
           },
+          debugShowCheckedModeBanner: false,
         ));
   }
 }
