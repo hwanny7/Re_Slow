@@ -46,11 +46,11 @@ public class OrderService {
 		Member member = memberRepository.findById(memberNo).get();
 		Slice<Order> list = null;
 		if (status == COMPLETE_DELIVERY.getValue()) {
-			list = orderRepository.findByBuyerAndStatusIsGreaterThanEqualOrderByCreatedDate(member,
+			list = orderRepository.findByBuyerAndStatusIsGreaterThanEqualOrderByCreatedDateDesc(member,
 				OrderStatus.ofValue(status),
 				pageable);
 		} else {
-			list = orderRepository.findByBuyerAndStatusOrderByCreatedDate(member, OrderStatus.ofValue(status),
+			list = orderRepository.findByBuyerAndStatusOrderByCreatedDateDesc(member, OrderStatus.ofValue(status),
 				pageable);
 		}
 
