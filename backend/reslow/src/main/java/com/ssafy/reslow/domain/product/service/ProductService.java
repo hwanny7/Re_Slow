@@ -232,12 +232,12 @@ public class ProductService {
 					return ProductRecommendResponse.of(product, likeCount(no));
 				}).collect(Collectors.toList());
 		} else {
-			ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-			ProductCategory category = productRepository.findTopBy1OrderIsNotNullOrderByCreatedDate().getProductCategory();
-			Long myCategoryNo = Long.parseLong(String.valueOf(zSetOperations.range("product_" + memberNo, 0, 1)));
-			ProductCategory myCategory = productCategoryRepository.findById(myCategoryNo)
-				.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-			productRepository.findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(category, myCategory);
+			// ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+			// ProductCategory category = productRepository.findTopBy1OrderIsNotNullOrderByCreatedDate().getProductCategory();
+			// Long myCategoryNo = Long.parseLong(String.valueOf(zSetOperations.range("product_" + memberNo, 0, 1)));
+			// ProductCategory myCategory = productCategoryRepository.findById(myCategoryNo)
+			// 	.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+			// productRepository.findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(category, myCategory);
 		}
 		return list;
 	}

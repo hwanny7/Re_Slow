@@ -31,7 +31,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	List<Product> findByNoIn(List<Long> pkList);
 
 	List<Product> findTop10ByAndOrderIsNotNullOrderByCreatedDate();
-	List<Product> findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(ProductCategory category1, ProductCategory category2);
-
-	Product findTopBy1OrderIsNotNullOrderByCreatedDate();
+	// List<Product> findTop10ByAndOrderIsNotNullAAndProductCategoryOrderOrProductCategoryByCreatedDate(ProductCategory category1, ProductCategory category2);
+	//
+	// Product findTopBy1OrderIsNotNullOrderByCreatedDate();
 }
