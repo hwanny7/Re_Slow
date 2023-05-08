@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:reslow/utils/dio_client.dart';
-import 'package:dots_indicator/dots_indicator.dart';
+// import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:reslow/models/coupon_model.dart';
 
 class CouponDownload extends StatefulWidget {
