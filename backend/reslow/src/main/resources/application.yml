@@ -31,6 +31,10 @@ spring:
 jwt:
   secret: ${JWT_SECRETKEY}
 
+fcm:
+  credentials:
+    fcm-server-key: ${FCM_SERVER_KEY}
+
 cloud:
   aws:
     credentials:

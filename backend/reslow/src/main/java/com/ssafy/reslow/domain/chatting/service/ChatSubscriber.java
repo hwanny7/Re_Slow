@@ -1,34 +1,34 @@
 package com.ssafy.reslow.domain.chatting.service;
 
-import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class ChatSubscriber {
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+	private final ObjectMapper objectMapper;
+	private final SimpMessageSendingOperations messagingTemplate;
 
-    @PostConstruct
-    public void init() {
-        new Thread(() -> {
-            RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-            container.setConnectionFactory(redisTemplate.getConnectionFactory());
-            container.addMessageListener((message, bytes) -> {
-                ChatMessage chatMessage = (ChatMessage) redisTemplate.getValueSerializer().deserialize(message.getBody());
-                messagingTemplate.convertAndSendToUser(chatMessage.getReceiver(), "/queue/chat", chatMessage);
-            }, new ChannelTopic("chat"));
-            container.start();
-        }).start();
-    }
+	/**
+	 * Redis에서 메시지가 발행(publish)되면 대기하고 있던 Redis subscriber가 해당 메시지를 받아 처리
+	 */
+	public void sendMessage(String message) {
+		try {
+			// ChatMessage 객채로 맵핑
+			ChatMessage chatMessage = objectMapper.readValue(message, ChatMessage.class);
+			// Websocket 구독자에게 채팅 메시지 Send
+			messagingTemplate.convertAndSend("/sub/chat/" + chatMessage.getRoomId(), chatMessage);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+	}
 
 }
