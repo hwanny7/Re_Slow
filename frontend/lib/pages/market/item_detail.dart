@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/market/buy_item.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:reslow/utils/navigator.dart';
 
 class ItemDetail extends StatefulWidget {
   final int itemPk;
@@ -230,7 +232,9 @@ class _ItemDetailState extends State<ItemDetail> {
                         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                         color: const Color(0xFF165B40),
                         minWidth: MediaQuery.of(context).size.width * 0.05,
-                        onPressed: () => {},
+                        onPressed: () => {
+                              leftToRightNavigator(BuyItem(item: item), context)
+                            },
                         child: const Text(
                           "구매",
                           textAlign: TextAlign.center,
