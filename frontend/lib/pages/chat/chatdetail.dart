@@ -90,50 +90,62 @@ class _ChatDetailState extends State<ChatDetail> {
   Widget _Chat(int index) {
     if (content["chat"][index]["sender"] == 0) {
       return Container(
-        margin: const EdgeInsets.all(4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(16, 8, 0, 8),
-            child: Text(formatTimeDifference(content["chat"][index]["time"]))),
-        Container(
-          width: MediaQuery.of(context).size.width *0.7,
-          decoration: BoxDecoration(color: Color(0xffCDE8E8), borderRadius: BorderRadius.circular(4)), margin: const EdgeInsets.all(8), padding: const EdgeInsets.all(12),
-        child: Flexible(
-          child: RichText(
-            maxLines: 100,
-            text: TextSpan(
-              text: content["chat"][index]["chatText"],
-              style: const TextStyle(color: Colors.black)))))
-      ],));
+          margin: const EdgeInsets.all(4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Container(
+                  margin: const EdgeInsets.fromLTRB(16, 8, 0, 8),
+                  child: Text(
+                      formatTimeDifference(content["chat"][index]["time"]))),
+              Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xffCDE8E8),
+                          borderRadius: BorderRadius.circular(4)),
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(12),
+                      child: RichText(
+                          maxLines: 100,
+                          text: TextSpan(
+                              text: content["chat"][index]["chatText"],
+                              style: const TextStyle(color: Colors.black)))))
+            ],
+          ));
     } else {
       return Container(
           margin: const EdgeInsets.all(4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: Image.asset(
-                        "assets/image/user.png",
-                        width: 50,
-                      )),
-        Container(
-          width: MediaQuery.of(context).size.width *0.6,
-          decoration: BoxDecoration(color: Color(0xffF1F1F1), borderRadius: BorderRadius.circular(4)), margin: const EdgeInsets.all(8), padding: const EdgeInsets.all(12),
-        child: Flexible(
-          child: RichText(
-            maxLines: 100,
-            text: TextSpan(
-              text: content["chat"][index]["chatText"],
-              style: const TextStyle(color: Colors.black))))),
-        Container(
-            margin: const EdgeInsets.fromLTRB(0, 8, 16, 8),
-            child: Text(formatTimeDifference(content["chat"][index]["time"]))),
-      ],));
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(50),
+                  child: Image.asset(
+                    "assets/image/user.png",
+                    width: 50,
+                  )),
+              Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xffF1F1F1),
+                          borderRadius: BorderRadius.circular(4)),
+                      margin: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(12),
+                      child: RichText(
+                          maxLines: 100,
+                          text: TextSpan(
+                              text: content["chat"][index]["chatText"],
+                              style: const TextStyle(color: Colors.black))))),
+              Container(
+                  margin: const EdgeInsets.fromLTRB(0, 8, 16, 8),
+                  child: Text(
+                      formatTimeDifference(content["chat"][index]["time"]))),
+            ],
+          ));
     }
   }
 
@@ -164,8 +176,7 @@ class _ChatDetailState extends State<ChatDetail> {
                 Container(
                     width: MediaQuery.of(context).size.width * 0.838,
                     child: TextFormField(
-                      onChanged: (text) {
-                      },
+                      onChanged: (text) {},
                       validator: (value) {
                         if (value == "") {
                           return "내용은 한 글자 이상이어야 합니다.";
@@ -194,10 +205,7 @@ class _ChatDetailState extends State<ChatDetail> {
                         border: Border.all(
                             width: 1, color: Colors.grey.withOpacity(0.4))),
                     height: 75,
-                    child: TextButton(
-                        onPressed: () {
-                        },
-                        child: Text("완료")))
+                    child: TextButton(onPressed: () {}, child: Text("완료")))
               ])
             ])));
   }
