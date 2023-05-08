@@ -129,6 +129,9 @@ class _ItemDetailState extends State<ItemDetail> {
                             ))
                       ],
                     ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
                     ListTile(
                       leading: CircleAvatar(
                         radius: 25,
@@ -212,10 +215,46 @@ class _ItemDetailState extends State<ItemDetail> {
                       },
                     ),
                   ),
+                  const SizedBox(
+                    width: 16.0,
+                  ),
                   Text(
                     price,
                     style: const TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: MaterialButton(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        color: const Color(0xFF165B40),
+                        minWidth: MediaQuery.of(context).size.width * 0.05,
+                        onPressed: () => {},
+                        child: const Text(
+                          "구매",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: MaterialButton(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        color: const Color(0xFF165B40),
+                        minWidth: MediaQuery.of(context).size.width * 0.05,
+                        onPressed: () => {},
+                        child: const Text(
+                          "채팅",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )),
                   ),
                 ]),
               ),
