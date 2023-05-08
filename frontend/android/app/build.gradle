@@ -47,11 +47,12 @@ android {
         applicationId "com.ssafy.reslow.reslow"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 19 // for the firebase-firestore
+        minSdkVersion 23 // for the firebase-firestore
         multiDexEnabled true // added
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // resValue "string", "applicationName", "MyApp"
     }
 
     buildTypes {
@@ -71,8 +72,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
     // Import the Firebase BoM
-  implementation platform('com.google.firebase:firebase-bom:31.5.0')
-
+    implementation platform('com.google.firebase:firebase-bom:31.5.0')
+    implementation 'com.google.firebase:firebase-analytics'
   // When using the BoM, you don't specify versions in Firebase library dependencies
 
   // TODO: Add the dependencies for Firebase products you want to use
