@@ -26,7 +26,8 @@ public enum ErrorCode {
 	USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, -16, "사용자 접근 권한이 없습니다."),
 	VALIDATION_CHECK(HttpStatus.UNAUTHORIZED, -17, "유효성 검사를 다시 실시해주세요."),
 	COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, -18, "쿠폰을 찾을 수 없습니다."),
-	COUPON_ALREADY_ISSUED(HttpStatus.NOT_FOUND, -19, "이미 발급받은 쿠폰입니다.");
+	COUPON_ALREADY_ISSUED(HttpStatus.NOT_FOUND, -19, "이미 발급받은 쿠폰입니다."),
+	PAYMENT_FAILED(HttpStatus.NOT_FOUND, -20, "결제에 실패하였습니다.");
 
 	private final HttpStatus status;
 	private final int code;

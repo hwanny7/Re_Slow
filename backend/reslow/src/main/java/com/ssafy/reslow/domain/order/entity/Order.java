@@ -76,9 +76,11 @@ public class Order extends BaseEntity {
 	private IssuedCoupon issuedCoupon;
 
 	public static Order of(OrderRegistRequest request, Product product, Member buyer, IssuedCoupon issuedCoupon) {
-		double discount = issuedCoupon.getCoupon().getDiscountPercent() * 0.01;
-		int originPrice = product.getPrice() + product.getDeliveryFee();
-		int totalPrice = originPrice - (int)(originPrice * discount);
+		int totalPrice = product.getPrice() + product.getDeliveryFee();
+		if (issuedCoupon != null) {
+			double discount = issuedCoupon.getCoupon().getDiscountPercent() * 0.01;
+			totalPrice -= (int)(totalPrice * discount);
+		}
 		return Order.builder()
 			.status(OrderStatus.COMPLETE_PAYMENT)
 			.recipient(request.getRecipient())
