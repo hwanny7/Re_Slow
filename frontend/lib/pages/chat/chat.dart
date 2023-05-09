@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reslow/pages/chat/chatdetail.dart';
+import 'package:reslow/providers/socket_provider.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 
 class Chat extends StatefulWidget {
+  // dynamic socketManager;
+  // Chat({Key? key, this.socketManager}) : super(key: key);
+
   @override
   _ChatState createState() => _ChatState();
 }
 
-List<Map> content = [
-  {
+Map<String, dynamic> content = {
+  "춘식이 집사": {
     "id": 1,
     "time": "2023-05-04T00:00:00",
     "userimage": "assets/image/user.png",
@@ -17,7 +22,7 @@ List<Map> content = [
     "recentText": "고양이 밥그릇 사고 싶은데 다 팔렸나요??ㅠㅠ",
     "unseenTextCnt": 3
   },
-  {
+  "춘식이 집사2": {
     "id": 2,
     "time": "2023-05-03T00:00:00",
     "userimage": "assets/image/user.png",
@@ -25,7 +30,7 @@ List<Map> content = [
     "recentText": "고양이 밥그릇 대박임",
     "unseenTextCnt": 0
   },
-  {
+  "춘식이 집사3": {
     "id": 3,
     "time": "2023-05-03T00:00:00",
     "userimage": "assets/image/user.png",
@@ -33,10 +38,25 @@ List<Map> content = [
     "recentText": "고양이 밥그릇 사고 싶은데 다 팔렸나요??ㅠㅠ",
     "unseenTextCnt": 0
   }
-];
+};
+
+Map unseen = {};
+
+List order = [];
 
 class _ChatState extends State<Chat> {
-  Widget _ChatList(int index) {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      content = context.watch<SocketManager>().recentData;
+      unseen = context.watch<SocketManager>().unseenMsg;
+      order = context.watch<SocketManager>().chatOrder.toList();
+    });
+  }
+
+  Widget chatList(int index) {
     return InkWell(
         onTap: () {
           // Navigate to the CalendarSelection page when the icon is clicked
@@ -113,7 +133,7 @@ class _ChatState extends State<Chat> {
           child: ListView.builder(
         itemCount: content.length,
         itemBuilder: (context, index) {
-          return _ChatList(index);
+          return chatList(index);
         },
       ))
     ]);

@@ -1,5 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reslow/providers/auth_provider.dart';
+import 'package:reslow/providers/socket_provider.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'coupondownload.dart';
 import 'package:reslow/utils/navigator.dart';
 
@@ -8,7 +12,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   int _current = 0;
   final CarouselController _controller = CarouselController();
   List<dynamic> couponImage = [
@@ -18,7 +22,53 @@ class _HomeState extends State<Home> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    dynamic socketManager = Provider.of<SocketManager>(context);
+    socketManager.receivedChatData();
+
+    @override
+    void didChangeAppLifecycleState(AppLifecycleState state) {
+      super.didChangeAppLifecycleState(state);
+      switch (state) {
+        case AppLifecycleState.resumed:
+          socketManager.connect();
+          // 서버로 open 보내기
+          print("resumed");
+          break;
+        case AppLifecycleState.inactive:
+          socketManager.disconnect();
+          // 서버로 close 보내기
+          print("inactive");
+          break;
+        case AppLifecycleState.detached:
+          socketManager.disconnect();
+          // 서버로 close 보내기
+          print("detached");
+          break;
+        case AppLifecycleState.paused:
+          socketManager.disconnect();
+          // 서버로 close 보내기
+          print("paused");
+          break;
+      }
+    }
+
+    socketManager.connect();
+
+    print(socketManager.isConnect());
+
     return SingleChildScrollView(
         child: Column(children: [
       Container(
