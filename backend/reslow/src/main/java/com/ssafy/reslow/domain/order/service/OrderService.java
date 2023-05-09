@@ -34,8 +34,10 @@ import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import com.ssafy.reslow.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class OrderService {
@@ -75,6 +77,7 @@ public class OrderService {
 		IamportResponseException,
 		IOException {
 		Payment payment = paymentService.getPayment(imp_uid);
+		log.info("payment.getStatus() "+payment.getStatus());
 		if (!payment.getStatus().equals("paid")) {
 			throw new CustomException(PAYMENT_FAILED);
 		}
