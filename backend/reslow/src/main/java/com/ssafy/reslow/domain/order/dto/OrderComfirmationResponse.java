@@ -13,7 +13,6 @@ import lombok.Getter;
 public class OrderComfirmationResponse {
 
 	private String title;
-	private int price;
 	private LocalDateTime date;
 	private String recipient;
 	private int zipcode;
@@ -21,11 +20,24 @@ public class OrderComfirmationResponse {
 	private String addressDetail;
 	private String phoneNumber;
 	private String memo;
+	private int totalPrice;
+	private int productPrice;
+	private int discountPrice;
+	private int deliveryFee;
 
 	public static OrderComfirmationResponse of(Product product, Order order) {
+		int totalPrice = product.getPrice() + product.getDeliveryFee();
+		double discount = 0;
+		if (order.getIssuedCoupon() != null) {
+			discount = order.getIssuedCoupon().getCoupon().getDiscountPercent() * 0.01;
+			totalPrice -= (int)(totalPrice * discount);
+		}
 		return OrderComfirmationResponse.builder()
 			.title(product.getTitle())
-			.price(product.getPrice())
+			.totalPrice(totalPrice)
+			.productPrice(product.getPrice())
+			.discountPrice((int)discount)
+			.deliveryFee(product.getDeliveryFee())
 			.date(order.getCreatedDate())
 			.recipient(order.getRecipient())
 			.zipcode(order.getZipcode())
