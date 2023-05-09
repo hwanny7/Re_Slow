@@ -16,21 +16,22 @@ class _CouponlistState extends State<Couponlist> {
     Map<String, dynamic> queryParams = {
       'page': 0,
       'size': 10,
-      'sort': 'number.desc', // What should I put for the field???
+      'sort': 'createdDate,desc',
     };
     Response response =
         await dioClient.dio.get('/coupons/my', queryParameters: queryParams);
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = {"content": response.data};
+      Map<String, dynamic> jsonData = response.data;
       print(jsonData);
 
       setState(() {
         // Update the state with the fetched data
         // 데이터의 콘텐트의 쿠폰
-        coupons = List<Coupon>.from(
-            jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
-        // jsonData 안에서 키값 확인하고 바꾸기
+        setState(() {
+          coupons = List<Coupon>.from(
+              jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
+        });
       });
     } else {
       // Handle any errors or display an error message
