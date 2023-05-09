@@ -3,7 +3,6 @@ package com.ssafy.reslow.domain.order.service;
 import static com.ssafy.reslow.domain.order.entity.OrderStatus.*;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.Payment;
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.coupon.repository.IssuedCouponRepository;
@@ -73,11 +71,8 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Map<String, Long> registOrder(String imp_uid, Long memberNo, OrderRegistRequest request) throws
-		IamportResponseException,
-		IOException {
+	public Map<String, Long> registOrder(String imp_uid, Long memberNo, OrderRegistRequest request) {
 		Payment payment = paymentService.getPayment(imp_uid);
-		log.info("payment.getStatus() "+payment.getStatus());
 		if (!payment.getStatus().equals("paid")) {
 			throw new CustomException(PAYMENT_FAILED);
 		}
