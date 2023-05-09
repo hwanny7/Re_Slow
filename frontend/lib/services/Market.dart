@@ -10,3 +10,10 @@ Future<Response> createOrder(
 
   return response;
 }
+
+Future<Response> getOrder(int pk) async {
+  print(pk);
+  Response response = await dioClient.dio.get('/orders/$pk');
+
+  return response;
+}

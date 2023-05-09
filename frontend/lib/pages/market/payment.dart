@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:iamport_flutter/iamport_payment.dart';
 import 'package:iamport_flutter/model/payment_data.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/market/order_detail.dart';
 import 'package:reslow/services/Market.dart';
 
 class Payment extends StatelessWidget {
@@ -55,7 +56,13 @@ class Payment extends StatelessWidget {
               result['imp_uid'], orderingInformation.toJson());
           if (response.statusCode == 200) {
             Map<String, dynamic> jsonData = response.data;
-            print(jsonData);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OrderDetail(
+                        orderPk: jsonData['orderNo'],
+                      )),
+            );
           } else {
             print('HTTP request failed with status: ${response.statusCode}');
             Navigator.pop(context);

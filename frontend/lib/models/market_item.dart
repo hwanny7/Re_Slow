@@ -107,3 +107,50 @@ class OrderingInformation {
         'issuedCouponNo': issuedCouponNo,
       };
 }
+
+class GetOrder {
+  final String title;
+  final String date;
+  final String recipient;
+  final int zipcode;
+  final String address;
+  final String addressDetail;
+  final String phoneNumber;
+  final String memo;
+  final int deliveryFee;
+  final int discountPrice;
+  final int productPrice;
+  final int totalPrice;
+
+  GetOrder({
+    required this.title,
+    required this.date,
+    required this.recipient,
+    required this.zipcode,
+    required this.address,
+    required this.addressDetail,
+    required this.phoneNumber,
+    required this.memo,
+    required this.deliveryFee,
+    required this.discountPrice,
+    required this.productPrice,
+    required this.totalPrice,
+  });
+
+  factory GetOrder.fromJson(Map<String, dynamic> responseData) {
+    return GetOrder(
+      title: responseData['title'],
+      date: responseData['date'],
+      recipient: responseData['recipient'],
+      zipcode: responseData['zipcode'],
+      address: responseData['address'],
+      addressDetail: formatTimeDifference(responseData['addressDetail']),
+      deliveryFee: responseData['deliveryFee'],
+      phoneNumber: responseData['phoneNumber'],
+      memo: responseData['memo'],
+      discountPrice: responseData['discountPrice'],
+      productPrice: responseData['productPrice'],
+      totalPrice: responseData['totalPrice'],
+    );
+  }
+}
