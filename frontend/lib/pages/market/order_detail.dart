@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/services/Market.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class OrderDetail extends StatefulWidget {
   final int orderPk;
@@ -35,6 +36,100 @@ class _OrderDetailState extends State<OrderDetail> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text('hello'));
+    return SafeArea(
+        child: Scaffold(
+      appBar: CustomAppBar(title: '주문 상세내역'),
+      body: order == null
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                          'No. ${order!.date.replaceAll(RegExp(r'[^\d]'), '')}',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(
+                          order!.date
+                              .substring(0, order!.date.length - 3)
+                              .replaceAll('-', '.')
+                              .replaceAll('T', ' '),
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  const Divider(
+                    color: Color(0xFFBDBDBD),
+                    thickness: 0.5,
+                  ),
+                  const Text(
+                    '배송지정보',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Text('받으시는 분',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(order!.recipient,
+                          style: const TextStyle(fontWeight: FontWeight.bold))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Text('연락처',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(order!.phoneNumber,
+                          style: const TextStyle(fontWeight: FontWeight.bold))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Text('배송지',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(
+                          '(${order!.zipcode}) ${order!.address} ${order!.addressDetail}',
+                          style: const TextStyle(fontWeight: FontWeight.bold))
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Row(
+                    children: [
+                      const Text('요청사항',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Spacer(),
+                      Text(order!.memo,
+                          style: const TextStyle(fontWeight: FontWeight.bold))
+                    ],
+                  )
+                  // Image.network(
+                  //               order!.,
+                  //               fit: BoxFit.cover,
+                  //             );
+                ],
+              ),
+            ),
+    ));
   }
 }
