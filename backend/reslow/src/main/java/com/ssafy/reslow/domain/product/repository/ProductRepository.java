@@ -11,17 +11,19 @@ import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.entity.Product;
+import com.ssafy.reslow.domain.product.entity.ProductCategory;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-	Slice<Product> findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDate(Member member, OrderStatus status,
+	Slice<Product> findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDateDesc(Member member, OrderStatus status,
 		Pageable pageable);
 
-	Slice<Product> findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDate(Member member, OrderStatus status,
+	Slice<Product> findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDateDesc(Member member,
+		OrderStatus status,
 		Pageable pageable);
 
-	Slice<Product> findByMemberAndOrder_StatusOrderByCreatedDate(Member member, OrderStatus status,
+	Slice<Product> findByMemberAndOrder_StatusOrderByCreatedDateDesc(Member member, OrderStatus status,
 		Pageable pageable);
 
 	List<ProductListResponse> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category,
@@ -29,5 +31,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	List<Product> findByNoIn(List<Long> pkList);
 
-	List<Product> findTop10ByOrderByCreatedDate();
+	List<Product> findTop10ByOrderIsNullOrderByCreatedDateDesc();
+
+	List<Product> findTop10ByOrderIsNullAndProductCategoryOrProductCategoryOrderByCreatedDateDesc(
+		ProductCategory category1, ProductCategory category2);
 }
