@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reslow/pages/home/recommend.dart';
 import 'package:reslow/pages/market/create_item.dart';
 import 'package:reslow/utils/navigator.dart';

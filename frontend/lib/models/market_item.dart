@@ -144,7 +144,7 @@ class GetOrder {
       recipient: responseData['recipient'],
       zipcode: responseData['zipcode'],
       address: responseData['address'],
-      addressDetail: formatTimeDifference(responseData['addressDetail']),
+      addressDetail: responseData['addressDetail'],
       deliveryFee: responseData['deliveryFee'],
       phoneNumber: responseData['phoneNumber'],
       memo: responseData['memo'],
