@@ -32,7 +32,14 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-      
+  data:
+    mongodb:
+      host: k8b306.p.ssafy.io
+      url: jdbc:mysql://k8b306.p.ssafy.io:27017/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      username: ${DEV_MONGO_NAME}
+      password: ${DEV_MONGO_PASSWORD}
+
+
 jwt:
   secret: ${JWT_SECRETKEY}
 
