@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/frame.dart';
 import 'package:reslow/pages/knowhow/knowhow.dart';
-import 'package:reslow/pages/market/buy_item.dart';
+import 'package:reslow/pages/market/market.dart';
 import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
             '/main': (context) => const MainPage(),
             '/splash': (context) => SplashScreen(),
             '/login': (context) => Login(key: key),
+            '/market': (context) => Market(),
             '/knowhow': (context) => const KnowHow(),
             '/knowhow/register': (context) => const KnowhowRegister(),
           },

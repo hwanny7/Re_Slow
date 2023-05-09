@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:reslow/utils/date.dart';
 
 class MarketItem {
@@ -36,6 +38,7 @@ class MarketItemDetail {
   final bool mine;
   final String nickname;
   final String profileImg;
+  final int productNo;
   int heartCount;
   bool myHeart;
 
@@ -52,6 +55,7 @@ class MarketItemDetail {
     required this.profileImg,
     required this.heartCount,
     required this.myHeart,
+    required this.productNo,
   });
 
   factory MarketItemDetail.fromJson(Map<String, dynamic> responseData) {
@@ -67,6 +71,39 @@ class MarketItemDetail {
         mine: responseData['mine'],
         nickname: responseData['nickname'],
         profileImg: responseData['profileImg'],
+        productNo: responseData['productNo'],
         description: responseData['description']);
   }
+}
+
+class OrderingInformation {
+  final int? productNo;
+  final String recipient;
+  final int zipcode;
+  final String address;
+  final String addressDetail;
+  final String phoneNumber;
+  final String memo;
+  final int? issuedCouponNo;
+
+  OrderingInformation(
+      {this.productNo,
+      required this.recipient,
+      required this.zipcode,
+      required this.address,
+      required this.addressDetail,
+      required this.phoneNumber,
+      required this.memo,
+      this.issuedCouponNo});
+
+  Map<String, dynamic> toJson() => {
+        'productNo': productNo,
+        'recipient': recipient,
+        'zipcode': zipcode,
+        'address': address,
+        'addressDetail': addressDetail,
+        'phoneNumber': phoneNumber,
+        'memo': memo,
+        'issuedCouponNo': issuedCouponNo,
+      };
 }

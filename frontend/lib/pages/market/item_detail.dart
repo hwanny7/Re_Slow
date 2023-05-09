@@ -35,6 +35,7 @@ class _ItemDetailState extends State<ItemDetail> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
+      jsonData['productNo'] = widget.itemPk;
       print(jsonData);
 
       setState(() {
