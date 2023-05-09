@@ -58,7 +58,7 @@ public class Product extends BaseEntity {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 	private List<ProductImage> productImages = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ORDER_PK")
 	private Order order;
 
@@ -75,6 +75,9 @@ public class Product extends BaseEntity {
 
 	public void setProductImages(List<ProductImage> productImages) {
 		this.productImages = productImages;
+	}
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 	public void updateProduct(ProductUpdateRequest request, ProductCategory productCategory) {
