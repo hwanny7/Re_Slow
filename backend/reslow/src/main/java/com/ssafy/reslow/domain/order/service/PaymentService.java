@@ -24,7 +24,6 @@ public class PaymentService {
 	private String apiSecret;
 
 	public Payment getPayment(String impUid) {
-		log.info("impUid : "+impUid);
 		IamportClient client = new IamportClient(apiKey, apiSecret);
 		try {
 			return client.paymentByImpUid(impUid).getResponse();
