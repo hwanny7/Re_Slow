@@ -40,4 +40,9 @@ public class ChatService {
 		// Check if the user is online using some mechanism (e.g. Redis)
 		return true;
 	}
+
+	// // 채팅방 생성..! - redis hash에 저장하기
+	// public ChatRoom createChatRoom(Member sender, Member receiver) {
+	//
+	// }
 }
