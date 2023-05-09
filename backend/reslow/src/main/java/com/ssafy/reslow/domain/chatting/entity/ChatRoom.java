@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.chatting.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,8 +28,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "CHAT_ROOM_TB")
 @AttributeOverride(name = "no", column = @Column(name = "CHAT_ROOM_PK"))
-public class Chat extends BaseEntity {
+public class ChatRoom extends BaseEntity implements Serializable {
 
+	private static final long serialVersionUID = 6494678977089006639L;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SENDER_MEMBER_PK")
 	private Member sender;
@@ -39,4 +42,11 @@ public class Chat extends BaseEntity {
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PRODUCT_PK")
 	private Product product;
+
+	public static ChatRoom create(Member sender, Member receiver) {
+		ChatRoom chatRoom = new ChatRoom();
+		chatRoom.sender = sender;
+		chatRoom.receiver = receiver;
+		return chatRoom;
+	}
 }

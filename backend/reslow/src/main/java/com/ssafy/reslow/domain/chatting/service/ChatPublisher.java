@@ -11,7 +11,7 @@ public class ChatPublisher {
 	@Autowired
 	private RedisTemplate<String, Object> redisTemplate;
 
-	public void publish(String roomId, ChatMessage chatMessage) {
-		redisTemplate.convertAndSend("chat-room-" + roomId, chatMessage);
+	public void publish(String topic, ChatMessage chatMessage) {
+		redisTemplate.convertAndSend("chat-room-" + topic, chatMessage);
 	}
 }

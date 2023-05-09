@@ -21,7 +21,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ssafy.reslow.domain.chatting.entity.Chat;
+import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
@@ -102,11 +102,11 @@ public class Member extends BaseEntity implements UserDetails {
 
 	@Builder.Default
 	@OneToMany(mappedBy = "sender")
-	private List<Chat> senderChats = new ArrayList<>();
+	private List<ChatRoom> senderChats = new ArrayList<>();
 
 	@Builder.Default
 	@OneToMany(mappedBy = "receiver")
-	private List<Chat> receiverChats = new ArrayList<>();
+	private List<ChatRoom> receiverChats = new ArrayList<>();
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
