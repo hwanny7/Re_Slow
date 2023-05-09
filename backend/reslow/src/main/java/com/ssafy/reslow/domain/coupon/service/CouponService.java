@@ -2,6 +2,7 @@ package com.ssafy.reslow.domain.coupon.service;
 
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
 import com.ssafy.reslow.domain.coupon.dto.CouponDetailResponse;
@@ -27,6 +29,7 @@ import com.ssafy.reslow.domain.manager.repository.ManagerRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.infra.storage.StorageClient;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +42,7 @@ public class CouponService {
 	private final IssuedCouponRepository issuedCouponRepository;
 	private final MemberRepository memberRepository;
 	private final ManagerRepository managerRepository;
+	private final StorageClient storageClient;
 
 	public Slice<CouponListResponse> getAllValidCoupons(Pageable pageable) {
 		LocalDateTime now = LocalDateTime.now();
@@ -65,9 +69,11 @@ public class CouponService {
 		return new SliceImpl<>(couponListResponses, pageable, coupons.hasNext());
 	}
 
-	public Map<String, Long> createCoupon(Long managerNo, CouponCreateRequest couponCreateRequest) {
+	public Map<String, Long> createCoupon(Long managerNo, CouponCreateRequest couponCreateRequest,
+		MultipartFile image) throws IOException {
 		Manager manager = managerRepository.getReferenceById(managerNo);
-		Coupon coupon = Coupon.of(manager, couponCreateRequest);
+		String imageUrl = storageClient.uploadFile(image);
+		Coupon coupon = Coupon.of(manager, couponCreateRequest, imageUrl);
 		coupon = couponRepository.save(coupon);
 
 		Map<String, Long> map = new HashMap<>();

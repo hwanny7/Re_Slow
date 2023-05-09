@@ -19,6 +19,7 @@ public class CouponListResponse {
 	private int discountPercent;
 	private LocalDateTime startDate;
 	private LocalDateTime endDate;
+	private String imageUrl;
 
 	public static CouponListResponse of(Coupon coupon) {
 		return CouponListResponse.builder()
@@ -30,6 +31,7 @@ public class CouponListResponse {
 			.discountPercent(coupon.getDiscountPercent())
 			.startDate(coupon.getStartDate())
 			.endDate(coupon.getEndDate())
+			.imageUrl(coupon.getImageUrl())
 			.build();
 	}
 }
