@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -130,9 +129,9 @@ public class KnowhowController {
 	 * @param keywords
 	 * @return List<KnowhowListResponse>
 	 */
-	@PostMapping("/recommends")
+	@GetMapping("/recommends")
 	public List<KnowhowListResponse> recommendKnowhowPosting(Authentication authentication,
-		@RequestBody KnowhowRecommendRequest keywords) {
+		@RequestParam KnowhowRecommendRequest keywords) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		return knowhowService.getRecommendKnowhowList(memberNo, PageRequest.of(0, 100), keywords);
 	}

@@ -59,8 +59,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.387'
 
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+	implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.21'
 }
 
 dependencyManagement {
@@ -89,4 +91,10 @@ configurations {
         extendsFrom annotationProcessor
     }
     querydsl.extendsFrom compileClasspath
+}
+
+allprojects {
+	repositories {
+		maven { url 'https://jitpack.io' }
+	}
 }

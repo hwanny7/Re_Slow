@@ -28,6 +28,11 @@ spring:
       mode: always
       continue-on-error: true
       data-locations: classpath:sql/data.sql
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+      
 jwt:
   secret: ${JWT_SECRETKEY}
 
@@ -50,3 +55,8 @@ cloud:
     include: aws
 
 default-image-s3: ${DEFAULT_PROGILE_IMAGE}
+
+iamport:
+  api:
+    key: ${IAMPORT_KEY}
+    secret: ${IAMPORT_SECRET}

@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.order.controller;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.ssafy.reslow.domain.order.dto.OrderComfirmationResponse;
 import com.ssafy.reslow.domain.order.dto.OrderListResponse;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
@@ -39,12 +41,13 @@ public class OrderController {
 		return orderService.myOrderList(memberNo, status, pageable);
 	}
 
-	@PostMapping
-	public Map<String, Long> registOrder(Authentication authentication, @RequestBody
-	OrderRegistRequest request) {
+	@PostMapping("/{imp_uid}")
+	public Map<String, Long> registOrder(Authentication authentication, @PathVariable("imp_uid") String imp_uid,
+		@RequestBody
+		OrderRegistRequest request) throws IamportResponseException, IOException {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
-		return orderService.registOrder(memberNo, request);
+		return orderService.registOrder(imp_uid, memberNo, request);
 	}
 
 	@PatchMapping("/{orderNo}")

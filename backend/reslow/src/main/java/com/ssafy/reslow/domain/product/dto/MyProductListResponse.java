@@ -12,6 +12,7 @@ import lombok.Getter;
 public class MyProductListResponse {
 
 	private Long productNo;
+	private Long orderNo;
 	private String title;
 	private int price;
 	private int status;
@@ -21,6 +22,7 @@ public class MyProductListResponse {
 	public static MyProductListResponse of(Product product, String image, int status) {
 		return MyProductListResponse.builder()
 			.productNo(product.getNo())
+			.orderNo(product.getOrder() == null ? null : product.getOrder().getNo())
 			.title(product.getTitle())
 			.price(product.getPrice())
 			.status(status)

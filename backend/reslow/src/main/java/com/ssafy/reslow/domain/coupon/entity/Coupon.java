@@ -71,7 +71,10 @@ public class Coupon extends BaseEntity {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<IssuedCoupon> issuedCoupons = new ArrayList<>();
 
-	public static Coupon of(Manager manager, CouponCreateRequest couponCreateRequest) {
+	@Column
+	private String imageUrl;
+
+	public static Coupon of(Manager manager, CouponCreateRequest couponCreateRequest, String imageUrl) {
 		return Coupon.builder()
 			.name(couponCreateRequest.getName())
 			.content(couponCreateRequest.getContent())
@@ -84,6 +87,7 @@ public class Coupon extends BaseEntity {
 			.totalQuantity(couponCreateRequest.getTotalQuantity())
 			.remainQuantity(couponCreateRequest.getTotalQuantity())
 			.manager(manager)
+			.imageUrl(imageUrl)
 			.build();
 	}
 }

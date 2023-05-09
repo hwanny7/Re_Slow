@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,7 +81,6 @@ public class ProductController {
 	public ProductDetailResponse productDetail(Authentication authentication,
 		@PathVariable("productNo") Long productNo) {
 		Long memberNo = null;
-		System.out.println(authentication + "###################");
 		if (authentication != null) {
 			memberNo = Long.parseLong(authentication.getName());
 		}
@@ -95,7 +93,7 @@ public class ProductController {
 		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long category, Pageable pageable) {
 		Long memberNo = null;
-		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("USER"))) {
+		if (authentication != null) {
 			memberNo = Long.parseLong(authentication.getName());
 		}
 		return productService.productList(memberNo, keyword, category, pageable);
@@ -109,7 +107,7 @@ public class ProductController {
 	@GetMapping("/recommends/orders")
 	public List<ProductRecommendResponse> recommendMyProduct(Authentication authentication) {
 		Long memberNo = null;
-		if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("USER"))) {
+		if (authentication != null) {
 			memberNo = Long.parseLong(authentication.getName());
 		}
 		return productService.recommendMyProduct(memberNo);

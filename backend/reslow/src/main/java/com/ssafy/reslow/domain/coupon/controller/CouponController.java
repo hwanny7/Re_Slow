@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.coupon.controller;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
@@ -10,9 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.coupon.dto.CouponCreateRequest;
 import com.ssafy.reslow.domain.coupon.dto.CouponDetailResponse;
@@ -41,9 +43,11 @@ public class CouponController {
 
 	@PostMapping
 	public Map<String, Long> createCoupon(Authentication authentication,
-		@RequestBody CouponCreateRequest couponCreateRequest) {
+		@RequestPart CouponCreateRequest couponCreateRequest,
+		@RequestPart("image") MultipartFile image
+	) throws IOException {
 		Long managerNo = Long.parseLong(authentication.getName());
-		return couponService.createCoupon(managerNo, couponCreateRequest);
+		return couponService.createCoupon(managerNo, couponCreateRequest, image);
 	}
 
 	@DeleteMapping("/{couponNo}")
