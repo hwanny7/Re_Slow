@@ -13,15 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
-@RequestMapping("/")
+@RequestMapping("")
 public class ChatController {
 	@Autowired
 	private ChatService service;
 
-	@MessageMapping("/chat")
+	@MessageMapping("/chat/message")
 	public void handleChatMessage(@Payload ChatMessage chatMessage) {
-		// String memberNo = authentication.getName();
-		// log.error("이 멤버의 번호는 : " + memberNo);
 		service.sendMessage(chatMessage);
 	}
 }
