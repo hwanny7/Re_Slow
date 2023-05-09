@@ -3,6 +3,7 @@ package com.ssafy.reslow.domain.order.service;
 import static com.ssafy.reslow.domain.order.entity.OrderStatus.*;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.siot.IamportRestClient.exception.IamportResponseException;
+import com.siot.IamportRestClient.response.Payment;
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.coupon.repository.IssuedCouponRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
@@ -41,6 +44,7 @@ public class OrderService {
 	private final OrderRepository orderRepository;
 	private final ProductRepository productRepository;
 	private final IssuedCouponRepository issuedCouponRepository;
+	private final PaymentService paymentService;
 
 	public Slice<OrderListResponse> myOrderList(Long memberNo, int status, Pageable pageable) {
 		Member member = memberRepository.findById(memberNo).get();
@@ -67,14 +71,23 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Map<String, Long> registOrder(Long memberNo, OrderRegistRequest request) {
+	public Map<String, Long> registOrder(String imp_uid, Long memberNo, OrderRegistRequest request) throws
+		IamportResponseException,
+		IOException {
+		Payment payment = paymentService.getPayment(imp_uid);
+		if (!payment.getStatus().equals("paid")) {
+			throw new CustomException(PAYMENT_FAILED);
+		}
 		Product product = productRepository.findById(request.getProductNo())
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		IssuedCoupon issuedCoupon = issuedCouponRepository.findById(request.getIssuedCouponNo())
-			.orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
-		issuedCoupon.use();
+		IssuedCoupon issuedCoupon = null;
+		if (request.getIssuedCouponNo() != null) {
+			issuedCoupon = issuedCouponRepository.findById(request.getIssuedCouponNo())
+				.orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
+			issuedCoupon.use();
+		}
 		Order order = Order.of(request, product, member, issuedCoupon);
 		Order savedOrder = orderRepository.save(order);
 		Map<String, Long> map = new HashMap<>();
