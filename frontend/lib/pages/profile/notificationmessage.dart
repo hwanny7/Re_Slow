@@ -4,13 +4,15 @@ class NotificationMessage extends StatelessWidget {
   final String title;
   final String subtitle;
   final String time;
+  final Function onDeletePressed; // Callback function
 
-  const NotificationMessage(
-      {Key? key,
-      required this.title,
-      required this.subtitle,
-      required this.time})
-      : super(key: key);
+  const NotificationMessage({
+    Key? key,
+    required this.title,
+    required this.subtitle,
+    required this.time,
+    required this.onDeletePressed, // Pass callback function as a parameter
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +39,12 @@ class NotificationMessage extends StatelessWidget {
               ],
             ),
           ),
-          // Text('Please check it!',
-          //     style: TextStyle(fontSize: 10, color: Colors.grey)),
-          Icon(Icons.remove_circle, size: 20, color: Colors.red.shade400)
+          // 알림 삭제 버튼
+          IconButton(
+            icon:
+                Icon(Icons.remove_circle, size: 20, color: Colors.red.shade400),
+            onPressed: () => onDeletePressed(), // notificationpage에서 index정의
+          ),
         ],
       ),
     );
