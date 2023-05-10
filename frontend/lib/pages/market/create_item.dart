@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/market/item_detail.dart';
+import 'package:reslow/pages/market/market.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
@@ -78,6 +78,15 @@ class _CreateArticleState extends State<CreateArticle> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => Market()),
+      //   (Route<dynamic> route) => false,
+      // );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => Market()),
+      // );
       if (jsonData.containsKey('productNo')) {
         leftToRightNavigator(
             ItemDetail(itemPk: jsonData['productNo']), context);
