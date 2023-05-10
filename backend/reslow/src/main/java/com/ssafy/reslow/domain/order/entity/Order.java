@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.order.entity;
 
+import static com.ssafy.reslow.domain.order.entity.OrderStatus.*;
+
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -65,7 +67,7 @@ public class Order extends BaseEntity {
 	@Column(name = "TOTAL_PRICE")
 	private int totalPrice;
 
-	@OneToOne(mappedBy = "order")
+	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Product product;
 
 	@ManyToOne(fetch = FetchType.LAZY)
