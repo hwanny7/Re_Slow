@@ -19,7 +19,7 @@ public class ChatSubscriber implements MessageListener {
 
 	private final ObjectMapper objectMapper;
 	private final RedisTemplate redisTemplate;
-	private final SimpMessageSendingOperations messagingTemplate;
+	private final SimpMessageSendingOperations messagingTemplate; // WebSocket 클라이언트들에게 메시지를 전송
 
 	/**
 	 * Redis에서 메시지가 발행(publish)되면 대기하고 있던 Redis subscriber가 해당 메시지를 받아 처리
