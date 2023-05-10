@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ChatMessage {
-	private String boardNo; // 글번호
+	private String roomId;
 	private String sender; // 보낸사람
 	private String receiver; // 받은사람
 	private String message; // 보낸 메시지
