@@ -30,6 +30,7 @@ public class ChatService {
 		// 	.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
 		if (isUserOnline(chatMessage.getReceiver())) {
+			System.out.println("==== CharService로 들어와서 publish 날리기 직전! =====");
 			chatPublisher.publish(chatMessage.getRoomId(), chatMessage);
 		} else {
 			// fcmService.sendNotification(chatMessage.getReceiver(), chatMessage.getMessage());

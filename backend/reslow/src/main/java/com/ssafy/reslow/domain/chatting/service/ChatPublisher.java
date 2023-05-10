@@ -12,6 +12,7 @@ public class ChatPublisher {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	public void publish(String topic, ChatMessage chatMessage) {
+		System.out.println("==== publisher에 publish로 들어옴! ====");
 		redisTemplate.convertAndSend("chat-room-" + topic, chatMessage);
 	}
 }
