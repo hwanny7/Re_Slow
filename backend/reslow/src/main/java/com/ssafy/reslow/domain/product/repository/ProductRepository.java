@@ -16,14 +16,14 @@ import com.ssafy.reslow.domain.product.entity.ProductCategory;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-	Slice<Product> findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDateDesc(Member member, OrderStatus status,
+	Slice<Product> findByMemberAndOrder_StatusOrOrderIsNullOrderByUpdatedDateDesc(Member member, OrderStatus status,
 		Pageable pageable);
 
-	Slice<Product> findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDateDesc(Member member,
+	Slice<Product> findByMemberAndOrder_StatusIsGreaterThanEqualOrderByUpdatedDateDesc(Member member,
 		OrderStatus status,
 		Pageable pageable);
 
-	Slice<Product> findByMemberAndOrder_StatusOrderByCreatedDateDesc(Member member, OrderStatus status,
+	Slice<Product> findByMemberAndOrder_StatusOrderByUpdatedDateDesc(Member member, OrderStatus status,
 		Pageable pageable);
 
 	List<ProductListResponse> findByMemberIsNotAndCategoryAndKeyword(String keyword, Long category,
