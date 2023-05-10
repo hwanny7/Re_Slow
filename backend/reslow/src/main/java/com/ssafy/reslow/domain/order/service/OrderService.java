@@ -50,11 +50,11 @@ public class OrderService {
 		Member member = memberRepository.findById(memberNo).get();
 		Slice<Order> list = null;
 		if (status == COMPLETE_DELIVERY.getValue()) {
-			list = orderRepository.findByBuyerAndStatusIsGreaterThanEqualOrderByCreatedDateDesc(member,
+			list = orderRepository.findByBuyerAndStatusIsGreaterThanEqualOrderByUpdatedDateDesc(member,
 				OrderStatus.ofValue(status),
 				pageable);
 		} else {
-			list = orderRepository.findByBuyerAndStatusOrderByCreatedDateDesc(member, OrderStatus.ofValue(status),
+			list = orderRepository.findByBuyerAndStatusOrderByUpdatedDateDesc(member, OrderStatus.ofValue(status),
 				pageable);
 		}
 
@@ -98,7 +98,13 @@ public class OrderService {
 	public Map<String, Long> updateStatus(Long orderNo, OrderUpdateStatusRequest request) {
 		Order order = orderRepository.findById(orderNo)
 			.orElseThrow(() -> new CustomException(ORDER_NOT_FOUND));
-		order.updateStatus(OrderStatus.ofValue(request.getStatus()));
+
+		if(request.getStatus() == ORDER_CANCEL.getValue()){
+			System.out.println("!!!");
+			orderRepository.deleteById(orderNo);
+		} else {
+			order.updateStatus(OrderStatus.ofValue(request.getStatus()));
+		}
 		Map<String, Long> map = new HashMap<>();
 		map.put("orderNo", orderNo);
 		return map;
