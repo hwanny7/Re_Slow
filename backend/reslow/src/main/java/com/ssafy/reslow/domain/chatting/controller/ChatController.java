@@ -20,6 +20,7 @@ public class ChatController {
 
 	@MessageMapping("/chat/message")
 	public void handleChatMessage(@Payload ChatMessage chatMessage) {
+		System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
 		service.sendMessage(chatMessage);
 	}
 }
