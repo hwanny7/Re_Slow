@@ -76,6 +76,7 @@ public class Product extends BaseEntity {
 	public void setProductImages(List<ProductImage> productImages) {
 		this.productImages = productImages;
 	}
+
 	public void setOrder(Order order) {
 		this.order = order;
 	}
