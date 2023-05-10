@@ -43,10 +43,9 @@ public class ChatController {
 		// roomId로 topic 등록
 		ChannelTopic channel = new ChannelTopic(roomId);
 		redisMessageListener.addMessageListener(chatSubscriber, channel);
-		System.out.println(redisMessageListener.getConnectionFactory().getConnection());
 
 		HashMap<String, String> map = new HashMap<>();
-		map.put("msg", "ok");
+		map.put("topic", "ok");
 		return map;
 	}
 
