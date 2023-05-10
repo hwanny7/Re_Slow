@@ -31,7 +31,7 @@ public class ChatSubscriber implements MessageListener {
 			String publishMessage = (String)redisTemplate.getStringSerializer().deserialize(message.getBody());
 			// ChatMessage 객채로 맵핑
 			ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
-			System.out.println("채팅 메시지: + " + chatMessage);
+			System.out.println("subscriber들에게 들어간 채팅 메시지: + " + chatMessage);
 			// Websocket subscriber들에게 채팅 메시지 Send
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
 		} catch (Exception e) {
