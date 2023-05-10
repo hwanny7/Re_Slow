@@ -32,10 +32,9 @@ public class ChatSubscriber implements MessageListener {
 			// ChatMessage 객채로 맵핑
 			ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
 			// Websocket subscriber들에게 채팅 메시지 Send
-			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getBoardNo(), chatMessage);
+			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
 	}
-
 }
