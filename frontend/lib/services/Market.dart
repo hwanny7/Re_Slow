@@ -17,3 +17,10 @@ Future<Response> getOrder(int pk) async {
 
   return response;
 }
+
+Future<Response> getBuyItems(Map<String, dynamic> queryParams) async {
+  Response response =
+      await dioClient.dio.get('/orders/purchase', queryParameters: queryParams);
+
+  return response;
+}

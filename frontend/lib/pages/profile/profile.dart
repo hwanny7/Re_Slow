@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/profile/my_buy_list.dart';
 
 import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
@@ -167,20 +168,33 @@ class _ProfileState extends State<Profile> {
                     alignment: Alignment.centerLeft,
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    children: [
-                      Icon(Icons.shopping_cart),
-                      SizedBox(width: 10), // for spacing between icon and text
-                      Text(
-                        '나의 구매 리스트',
-                        style: TextStyle(fontSize: 15),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to the CalendarSelection page when the icon is clicked
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MyBuyList(),
                       ),
-                    ],
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      children: [
+                        Icon(Icons.shopping_cart),
+                        SizedBox(
+                            width: 10), // for spacing between icon and text
+                        Text(
+                          '나의 구매 리스트',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.centerLeft,
                   ),
-                  alignment: Alignment.centerLeft,
                 ),
+
                 // 정산 컨테이너
                 GestureDetector(
                   onTap: () {

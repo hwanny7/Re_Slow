@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:reslow/utils/date.dart';
 
 class MarketItem {
@@ -121,6 +119,7 @@ class GetOrder {
   final int discountPrice;
   final int productPrice;
   final int totalPrice;
+  final String image;
 
   GetOrder({
     required this.title,
@@ -135,6 +134,7 @@ class GetOrder {
     required this.discountPrice,
     required this.productPrice,
     required this.totalPrice,
+    required this.image,
   });
 
   factory GetOrder.fromJson(Map<String, dynamic> responseData) {
@@ -151,6 +151,38 @@ class GetOrder {
       discountPrice: responseData['discountPrice'],
       productPrice: responseData['productPrice'],
       totalPrice: responseData['totalPrice'],
+      image: responseData['image'],
     );
+  }
+}
+
+class MyBuyItem {
+  final int orderNo;
+  final int productNo;
+  final String title;
+  final int price;
+  final String date;
+  final String image;
+  final int status;
+
+  MyBuyItem({
+    required this.orderNo,
+    required this.productNo,
+    required this.price,
+    required this.title,
+    required this.date,
+    required this.image,
+    required this.status,
+  });
+
+  factory MyBuyItem.fromJson(Map<String, dynamic> responseData) {
+    return MyBuyItem(
+        productNo: responseData['productNo'],
+        title: responseData['title'],
+        price: responseData['price'],
+        orderNo: responseData['orderNo'],
+        image: responseData['image'],
+        date: responseData['date'],
+        status: responseData['status']);
   }
 }

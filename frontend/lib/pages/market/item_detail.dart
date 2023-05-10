@@ -157,29 +157,32 @@ class _ItemDetailState extends State<ItemDetail> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Row(children: [
-                        Text(
-                          item!.title,
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.bold),
-                        ),
-                        const Spacer(),
-                        Text(item!.date),
-                      ]),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        item!.description,
-                        style: const TextStyle(fontSize: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(children: [
+                            Text(
+                              item!.title,
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.bold),
+                            ),
+                            const Spacer(),
+                            Text(item!.date),
+                          ]),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            item!.description,
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
+                          Text('관심 ${item!.heartCount}',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold))
+                        ],
                       ),
                     ),
-                    Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text('관심 ${item!.heartCount}'))
                   ]),
             ),
       bottomNavigationBar: item == null
