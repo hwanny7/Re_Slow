@@ -35,39 +35,39 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    dynamic socketManager = Provider.of<SocketManager>(context);
-    socketManager.receivedChatData();
+    // dynamic socketManager = Provider.of<SocketManager>(context);
+    // socketManager.receivedChatData();
 
-    @override
-    void didChangeAppLifecycleState(AppLifecycleState state) {
-      super.didChangeAppLifecycleState(state);
-      switch (state) {
-        case AppLifecycleState.resumed:
-          socketManager.connect();
-          // 서버로 open 보내기
-          print("resumed");
-          break;
-        case AppLifecycleState.inactive:
-          socketManager.disconnect();
-          // 서버로 close 보내기
-          print("inactive");
-          break;
-        case AppLifecycleState.detached:
-          socketManager.disconnect();
-          // 서버로 close 보내기
-          print("detached");
-          break;
-        case AppLifecycleState.paused:
-          socketManager.disconnect();
-          // 서버로 close 보내기
-          print("paused");
-          break;
-      }
-    }
+    // @override
+    // void didChangeAppLifecycleState(AppLifecycleState state) {
+    //   super.didChangeAppLifecycleState(state);
+    //   switch (state) {
+    //     case AppLifecycleState.resumed:
+    //       socketManager.connect();
+    //       // 서버로 open 보내기
+    //       print("resumed");
+    //       break;
+    //     case AppLifecycleState.inactive:
+    //       socketManager.disconnect();
+    //       // 서버로 close 보내기
+    //       print("inactive");
+    //       break;
+    //     case AppLifecycleState.detached:
+    //       socketManager.disconnect();
+    //       // 서버로 close 보내기
+    //       print("detached");
+    //       break;
+    //     case AppLifecycleState.paused:
+    //       socketManager.disconnect();
+    //       // 서버로 close 보내기
+    //       print("paused");
+    //       break;
+    //   }
+    // }
 
-    socketManager.connect();
+    // socketManager.connect();
 
-    print(socketManager.isConnect());
+    // print(socketManager.isConnect());
 
     return SingleChildScrollView(
         child: Column(children: [

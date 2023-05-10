@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:reslow/models/chat_dto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'dart:collection';
+
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 Future<String?> _getTokenFromSharedPreferences() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -16,38 +23,53 @@ class SocketManager extends ChangeNotifier {
 
   Dio dio = Dio();
 
-  IO.Socket socket = IO.io('http://your_socket_server_url', <String, dynamic>{
-    'transports': ['websocket'],
-  });
+  StompClient? stompClient;
+  final socketUrl = "http://k8b306.p.ssafy.io:8080/ws";
 
   void connect() {
-    print("connect 시작");
-    socket.connect();
-
-    socket.onConnect((_) {
-      print('Connected');
-    });
-
-    socket.onDisconnect((_) {
-      print('Disconnected');
-    });
-
-    socket.on('chat_message', (data) {
-      print('Received Message: $data');
-      updateChat(data);
-    });
+    if (stompClient == null) {
+      stompClient = StompClient(
+          config: StompConfig.SockJS(
+        url: socketUrl,
+        onConnect: onConnect,
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ));
+      stompClient!.activate();
+    }
   }
 
-  void sendMessage(String message) {
-    if (socket.connected) {
-      socket.emit('chat_message', message);
-    }
+  void onConnect(StompFrame frame) {
+    stompClient!.subscribe(
+        destination: "sub/chat/room/1_test1212_test1234",
+        callback: (StompFrame frame) {
+          if (frame.body != null) {
+            Map<String, dynamic> obj = json.decode(frame.body!);
+            Msg message = Msg(
+                roomId: "/1_test1212_test1234",
+                sender: "test1212",
+                receiver: "test1234",
+                message: "하이 서영");
+          }
+        });
+  }
+
+  void sendMessage(
+      String roomId, String sender, String receiver, String message) {
+    print("sendMessage 시작");
+    stompClient!.send(
+        destination: "/pub/chat/message",
+        body: json.encode({
+          "roomId": roomId,
+          "sender": sender,
+          "receiver": receiver,
+          "message": message
+        }));
   }
 
   void disconnect() {
     print("disconnect 시작");
-    if (socket.connected) {
-      socket.disconnect();
+    if (stompClient!.isActive) {
+      stompClient!.deactivate();
       notifyListeners();
     }
   }
@@ -67,7 +89,7 @@ class SocketManager extends ChangeNotifier {
   }
 
   bool isConnect() {
-    if (socket.connected) {
+    if (stompClient!.isActive) {
       return true;
     } else {
       return false;

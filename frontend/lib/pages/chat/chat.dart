@@ -13,8 +13,8 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
-Map<String, dynamic> content = {
-  "춘식이 집사": {
+List<Map<String, dynamic>> content = [
+  {
     "id": 1,
     "time": "2023-05-04T00:00:00",
     "userimage": "assets/image/user.png",
@@ -22,7 +22,7 @@ Map<String, dynamic> content = {
     "recentText": "고양이 밥그릇 사고 싶은데 다 팔렸나요??ㅠㅠ",
     "unseenTextCnt": 3
   },
-  "춘식이 집사2": {
+  {
     "id": 2,
     "time": "2023-05-03T00:00:00",
     "userimage": "assets/image/user.png",
@@ -30,7 +30,7 @@ Map<String, dynamic> content = {
     "recentText": "고양이 밥그릇 대박임",
     "unseenTextCnt": 0
   },
-  "춘식이 집사3": {
+  {
     "id": 3,
     "time": "2023-05-03T00:00:00",
     "userimage": "assets/image/user.png",
@@ -38,7 +38,7 @@ Map<String, dynamic> content = {
     "recentText": "고양이 밥그릇 사고 싶은데 다 팔렸나요??ㅠㅠ",
     "unseenTextCnt": 0
   }
-};
+];
 
 Map unseen = {};
 
@@ -50,9 +50,9 @@ class _ChatState extends State<Chat> {
     // TODO: implement initState
     super.initState();
     setState(() {
-      content = context.watch<SocketManager>().recentData;
-      unseen = context.watch<SocketManager>().unseenMsg;
-      order = context.watch<SocketManager>().chatOrder.toList();
+      // content = context.watch<SocketManager>().recentData;
+      // unseen = context.watch<SocketManager>().unseenMsg;
+      // order = context.watch<SocketManager>().chatOrder.toList();
     });
   }
 
