@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -32,7 +34,11 @@ public class Device extends BaseEntity {
 	@JoinColumn(name = "MEMBER_PK")
 	private Member member;
 
+	@Column(name = "NOTICE")
+	@ColumnDefault("true")
+	private boolean notice;
+
 	public static Device of(Member member, String token) {
-		return Device.builder().deviceToken(token).member(member).build();
+		return Device.builder().deviceToken(token).member(member).notice(true).build();
 	}
 }
