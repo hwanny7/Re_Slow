@@ -3,7 +3,7 @@ import 'package:reslow/utils/date.dart';
 class MarketItem {
   final int productNo;
   final String title;
-  final int price;
+  final String price;
   final String datetime;
   final String image;
 
@@ -19,7 +19,7 @@ class MarketItem {
     return MarketItem(
         productNo: responseData['productNo'],
         title: responseData['title'],
-        price: responseData['price'],
+        price: priceDot(responseData['price']),
         datetime: responseData['datetime'],
         image: responseData['image']);
   }
@@ -36,6 +36,8 @@ class MarketItemDetail {
   final bool mine;
   final String nickname;
   final String profileImg;
+  int heartCount;
+  bool myHeart;
 
   MarketItemDetail({
     required this.images,
@@ -48,6 +50,8 @@ class MarketItemDetail {
     required this.mine,
     required this.nickname,
     required this.profileImg,
+    required this.heartCount,
+    required this.myHeart,
   });
 
   factory MarketItemDetail.fromJson(Map<String, dynamic> responseData) {
@@ -55,6 +59,8 @@ class MarketItemDetail {
         images: responseData['images'],
         title: responseData['title'],
         price: responseData['price'],
+        myHeart: responseData['myHeart'],
+        heartCount: responseData['heartCount'],
         date: formatTimeDifference(responseData['date']),
         deliveryFee: responseData['deliveryFee'],
         category: responseData['category'],

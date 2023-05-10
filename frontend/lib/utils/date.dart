@@ -1,9 +1,7 @@
 String formatTimeDifference(String dateTimeString) {
   DateTime dateTime = DateTime.parse(dateTimeString);
   DateTime now = DateTime.now();
-
   Duration difference = now.difference(dateTime);
-  print(difference);
 
   if (difference < const Duration(minutes: 1)) {
     return '${difference.inSeconds}초 전';
@@ -20,4 +18,21 @@ String formatTimeDifference(String dateTimeString) {
     int years = difference.inDays ~/ 365;
     return '$years년 전';
   }
+}
+
+String priceDot(int price) {
+  print('hello');
+  String priceString = price.toString();
+
+  String formattedPrice = '';
+  int length = priceString.length - 1;
+  for (int i = length; i >= 0; i--) {
+    formattedPrice += priceString[length - i];
+
+    if (i % 3 == 0 && i > 0) {
+      formattedPrice += ',';
+    }
+  }
+  formattedPrice += '원';
+  return formattedPrice;
 }

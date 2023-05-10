@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:reslow/utils/dio_client.dart';
-import 'package:dots_indicator/dots_indicator.dart';
+// import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 import 'package:reslow/models/coupon_model.dart';
 
 class CouponDownload extends StatefulWidget {
@@ -99,27 +99,24 @@ class _CouponDownloadState extends State<CouponDownload> {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () async {
-                        // API 완성되면 DIO 로 연결
-                        // // make the API call
-                        // final response = await http.post(
-                        //   Uri.parse(
-                        //       'http://k8b306.p.ssafy.io:8080/coupons/${coupon?.couponNo}/issuance'),
-                        // );
-
-                        // // handle the response based on its status code
-                        // if (response.statusCode == 200) {
-                        //   // show a success message or perform other actions
-                        // } else {
-                        //   // show an error message or perform other actions
-                        // }
+                        // 쿠폰 다운로드 버튼
+                        Response response = await dioClient.dio
+                            .post('/coupons//${coupon?.couponNo}/issuance');
+                        // handle the response based on its status code
+                        if (response.statusCode == 200) {
+                          Map<String, dynamic> jsonData = response.data;
+                          print(jsonData);
+                          // show a success message or perform other actions
+                        } else {
+                          print(
+                              'HTTP request failed with status: ${response.statusCode}');
+                          // show an error message or perform other actions
+                        }
                       },
                       icon: Icon(Icons.download),
                       label: Text('다운로드'),
                       style: ElevatedButton.styleFrom(
-                        // adjust the height of the ElevatedButton
                         fixedSize: Size(200, 50),
-
-                        // change the background color of the ElevatedButton
                         backgroundColor: Colors.blue,
                       ),
                     ),
@@ -136,10 +133,7 @@ class _CouponDownloadState extends State<CouponDownload> {
                       },
                       child: Text('닫기'),
                       style: ElevatedButton.styleFrom(
-                        // adjust the height of the ElevatedButton
                         fixedSize: Size(200, 50),
-
-                        // change the background color of the ElevatedButton
                         backgroundColor: Colors.grey,
                       ),
                     ),
@@ -147,7 +141,6 @@ class _CouponDownloadState extends State<CouponDownload> {
                 ),
               ],
             )
-
             // 버튼 끝
           ],
         ),

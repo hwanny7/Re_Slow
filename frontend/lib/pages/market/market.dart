@@ -76,6 +76,7 @@ class _MarketState extends State<Market> {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data;
+      print(jsonData);
       if (isInfinite) {
         if (jsonData.isEmpty) {
           isLast = true;

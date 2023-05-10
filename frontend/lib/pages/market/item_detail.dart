@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/market/buy_item.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:dots_indicator/dots_indicator.dart';
+import 'package:reslow/utils/navigator.dart';
 
 class ItemDetail extends StatefulWidget {
   final int itemPk;
@@ -20,6 +22,7 @@ class _ItemDetailState extends State<ItemDetail> {
   bool isLiked = false;
   final PageController _pageController = PageController();
   int _currentPicture = 0;
+  String price = '';
 
   @override
   void initState() {
@@ -32,14 +35,43 @@ class _ItemDetailState extends State<ItemDetail> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      // print(jsonData);
+      print(jsonData);
 
       setState(() {
         item = MarketItemDetail.fromJson(jsonData);
+        price = priceDot(item!.price);
       });
     } else {
       // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
+
+  void changeHeart(bool status) async {
+    if (status) {
+      Response response =
+          await dioClient.dio.delete('/products/${widget.itemPk}/like');
+      if (response.statusCode == 200) {
+        setState(() {
+          item!.myHeart = false;
+          item!.heartCount -= 1;
+        });
+      } else {
+        // Handle any errors or display an error message
+        print('HTTP request failed with status: ${response.statusCode}');
+      }
+    } else {
+      Response response =
+          await dioClient.dio.post('/products/${widget.itemPk}/like');
+      if (response.statusCode == 200) {
+        setState(() {
+          item!.myHeart = true;
+          item!.heartCount += 1;
+        });
+      } else {
+        // Handle any errors or display an error message
+        print('HTTP request failed with status: ${response.statusCode}');
+      }
     }
   }
 
@@ -99,6 +131,9 @@ class _ItemDetailState extends State<ItemDetail> {
                             ))
                       ],
                     ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
                     ListTile(
                       leading: CircleAvatar(
                         radius: 25,
@@ -141,6 +176,9 @@ class _ItemDetailState extends State<ItemDetail> {
                         style: const TextStyle(fontSize: 15),
                       ),
                     ),
+                    Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text('관심 ${item!.heartCount}'))
                   ]),
             ),
       bottomNavigationBar: item == null
@@ -170,22 +208,58 @@ class _ItemDetailState extends State<ItemDetail> {
                     child: IconButton(
                       icon: Icon(
                         Icons.favorite,
-                        color: isLiked
+                        color: item!.myHeart
                             ? Colors.red
                             : Colors.grey, // Change color based on condition
                       ),
                       onPressed: () {
-                        setState(() {
-                          isLiked = !isLiked; // Toggle the liked state
-                        });
+                        changeHeart(item!.myHeart);
                       },
                     ),
                   ),
+                  const SizedBox(
+                    width: 16.0,
+                  ),
                   Text(
-                    '${item!.price}원',
+                    price,
                     style: const TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold),
-                  )
+                  ),
+                  const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: MaterialButton(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        color: const Color(0xFF165B40),
+                        minWidth: MediaQuery.of(context).size.width * 0.05,
+                        onPressed: () => {
+                              leftToRightNavigator(BuyItem(item: item), context)
+                            },
+                        child: const Text(
+                          "구매",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: MaterialButton(
+                        padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                        color: const Color(0xFF165B40),
+                        minWidth: MediaQuery.of(context).size.width * 0.05,
+                        onPressed: () => {},
+                        child: const Text(
+                          "채팅",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
                 ]),
               ),
             ),
