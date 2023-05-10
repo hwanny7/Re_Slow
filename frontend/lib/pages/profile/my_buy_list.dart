@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/services/Market.dart';
+import 'package:reslow/widgets/market/buy_item_info.dart';
 
 class MyBuyList extends StatefulWidget {
   const MyBuyList({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class _MyBuyListState extends State<MyBuyList>
   List<bool> isLoading = [false, false, false, false];
   List<bool> isLast = [false, false, false, false];
   List<int> page = [0, 0, 0, 0];
+  List<bool> firstLoading = [true, true, true, true];
 
   final List<List<MyBuyItem>> _data = [
     [],
@@ -81,11 +83,15 @@ class _MyBuyListState extends State<MyBuyList>
     };
 
     Response response = await getBuyItems(queryParams);
+    if (page[tabIndex] == 0) {
+      setState(() {
+        firstLoading[tabIndex] = false;
+      });
+    }
     print(response);
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = response.data;
-      print(jsonData);
+      List<dynamic> jsonData = response.data['content'];
       if (jsonData.isEmpty) {
         isLast[tabIndex] = true;
       } else {
@@ -104,10 +110,10 @@ class _MyBuyListState extends State<MyBuyList>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My App'),
+        title: Text('주문내역'),
         bottom: TabBar(
           controller: _controller,
-          tabs: [
+          tabs: const [
             Tab(text: '결제 완료'),
             Tab(text: '배송 준비'),
             Tab(text: '배송 중'),
@@ -129,34 +135,20 @@ class _MyBuyListState extends State<MyBuyList>
 
   Widget _buildTab(int tabIndex) {
     final data = _data[tabIndex];
-    if (data.isEmpty) {
-      return Center(child: CircularProgressIndicator());
+    if (firstLoading[tabIndex]) {
+      return const Center(child: CircularProgressIndicator());
+    } else if (data.isEmpty) {
+      return const Center(child: Text("데이터가 없습니다."));
     } else {
-      return Expanded(
-          child: ListView.builder(
+      return ListView.builder(
+        shrinkWrap: true,
+        controller: _scrollControllers[tabIndex],
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return ListTile(title: Text('Hello'));
+          return BuyItemInfo(
+              key: Key(data[index].orderNo.toString()), item: data[index]);
         },
-      ));
+      );
     }
   }
 }
-
-
-
-// controller: _controller,
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//           controller: _scrollController,
-//           itemCount: itemList.length,
-//           itemBuilder: (context, idx) {
-//             return 
-//             // ItemInfo(
-//             //   mediaWidth: MediaQuery.of(context).size.width,
-//             //   mediaHeight: MediaQuery.of(context).size.height,
-//             //   item: itemList[idx],
-//             // );
-//           },
-//         ))

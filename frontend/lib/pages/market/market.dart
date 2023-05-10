@@ -119,6 +119,7 @@ class _MarketState extends State<Market> {
               mediaWidth: MediaQuery.of(context).size.width,
               mediaHeight: MediaQuery.of(context).size.height,
               item: itemList[idx],
+              key: Key(itemList[idx].productNo.toString()),
             );
           },
         )),

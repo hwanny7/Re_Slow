@@ -78,10 +78,13 @@ class _OrderDetailState extends State<OrderDetail> {
                           ),
                           Row(
                             children: [
-                              Image.network(
-                                order!.image,
-                                fit: BoxFit.cover,
-                                height: 150,
+                              SizedBox(
+                                height: 150.0,
+                                width: 150.0,
+                                child: Image.network(
+                                  order!.image,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(

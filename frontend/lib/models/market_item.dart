@@ -6,6 +6,7 @@ class MarketItem {
   final String price;
   final String datetime;
   final String image;
+  final int likeCount;
 
   MarketItem({
     required this.productNo,
@@ -13,11 +14,13 @@ class MarketItem {
     required this.price,
     required this.datetime,
     required this.image,
+    required this.likeCount,
   });
 
   factory MarketItem.fromJson(Map<String, dynamic> responseData) {
     return MarketItem(
         productNo: responseData['productNo'],
+        likeCount: responseData['likeCount'],
         title: responseData['title'],
         price: priceDot(responseData['price']),
         datetime: responseData['datetime'],

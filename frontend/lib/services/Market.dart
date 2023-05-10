@@ -21,6 +21,5 @@ Future<Response> getOrder(int pk) async {
 Future<Response> getBuyItems(Map<String, dynamic> queryParams) async {
   Response response =
       await dioClient.dio.get('/orders/purchase', queryParameters: queryParams);
-
   return response;
 }
