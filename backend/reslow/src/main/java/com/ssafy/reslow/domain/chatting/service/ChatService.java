@@ -1,6 +1,5 @@
 package com.ssafy.reslow.domain.chatting.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -11,8 +10,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
+import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +23,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class ChatService {
-	@Autowired
-	private ChatPublisher chatPublisher;
 
-	@Autowired
-	private FcmService fcmService;
-
+	private final ChatPublisher chatPublisher;
+	private final FcmService fcmService;
 	private final DeviceRepository deviceRepository;
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
@@ -67,9 +66,15 @@ public class ChatService {
 				return null;
 			}
 		});
-		System.out.println("====== ChatService에 들어와서 등록 완료~~~~~~~!! =====");
+		System.out.println("====== ChatService에 들어와서 subscribe 등록 완료~~~~~~~!! =====");
 		// Redis Set에 해당 클라이언트의 no 추가
 		redisTemplate.opsForSet().add(roomId, memberNo);
+	}
+
+	public Long findOtherMemberNo(String nickname) {
+		Member member = memberRepository.findByNickname(nickname)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+		return member.getNo();
 	}
 
 }
