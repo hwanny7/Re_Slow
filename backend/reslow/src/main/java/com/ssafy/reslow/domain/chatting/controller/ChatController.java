@@ -9,10 +9,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
@@ -57,6 +59,19 @@ public class ChatController {
 
 		HashMap<String, String> map = new HashMap<>();
 		map.put("msg", "ok");
+		return map;
+	}
+
+	@GetMapping("/chat/memberNo")
+	public Map<String, Long> getChattingMemberNo(Authentication authentication,
+		@RequestParam("nickname") String nickname) {
+		Long myNo = Long.parseLong(authentication.getName());
+		Long otherNo = chatService.findOtherMemberNo(nickname);
+
+		Map<String, Long> map = new HashMap<>();
+		map.put("myNo", myNo);
+		map.put("otherNo", otherNo);
+
 		return map;
 	}
 
