@@ -182,15 +182,15 @@ public class ProductService {
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Slice<Product> list = null;
 		if (status == COMPLETE_PAYMENT.getValue()) {
-			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNullOrderByCreatedDateDesc(member,
+			list = productRepository.findByMemberAndOrder_StatusOrOrderIsNullOrderByUpdatedDateDesc(member,
 				OrderStatus.ofValue(status),
 				pageable);
 		} else if (status == COMPLETE_DELIVERY.getValue()) {
-			list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqualOrderByCreatedDateDesc(member,
+			list = productRepository.findByMemberAndOrder_StatusIsGreaterThanEqualOrderByUpdatedDateDesc(member,
 				OrderStatus.ofValue(status),
 				pageable);
 		} else {
-			list = productRepository.findByMemberAndOrder_StatusOrderByCreatedDateDesc(member,
+			list = productRepository.findByMemberAndOrder_StatusOrderByUpdatedDateDesc(member,
 				OrderStatus.ofValue(status), pageable);
 		}
 
