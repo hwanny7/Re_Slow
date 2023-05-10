@@ -1,13 +1,10 @@
 package com.ssafy.reslow.domain.order.controller;
 
-import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.ssafy.reslow.domain.order.dto.OrderComfirmationResponse;
 import com.ssafy.reslow.domain.order.dto.OrderListResponse;
 import com.ssafy.reslow.domain.order.dto.OrderRegistRequest;
@@ -34,21 +30,18 @@ public class OrderController {
 
 	private final OrderService orderService;
 
-	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/purchase")
 	public Slice<OrderListResponse> myOrderList(Authentication authentication, @RequestParam("status") int status,
 		Pageable pageable) {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		Long memberNo = Long.parseLong(authentication.getName());
 		return orderService.myOrderList(memberNo, status, pageable);
 	}
 
 	@PostMapping("/{imp_uid}")
 	public Map<String, Long> registOrder(Authentication authentication, @PathVariable("imp_uid") String imp_uid,
 		@RequestBody
-		OrderRegistRequest request) throws IamportResponseException, IOException {
-		UserDetails principal = (UserDetails)authentication.getPrincipal();
-		Long memberNo = Long.parseLong(principal.getUsername());
+		OrderRegistRequest request) {
+		Long memberNo = Long.parseLong(authentication.getName());
 		return orderService.registOrder(imp_uid, memberNo, request);
 	}
 
