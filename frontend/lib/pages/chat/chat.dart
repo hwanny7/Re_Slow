@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:reslow/pages/chat/chatdetail.dart';
+import 'package:reslow/providers/socket_provider.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 
 class Chat extends StatefulWidget {
+  // dynamic socketManager;
+  // Chat({Key? key, this.socketManager}) : super(key: key);
+
   @override
   _ChatState createState() => _ChatState();
 }
 
-List<Map> content = [
+List<Map<String, dynamic>> content = [
   {
     "id": 1,
     "time": "2023-05-04T00:00:00",
@@ -35,8 +40,23 @@ List<Map> content = [
   }
 ];
 
+Map unseen = {};
+
+List order = [];
+
 class _ChatState extends State<Chat> {
-  Widget _ChatList(int index) {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      // content = context.watch<SocketManager>().recentData;
+      // unseen = context.watch<SocketManager>().unseenMsg;
+      // order = context.watch<SocketManager>().chatOrder.toList();
+    });
+  }
+
+  Widget chatList(int index) {
     return InkWell(
         onTap: () {
           // Navigate to the CalendarSelection page when the icon is clicked
@@ -113,7 +133,7 @@ class _ChatState extends State<Chat> {
           child: ListView.builder(
         itemCount: content.length,
         itemBuilder: (context, index) {
-          return _ChatList(index);
+          return chatList(index);
         },
       ))
     ]);

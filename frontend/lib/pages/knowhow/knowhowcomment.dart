@@ -19,6 +19,7 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
 
   int category = 0;
   String commentText = "";
+  TextEditingController _commentController = TextEditingController();
   String cocommentText = "";
 
   void _getCategory(int index) {
@@ -215,6 +216,7 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
                         }
                         return null;
                       },
+                      controller: _commentController,
                       decoration: const InputDecoration(
                         hintText: '댓글을 입력해주세요!',
                         labelStyle: TextStyle(color: Color(0xffDBDBDB)),
@@ -240,6 +242,7 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
                     child: TextButton(
                         onPressed: () {
                           _registerComment();
+                          _commentController.clear();
                         },
                         child: Text("완료")))
               ])

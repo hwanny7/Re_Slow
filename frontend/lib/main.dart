@@ -4,9 +4,11 @@ import 'package:reslow/pages/frame.dart';
 import 'package:reslow/pages/knowhow/knowhow.dart';
 import 'package:reslow/pages/market/buy_item.dart';
 import 'package:reslow/providers/auth_provider.dart';
+import 'package:reslow/providers/socket_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
 import 'package:reslow/pages/knowhow/knowhowregister.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
@@ -14,9 +16,13 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -24,6 +30,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => UserProvider()),
+          ChangeNotifierProvider(create: (_) => SocketManager())
         ],
         child: MaterialApp(
           title: 'My App',
@@ -44,7 +51,7 @@ class MyApp extends StatelessWidget {
           routes: {
             '/main': (context) => const MainPage(),
             '/splash': (context) => SplashScreen(),
-            '/login': (context) => Login(key: key),
+            '/login': (context) => Login(key: widget.key),
             '/knowhow': (context) => const KnowHow(),
             '/knowhow/register': (context) => const KnowhowRegister(),
           },

@@ -1,13 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
+import 'package:reslow/providers/socket_provider.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatDetail extends StatefulWidget {
-  final int chatNo;
+  final int chatNo; // 플리마켓 글 번호
   const ChatDetail({Key? key, required this.chatNo}) : super(key: key);
   @override
   _ChatDetailState createState() => _ChatDetailState();
@@ -51,12 +52,18 @@ Map heartYN = {"YN": true};
 
 class _ChatDetailState extends State<ChatDetail> {
   Dio dio = Dio();
+  String chatMsg = "";
+  TextEditingController _chatController = TextEditingController();
+  dynamic socketManager = SocketManager();
 
   @override
   void initState() {
     print("initState 시작");
     // TODO: implement initState
     //_requestChatDetail();
+    // stomp 구독
+    socketManager.connect();
+    print("소켓 매니저야 연결 되어있니? ${socketManager.isConnect()}");
     super.initState();
   }
 
@@ -65,18 +72,18 @@ class _ChatDetailState extends State<ChatDetail> {
     try {
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
-      final response = await dio
-          .get('http://k8b306.p.ssafy.io:8080/knowhows/',
-              options: Options(headers: {
-                'Authorization': 'Bearer $token',
-              }))
-          .then(
-        (value) {
-          setState(() {
-            content = value.data;
-          });
-        },
-      );
+      // final response = await dio
+      //     .get('http://k8b306.p.ssafy.io:8080/knowhows/',
+      //         options: Options(headers: {
+      //           'Authorization': 'Bearer $token',
+      //         }))
+      //     .then(
+      //   (value) {
+      //     setState(() {
+      //       content = value.data;
+      //     });
+      //   },
+      // );
     } on DioError catch (e) {
       print('error: $e');
     }
@@ -176,13 +183,18 @@ class _ChatDetailState extends State<ChatDetail> {
                 Container(
                     width: MediaQuery.of(context).size.width * 0.838,
                     child: TextFormField(
-                      onChanged: (text) {},
+                      onChanged: (text) {
+                        setState(() {
+                          chatMsg = text;
+                        });
+                      },
                       validator: (value) {
                         if (value == "") {
                           return "내용은 한 글자 이상이어야 합니다.";
                         }
                         return null;
                       },
+                      controller: _chatController,
                       decoration: const InputDecoration(
                         hintText: '',
                         labelStyle: TextStyle(color: Color(0xffDBDBDB)),
@@ -205,7 +217,19 @@ class _ChatDetailState extends State<ChatDetail> {
                         border: Border.all(
                             width: 1, color: Colors.grey.withOpacity(0.4))),
                     height: 75,
-                    child: TextButton(onPressed: () {}, child: Text("완료")))
+                    child: TextButton(
+                        onPressed: () {
+                          socketManager.sendMessage("/1_test1212_test1234",
+                              "test1212", "test1234", chatMsg);
+                          print("눌리긴 했음");
+                          print(chatMsg);
+                          print(socketManager.isConnect());
+                          setState(() {
+                            chatMsg = "";
+                            _chatController.clear();
+                          });
+                        },
+                        child: Text("완료")))
               ])
             ])));
   }

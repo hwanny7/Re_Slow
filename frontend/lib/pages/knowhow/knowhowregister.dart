@@ -49,7 +49,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
           'Authorization': 'Bearer $token',
         }),
       ); // Use the appended endpoint
-
+      Navigator.pop(context);
       print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ${response.data}");
     } on DioError catch (e) {
       print('error: $e');
