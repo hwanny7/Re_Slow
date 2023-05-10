@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class OrderController {
 
 	private final OrderService orderService;
 
+	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/purchase")
 	public Slice<OrderListResponse> myOrderList(Authentication authentication, @RequestParam("status") int status,
 		Pageable pageable) {
