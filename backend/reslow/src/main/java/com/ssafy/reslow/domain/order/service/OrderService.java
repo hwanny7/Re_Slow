@@ -72,10 +72,10 @@ public class OrderService {
 
 	@Transactional
 	public Map<String, Long> registOrder(String imp_uid, Long memberNo, OrderRegistRequest request) {
-		// Payment payment = paymentService.getPayment(imp_uid);
-		// if (!payment.getStatus().equals("paid")) {
-		// 	throw new CustomException(PAYMENT_FAILED);
-		// }
+		Payment payment = paymentService.getPayment(imp_uid);
+		if (!payment.getStatus().equals("paid")) {
+			throw new CustomException(PAYMENT_FAILED);
+		}
 		Product product = productRepository.findById(request.getProductNo())
 			.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
 		Member member = memberRepository.findById(memberNo)

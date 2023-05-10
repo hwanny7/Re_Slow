@@ -20,6 +20,7 @@ public class OrderComfirmationResponse {
 	private String addressDetail;
 	private String phoneNumber;
 	private String memo;
+	private String image;
 	private int totalPrice;
 	private int productPrice;
 	private int discountPrice;
@@ -34,6 +35,7 @@ public class OrderComfirmationResponse {
 		}
 		return OrderComfirmationResponse.builder()
 			.title(product.getTitle())
+			.image(product.getProductImages() == null ? null : product.getProductImages().get(0).getUrl())
 			.totalPrice(totalPrice)
 			.productPrice(product.getPrice())
 			.discountPrice((int)discount)
