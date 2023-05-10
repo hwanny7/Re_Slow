@@ -14,6 +14,7 @@ public class ProductListResponse {
     private String title;
     private int price;
     private Long productNo;
+    private Long memberNo;
     private LocalDateTime datetime;
     private String image;
     private boolean myHeart;
@@ -22,6 +23,7 @@ public class ProductListResponse {
     public static ProductListResponse of(Product product, List<ProductImage> list) {
         return ProductListResponse.builder()
             .productNo(product.getNo())
+            .memberNo(product.getMember().getNo())
             .datetime(product.getCreatedDate())
             .price(product.getPrice())
             .title(product.getTitle())

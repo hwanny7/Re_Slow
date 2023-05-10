@@ -2,10 +2,12 @@ package com.ssafy.reslow.domain.member.entity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.ssafy.reslow.domain.member.dto.MemberAccountRequest;
+import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import com.ssafy.reslow.global.common.entity.BaseEntity;
 
 import lombok.AccessLevel;
@@ -24,7 +26,8 @@ import lombok.NoArgsConstructor;
 public class MemberAccount extends BaseEntity {
 
 	@Column(name = "BANK")
-	private String bank;
+	@Convert(converter = BankConverter.class)
+	private Bank bank;
 
 	@Column(name = "ACCOUNT_NUMBER")
 	private String accountNumber;
@@ -36,7 +39,7 @@ public class MemberAccount extends BaseEntity {
 		return MemberAccount.builder()
 			.accountHolder(request.getAccountHolder())
 			.accountNumber(request.getAccountNumber())
-			.bank(request.getBank())
+			.bank(Bank.ofValue(request.getBank()))
 			.build();
 	}
 
