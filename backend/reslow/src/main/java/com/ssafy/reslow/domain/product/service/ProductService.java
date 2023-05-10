@@ -42,7 +42,7 @@ import com.ssafy.reslow.domain.product.repository.ProductCategoryRepository;
 import com.ssafy.reslow.domain.product.repository.ProductImageRepository;
 import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.infra.storage.S3StorageClient;
+import com.ssafy.reslow.infra.storage.StorageServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -56,7 +56,7 @@ public class ProductService {
 	private final OrderRepository orderRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final ProductImageRepository productImageRepository;
-	private final S3StorageClient s3Service;
+	private final StorageServiceImpl s3Service;
 	private final RedisTemplate redisTemplate;
 
 	public Map<String, Long> registProduct(Long memberNo, ProductRegistRequest request,
