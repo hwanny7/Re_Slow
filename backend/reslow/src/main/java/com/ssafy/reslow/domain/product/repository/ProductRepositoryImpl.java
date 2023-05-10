@@ -26,21 +26,16 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     @Override
     public List<ProductListResponse> findByMemberIsNotAndCategoryAndKeyword(String keyword,
         Long category, Pageable pageable) {
-        BooleanBuilder builder = new BooleanBuilder();
-        NumberTemplate booleanTemplate = Expressions.numberTemplate(Double.class,
-            "function('match', {0},{1})",
-            product.description,
-            keyword);
-        builder.and(booleanTemplate.gt(0));
         QueryResults<Product> result = queryFactory
             .selectFrom(product)
             .leftJoin(product.productImages, productImage)
             .where(
                 (hasText(keyword) ? product.title.contains(keyword) : null),
+                (hasText(keyword) ? product.description.contains(keyword) : null),
                 category == null ? null : product.productCategory.no.eq(category),
                 product.order.isNull()
             )
-            .orderBy(product.createdDate.desc())
+            .orderBy(product.updatedDate.desc())
             .distinct()
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
