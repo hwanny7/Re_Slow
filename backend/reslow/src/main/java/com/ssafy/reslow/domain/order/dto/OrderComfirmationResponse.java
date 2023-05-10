@@ -35,7 +35,7 @@ public class OrderComfirmationResponse {
 		}
 		return OrderComfirmationResponse.builder()
 			.title(product.getTitle())
-			.image(product.getProductImages() == null ? null : product.getProductImages().get(0).getUrl())
+			.image(product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl())
 			.totalPrice(totalPrice)
 			.productPrice(product.getPrice())
 			.discountPrice((int)discount)
