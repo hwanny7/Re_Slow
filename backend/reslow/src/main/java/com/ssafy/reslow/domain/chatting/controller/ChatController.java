@@ -50,7 +50,8 @@ public class ChatController {
 	}
 
 	@PostMapping("/chat/subscribe/{roomId}")
-	public Map<String, String> subscribeChatRoom(@PathVariable String roomId, @RequestBody Long memberNo) {
+	public Map<String, String> subscribeChatRoom(@PathVariable String roomId, Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
 		// subscribe
 		chatService.subscribeToChatRoom(roomId, memberNo);
 
