@@ -52,11 +52,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     fetchData();
-  }
-
-  @override
-  void initState() {
-    super.initState();
     WidgetsBinding.instance!.addObserver(this);
   }
 

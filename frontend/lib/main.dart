@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/frame.dart';
@@ -12,7 +13,9 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
