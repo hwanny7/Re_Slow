@@ -101,11 +101,11 @@ public class Member extends BaseEntity implements UserDetails {
 	private List<String> roles = new ArrayList<>();
 
 	@Builder.Default
-	@OneToMany(mappedBy = "sender")
+	@OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
 	private List<ChatRoom> senderChats = new ArrayList<>();
 
 	@Builder.Default
-	@OneToMany(mappedBy = "receiver")
+	@OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
 	private List<ChatRoom> receiverChats = new ArrayList<>();
 
 	@Override
