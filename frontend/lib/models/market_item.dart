@@ -160,7 +160,7 @@ class GetOrder {
 }
 
 class MyBuyItem {
-  final int orderNo;
+  final int? orderNo;
   final int productNo;
   final String title;
   final int price;
@@ -169,7 +169,7 @@ class MyBuyItem {
   final int status;
 
   MyBuyItem({
-    required this.orderNo,
+    this.orderNo,
     required this.productNo,
     required this.price,
     required this.title,

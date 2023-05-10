@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Mylikeknowhow extends StatefulWidget {
   const Mylikeknowhow({Key? key}) : super(key: key);
@@ -50,6 +52,94 @@ List<dynamic> heartYN = [
 int _selectedindex = -1;
 
 class _MylikeknowhowState extends State<Mylikeknowhow> {
+  Dio dio = Dio();
+  int category = 0;
+  String searchText = "";
+  // 사진 개수에 따라 사진 배치
+
+  void _getCategory(int index) {
+    category = index;
+  }
+
+  void _getSearchText(String text) {
+    searchText = text;
+    _requestKnowhow();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _requestKnowhow();
+    super.initState();
+  }
+
+  void _requestKnowhow() async {
+    try {
+      final token = await _getTokenFromSharedPreferences();
+      print("token $token");
+      final response = await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }),
+          queryParameters: {
+            "page": 0,
+            "size": 10,
+            "category": category == 0 ? "" : category,
+            "keyword": searchText
+          }).then(
+        (value) {
+          setState(() {
+            content = value.data;
+          });
+        },
+      );
+    } on DioError catch (e) {
+      print('error: $e');
+    }
+  }
+
+  Future<String?> _getTokenFromSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken');
+  }
+
+  Future<void> _requestKnowhowLike(
+      int KnowhowNo, bool isLike, int index) async {
+    try {
+      if (isLike) {
+        final token = await _getTokenFromSharedPreferences();
+        print("token $token");
+        final response = await dio
+            .post('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
+                options: Options(headers: {
+                  'Authorization': 'Bearer $token',
+                }))
+            .then((value) {
+          setState(() {
+            content[index]["likeCnt"] = value.data["count"];
+          });
+        });
+        print(response);
+      } else {
+        final token = await _getTokenFromSharedPreferences();
+        print("token $token");
+        final response = await dio
+            .delete('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
+                options: Options(headers: {
+                  'Authorization': 'Bearer $token',
+                }))
+            .then((value) {
+          setState(() {
+            content[index]["likeCnt"] = value.data["count"];
+          });
+        });
+        print(response);
+      }
+    } on DioError catch (e) {
+      print('likeerror: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

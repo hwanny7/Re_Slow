@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
+import 'package:dio/dio.dart';
+import 'package:reslow/utils/dio_client.dart';
 
 class Recommend extends StatefulWidget {
   @override
@@ -9,14 +11,43 @@ class Recommend extends StatefulWidget {
 
 class _RecommendState extends State<Recommend>
     with SingleTickerProviderStateMixin {
-  final List<String> _tags = [];
+  final DioClient dioClient = DioClient();
+  final List<String> _tags = []; //요거를 쿼리 스트링으로 보내줘야
   final TextEditingController _textController = TextEditingController();
   late AnimationController _controller;
   late Animation<Offset> _animation;
+  List<Recommendation> recommendations = []; // 추천 받은 노하우글 담아둘 곳
+
+  Future<void> fetchRecommendations() async {
+    Map<String, String> queryParameters = {};
+
+    for (String tag in _tags) {
+      queryParameters['keywords'] = tag;
+    }
+    print(queryParameters);
+    Response response = await dioClient.dio
+        .get('/knowhows/recommends', queryParameters: queryParameters);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = response.data;
+
+      List<Recommendation> newRecommendations =
+          jsonData.map((item) => Recommendation.fromJson(item)).toList();
+      print(jsonData); // 프린트
+
+      setState(() {
+        recommendations = newRecommendations;
+      });
+    } else {
+      // Handle any errors or display an error message
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    // fetchRecommendations();
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -46,19 +77,25 @@ class _RecommendState extends State<Recommend>
   }
 
   void _addTag(String tag) {
-    setState(() {
-      _tags.add(tag);
-    });
+    _tags.add(tag);
+    fetchRecommendations();
   }
 
   void _removeTag(int index) {
-    setState(() {
-      _tags.removeAt(index);
-    });
+    // setState(() {
+    _tags.removeAt(index);
+    fetchRecommendations();
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
+    // recommendations
+    //   ListView.builder(
+    // itemCount: recommendations.length,
+    // itemBuilder: (BuildContext context, int index) {
+    //   final recommendation = recommendations[index];
+
     return SafeArea(
         child: Scaffold(
       appBar: CustomAppBar(title: '추천'),
@@ -101,6 +138,7 @@ class _RecommendState extends State<Recommend>
                 onSubmitted: (String value) {
                   _textController.clear();
                   _addTag(value);
+                  // fetchRecommendations();
                 },
               ),
             ),
@@ -168,6 +206,7 @@ class _RecommendState extends State<Recommend>
                                           topLeft: Radius.circular(10),
                                           topRight: Radius.circular(10),
                                         ),
+                                        // pictureList 의 첫번째 사진.jpg
                                         image: DecorationImage(
                                           image: AssetImage(
                                               'assets/image/image 1.png'),
@@ -196,6 +235,7 @@ class _RecommendState extends State<Recommend>
                                                   height: 60,
                                                   decoration:
                                                       const BoxDecoration(
+                                                    // profile 프로필 사진 url
                                                     image: DecorationImage(
                                                       image: AssetImage(
                                                           'assets/image/test.jpg'),
@@ -221,6 +261,7 @@ class _RecommendState extends State<Recommend>
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
+                                              // writer 노하우 글 작성자 이름
                                               '리폼왕 춘식이',
                                               style: TextStyle(
                                                 fontSize: 15,
@@ -230,6 +271,7 @@ class _RecommendState extends State<Recommend>
                                             ),
                                             SizedBox(height: 16),
                                             Text(
+                                              // title 노하우 글 제목
                                               '톡톡튀는 청바지 리폼 Tip!',
                                               style: TextStyle(
                                                 fontSize: 20,
@@ -595,5 +637,43 @@ class _RecommendState extends State<Recommend>
         ],
       ),
     ));
+  }
+}
+
+class Recommendation {
+  final int knowhowNo;
+  final String writer;
+  final String profileImageUrl;
+  final String title;
+  final List<String> pictureList;
+  final int pictureCount;
+  final int likeCount;
+  final bool isLiked;
+  final int commentCount;
+
+  Recommendation({
+    required this.knowhowNo,
+    required this.writer,
+    required this.profileImageUrl,
+    required this.title,
+    required this.pictureList,
+    required this.pictureCount,
+    required this.likeCount,
+    required this.isLiked,
+    required this.commentCount,
+  });
+
+  factory Recommendation.fromJson(Map<String, dynamic> json) {
+    return Recommendation(
+      knowhowNo: json['knowhowNo'],
+      writer: json['writer'],
+      profileImageUrl: json['profile'],
+      title: json['title'],
+      pictureList: List<String>.from(json['pictureList']),
+      pictureCount: json['pictureCnt'],
+      likeCount: json['likeCnt'],
+      isLiked: json['like'],
+      commentCount: json['commentCnt'],
+    );
   }
 }

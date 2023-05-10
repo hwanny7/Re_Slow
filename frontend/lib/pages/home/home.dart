@@ -1,14 +1,21 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:reslow/providers/auth_provider.dart';
+import 'package:reslow/providers/socket_provider.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'coupondownload.dart';
 import 'package:reslow/utils/navigator.dart';
+import 'package:dio/dio.dart';
+import 'package:reslow/utils/dio_client.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   int _current = 0;
   final CarouselController _controller = CarouselController();
   List<dynamic> couponImage = [
@@ -16,9 +23,80 @@ class _HomeState extends State<Home> {
     "assets/image/coupon 2.png",
     "assets/image/coupon 3.png"
   ];
+  final DioClient dioClient = DioClient();
+  List<Coupon> coupons = [];
+
+  Future<void> fetchData() async {
+    Map<String, dynamic> queryParams = {
+      'page': 0,
+      'size': 10,
+      'sort': 'createdDate,desc',
+    };
+    Response response =
+        await dioClient.dio.get('/coupons', queryParameters: queryParams);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      print(jsonData);
+
+      setState(() {
+        coupons = List<Coupon>.from(
+            jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
+      });
+    } else {
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.removeObserver(this);
+    fetchData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
+  }
 
   @override
   Widget build(BuildContext context) {
+    // dynamic socketManager = Provider.of<SocketManager>(context);
+    // socketManager.receivedChatData();
+
+    // @override
+    // void didChangeAppLifecycleState(AppLifecycleState state) {
+    //   super.didChangeAppLifecycleState(state);
+    //   switch (state) {
+    //     case AppLifecycleState.resumed:
+    //       socketManager.connect();
+    //       // 서버로 open 보내기
+    //       print("resumed");
+    //       break;
+    //     case AppLifecycleState.inactive:
+    //       socketManager.disconnect();
+    //       // 서버로 close 보내기
+    //       print("inactive");
+    //       break;
+    //     case AppLifecycleState.detached:
+    //       socketManager.disconnect();
+    //       // 서버로 close 보내기
+    //       print("detached");
+    //       break;
+    //     case AppLifecycleState.paused:
+    //       socketManager.disconnect();
+    //       // 서버로 close 보내기
+    //       print("paused");
+    //       break;
+    //   }
+    // }
+
+    // socketManager.connect();
+
+    // print(socketManager.isConnect());
+
     return SingleChildScrollView(
         child: Column(children: [
       Container(
@@ -226,5 +304,24 @@ class _HomeState extends State<Home> {
         ),
       ),
     ]));
+  }
+}
+
+class Coupon {
+  final int discountAmount;
+  final String startDate;
+  final String endDate;
+
+  Coupon(
+      {required this.discountAmount,
+      required this.startDate,
+      required this.endDate});
+
+  factory Coupon.fromJson(Map<String, dynamic> responseData) {
+    print('responseData: $responseData');
+    return Coupon(
+        discountAmount: responseData['discountAmount'], // 수정
+        startDate: responseData['startDate'],
+        endDate: responseData['endDate']);
   }
 }

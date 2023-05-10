@@ -47,10 +47,10 @@ class _MarketState extends State<Market> {
   }
 
   void _scrollListener() async {
-    if (!isLast &&
-        !isLoading &&
-        _scrollController.position.pixels >
-            _scrollController.position.maxScrollExtent * 0.8) {
+    if (_scrollController.position.pixels >
+            _scrollController.position.maxScrollExtent * 0.8 &&
+        !isLast &&
+        !isLoading) {
       isLoading = true;
       page += 1;
       await fetchData(true);
@@ -70,16 +70,18 @@ class _MarketState extends State<Market> {
       'category': category == 0 ? '' : category,
       'keyword': searchText,
     };
+    print(page);
 
     Response response =
         await dioClient.dio.get('/products/', queryParameters: queryParams);
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data;
-      print(jsonData);
+      // print(jsonData);
       if (isInfinite) {
         if (jsonData.isEmpty) {
           isLast = true;
+          print('empty');
         } else {
           setState(() {
             itemList.addAll(List<MarketItem>.from(

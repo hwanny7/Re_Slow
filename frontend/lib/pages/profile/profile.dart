@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/profile/my_buy_list.dart';
+import 'package:reslow/pages/profile/my_sell_list.dart';
 
 import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
@@ -150,7 +151,12 @@ class _ProfileState extends State<Profile> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    // Navigate to the flea market page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MySellList(),
+                      ),
+                    );
                   },
                   child: Container(
                     padding: EdgeInsets.all(5),
@@ -160,7 +166,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(
                             width: 10), // for spacing between icon and text
                         Text(
-                          '나의 상품 리스트',
+                          '판매 현황',
                           style: TextStyle(fontSize: 15),
                         ),
                       ],
@@ -186,7 +192,7 @@ class _ProfileState extends State<Profile> {
                         SizedBox(
                             width: 10), // for spacing between icon and text
                         Text(
-                          '나의 구매 리스트',
+                          '구매 현황',
                           style: TextStyle(fontSize: 15),
                         ),
                       ],

@@ -4,19 +4,19 @@ import 'package:reslow/pages/market/order_detail.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/navigator.dart';
 
-class BuyItemInfo extends StatefulWidget {
+class SellItemInfo extends StatefulWidget {
   final MyBuyItem item;
 
-  const BuyItemInfo({Key? key, required this.item}) : super(key: key);
+  const SellItemInfo({Key? key, required this.item}) : super(key: key);
 
   @override
-  _BuyItemInfoState createState() => _BuyItemInfoState();
+  _SellItemInfoState createState() => _SellItemInfoState();
 }
 
-class _BuyItemInfoState extends State<BuyItemInfo> {
+class _SellItemInfoState extends State<SellItemInfo> {
   String date = '';
   String price = '';
-  List<String> buttonText = ['주문취소', '', '배송조회', '구매확정', '거래완료'];
+  List<String> buttonText = ['판매 중', '결제완료', '배송 준비 중', '배송 중', '배송완료', '구매확정'];
 
   @override
   void initState() {
@@ -146,7 +146,7 @@ class _BuyItemInfoState extends State<BuyItemInfo> {
                             buttonHandler(widget.item.status);
                           },
                           child: Text(
-                            buttonText[widget.item.status - 1],
+                            buttonText[widget.item.status],
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                                 fontSize: 20,

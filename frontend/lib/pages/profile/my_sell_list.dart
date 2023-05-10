@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/services/Market.dart';
 import 'package:reslow/widgets/market/buy_item_info.dart';
+import 'package:reslow/widgets/market/sell_item_info.dart';
 
-class MyBuyList extends StatefulWidget {
-  const MyBuyList({Key? key}) : super(key: key);
+class MySellList extends StatefulWidget {
+  const MySellList({Key? key}) : super(key: key);
 
   @override
-  _MyBuyListState createState() => _MyBuyListState();
+  _MySellListState createState() => _MySellListState();
 }
 
-class _MyBuyListState extends State<MyBuyList>
+class _MySellListState extends State<MySellList>
     with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
@@ -82,13 +83,12 @@ class _MyBuyListState extends State<MyBuyList>
     };
     print(queryParams);
 
-    Response response = await getBuyItems(queryParams);
+    Response response = await getSellItems(queryParams);
     if (firstLoading[tabIndex]) {
       setState(() {
         firstLoading[tabIndex] = false;
       });
     }
-    print('땡겨옴!');
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data['content'];
@@ -149,7 +149,7 @@ class _MyBuyListState extends State<MyBuyList>
         controller: _scrollControllers[tabIndex],
         itemCount: data.length,
         itemBuilder: (context, index) {
-          return BuyItemInfo(
+          return SellItemInfo(
               key: Key(data[index].orderNo.toString()), item: data[index]);
         },
       );
