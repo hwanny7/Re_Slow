@@ -10,11 +10,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
-import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
-import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,12 +66,6 @@ public class ChatService {
 		System.out.println("====== ChatService에 들어와서 subscribe 등록 완료~~~~~~~!! =====");
 		// Redis Set에 해당 클라이언트의 no 추가
 		redisTemplate.opsForSet().add(roomId, memberNo);
-	}
-
-	public Long findOtherMemberNo(String nickname) {
-		Member member = memberRepository.findByNickname(nickname)
-			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-		return member.getNo();
 	}
 
 }
