@@ -15,39 +15,67 @@ class BuyItem extends StatefulWidget {
 }
 
 class _BuyItemState extends State<BuyItem> {
-  String zipCode = '-';
+  String zipcode = '-';
   String roadAddress = '-';
   String price = '';
   String deliveryFee = '';
+  int intPrice = 0;
   String totalPrice = '';
+  String recipient = '';
+  String phoneNumber = '';
+  String memo = '';
+  String addressDetail = '';
+  int? issuedCouponNo;
 
   @override
   void initState() {
     price = priceDot(widget.item!.price);
     deliveryFee = priceDot(widget.item!.deliveryFee);
-    totalPrice = priceDot(widget.item!.price + widget.item!.deliveryFee);
+    intPrice = widget.item!.price + widget.item!.deliveryFee;
+    totalPrice = priceDot(intPrice);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Map<String, String> result = ModalRoute.of(context).settings.arguments;
-
     return Scaffold(
         appBar: CustomAppBar(title: "구매하기"),
         body: SingleChildScrollView(
             child: Column(
           children: [
-            // First text field
             Container(
               width: double.infinity,
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    recipient = value;
+                  });
+                },
+                decoration: const InputDecoration(
                   hintText: '수령인',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(16.0),
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+              ),
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    phoneNumber = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  hintText: '연락처',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16.0),
                 ),
@@ -64,7 +92,7 @@ class _BuyItemState extends State<BuyItem> {
                   child: TextField(
                     decoration: InputDecoration(
                       enabled: false,
-                      hintText: zipCode == '-' ? '우편번호' : zipCode,
+                      hintText: zipcode == '-' ? '우편번호' : zipcode,
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.all(16.0),
                     ),
@@ -74,13 +102,13 @@ class _BuyItemState extends State<BuyItem> {
                   child: Text('주소 검색'),
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 10.0),
+                      EdgeInsets.symmetric(vertical: 19.0, horizontal: 11.0),
                     ),
                     side: MaterialStateProperty.all<BorderSide>(
                       BorderSide(color: Colors.grey, width: 1.0),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                        MaterialStateProperty.all<Color>(Colors.grey),
                   ),
                   onPressed: () async {
                     await Navigator.push(
@@ -92,7 +120,7 @@ class _BuyItemState extends State<BuyItem> {
                           // kakaoKey: '{Add your KAKAO DEVELOPERS JS KEY}',
                           callback: (Kpostal result) {
                             setState(() {
-                              zipCode = result.postCode;
+                              zipcode = result.postCode;
                               roadAddress = result.address;
                             });
                           },
@@ -124,8 +152,13 @@ class _BuyItemState extends State<BuyItem> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
-              child: const TextField(
-                decoration: InputDecoration(
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    addressDetail = value;
+                  });
+                },
+                decoration: const InputDecoration(
                   hintText: '상세주소',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16.0),
@@ -139,10 +172,15 @@ class _BuyItemState extends State<BuyItem> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
-              child: const TextField(
+              child: TextField(
+                onChanged: (value) {
+                  setState(() {
+                    memo = value;
+                  });
+                },
                 maxLines: 10,
-                decoration: InputDecoration(
-                  hintText: '배송 요청사항',
+                decoration: const InputDecoration(
+                  hintText: '요청사항',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16.0),
                 ),
@@ -247,13 +285,25 @@ class _BuyItemState extends State<BuyItem> {
                     child: MaterialButton(
                         padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
                         minWidth: MediaQuery.of(context).size.width,
-                        onPressed: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Payment()),
-                              )
-                            },
+                        onPressed: () {
+                          OrderingInformation orderingInformation =
+                              OrderingInformation(
+                                  recipient: recipient,
+                                  zipcode: int.parse(zipcode),
+                                  address: roadAddress,
+                                  addressDetail: addressDetail,
+                                  phoneNumber: phoneNumber,
+                                  memo: memo,
+                                  issuedCouponNo: issuedCouponNo,
+                                  productNo: widget.item!.productNo);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Payment(
+                                    totalPrice: intPrice,
+                                    orderingInformation: orderingInformation)),
+                          );
+                        },
                         child: const Text(
                           "구매하기",
                           textAlign: TextAlign.center,

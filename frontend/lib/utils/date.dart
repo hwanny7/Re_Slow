@@ -21,7 +21,6 @@ String formatTimeDifference(String dateTimeString) {
 }
 
 String priceDot(int price) {
-  print('hello');
   String priceString = price.toString();
 
   String formattedPrice = '';
