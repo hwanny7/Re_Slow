@@ -63,7 +63,7 @@ public class OrderService {
 			order -> {
 				Product product = order.getProduct();
 				String imageResource =
-					product.getProductImages() == null ? null : product.getProductImages().get(0).getUrl();
+					product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl();
 				responses.add(OrderListResponse.of(product, order, imageResource, order.getStatus().getValue()));
 			}
 		);
