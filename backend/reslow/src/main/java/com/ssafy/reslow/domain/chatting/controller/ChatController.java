@@ -7,6 +7,7 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
 import com.ssafy.reslow.domain.chatting.service.ChatSubscriber;
+import com.ssafy.reslow.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("")
 public class ChatController {
 	private final ChatService chatService;
+	private final MemberService memberService;
 	private final RedisMessageListenerContainer redisMessageListener;
 	private final ChatSubscriber chatSubscriber;
 
@@ -55,5 +58,12 @@ public class ChatController {
 		HashMap<String, String> map = new HashMap<>();
 		map.put("msg", "ok");
 		return map;
+	}
+
+	@PostMapping("/fcm/token")
+	public Map<String, String> registerUserToken(@RequestBody String token, Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
+
+		return memberService.addDeviceToken(memberNo, token);
 	}
 }

@@ -30,9 +30,11 @@ import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
+import com.ssafy.reslow.domain.member.entity.Device;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.entity.MemberAccount;
 import com.ssafy.reslow.domain.member.entity.MemberAddress;
+import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.product.entity.ProductCategory;
 import com.ssafy.reslow.domain.product.repository.ProductCategoryRepository;
@@ -52,6 +54,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final KnowhowCategoryRepository knowhowCategoryRepository;
+	private final DeviceRepository deviceRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisTemplate redisTemplate;
@@ -182,6 +185,16 @@ public class MemberService {
 		member.registAccount(memberAccount);
 		Map<String, Long> map = new HashMap<>();
 		map.put("memberNo", memberNo);
+		return map;
+	}
+
+	public Map<String, String> addDeviceToken(Long memberNo, String token) {
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		Device device = Device.of(member, token);
+		deviceRepository.save(device);
+
+		Map<String, String> map = new HashMap<>();
+		map.put("device", "ok");
 		return map;
 	}
 }
