@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/models/user.dart';
@@ -94,6 +95,10 @@ class RegisterState extends State<Register> {
     }
 
     void submit() async {
+      var fcmToken = await FirebaseMessaging.instance.getToken(
+          vapidKey:
+              "BCuQB-Qb6ULUXqwfyenXdLVq56BRx_vP5TBUp2-8_-KsCXhMsWWI5Xdh3P0oP1Z-Yja2TrkVXUtTw6Bux4JPzxI");
+      print(fcmToken);
       if (auth.registeredInStatus != Status.Registering) {
         final id = idController.text;
         final password = passwordController.text;
