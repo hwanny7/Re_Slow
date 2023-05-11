@@ -24,7 +24,7 @@ class _RecommendState extends State<Recommend>
     for (String tag in _tags) {
       queryParameters['keywords'] = tag;
     }
-    // print(queryParameters);
+    print(queryParameters);
     Response response = await dioClient.dio
         .get('/knowhows/recommends', queryParameters: queryParameters);
 
@@ -33,9 +33,10 @@ class _RecommendState extends State<Recommend>
 
       List<Recommendation> newRecommendations =
           jsonData.map((item) => Recommendation.fromJson(item)).toList();
-      print(jsonData); // 프린트
+      print(jsonData);
 
       setState(() {
+        recommendations.clear(); // clear out before add
         recommendations.addAll(newRecommendations);
       });
 
@@ -49,8 +50,6 @@ class _RecommendState extends State<Recommend>
   @override
   void initState() {
     super.initState();
-
-    // fetchRecommendations();
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -80,14 +79,29 @@ class _RecommendState extends State<Recommend>
   }
 
   void _addTag(String tag) {
-    _tags.add(tag);
-    fetchRecommendations();
+    setState(() {
+      _tags.add(tag);
+      if (_tags.isNotEmpty) {
+        fetchRecommendations();
+      } else {
+        recommendations.clear();
+      }
+    });
   }
 
   void _removeTag(int index) {
     setState(() {
-      _tags.removeAt(index);
-      fetchRecommendations();
+      _tags.removeAt(index); // 유저가 어느걸 삭제할지 모르니까
+      if (_tags.isNotEmpty) {
+        Map<String, String> queryParameters = {};
+        for (String tag in _tags) {
+          queryParameters['keywords'] = tag;
+        }
+        fetchRecommendations();
+      } else {
+        // If there are less than two tags, clear the recommendations list
+        recommendations.clear();
+      }
     });
   }
 
@@ -253,12 +267,11 @@ class _RecommendState extends State<Recommend>
                                                   child: Container(
                                                     width: 60,
                                                     height: 60,
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                      // profile 프로필 사진 url
+                                                    decoration: BoxDecoration(
                                                       image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/image/test.jpg'),
+                                                        image: NetworkImage(
+                                                            recommendations[0]
+                                                                .profile),
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
@@ -272,7 +285,7 @@ class _RecommendState extends State<Recommend>
 
                                       //container end
 
-                                      const Padding(
+                                      Padding(
                                         padding: EdgeInsets.all(16),
                                         child: Align(
                                           alignment: Alignment.center,
@@ -282,7 +295,7 @@ class _RecommendState extends State<Recommend>
                                             children: [
                                               Text(
                                                 // writer 노하우 글 작성자 이름
-                                                '리폼왕 춘식이',
+                                                recommendations[0].writer,
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
@@ -291,8 +304,7 @@ class _RecommendState extends State<Recommend>
                                               ),
                                               SizedBox(height: 16),
                                               Text(
-                                                // title 노하우 글 제목
-                                                '톡톡튀는 청바지 리폼 Tip!',
+                                                recommendations[0].title,
                                                 style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -309,7 +321,9 @@ class _RecommendState extends State<Recommend>
                                                       Icon(Icons
                                                           .favorite_border),
                                                       SizedBox(width: 8),
-                                                      Text('27'),
+                                                      Text(recommendations[0]
+                                                          .likeCnt
+                                                          .toString()),
                                                     ],
                                                   ),
                                                   SizedBox(width: 16),
@@ -317,7 +331,9 @@ class _RecommendState extends State<Recommend>
                                                     children: [
                                                       Icon(Icons.comment),
                                                       SizedBox(width: 8),
-                                                      Text('57'),
+                                                      Text(recommendations[0]
+                                                          .commentCnt
+                                                          .toString()),
                                                     ],
                                                   ),
                                                 ],
@@ -350,6 +366,7 @@ class _RecommendState extends State<Recommend>
                     ),
                     // Bubble 2
                     if (recommendations.isNotEmpty &&
+                        recommendations.length > 1 &&
                         recommendations[1] != null)
                       SlideTransition(
                         position: _animation,
@@ -417,11 +434,11 @@ class _RecommendState extends State<Recommend>
                                                   child: Container(
                                                     width: 60,
                                                     height: 60,
-                                                    decoration:
-                                                        const BoxDecoration(
+                                                    decoration: BoxDecoration(
                                                       image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/image/test.jpg'),
+                                                        image: NetworkImage(
+                                                            recommendations[1]
+                                                                .profile),
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
@@ -435,7 +452,7 @@ class _RecommendState extends State<Recommend>
 
                                       //container end
 
-                                      const Padding(
+                                      Padding(
                                         padding: EdgeInsets.all(16),
                                         child: Align(
                                           alignment: Alignment.center,
@@ -444,7 +461,7 @@ class _RecommendState extends State<Recommend>
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                '리폼왕 춘식이',
+                                                recommendations[1].writer,
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
@@ -453,7 +470,7 @@ class _RecommendState extends State<Recommend>
                                               ),
                                               SizedBox(height: 16),
                                               Text(
-                                                '나만의 다꾸 Tip!',
+                                                recommendations[1].title,
                                                 style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -470,7 +487,9 @@ class _RecommendState extends State<Recommend>
                                                       Icon(Icons
                                                           .favorite_border),
                                                       SizedBox(width: 8),
-                                                      Text('33'),
+                                                      Text(recommendations[1]
+                                                          .likeCnt
+                                                          .toString()),
                                                     ],
                                                   ),
                                                   SizedBox(width: 16),
@@ -478,7 +497,9 @@ class _RecommendState extends State<Recommend>
                                                     children: [
                                                       Icon(Icons.comment),
                                                       SizedBox(width: 8),
-                                                      Text('5'),
+                                                      Text(recommendations[1]
+                                                          .commentCnt
+                                                          .toString()),
                                                     ],
                                                   ),
                                                 ],
@@ -510,6 +531,7 @@ class _RecommendState extends State<Recommend>
                     ),
                     // Bubble 3
                     if (recommendations.isNotEmpty &&
+                        recommendations.length > 2 &&
                         recommendations[2] != null)
                       SlideTransition(
                         position: _animation,
@@ -519,11 +541,6 @@ class _RecommendState extends State<Recommend>
                               child: Container(
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  // image: DecorationImage(
-                                  //   image: AssetImage(
-                                  //       'assets/image/image 1.png'),
-                                  //   fit: BoxFit.cover,
-                                  // ),
                                 ),
                               ),
                             ),
@@ -577,11 +594,11 @@ class _RecommendState extends State<Recommend>
                                                   child: Container(
                                                     width: 60,
                                                     height: 60,
-                                                    decoration:
-                                                        const BoxDecoration(
+                                                    decoration: BoxDecoration(
                                                       image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/image/test.jpg'),
+                                                        image: NetworkImage(
+                                                            recommendations[2]
+                                                                .profile),
                                                         fit: BoxFit.cover,
                                                       ),
                                                     ),
@@ -595,7 +612,7 @@ class _RecommendState extends State<Recommend>
 
                                       //container end
 
-                                      const Padding(
+                                      Padding(
                                         padding: EdgeInsets.all(16),
                                         child: Align(
                                           alignment: Alignment.center,
@@ -604,7 +621,7 @@ class _RecommendState extends State<Recommend>
                                                 MainAxisAlignment.center,
                                             children: [
                                               Text(
-                                                '리폼왕 춘식이',
+                                                recommendations[2].writer,
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold,
@@ -613,7 +630,7 @@ class _RecommendState extends State<Recommend>
                                               ),
                                               SizedBox(height: 16),
                                               Text(
-                                                '성경책 커스터마이징 Tip!',
+                                                recommendations[2].title,
                                                 style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold,
@@ -630,7 +647,9 @@ class _RecommendState extends State<Recommend>
                                                       Icon(Icons
                                                           .favorite_border),
                                                       SizedBox(width: 8),
-                                                      Text('44'),
+                                                      Text(recommendations[2]
+                                                          .likeCnt
+                                                          .toString()),
                                                     ],
                                                   ),
                                                   SizedBox(width: 16),
@@ -638,7 +657,9 @@ class _RecommendState extends State<Recommend>
                                                     children: [
                                                       Icon(Icons.comment),
                                                       SizedBox(width: 8),
-                                                      Text('12'),
+                                                      Text(recommendations[2]
+                                                          .commentCnt
+                                                          .toString()),
                                                     ],
                                                   ),
                                                 ],
