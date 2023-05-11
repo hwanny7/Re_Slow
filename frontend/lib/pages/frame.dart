@@ -98,21 +98,6 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
     );
   }
 
-  // Future<void> _firebaseMessagingBackgroundHandler(
-  //     RemoteMessage message) async {
-  //   // await Firebase.initializeApp();
-  //   if (message != null) {
-  //     print('Handling a background message: ${message.messageId}');
-  //     print('$message');
-
-  //     // 백그라운드 상태에서 알림 처리
-  //     // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
-  //   }
-
-  //   // 백그라운드 상태에서 알림 처리
-  //   // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
-  // }
-
   @override
   void initState() {
     super.initState();
