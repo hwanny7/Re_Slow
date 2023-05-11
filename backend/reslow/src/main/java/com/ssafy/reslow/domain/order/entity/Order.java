@@ -40,7 +40,7 @@ public class Order extends BaseEntity {
     private String recipient;
 
     @Column(name = "ZIPCODE")
-    private int zipcode;
+    private Long zipcode;
 
     @Column(name = "ADDRESS")
     private String address;
@@ -58,10 +58,10 @@ public class Order extends BaseEntity {
     private String carrierCompany;
 
     @Column(name = "CARRIER_TRACK")
-    private int carrierTrack;
+    private Long carrierTrack;
 
     @Column(name = "TOTAL_PRICE")
-    private int totalPrice;
+    private Long totalPrice;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Product product;
@@ -90,7 +90,7 @@ public class Order extends BaseEntity {
             .memo(request.getMemo())
             .product(product)
             .buyer(buyer)
-            .totalPrice(totalPrice)
+            .totalPrice((long)totalPrice)
             .issuedCoupon(issuedCoupon)
             .build();
     }
