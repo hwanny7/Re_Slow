@@ -39,3 +39,11 @@ Future<Response> changeStatus(
 
   return response;
 }
+
+Future<Response> InputDelivery(
+    int orderNo, Map<String, dynamic> formData) async {
+  Response response =
+      await dioClient.dio.patch('/orders/$orderNo/carrier', data: formData);
+
+  return response;
+}

@@ -119,7 +119,7 @@ class _MySellListState extends State<MySellList>
             GestureDetector(
               onTap: () => _controller.index = 0,
               child: const Tab(
-                text: '결제 완료',
+                text: '주문 대기',
               ),
             ),
             GestureDetector(
@@ -157,6 +157,24 @@ class _MySellListState extends State<MySellList>
 
   Widget _buildTab(int tabIndex) {
     final data = _data[tabIndex];
+
+    void removeItem(int index, String choice) {
+      if (choice == "거절") {
+        setState(() {
+          data.removeAt(index);
+        });
+      } else {
+        setState(() {
+          if (firstLoading[tabIndex + 1] == false) {
+            // 한 번이라도 데이터를 Load 했다면 가장 첫번째로 추가
+            data[index].status += 1;
+            _data[tabIndex + 1].insert(0, data[index]);
+          }
+          data.removeAt(index);
+        });
+      }
+    }
+
     if (firstLoading[tabIndex]) {
       return const Center(child: CircularProgressIndicator());
     } else if (data.isEmpty) {
@@ -169,7 +187,10 @@ class _MySellListState extends State<MySellList>
         itemCount: data.length,
         itemBuilder: (context, index) {
           return SellItemInfo(
-              key: Key(data[index].orderNo.toString()), item: data[index]);
+              removeItem: removeItem,
+              key: Key(data[index].orderNo.toString()),
+              item: data[index],
+              index: index);
         },
       );
     }

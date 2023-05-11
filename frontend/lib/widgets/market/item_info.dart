@@ -44,6 +44,7 @@ class ItemInfo extends StatelessWidget {
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              // mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(item.title,
                                     style: TextStyle(

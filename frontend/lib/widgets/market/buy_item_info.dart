@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/market/item_detail.dart';
 import 'package:reslow/pages/market/order_detail.dart';
 import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
@@ -25,7 +26,14 @@ class BuyItemInfo extends StatefulWidget {
 class _BuyItemInfoState extends State<BuyItemInfo> {
   String date = '';
   String price = '';
-  List<String> buttonText = ['', '주문취소', '배송 준비 중', '배송조회', '구매확정', '거래완료'];
+  List<String> buttonText = [
+    '',
+    '주문 취소',
+    '배송 준비 중 입니다.',
+    '배송조회',
+    '구매 확정',
+    '거래가 완료되었습니다.'
+  ];
 
   @override
   void initState() {
@@ -132,16 +140,23 @@ class _BuyItemInfoState extends State<BuyItemInfo> {
                       ),
                     ),
                     Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 12.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(widget.item.title,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                )),
+                            InkWell(
+                              onTap: () {
+                                leftToRightNavigator(
+                                    ItemDetail(itemPk: widget.item.productNo),
+                                    context);
+                              },
+                              child: Text(widget.item.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  )),
+                            ),
+                            const SizedBox(height: 8),
                             Text(price,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
