@@ -17,13 +17,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
   int _current = 0;
-  final CarouselController _controller = CarouselController();
-  List<dynamic> couponImage = [
-    "assets/image/coupon 1.png",
-    "assets/image/coupon 2.png",
-    "assets/image/coupon 3.png"
-  ];
   final DioClient dioClient = DioClient();
+  final CarouselController _controller = CarouselController();
+  // List<dynamic> couponImage = [];
   List<Coupon> coupons = [];
 
   Future<void> fetchData() async {
@@ -39,9 +35,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       Map<String, dynamic> jsonData = response.data;
       print(jsonData);
 
+      List<Coupon> fetchedCoupons = List<Coupon>.from(
+          jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
+
       setState(() {
-        coupons = List<Coupon>.from(
-            jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
+        coupons = fetchedCoupons;
+        // couponImage = fetchedCoupons.map((coupon) => coupon.imageUrl).toList();
       });
     } else {
       print('HTTP request failed with status: ${response.statusCode}');
@@ -111,7 +110,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         child: Center(
           child: CarouselSlider(
             options: CarouselOptions(autoPlay: true, height: 130.0),
-            items: couponImage.map((item) {
+            items: coupons.map((item) {
               return Container(
                 width: MediaQuery.of(context).size.width,
                 margin: const EdgeInsets.symmetric(horizontal: 5.0),
@@ -125,13 +124,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     //   ),
                     // );
                     leftToRightNavigator(
-                        CouponDownload(couponPk: 10), context); // 수정 필요
+                        CouponDownload(couponPk: item.couponNo),
+                        context); // 수정 필요
                     // 클릭한 해당 쿠폰의 쿠폰 넘버
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
-                      item,
+                    child: Image.network(
+                      item.imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -308,20 +308,39 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 }
 
 class Coupon {
+  final int couponNo;
+  final String name;
+  final String content;
+  final int discountType;
   final int discountAmount;
+  final int discountPercent;
   final String startDate;
   final String endDate;
+  final String imageUrl;
 
-  Coupon(
-      {required this.discountAmount,
-      required this.startDate,
-      required this.endDate});
+  Coupon({
+    required this.couponNo,
+    required this.name,
+    required this.content,
+    required this.discountType,
+    required this.discountAmount,
+    required this.discountPercent,
+    required this.startDate,
+    required this.endDate,
+    required this.imageUrl,
+  });
 
   factory Coupon.fromJson(Map<String, dynamic> responseData) {
-    print('responseData: $responseData');
+    print('responseData: $responseData'); // 프린트
     return Coupon(
-        discountAmount: responseData['discountAmount'], // 수정
+        couponNo: responseData['couponNo'],
+        name: responseData['name'],
+        content: responseData['startDate'],
+        discountType: responseData['discountType'],
+        discountAmount: responseData['discountAmount'],
+        discountPercent: responseData['discountPercent'],
         startDate: responseData['startDate'],
-        endDate: responseData['endDate']);
+        endDate: responseData['endDate'],
+        imageUrl: responseData['imageUrl']);
   }
 }

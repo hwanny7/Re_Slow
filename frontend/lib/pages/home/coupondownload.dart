@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
 // import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -64,23 +65,23 @@ class _CouponDownloadState extends State<CouponDownload> {
                 color: Colors.green,
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    '50%', // set the discount percentage here
+                    '${priceDot(coupon!.discountAmount)}', // set the discount percentage here
                     style: TextStyle(fontSize: 48.0, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
                   Text(
-                    '모든 상품에 적용 가능', // set the description here
+                    coupon!.content, // set the description here
                     style: TextStyle(fontSize: 20.0, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 20.0),
                   Text(
-                    '사용기간 2023-05-01 ~ 2023-05-31', // set the start and end dates here
+                    '사용기간 ${coupon!.startDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')} ~ ${coupon!.endDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')}', // set the start and end dates here
                     style: TextStyle(fontSize: 16.0, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
@@ -106,6 +107,7 @@ class _CouponDownloadState extends State<CouponDownload> {
                         if (response.statusCode == 200) {
                           Map<String, dynamic> jsonData = response.data;
                           print(jsonData);
+                          print('쿠폰 다운로드 완료!');
                           // show a success message or perform other actions
                         } else {
                           print(
