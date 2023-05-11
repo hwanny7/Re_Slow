@@ -23,15 +23,29 @@ public class BatchScheduler {
     final private BatchConfig batchConfig;
 
     @Scheduled(cron = "0 0 0 * * *")
-    public void runJob() {
-
-        // job parameter 설정
+    public void deliveryConfirmJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));
         JobParameters jobParameters = new JobParameters(confMap);
 
         try {
-            jobLauncher.run(batchConfig.job(), jobParameters);
+            jobLauncher.run(batchConfig.deliveryConfirmJob(), jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
+                 | JobParametersInvalidException |
+                 org.springframework.batch.core.repository.JobRestartException e) {
+
+            log.error(e.getMessage());
+        }
+    }
+
+    @Scheduled(cron = "0 */90 * * * ?")
+    public void deliveryTrackJob() {
+        Map<String, JobParameter> confMap = new HashMap<>();
+        confMap.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameters = new JobParameters(confMap);
+
+        try {
+            jobLauncher.run(batchConfig.deliveryTrackJob(), jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                  | JobParametersInvalidException |
                  org.springframework.batch.core.repository.JobRestartException e) {

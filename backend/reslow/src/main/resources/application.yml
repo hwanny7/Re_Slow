@@ -69,3 +69,7 @@ iamport:
   api:
     key: ${IAMPORT_KEY}
     secret: ${IAMPORT_SECRET}
+
+delivery:
+  api:
+    key: ${DELIVERY_API_KEY}
