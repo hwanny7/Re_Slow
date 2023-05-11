@@ -308,19 +308,34 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 }
 
 class Coupon {
+  final int couponNo;
+  final String name;
+  final String content;
+  final int discountType;
   final int discountAmount;
+  final int discountPercent;
   final String startDate;
   final String endDate;
 
   Coupon(
-      {required this.discountAmount,
+      {required this.couponNo,
+      required this.name,
+      required this.content,
+      required this.discountType,
+      required this.discountAmount,
+      required this.discountPercent,
       required this.startDate,
       required this.endDate});
 
   factory Coupon.fromJson(Map<String, dynamic> responseData) {
-    print('responseData: $responseData');
+    print('responseData: $responseData'); // 프린트
     return Coupon(
-        discountAmount: responseData['discountAmount'], // 수정
+        couponNo: responseData['couponNo'],
+        name: responseData['name'],
+        content: responseData['content'],
+        discountType: responseData['discountType'],
+        discountAmount: responseData['discountAmount'],
+        discountPercent: responseData['discountPercent'],
         startDate: responseData['startDate'],
         endDate: responseData['endDate']);
   }
