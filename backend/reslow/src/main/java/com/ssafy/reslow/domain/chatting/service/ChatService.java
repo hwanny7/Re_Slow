@@ -6,6 +6,7 @@ import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class ChatService {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final SimpMessagingTemplate messagingTemplate;
 
-	public void sendMessage(ChatMessage chatMessage) {
+	public void sendMessage(ChatMessage chatMessage, ChannelTopic topic) {
 		// Member receiver = memberRepository.findByNickname(chatMessage.getReceiver())
 		// 	.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		// List<String> deviceList = deviceRepository.findByMember(receiver)
@@ -36,7 +37,7 @@ public class ChatService {
 
 		if (isUserOnline(chatMessage.getReceiver())) {
 			System.out.println("==== CharService로 들어와서 publish 날리기 직전! =====");
-			chatPublisher.publish(chatMessage.getRoomId(), chatMessage);
+			chatPublisher.publish(topic, chatMessage);
 		} else {
 			// fcmService.sendNotification(chatMessage.getReceiver(), chatMessage.getMessage());
 		}
