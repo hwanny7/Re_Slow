@@ -58,7 +58,7 @@ public class Order extends BaseEntity {
     private String carrierCompany;
 
     @Column(name = "CARRIER_TRACK")
-    private Long carrierTrack;
+    private String carrierTrack;
 
     @Column(name = "TOTAL_PRICE")
     private Long totalPrice;
@@ -90,7 +90,7 @@ public class Order extends BaseEntity {
             .memo(request.getMemo())
             .product(product)
             .buyer(buyer)
-            .totalPrice((long)totalPrice)
+            .totalPrice((long) totalPrice)
             .issuedCoupon(issuedCoupon)
             .build();
     }
