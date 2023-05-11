@@ -63,58 +63,62 @@ class _CouponlistState extends State<Couponlist> {
     return SafeArea(
         child: Scaffold(
       appBar: CustomAppBar(title: '보유 쿠폰'),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: MediaQuery.of(context).padding.top,
-          ),
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-              child: ListView.builder(
-                itemCount: coupons.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Coupon coupon = coupons[index];
-                  return Card(
-                    color: Colors.green.shade200,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${priceDot(coupon!.discountAmount)}', // set the discount percentage here
-                            style:
-                                TextStyle(fontSize: 40.0, color: Colors.white),
-                            textAlign: TextAlign.center,
+      body: coupons == null
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  height: MediaQuery.of(context).padding.top,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 16.0),
+                    child: ListView.builder(
+                      itemCount: coupons.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        Coupon coupon = coupons[index];
+                        return Card(
+                          color: Colors.green.shade200,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  coupon!.discountType == 1
+                                      ? '${priceDot(coupon!.discountAmount)}' // Amount discount
+                                      : '${coupon!.discountPercent}% OFF', // Percent discount
+                                  style: TextStyle(
+                                      fontSize: 40.0, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 20.0),
+                                Text(
+                                  coupon!.name, // set the description here
+                                  style: TextStyle(
+                                      fontSize: 20.0, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 20.0),
+                                Text(
+                                  '사용기간 ${coupon!.startDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')} ~ ${coupon!.endDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')}', // set the start and end dates here
+                                  style: TextStyle(
+                                      fontSize: 16.0, color: Colors.white),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 20.0),
-                          Text(
-                            coupon!.name, // set the description here
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                          SizedBox(height: 20.0),
-                          Text(
-                            '사용기간 ${coupon!.startDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')} ~ ${coupon!.endDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')}', // set the start and end dates here
-                            style:
-                                TextStyle(fontSize: 16.0, color: Colors.white),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     ));
   }
 }
