@@ -16,7 +16,7 @@ class _RecommendState extends State<Recommend>
   final TextEditingController _textController = TextEditingController();
   late AnimationController _controller;
   late Animation<Offset> _animation;
-  List<Recommendation> recommendations = []; // 추천 받은 노하우글 담아둘 곳
+  final List<Recommendation> recommendations = [];
 
   Future<void> fetchRecommendations() async {
     Map<String, String> queryParameters = {};
@@ -24,7 +24,7 @@ class _RecommendState extends State<Recommend>
     for (String tag in _tags) {
       queryParameters['keywords'] = tag;
     }
-    print(queryParameters);
+    // print(queryParameters);
     Response response = await dioClient.dio
         .get('/knowhows/recommends', queryParameters: queryParameters);
 
@@ -36,8 +36,10 @@ class _RecommendState extends State<Recommend>
       print(jsonData); // 프린트
 
       setState(() {
-        recommendations = newRecommendations;
+        recommendations.addAll(newRecommendations);
       });
+
+      print(recommendations);
     } else {
       // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
@@ -47,6 +49,7 @@ class _RecommendState extends State<Recommend>
   @override
   void initState() {
     super.initState();
+
     // fetchRecommendations();
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
@@ -82,10 +85,10 @@ class _RecommendState extends State<Recommend>
   }
 
   void _removeTag(int index) {
-    // setState(() {
-    _tags.removeAt(index);
-    fetchRecommendations();
-    // });
+    setState(() {
+      _tags.removeAt(index);
+      fetchRecommendations();
+    });
   }
 
   @override
@@ -138,16 +141,6 @@ class _RecommendState extends State<Recommend>
             ),
           ),
           const SizedBox(height: 16.0),
-
-          // // ListView 이상한 공간이 생겨
-          // Expanded(
-          //   child: ListView.builder(
-          //     itemCount: recommendations.length,
-          //     itemBuilder: (BuildContext context, int index) {
-          //       final recommendation = recommendations[index];
-          //     },
-          //   ),
-          // ),
 
           // Wrap
           Wrap(
@@ -226,15 +219,16 @@ class _RecommendState extends State<Recommend>
                                       // container start
                                       Container(
                                         height: 200,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(10),
                                             topRight: Radius.circular(10),
                                           ),
                                           // pictureList 의 첫번째 사진.jpg
                                           image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/image/image 1.png'),
+                                            image: NetworkImage(
+                                                recommendations[0]
+                                                    .pictureList[0]),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -389,14 +383,16 @@ class _RecommendState extends State<Recommend>
                                       // container start
                                       Container(
                                         height: 200,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(10),
                                             topRight: Radius.circular(10),
                                           ),
+                                          // pictureList 의 첫번째 사진.jpg
                                           image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/image/image 4.png'),
+                                            image: NetworkImage(
+                                                recommendations[1]
+                                                    .pictureList[0]),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -496,7 +492,6 @@ class _RecommendState extends State<Recommend>
                                 ),
                               ),
                             ),
-
                             //flexible rectangular box
                           ],
                         ),
@@ -548,14 +543,16 @@ class _RecommendState extends State<Recommend>
                                       // container start
                                       Container(
                                         height: 200,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
+                                        decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(10),
                                             topRight: Radius.circular(10),
                                           ),
+                                          // pictureList 의 첫번째 사진.jpg
                                           image: DecorationImage(
-                                            image: AssetImage(
-                                                'assets/image/image 5.png'),
+                                            image: NetworkImage(
+                                                recommendations[2]
+                                                    .pictureList[0]),
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -667,14 +664,6 @@ class _RecommendState extends State<Recommend>
               ),
             ),
           ),
-          // Drawed Bubbles
-          // 아무런 데이터가 없을 경우, 버블을 띄우지 않고 빈 박스를 띄운다 - 위에서
-          // If no recommendations exist or are null
-          // if (recommendations.isEmpty ||
-          //     (recommendations[0] == null &&
-          //         recommendations[1] == null &&
-          //         recommendations[2] == null))
-          //   const SizedBox.shrink(),
         ],
       ),
     ));
@@ -685,37 +674,37 @@ class _RecommendState extends State<Recommend>
 class Recommendation {
   final int knowhowNo;
   final String writer;
-  final String profileImageUrl;
+  final String profile;
   final String title;
   final List<String> pictureList;
-  final int pictureCount;
-  final int likeCount;
-  final bool isLiked;
-  final int commentCount;
+  final int pictureCnt;
+  final int likeCnt;
+  final bool like;
+  final int commentCnt;
 
   Recommendation({
     required this.knowhowNo,
     required this.writer,
-    required this.profileImageUrl,
+    required this.profile,
     required this.title,
     required this.pictureList,
-    required this.pictureCount,
-    required this.likeCount,
-    required this.isLiked,
-    required this.commentCount,
+    required this.pictureCnt,
+    required this.likeCnt,
+    required this.like,
+    required this.commentCnt,
   });
 
   factory Recommendation.fromJson(Map<String, dynamic> json) {
     return Recommendation(
       knowhowNo: json['knowhowNo'],
       writer: json['writer'],
-      profileImageUrl: json['profile'],
+      profile: json['profile'],
       title: json['title'],
-      pictureList: List<String>.from(json['pictureList']),
-      pictureCount: json['pictureCnt'],
-      likeCount: json['likeCnt'],
-      isLiked: json['like'],
-      commentCount: json['commentCnt'],
+      pictureList: List<String>.from(json['pictureList'] ?? []),
+      pictureCnt: json['pictureCnt'] ?? 0,
+      likeCnt: json['likeCnt'] ?? 0,
+      like: json['like'] ?? false,
+      commentCnt: json['commentCnt'] ?? 0,
     );
   }
 }
