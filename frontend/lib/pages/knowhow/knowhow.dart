@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/models/knowhow_item.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
@@ -20,28 +21,59 @@ int _selectedindex = -1;
 
 class _KnowHowState extends State<KnowHow> {
   Dio dio = Dio();
-  int category = 0;
-  String searchText = "";
+  List<KnowhowItem> itemList = [];
+  final ScrollController _scrollController = ScrollController();
+  bool knowhowisLoading = false;
+  bool knowhowisLast = false;
+  int knowhowcategory = 0;
+  int knowhowpage = 0;
+  String knowhowSearchText = "";
   // 사진 개수에 따라 사진 배치
 
   void _getCategory(int index) {
-    category = index;
+    knowhowcategory = index;
+    _requestKnowhow(false);
   }
 
   void _getSearchText(String text) {
-    searchText = text;
-    _requestKnowhow();
+    knowhowSearchText = text;
+    _requestKnowhow(false);
   }
 
   @override
   void initState() {
     // TODO: implement initState
-    _requestKnowhow();
+    _requestKnowhow(false);
+    _scrollController.addListener(_scrollListener);
     super.initState();
   }
 
-  void _requestKnowhow() async {
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() async {
+    if (_scrollController.position != null &&
+        _scrollController.position.pixels >
+            _scrollController.position.maxScrollExtent * 0.8 &&
+        !knowhowisLast &&
+        !knowhowisLoading) {
+      knowhowisLoading = true;
+      knowhowpage += 1;
+      await _requestKnowhow(true);
+      knowhowisLoading = false;
+    }
+  }
+
+  Future<void> _requestKnowhow(bool isInfinite) async {
     try {
+      if (!isInfinite) {
+        knowhowpage = 0;
+        knowhowisLast = false;
+      }
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
       final response = await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/',
@@ -49,15 +81,32 @@ class _KnowHowState extends State<KnowHow> {
             'Authorization': 'Bearer $token',
           }),
           queryParameters: {
-            "page": 0,
-            "size": 10,
-            "category": category == 0 ? "" : category,
-            "keyword": searchText
+            "page": knowhowpage,
+            "size": 4,
+            "category": knowhowcategory == 0 ? "" : knowhowcategory,
+            "keyword": knowhowSearchText
           }).then(
         (value) {
-          setState(() {
-            content = value.data;
-          });
+          List<dynamic> jsonData = value.data;
+          // print(jsonData);
+          if (isInfinite) {
+            if (jsonData.isEmpty) {
+              knowhowisLast = true;
+              print('empty');
+            } else {
+              setState(() {
+                itemList.addAll(List<KnowhowItem>.from(jsonData
+                    .map((itemJson) => KnowhowItem.fromJson(itemJson))));
+                // 높이를 처음으로 변경하기
+              });
+            }
+          } else {
+            _scrollController.jumpTo(0);
+            setState(() {
+              itemList = List<KnowhowItem>.from(
+                  jsonData.map((itemJson) => KnowhowItem.fromJson(itemJson)));
+            });
+          }
         },
       );
     } on DioError catch (e) {
@@ -117,10 +166,11 @@ class _KnowHowState extends State<KnowHow> {
           )),
       CategoryTapBar(
         callback: _getCategory,
-        initNumber: category,
+        initNumber: knowhowcategory,
       ),
       Expanded(
           child: ListView.builder(
+              controller: _scrollController,
               itemCount: content.length,
               itemBuilder: (context, index) {
                 return Column(

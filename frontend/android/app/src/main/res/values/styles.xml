@@ -16,9 +16,7 @@
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
 
-    <style name="DefaultNotificationChannelId">
-        <item name="channelId">default_channel</item>
-    </style>
+    <string name="default_notification_channel_id">default_channel_id</string>
 
     <!-- <style name="AdditionalNotificationChannelId">
         <item name="channelId">YOUR_ADDITIONAL_NOTIFICATION_CHANNEL_ID</item>
