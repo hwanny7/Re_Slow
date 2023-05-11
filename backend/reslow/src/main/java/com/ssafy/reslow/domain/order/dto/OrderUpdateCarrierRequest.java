@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class OrderUpdateCarrierRequest {
 
-	private int carrierTrack;
+	private Long carrierTrack;
 	private String carrierCompany;
 }
