@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/profile/my_buy_list.dart';
 import 'package:reslow/pages/profile/my_sell_list.dart';
+import 'package:reslow/pages/profile/myknowhow.dart';
+import 'package:reslow/pages/profile/mylikeknowhow.dart';
 
 import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
@@ -120,6 +122,11 @@ class _ProfileState extends State<Profile> {
                 GestureDetector(
                   onTap: () {
                     // Navigate to my know-how post page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MyKnowhow()),
+                    );
                   },
                   child: Container(
                     padding: EdgeInsets.all(5),
@@ -130,6 +137,31 @@ class _ProfileState extends State<Profile> {
                             width: 10), // for spacing between icon and text
                         Text(
                           '내가 쓴 글',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.centerLeft,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to my know-how post page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const Mylikeknowhow()),
+                    );
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: Row(
+                      children: [
+                        Icon(Icons.star),
+                        SizedBox(
+                            width: 10), // for spacing between icon and text
+                        Text(
+                          '내가 찜한 글',
                           style: TextStyle(fontSize: 15),
                         ),
                       ],
