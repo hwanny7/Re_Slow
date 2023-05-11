@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-public class S3StorageClient implements StorageClient {
+public class StorageServiceImpl implements StorageService {
 
 	private AmazonS3 s3Client;
 
