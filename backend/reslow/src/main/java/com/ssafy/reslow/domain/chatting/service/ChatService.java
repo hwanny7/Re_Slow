@@ -1,5 +1,8 @@
 package com.ssafy.reslow.domain.chatting.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -10,7 +13,10 @@ import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
+import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
+import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
+import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
+import com.ssafy.reslow.domain.chatting.repository.ChatRepository;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 
@@ -21,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class ChatService {
+	private final ChatRepository chatRepository;
+	private final ChatMessageRepository chatMessageRepository;
 
 	private final ChatPublisher chatPublisher;
 	private final FcmService fcmService;
@@ -29,13 +37,13 @@ public class ChatService {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final SimpMessagingTemplate messagingTemplate;
 
-	public void sendMessage(ChatMessage chatMessage, ChannelTopic topic) {
+	public void sendMessage(ChatMessageRequest chatMessage, ChannelTopic topic) {
 		// Member receiver = memberRepository.findByNickname(chatMessage.getReceiver())
 		// 	.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		// List<String> deviceList = deviceRepository.findByMember(receiver)
 		// 	.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
-		if (isUserOnline(chatMessage.getReceiver())) {
+		if (isUserOnline(chatMessage.getSender())) {
 			System.out.println("==== CharService로 들어와서 publish 날리기 직전! =====");
 			chatPublisher.publish(topic, chatMessage);
 		} else {
@@ -69,4 +77,14 @@ public class ChatService {
 		redisTemplate.opsForSet().add(roomId, memberNo);
 	}
 
+	public Map<String, String> saveChatMessage(ChatMessageRequest chatMessage) {
+		ChatMessage message = ChatMessage.of(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage.getMessage(),
+			chatMessage.getDateTime());
+		chatMessageRepository.save(message);
+
+		Map<String, String> map = new HashMap<>();
+		map.put("sender", chatMessage.getSender());
+		map.put("Message", chatMessage.getMessage());
+		return map;
+	}
 }

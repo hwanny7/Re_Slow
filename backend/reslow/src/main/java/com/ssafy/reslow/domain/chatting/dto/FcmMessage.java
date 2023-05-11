@@ -1,7 +1,5 @@
 package com.ssafy.reslow.domain.chatting.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +16,8 @@ public class FcmMessage {
 	@Getter
 	public static class Message {
 		private Notification notification;
-		// private String token;
-		private List<String> registration_tokens;
+		private String token;
+		// private List<String> registration_tokens;
 	}
 
 	@Builder

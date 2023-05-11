@@ -20,8 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
+import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
+import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
 import com.ssafy.reslow.domain.chatting.service.ChatSubscriber;
 import com.ssafy.reslow.domain.chatting.service.FirebaseCloudMessageService;
@@ -35,11 +36,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatController {
+	private final ChatMessageRepository chatMessageRepository;
 	private final ChatService chatService;
 	private final MemberService memberService;
 	private final RedisMessageListenerContainer redisMessageListener;
 	private final ChatSubscriber chatSubscriber;
 	private Map<String, ChannelTopic> channels;
+	private final FirebaseCloudMessageService firebaseCloudMessageService;
 
 	@PostConstruct
 	public void init() {
@@ -47,8 +50,11 @@ public class ChatController {
 	}
 
 	@MessageMapping("/message")
-	public void handleChatMessage(@Payload ChatMessage chatMessage) {
+	public void handleChatMessage(@Payload ChatMessageRequest chatMessage) {
 		System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
+		// mongoDB에 저장하기
+		chatService.saveChatMessage(chatMessage);
+		// 채팅 보내기
 		chatService.sendMessage(chatMessage, channels.get(chatMessage.getRoomId()));
 	}
 
@@ -101,11 +107,10 @@ public class ChatController {
 		return memberService.deleteDeviceToken(memberNo, token.get("token"));
 	}
 
-	private final FirebaseCloudMessageService firebaseCloudMessageService;
-
 	@PostMapping("/api/fcm")
 	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO) throws IOException,
 		FirebaseMessagingException {
+		// firebaseCloudMessageService.makeMessage(
 		firebaseCloudMessageService.sendMessageTo(
 			requestDTO.getTargetToken(),
 			requestDTO.getTitle(),
