@@ -92,6 +92,14 @@ public class ChatController {
 		return memberService.addDeviceToken(memberNo, token.get("preToken"), token.get("newToken"));
 	}
 
+	@DeleteMapping("/fcm/token")
+	public Map<String, String> deleterUserToken(
+		@RequestBody Map<String, String> token,
+		Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return memberService.deleteDeviceToken(memberNo, token.get("token"));
+	}
+
 	private final FirebaseCloudMessageService firebaseCloudMessageService;
 
 	@PostMapping("/api/fcm")

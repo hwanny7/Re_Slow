@@ -205,4 +205,17 @@ public class MemberService {
 		map.put("device", "ok");
 		return map;
 	}
+
+	public Map<String, String> deleteDeviceToken(Long memberNo, String token) {
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		// 토큰 찾아서
+		Device device = deviceRepository.findByMemberAndDeviceToken(member, token)
+			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
+		// 토큰 삭제
+		deviceRepository.delete(device);
+
+		Map<String, String> map = new HashMap<>();
+		map.put("delete", "ok");
+		return map;
+	}
 }
