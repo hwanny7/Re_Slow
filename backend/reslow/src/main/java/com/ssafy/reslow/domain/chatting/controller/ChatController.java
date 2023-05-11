@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
 import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
@@ -103,7 +104,8 @@ public class ChatController {
 	private final FirebaseCloudMessageService firebaseCloudMessageService;
 
 	@PostMapping("/api/fcm")
-	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO) throws IOException {
+	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO) throws IOException,
+		FirebaseMessagingException {
 		firebaseCloudMessageService.sendMessageTo(
 			requestDTO.getTargetToken(),
 			requestDTO.getTitle(),

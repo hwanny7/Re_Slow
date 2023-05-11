@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class FcmService {
 	private final RestTemplate restTemplate;
 	private final MemberRepository memberRepository;
-	private static final String FCM_API_URL = "https://fcm.googleapis.com/fcm/send";
+	private static final String FCM_API_URL = "https://fcm.googleapis.com/v1/projects/reslow-594b0/messages:send";
 
 	public void sendNotification(List<String> receiver, Long senderNo, String message) {
 		Member sender = memberRepository.findById(senderNo)
@@ -29,7 +29,7 @@ public class FcmService {
 		Map<String, Object> requestBody = new HashMap<>();
 		requestBody.put("registration_ids", receiver); // 다중 수신
 		Map<String, Object> notification = new HashMap<>();
-		notification.put("title", sender.getNickname()); // 제목은 보낸 사람 닉네임
+		notification.put("title", "줴목"); // 제목은 보낸 사람 닉네임
 		notification.put("body", message);
 		requestBody.put("notification", notification);
 		restTemplate.postForObject(FCM_API_URL, requestBody, Object.class);
