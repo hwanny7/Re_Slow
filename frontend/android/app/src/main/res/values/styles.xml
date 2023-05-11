@@ -15,4 +15,12 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+
+    <style name="DefaultNotificationChannelId">
+        <item name="channelId">default_channel</item>
+    </style>
+
+    <!-- <style name="AdditionalNotificationChannelId">
+        <item name="channelId">YOUR_ADDITIONAL_NOTIFICATION_CHANNEL_ID</item>
+    </style> -->
 </resources>
