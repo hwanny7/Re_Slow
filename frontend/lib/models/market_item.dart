@@ -166,7 +166,7 @@ class MyBuyItem {
   final int price;
   final String date;
   final String image;
-  final int status;
+  int status;
 
   MyBuyItem({
     this.orderNo,

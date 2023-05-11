@@ -67,8 +67,8 @@ class ItemInfo extends StatelessWidget {
                   right: 10.0,
                   child: Row(
                     children: [
-                      Icon(Icons.favorite_border),
-                      SizedBox(width: 5),
+                      const Icon(Icons.favorite_border),
+                      const SizedBox(width: 5),
                       Text('${item.likeCount}'),
                     ],
                   ),
