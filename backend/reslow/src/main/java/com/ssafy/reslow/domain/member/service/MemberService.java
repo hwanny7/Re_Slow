@@ -188,9 +188,17 @@ public class MemberService {
 		return map;
 	}
 
-	public Map<String, String> addDeviceToken(Long memberNo, String token) {
+	public Map<String, String> addDeviceToken(Long memberNo, String preToken, String newToken) {
 		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		Device device = Device.of(member, token);
+		// 새로운 등록 요청
+		Device device;
+		if (preToken.equals("null")) {
+			device = Device.of(member, newToken);
+		} else {
+			device = deviceRepository.findByMemberAndDeviceToken(member, preToken)
+				.orElse(Device.of(member, newToken));
+			device.update(newToken);
+		}
 		deviceRepository.save(device);
 
 		Map<String, String> map = new HashMap<>();
