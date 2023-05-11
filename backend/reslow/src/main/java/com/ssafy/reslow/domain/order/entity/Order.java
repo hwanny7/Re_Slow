@@ -58,7 +58,7 @@ public class Order extends BaseEntity {
     private String carrierCompany;
 
     @Column(name = "CARRIER_TRACK")
-    private Long carrierTrack;
+    private String carrierTrack;
 
     @Column(name = "TOTAL_PRICE")
     private Long totalPrice;
