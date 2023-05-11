@@ -148,160 +148,483 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           margin: const EdgeInsets.fromLTRB(16, 4, 0, 4),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("의류 리폼, 이렇게 해봐요!\u{1f609}",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text("지금 인기있는 플리마켓 상품!\u{1f609}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton(
               onPressed: () {},
               child: const Text("더보기"),
             )
           ])),
+      // popular goods
       Container(width: 600, height: 1, color: const Color(0xffDBDBDB)),
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
+            // 상품 1
             Container(
-                margin: const EdgeInsets.all(8),
-                child: ClipRRect(
+              margin: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(10.0),
                     child: Image.asset(
                       "assets/image/image 1.png",
                       width: 140,
                       height: 140,
                       fit: BoxFit.cover,
-                    ))),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 2.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  )),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Product Name 1",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Product Title 1",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Price 1",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                        size: 16,
+                      ),
+                      SizedBox(width: 4),
+                      Text("1"),
+                    ],
+                  ),
+                ],
+              ),
             ),
             Container(
               margin: const EdgeInsets.all(8),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 3.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  )),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      "assets/image/image 2.png",
+                      width: 140,
+                      height: 140,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Product Name 2",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Product Title 2",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Price 2",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                        size: 16,
+                      ),
+                      SizedBox(width: 4),
+                      Text("2"),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.asset(
+                      "assets/image/image 3.png",
+                      width: 140,
+                      height: 140,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "Product Name 3",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Product Title 3",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Price 3",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                        size: 16,
+                      ),
+                      SizedBox(width: 4),
+                      Text("3"),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      Container(width: 600, height: 12, color: const Color(0xffF4F2F2)),
+      // recommended goods
       Container(
-          width: 600,
-          margin: const EdgeInsets.fromLTRB(16, 4, 0, 4),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("서적 리폼, 이렇게 해봐요!\u{1f4d3}",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        width: 600,
+        height: 12,
+        color: const Color(0xffF4F2F2),
+      ),
+      Container(
+        width: 600,
+        margin: const EdgeInsets.fromLTRB(16, 4, 0, 4),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "리폼왕춘식이 님을 위한 추천 상품!\u{1f4d3}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             TextButton(
               onPressed: () {},
               child: const Text("더보기"),
-            )
-          ])),
-      Container(width: 600, height: 1, color: const Color(0xffDBDBDB)),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
+            ),
+          ],
+        ),
+      ),
+      Container(
+        width: 600,
+        height: 1,
+        color: const Color(0xffDBDBDB),
+      ),
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(8),
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.asset(
                     "assets/image/image 4.png",
                     width: 140,
                     height: 140,
                     fit: BoxFit.cover,
-                  )),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Name",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Title",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Price",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.favorite_border, size: 16),
+                      const SizedBox(width: 4),
+                      const Text("Number", style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              Container(
+                margin: const EdgeInsets.all(8),
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.asset(
                     "assets/image/image 5.png",
                     width: 140,
                     height: 140,
                     fit: BoxFit.cover,
-                  )),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 6.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  )),
-            ),
-          ],
-        ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Name",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Title",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Price",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.favorite_border, size: 16),
+                      const SizedBox(width: 4),
+                      const Text("Number", style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
+
+      // popular knowhow
       Container(width: 600, height: 12, color: const Color(0xffF4F2F2)),
       Container(
           width: 600,
           margin: const EdgeInsets.fromLTRB(16, 4, 0, 4),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text("이 제품 좋아하실 것 같아요\u{1f49d}",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text("지금 인기있는 노하우 글!\u{1f49d}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             TextButton(
               onPressed: () {},
               child: const Text("더보기"),
             )
           ])),
       Container(width: 600, height: 1, color: const Color(0xffDBDBDB)),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 7.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  )),
+      // 이미지 부분
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Title1",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/image/test.jpg'),
+                      radius: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Username",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 8.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  )),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          "assets/image/image 7.png",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          "assets/image/image 8.png",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          "assets/image/image 9.png",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 9.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  )),
+          ),
+        ], // children
+      ),
+      // 이미지 부분 Column
+      // 하나 더
+      // 이미지 부분 2222
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Title2",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: AssetImage('assets/image/test.jpg'),
+                      radius: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Username",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          "assets/image/image 7.png",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          "assets/image/image 8.png",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          "assets/image/image 9.png",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ], // children
       ),
     ]));
   }
