@@ -46,6 +46,7 @@ dependencies:
   kpostal: ^0.5.1
   iamport_flutter: ^0.10.0
   flutter_local_notifications: ^14.0.0+1
+  webview_flutter: ^4.2.0
 
 dev_dependencies:
   flutter_test:

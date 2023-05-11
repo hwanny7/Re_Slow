@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/item_detail.dart';
 import 'package:reslow/pages/market/order_detail.dart';
+import 'package:reslow/pages/profile/delivery_check.dart';
 import 'package:reslow/pages/profile/my_Bottom_sheet.dart';
 import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
@@ -249,7 +250,11 @@ class _SellItemInfoState extends State<SellItemInfo> {
                                             gotDeliveryMan: gotDeliveryMan);
                                       });
                                 } else if (widget.item.status == 3) {
-                                  print("배송 조회");
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DeliveryCheck()),
+                                  );
                                 }
                               },
                               child: Text(
