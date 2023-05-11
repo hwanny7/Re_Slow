@@ -1,37 +1,61 @@
 package com.ssafy.reslow.infra.delivery;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
 @Slf4j
 public class DeliveryService {
 
-	@Value("${delivery.api.key}")
-	private String DELIVERY_API_KEY;
-	private final WebClient webClient =
-		WebClient
-			.builder()
-			.baseUrl("http://info.sweettracker.co.kr/")
-			.build();
-	public Map<String, Object> deliveryTracking(String t_code, String t_invoice) {
+    @Value("${delivery.api.key}")
+    private String DELIVERY_API_KEY;
 
-		Map<String, Object> response = webClient
-			.get()
-			.uri("api/v1/trackingInfo?t_code="+t_code+"&t_invoice="+t_invoice+"&t_invoice="+DELIVERY_API_KEY)
-			.retrieve()
-			.bodyToMono(Map.class)
-			.block();
+    public String deliveryTracking(String t_code, String t_invoice) {
+        WebClient webClient = WebClient.builder()
+            .exchangeStrategies(ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
+                .build())
+            .baseUrl("http://info.sweettracker.co.kr/tracking/5")
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .build();
 
-		return response;
-	}
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("t_key", DELIVERY_API_KEY);
+        formData.add("t_code", t_code);
+        formData.add("t_invoice", t_invoice);
+
+        String response = webClient.post()
+            .body(BodyInserters.fromFormData(formData))
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+
+        return response;
+    }
+
+    public String directDeliveryTracking(String t_code, String t_invoice) {
+        System.out.println(t_code + " " + t_invoice);
+        WebClient webClient = WebClient.builder()
+            .exchangeStrategies(ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
+                .build())
+            .baseUrl("http://info.sweettracker.co.kr/api/v1/trackingInfo?t_code=" + t_code
+                + "&t_invoice=" + t_invoice + "&t_key=" + DELIVERY_API_KEY)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .build();
+
+        String response = webClient.get()
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+        return response;
+    }
 }

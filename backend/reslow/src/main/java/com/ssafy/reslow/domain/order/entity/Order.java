@@ -90,7 +90,7 @@ public class Order extends BaseEntity {
             .memo(request.getMemo())
             .product(product)
             .buyer(buyer)
-            .totalPrice((long)totalPrice)
+            .totalPrice((long) totalPrice)
             .issuedCoupon(issuedCoupon)
             .build();
     }

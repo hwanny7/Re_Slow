@@ -6,9 +6,9 @@ import com.ssafy.reslow.domain.order.repository.OrderRepository;
 import com.ssafy.reslow.infra.delivery.DeliveryService;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -60,7 +60,7 @@ public class BatchConfig {
                 LocalDateTime daysAgo = now.minusDays(3);
                 List<Order> list = orderRepository.findByUpdatedDateLessThanAndStatus(daysAgo,
                     OrderStatus.COMPLETE_DELIVERY);
-                list.stream().forEach(order -> {
+                list.forEach(order -> {
                     order.updateStatus(OrderStatus.COMPLETE_TRANSACTION);
                     orderRepository.save(order);
                 });
@@ -74,20 +74,20 @@ public class BatchConfig {
         return stepBuilderFactory.get("deliveryTrackStep")
             .tasklet((contribution, chunkContext) -> {
                 SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-                // 배송중인 친구들만 조회하기
                 List<Order> list = orderRepository.findByStatus(OrderStatus.PROGRESS_DELIVERY);
-                // 운송장 조회
-                list.stream().forEach(order -> {
+                list.forEach(order -> {
                     String carrierCompany = order.getCarrierCompany();
                     String carrierTrack = order.getCarrierTrack();
-                    Map<String, Object> response = deliveryService.deliveryTracking(carrierCompany, carrierTrack);
-                    if(response.get("completeYN").equals("Y")){
-                        log.info("=================== 배송완료 된 것 ===================");
+                    String response = deliveryService.directDeliveryTracking(carrierCompany,
+                        carrierTrack);
+                    JSONObject jsonObject = new JSONObject(response);
+                    if (jsonObject.get("completeYN").equals("Y")) {
                         order.updateStatus(OrderStatus.COMPLETE_DELIVERY);
                     }
-                    setOperations.add(carrierCompany+"_"+carrierTrack, String.valueOf(response));
+                    redisTemplate.opsForValue()
+                        .set(carrierCompany + "_" + carrierTrack, String.valueOf(response));
                 });
-                
+
                 return RepeatStatus.FINISHED;
             })
             .build();
