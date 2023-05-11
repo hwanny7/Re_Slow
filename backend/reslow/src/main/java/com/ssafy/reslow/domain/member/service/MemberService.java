@@ -188,13 +188,34 @@ public class MemberService {
 		return map;
 	}
 
-	public Map<String, String> addDeviceToken(Long memberNo, String token) {
+	public Map<String, String> addDeviceToken(Long memberNo, String preToken, String newToken) {
 		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		Device device = Device.of(member, token);
+		// 새로운 등록 요청
+		Device device;
+		if (preToken.equals("null")) {
+			device = Device.of(member, newToken);
+		} else {
+			device = deviceRepository.findByMemberAndDeviceToken(member, preToken)
+				.orElse(Device.of(member, newToken));
+			device.update(newToken);
+		}
 		deviceRepository.save(device);
 
 		Map<String, String> map = new HashMap<>();
 		map.put("device", "ok");
+		return map;
+	}
+
+	public Map<String, String> deleteDeviceToken(Long memberNo, String token) {
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		// 토큰 찾아서
+		Device device = deviceRepository.findByMemberAndDeviceToken(member, token)
+			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
+		// 토큰 삭제
+		deviceRepository.delete(device);
+
+		Map<String, String> map = new HashMap<>();
+		map.put("delete", "ok");
 		return map;
 	}
 }
