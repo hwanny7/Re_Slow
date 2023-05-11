@@ -9,7 +9,6 @@ import 'package:reslow/providers/socket_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
 import 'package:reslow/pages/knowhow/knowhowregister.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
