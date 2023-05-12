@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.reslow.domain.chatting.dto.ChatMessage;
+import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class ChatSubscriber implements MessageListener {
 			// redis에서 발행된 데이터를 받아 deserialize
 			String publishMessage = (String)redisTemplate.getStringSerializer().deserialize(message.getBody());
 			// ChatMessage 객채로 맵핑
-			ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
+			ChatMessageRequest chatMessage = objectMapper.readValue(publishMessage, ChatMessageRequest.class);
 			System.out.println("subscriber들에게 들어간 채팅 메시지: + " + chatMessage);
 			// Websocket subscriber들에게 채팅 메시지 Send
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
