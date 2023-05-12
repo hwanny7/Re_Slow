@@ -193,6 +193,9 @@ public class KnowhowService {
 		Knowhow knowhow = knowhowRepository.findById(knowhowNo)
 			.orElseThrow(() -> new CustomException(KNOWHOW_NOT_FOUND));
 		if (knowhow.getMember().getNo().equals(memberNo)) {
+			System.out.println("노하우 쓴 애랑 로그인한애랑 다르다!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println("노하우 글 쓴애: " + knowhow.getMember().getNo());
+			System.out.println("로그인한 애 : " + memberNo);
 			throw new CustomException(FORBIDDEN);
 		}
 
