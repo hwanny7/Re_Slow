@@ -134,6 +134,7 @@ public class MemberService {
 		return map;
 	}
 
+	@Transactional
 	public Map<String, Long> updateUser(Long memberNo, MemberUpdateRequest request) {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
