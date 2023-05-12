@@ -21,7 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
@@ -100,14 +99,6 @@ public class Member extends BaseEntity implements UserDetails {
 	@ElementCollection(fetch = FetchType.EAGER)
 	private List<String> roles = new ArrayList<>();
 
-	@Builder.Default
-	@OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
-	private List<ChatRoom> senderChats = new ArrayList<>();
-
-	@Builder.Default
-	@OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
-	private List<ChatRoom> receiverChats = new ArrayList<>();
-
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return this.roles.stream()
@@ -158,5 +149,14 @@ public class Member extends BaseEntity implements UserDetails {
 	public void registAccount(MemberAccount memberAccount) {
 		this.memberAccount = memberAccount;
 		this.isCertification = true;
+	}
+
+	public static Member emptyMember() {
+		return Member.builder()
+			.id("탈퇴한 멤버")
+			.password("탈퇴한 멤버")
+			.nickname("탈퇴한 멤버")
+			.roles(Collections.singletonList(Authority.USER.name()))
+			.build();
 	}
 }

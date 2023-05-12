@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ChatMessage {
+public class ChatMessageRequest {
 	private String roomId;
-	private String sender; // 보낸사람
-	private String receiver; // 받은사람
+	private Long sender; // 보낸사람
 	private String message; // 보낸 메시지
+	private String dateTime; // 메시지 보낸 시각
 }

@@ -8,5 +8,6 @@ import lombok.Getter;
 public class FcmRequest {
 	private String title;
 	private String body;
+	private String roomId;
 	private String targetToken;
 }
