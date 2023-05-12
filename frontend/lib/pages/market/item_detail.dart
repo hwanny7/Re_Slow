@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/buy_item.dart';
+import 'package:reslow/pages/profile/account_register.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:reslow/utils/navigator.dart';
+import 'package:reslow/utils/shared_preference.dart';
 
 class ItemDetail extends StatefulWidget {
   final int itemPk;
@@ -236,9 +238,59 @@ class _ItemDetailState extends State<ItemDetail> {
                         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                         color: const Color(0xFF165B40),
                         minWidth: MediaQuery.of(context).size.width * 0.05,
-                        onPressed: () => {
-                              leftToRightNavigator(BuyItem(item: item), context)
-                            },
+                        onPressed: () {
+                          Future<bool> result =
+                              UserPreferences().getExistAccount();
+                          result.then((res) {
+                            if (res) {
+                              leftToRightNavigator(
+                                  BuyItem(item: item), context);
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('계좌 등록 안내'),
+                                    content: const Text(
+                                        '계좌 등록이 필요한 서비스입니다. 거래 관련 입금·환불 처리를 위해 계좌를 등록해주세요'),
+                                    actions: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 10),
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).pop();
+                                                  leftToRightNavigator(
+                                                      const AccountRegister(),
+                                                      context);
+                                                },
+                                                child: const Text(
+                                                  '등록하기',
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                        22, // Set the font size to 24
+                                                    color: Colors
+                                                        .blue, // Set the font color to blue
+                                                    fontWeight: FontWeight
+                                                        .bold, // Make the text bold
+                                                  ),
+                                                ),
+                                              )),
+                                        ],
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          });
+                        },
                         child: const Text(
                           "구매",
                           textAlign: TextAlign.center,

@@ -10,8 +10,20 @@ class UserPreferences {
 
     prefs.setString("accessToken", user.accessToken!);
     prefs.setString("refreshToken", user.refreshToken!);
+    prefs.setBool("existAccount", user.existAccount!);
 
     return prefs;
+  }
+
+  Future<bool> getExistAccount() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? existAccount = prefs.getBool("existAccount")!;
+    return existAccount;
+  }
+
+  Future<void> setTrueAccount() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("existAccount", true);
   }
 
   Future<User> getUser() async {

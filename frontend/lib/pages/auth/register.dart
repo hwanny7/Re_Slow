@@ -95,27 +95,17 @@ class RegisterState extends State<Register> {
     }
 
     void submit() async {
-      var fcmToken = await FirebaseMessaging.instance.getToken(
-          vapidKey:
-              "BCuQB-Qb6ULUXqwfyenXdLVq56BRx_vP5TBUp2-8_-KsCXhMsWWI5Xdh3P0oP1Z-Yja2TrkVXUtTw6Bux4JPzxI");
-      print(fcmToken);
       if (auth.registeredInStatus != Status.Registering) {
         final id = idController.text;
         final password = passwordController.text;
         final nickname = nicknameController.text;
         Map<String, dynamic> response =
             await auth.register(id, password, nickname);
-
         if (response['status'] == true) {
           Map<String, dynamic> response = await auth.login(id, password);
-
-          if (response['status'] == true) {
-            User user = User.fromJson(response['user']);
-            userProvider.setUser(user);
-            Navigator.pushReplacementNamed(context, '/main');
-          } else {
-            print(response['message']);
-          }
+          User user = User.fromJson(response['user']);
+          userProvider.setUser(user);
+          Navigator.pushReplacementNamed(context, '/main');
         } else {
           print(response['message']);
         }

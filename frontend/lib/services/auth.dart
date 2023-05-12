@@ -55,6 +55,8 @@ Future<Map<String, dynamic>> register(
   Response response = await post(Uri.parse(baseURL),
       body: json.encode(payload),
       headers: {'Content-Type': 'application/json'});
+  print(response);
+  print('hello');
   if (response.statusCode == 200) {
     final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -70,7 +72,3 @@ Future<Map<String, dynamic>> register(
   }
   return result;
 }
-
-  // static onError(error) {
-  //   return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
-  // }

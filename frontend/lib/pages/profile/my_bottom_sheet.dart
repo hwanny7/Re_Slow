@@ -34,7 +34,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 
     return Container(
       height: screenHeight * 0.5,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           Row(
