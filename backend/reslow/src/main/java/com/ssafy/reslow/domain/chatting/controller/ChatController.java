@@ -12,8 +12,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
 import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
@@ -55,14 +52,14 @@ public class ChatController {
 		channels = new HashMap<>();
 	}
 
-	@MessageMapping("/message")
-	public void handleChatMessage(@Payload ChatMessageRequest chatMessage) {
-		System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
-		// mongoDB에 저장하기
-		chatService.saveChatMessage(chatMessage);
-		// 채팅 보내기
-		chatService.sendMessage(chatMessage, channels.get(chatMessage.getRoomId()));
-	}
+	// @MessageMapping("/message")
+	// public void handleChatMessage(@Payload ChatMessageRequest chatMessage) {
+	// 	System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
+	// 	// mongoDB에 저장하기
+	// 	chatService.saveChatMessage(chatMessage);
+	// 	// 채팅 보내기
+	// 	chatService.sendMessage(chatMessage, channels.get(chatMessage.getRoomId()));
+	// }
 
 	// 채팅방 목록확인
 	@GetMapping("/roomList")
