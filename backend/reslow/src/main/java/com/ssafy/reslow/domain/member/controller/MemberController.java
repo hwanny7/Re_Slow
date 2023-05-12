@@ -23,6 +23,7 @@ import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
 import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
+import com.ssafy.reslow.domain.member.dto.MemberNoNickPicResponse;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
@@ -112,5 +113,11 @@ public class MemberController {
 	public Map<String, Long> updateAccount(Authentication authentication, @RequestBody MemberAccountRequest request) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		return memberService.updateAccount(memberNo, request);
+	}
+
+	@GetMapping("/info")
+	public MemberNoNickPicResponse getMemberNoAndNickname(Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return memberService.getMemberNoAndNicknameAndProfilePic(memberNo);
 	}
 }
