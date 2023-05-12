@@ -41,7 +41,7 @@ import com.ssafy.reslow.domain.product.repository.ProductCategoryRepository;
 import com.ssafy.reslow.global.auth.jwt.JwtTokenProvider;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.infra.storage.S3StorageClient;
+import com.ssafy.reslow.infra.storage.StorageServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class MemberService {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final RedisTemplate redisTemplate;
 	private final AuthenticationManager authenticationManager;
-	private final S3StorageClient s3Service;
+	private final StorageServiceImpl s3Service;
 	@Value("${default-image-s3}")
 	private String DEFAULT_IMAGE_S3;
 
@@ -96,7 +96,7 @@ public class MemberService {
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		TokenResponse tokenInfo = jwtTokenProvider.generateToken(authentication);
-		boolean existAccount = member.getMemberAccount() == null ? false : true;
+		boolean existAccount = member.getMemberAccount() != null;
 		tokenInfo.setExistAccount(existAccount);
 
 		redisTemplate.opsForValue()

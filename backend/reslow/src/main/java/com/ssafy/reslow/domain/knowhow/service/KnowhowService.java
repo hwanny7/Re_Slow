@@ -43,7 +43,7 @@ import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.infra.storage.S3StorageClient;
+import com.ssafy.reslow.infra.storage.StorageServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +60,7 @@ public class KnowhowService {
 	private final KnowhowCategoryRepository knowhowCategoryRepository;
 	private final KnowhowContentRepository knowhowContentRepository;
 	private final KnowhowCommentRepository knowhowCommentRepository;
-	private final S3StorageClient s3StorageClient;
+	private final StorageServiceImpl s3StorageClient;
 
 	// 게시글 정보 저장
 	public String saveKnowhow(Long memberNo, KnowhowRequest knowhowRequest) throws IOException {

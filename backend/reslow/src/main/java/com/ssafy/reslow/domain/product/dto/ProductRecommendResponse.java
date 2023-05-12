@@ -21,7 +21,7 @@ public class ProductRecommendResponse {
 			.title(product.getTitle())
 			.price(product.getPrice())
 			.heartCount(heartCount)
-			.image(product.getProductImages() == null ? null : product.getProductImages().get(0).getUrl())
+			.image(product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl())
 			.build();
 	}
 }

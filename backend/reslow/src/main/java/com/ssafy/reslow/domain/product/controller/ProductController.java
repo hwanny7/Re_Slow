@@ -113,7 +113,6 @@ public class ProductController {
 		return productService.recommendMyProduct(memberNo);
 	}
 
-	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/sale")
 	public Slice<MyProductListResponse> myProductList(Authentication authentication,
 		@RequestParam("status") int status,

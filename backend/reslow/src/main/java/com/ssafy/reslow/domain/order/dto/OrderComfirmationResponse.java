@@ -15,11 +15,12 @@ public class OrderComfirmationResponse {
 	private String title;
 	private LocalDateTime date;
 	private String recipient;
-	private int zipcode;
+	private Long zipcode;
 	private String address;
 	private String addressDetail;
 	private String phoneNumber;
 	private String memo;
+	private String image;
 	private int totalPrice;
 	private int productPrice;
 	private int discountPrice;
@@ -34,6 +35,7 @@ public class OrderComfirmationResponse {
 		}
 		return OrderComfirmationResponse.builder()
 			.title(product.getTitle())
+			.image(product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl())
 			.totalPrice(totalPrice)
 			.productPrice(product.getPrice())
 			.discountPrice((int)discount)

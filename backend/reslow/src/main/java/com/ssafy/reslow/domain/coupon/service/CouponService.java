@@ -29,7 +29,7 @@ import com.ssafy.reslow.domain.manager.repository.ManagerRepository;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.infra.storage.StorageClient;
+import com.ssafy.reslow.infra.storage.StorageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,7 +42,7 @@ public class CouponService {
 	private final IssuedCouponRepository issuedCouponRepository;
 	private final MemberRepository memberRepository;
 	private final ManagerRepository managerRepository;
-	private final StorageClient storageClient;
+	private final StorageService storageService;
 
 	public Slice<CouponListResponse> getAllValidCoupons(Pageable pageable) {
 		LocalDateTime now = LocalDateTime.now();
@@ -72,7 +72,7 @@ public class CouponService {
 	public Map<String, Long> createCoupon(Long managerNo, CouponCreateRequest couponCreateRequest,
 		MultipartFile image) throws IOException {
 		Manager manager = managerRepository.getReferenceById(managerNo);
-		String imageUrl = storageClient.uploadFile(image);
+		String imageUrl = storageService.uploadFile(image);
 		Coupon coupon = Coupon.of(manager, couponCreateRequest, imageUrl);
 		coupon = couponRepository.save(coupon);
 

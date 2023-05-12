@@ -14,7 +14,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: update
       use-new-id-generator-mappings: false
@@ -41,6 +41,9 @@ spring:
       authentication-database: admin
       database: reslow
 
+  batch:
+    jdbc:
+      initialize-schema: always
 
 jwt:
   secret: ${JWT_SECRETKEY}
@@ -69,3 +72,7 @@ iamport:
   api:
     key: ${IAMPORT_KEY}
     secret: ${IAMPORT_SECRET}
+
+delivery:
+  api:
+    key: ${DELIVERY_API_KEY}

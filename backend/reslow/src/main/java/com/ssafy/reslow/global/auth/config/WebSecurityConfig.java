@@ -71,7 +71,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity
 			.authorizeRequests()
 			.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-			.antMatchers("/products/sale", "/orders/purchase").hasRole("USER")
 			.antMatchers("/**", "/members/**", "/managers/**", "/coupons/**", "/notices/**","/orders/**",
 				"/knowhows/**", "/chattings/**", "/likes/**", "/products/**").permitAll()
 			.and()
