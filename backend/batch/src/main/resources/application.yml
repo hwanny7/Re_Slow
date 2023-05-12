@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active: dev
+  jpa:
+    hibernate:
+      ddl-auto: update
+---
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  config:
+    activate:
+      on-profile: local-h2
+---
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Mysql Settings
+    url: jdbc:mysql://localhost:3306/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${LOCAL_MYSQL_NAME}
+    password: ${LOCAL_MYSQL_PASSWORD}
+  config:
+    activate:
+      on-profile: local
+---
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # Mysql Settings
+    url: jdbc:mysql://k8b306.p.ssafy.io:13306/reslow?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ${DEV_MYSQL_NAME}
+    password: ${DEV_MYSQL_PASSWORD}
+  config:
+    activate:
+      on-profile: dev
