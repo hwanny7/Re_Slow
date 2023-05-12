@@ -5,6 +5,7 @@ import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.order.entity.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Order findTop1ByBuyerOrderByCreatedDateDesc(Member member);
 
-    List<Order> findByUpdatedDateLessThanAndStatus(LocalDateTime time, OrderStatus status);
+    Page<Order> findByUpdatedDateLessThanAndStatus(LocalDateTime time, OrderStatus status, Pageable pageable);
 
-    List<Order> findByStatus(OrderStatus status);
+    Page<Order> findByStatus(OrderStatus status, Pageable pageable);
 }

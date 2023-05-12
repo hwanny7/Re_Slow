@@ -22,6 +22,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -39,8 +40,9 @@ public class Order extends BaseEntity {
     @Column(name = "RECIPIENT")
     private String recipient;
 
+    @ColumnDefault("0")
     @Column(name = "ZIPCODE")
-    private Long zipcode;
+    private int zipcode;
 
     @Column(name = "ADDRESS")
     private String address;
@@ -60,8 +62,9 @@ public class Order extends BaseEntity {
     @Column(name = "CARRIER_TRACK")
     private String carrierTrack;
 
+    @ColumnDefault("0")
     @Column(name = "TOTAL_PRICE")
-    private Long totalPrice;
+    private int totalPrice;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Product product;
@@ -90,8 +93,26 @@ public class Order extends BaseEntity {
             .memo(request.getMemo())
             .product(product)
             .buyer(buyer)
-            .totalPrice((long) totalPrice)
+            .totalPrice(totalPrice)
             .issuedCoupon(issuedCoupon)
+            .build();
+    }
+
+    public static Order toEntity(Order order) {
+        return Order.builder()
+            .status(order.getStatus())
+            .recipient(order.getRecipient())
+            .zipcode(order.getZipcode())
+            .address(order.getAddress())
+            .addressDetail(order.getAddressDetail())
+            .phoneNumber(order.getPhoneNumber())
+            .memo(order.getMemo())
+            .product(order.getProduct())
+            .buyer(order.getBuyer())
+            .totalPrice(order.getTotalPrice())
+            .carrierCompany(order.getCarrierCompany())
+            .carrierTrack(order.getCarrierTrack())
+            .issuedCoupon(order.getIssuedCoupon())
             .build();
     }
 
