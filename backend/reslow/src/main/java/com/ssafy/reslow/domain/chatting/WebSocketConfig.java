@@ -8,23 +8,17 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
-
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableWebSocketMessageBroker
 @CrossOrigin(origins = "*")
 @Slf4j
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-	private final ChatMessageRepository chatMessageRepository;
-	// @Autowired
-	// private SimpMessagingTemplate messagingTemplate;
-
-	public WebSocketConfig(ChatMessageRepository chatMessageRepository) {
-		this.chatMessageRepository = chatMessageRepository;
-	}
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -43,5 +37,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
 		System.out.println("소켓 연결됨!!!!!!!!!!!!!!");
 		log.info("Received a new web socket connection");
+	}
+
+	@EventListener
+	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event) {
+		System.out.println("소켓 끊어짐 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ");
 	}
 }
