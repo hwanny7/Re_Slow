@@ -1,6 +1,8 @@
 package com.ssafy.reslow.domain.chatting.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +111,12 @@ public class ChatService {
 		List<String> roomIdList = new ArrayList<>();
 		roomList.forEach(chatRoom -> roomIdList.add(chatRoom.getRoomId()));
 
-		List<ChatMessage> messageList = chatMessageRepository.findByRoomId(roomIdList);
+		List<ChatMessage> messageList = new ArrayList<>(
+			chatMessageRepository.findByRoomId(
+				roomIdList)); // mongoRepository 인터페이스는 수정 불가능한 List를 반환하므로 ArrayList로 변환했음
+		// 최신순으로 정렬
+		Collections.sort(messageList, Comparator.comparing(ChatMessage::getDateTime).reversed());
+
 		List<ChatRoomList> chatRoomList = new ArrayList<>();
 		messageList.forEach(chatMessage -> {
 			Member member = memberRepository.findById(chatMessage.getUser()).orElseThrow(() -> new CustomException(
