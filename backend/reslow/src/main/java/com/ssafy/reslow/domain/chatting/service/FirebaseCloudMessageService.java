@@ -1,9 +1,9 @@
 package com.ssafy.reslow.domain.chatting.service;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -94,9 +94,9 @@ public class FirebaseCloudMessageService {
 	}
 
 	private String getAccessToken() throws IOException {
-		String firebaseConfigPath = "firebase/firebase-service-key2.json";
+		String firebaseConfigPath = "firebase/firebase-service-key.json";
 		GoogleCredentials googleCredentials = GoogleCredentials
-			.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
+			.fromStream(new FileInputStream(firebaseConfigPath))
 			.createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 		googleCredentials.refreshIfExpired();
 		return googleCredentials.getAccessToken().getTokenValue();
