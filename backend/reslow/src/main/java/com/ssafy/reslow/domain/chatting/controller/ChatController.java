@@ -69,7 +69,7 @@ public class ChatController {
 		return chatService.giveChatRoomList(chatService.findRoom(memberNo));
 	}
 
-	@PostMapping("/fuck")
+	@PostMapping("/addChatTest")
 	public void aa(@RequestBody ChatMessage message) {
 		ChatMessage room = ChatMessage.of(message.getRoomId(), message.getUser(), message.getContent(),
 			message.getDateTime());
