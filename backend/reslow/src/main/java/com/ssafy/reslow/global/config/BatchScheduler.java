@@ -38,7 +38,8 @@ public class BatchScheduler {
         }
     }
 
-    @Scheduled(cron = "0 */90 * * * ?")
+    //@Scheduled(cron = "0 */90 * * * ?")
+    @Scheduled(cron = "* * * * * *")
     public void deliveryTrackJob() {
         Map<String, JobParameter> confMap = new HashMap<>();
         confMap.put("time", new JobParameter(System.currentTimeMillis()));

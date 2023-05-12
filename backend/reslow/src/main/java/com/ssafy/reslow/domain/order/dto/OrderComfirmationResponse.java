@@ -15,7 +15,7 @@ public class OrderComfirmationResponse {
 	private String title;
 	private LocalDateTime date;
 	private String recipient;
-	private Long zipcode;
+	private int zipcode;
 	private String address;
 	private String addressDetail;
 	private String phoneNumber;
