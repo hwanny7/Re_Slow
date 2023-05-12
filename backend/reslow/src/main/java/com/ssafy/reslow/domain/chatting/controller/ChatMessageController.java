@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatMessageController {
 	private final ChatService chatService;
 
-	@MessageMapping("/message")
+	@MessageMapping("/chat/message")
 	public void handleChatMessage(@Payload ChatMessageRequest chatMessage) {
 		System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
 		// mongoDB에 저장하기
