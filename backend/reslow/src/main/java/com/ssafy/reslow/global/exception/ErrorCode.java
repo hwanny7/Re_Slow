@@ -30,7 +30,8 @@ public enum ErrorCode {
 	PAYMENT_FAILED(HttpStatus.NOT_FOUND, -20, "결제에 실패하였습니다."),
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, -21, "채팅방을 찾을 수 없습니다."),
 	DEVICETOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, -22, "디바이스 토큰을 찾을 수 없습니다."),
-	NOT_CHATROOM_USER(HttpStatus.UNAUTHORIZED, -23, "해당 채팅방에 속한 유저가 아닙니다.");
+	NOT_CHATROOM_USER(HttpStatus.UNAUTHORIZED, -23, "해당 채팅방에 속한 유저가 아닙니다."),
+	ALREADY_EXISTS_ACCOUNT(HttpStatus.UNAUTHORIZED, -24, "이미 계좌가 존재합니다.");
 
 	private final HttpStatus status;
 	private final int code;

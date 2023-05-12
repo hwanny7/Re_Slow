@@ -169,6 +169,9 @@ public class MemberService {
 	public Map<String, Long> registAccount(Long memberNo, MemberAccountRequest request) {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		if(member.getMemberAccount() != null){
+			throw new CustomException(ALREADY_EXISTS_ACCOUNT);
+		}
 		MemberAccount memberAccount = MemberAccount.of(request);
 		member.registAccount(memberAccount);
 		Map<String, Long> map = new HashMap<>();
