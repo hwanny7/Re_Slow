@@ -27,6 +27,7 @@ import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
 import com.ssafy.reslow.domain.member.dto.MemberLoginRequest;
 import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
+import com.ssafy.reslow.domain.member.dto.MemberNoNickPicResponse;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
@@ -217,5 +218,11 @@ public class MemberService {
 		Map<String, String> map = new HashMap<>();
 		map.put("delete", "ok");
 		return map;
+	}
+
+	public MemberNoNickPicResponse getMemberNoAndNicknameAndProfilePic(Long memberNo) {
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		return MemberNoNickPicResponse.of(memberNo, member.getNickname(), member.getProfilePic());
 	}
 }
