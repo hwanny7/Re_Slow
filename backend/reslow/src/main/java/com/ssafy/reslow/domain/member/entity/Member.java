@@ -141,8 +141,11 @@ public class Member extends BaseEntity implements UserDetails {
 			.build();
 	}
 
-	public void updateMember(String nickname, String profilePic) {
+	public void updateMember(String nickname) {
 		this.nickname = nickname;
+	}
+
+	public void updateProfilePic(String profilePic) {
 		this.profilePic = profilePic;
 	}
 
@@ -158,5 +161,9 @@ public class Member extends BaseEntity implements UserDetails {
 			.nickname("탈퇴한 멤버")
 			.roles(Collections.singletonList(Authority.USER.name()))
 			.build();
+	}
+
+	public void registAddress(MemberAddress memberAddress) {
+		this.memberAddress = memberAddress;
 	}
 }

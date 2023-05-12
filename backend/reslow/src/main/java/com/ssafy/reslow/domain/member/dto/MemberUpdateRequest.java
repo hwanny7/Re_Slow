@@ -7,7 +7,6 @@ import lombok.Getter;
 @Builder
 public class MemberUpdateRequest {
 
-	private String nickname;
 	private String recipient;
 	private int zipCode;
 	private String address;
@@ -15,11 +14,10 @@ public class MemberUpdateRequest {
 	private String phoneNum;
 	private String memo;
 
-	public static MemberUpdateRequest of(String nickname, String recipient, int zipCode, String address,
+	public static MemberUpdateRequest of(String recipient, int zipCode, String address,
 		String addressDetail,
 		String phoneNum, String memo) {
 		return MemberUpdateRequest.builder()
-			.nickname(nickname)
 			.recipient(recipient)
 			.zipCode(zipCode)
 			.address(address)
