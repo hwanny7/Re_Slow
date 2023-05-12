@@ -38,6 +38,7 @@ class AuthProvider with ChangeNotifier {
       headers: {'Content-Type': 'application/json'},
     );
     Map<String, dynamic> responseData = json.decode(response.body);
+    print(responseData);
 
     if (response.statusCode == 200) {
       User authUser = User.fromJson(responseData);
