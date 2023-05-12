@@ -79,8 +79,6 @@ public class KnowhowController {
 		@PathVariable("knowhowNo") Long knowhowNo) {
 		Long memberNo = Long.parseLong(authentication.getName());
 
-		System.out.println("========== 노하우 컨트롤러 들어옴 ============");
-		System.out.println("노하우 컨트롤러에 들어온 노하우 넘버: " + knowhowNo);
 		HashMap<String, Object> responseMap = new HashMap<>();
 		responseMap.put("msg", knowhowService.deleteKnowhow(memberNo, knowhowNo));
 		return responseMap;
