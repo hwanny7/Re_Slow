@@ -150,4 +150,13 @@ public class Member extends BaseEntity implements UserDetails {
 		this.memberAccount = memberAccount;
 		this.isCertification = true;
 	}
+
+	public static Member emptyMember() {
+		return Member.builder()
+			.id("탈퇴한 멤버")
+			.password("탈퇴한 멤버")
+			.nickname("탈퇴한 멤버")
+			.roles(Collections.singletonList(Authority.USER.name()))
+			.build();
+	}
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChatMessageRequest {
 	private String roomId;
-	private String sender; // 보낸사람
+	private Long sender; // 보낸사람
 	private String message; // 보낸 메시지
 	private String dateTime; // 메시지 보낸 시각
 }

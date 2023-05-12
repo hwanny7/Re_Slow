@@ -26,10 +26,10 @@ public class FirebaseCloudMessageService {
 	private final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
 	private final ObjectMapper objectMapper;
 
-	public void sendMessageTo(String targetToken, String title, String body) throws
+	public void sendMessageTo(String targetToken, String title, String body, String roomId) throws
 		IOException,
 		FirebaseMessagingException {
-		String message = makeMessage(targetToken, title, body);
+		String message = makeMessage(targetToken, title, body, roomId);
 
 		OkHttpClient client = new OkHttpClient();
 		RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
@@ -46,7 +46,7 @@ public class FirebaseCloudMessageService {
 		System.out.println(response.body().string());
 	}
 
-	public String makeMessage(String targetToken, String title, String body) throws
+	public String makeMessage(String targetToken, String title, String body, String roomId) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
 		// List<String> tokenList = new ArrayList<>();
@@ -80,6 +80,7 @@ public class FirebaseCloudMessageService {
 				.notification(FcmMessage.Notification.builder()
 					.title(title)
 					.body(body)
+					.roomId(roomId)
 					.image(null)
 					.build()
 				)

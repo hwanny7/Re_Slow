@@ -1,6 +1,8 @@
 package com.ssafy.reslow.domain.chatting.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DataAccessException;
@@ -14,11 +16,16 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
+import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
+import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
-import com.ssafy.reslow.domain.chatting.repository.ChatRepository;
+import com.ssafy.reslow.domain.chatting.repository.ChatRoomRepository;
+import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class ChatService {
-	private final ChatRepository chatRepository;
+	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
 
 	private final ChatPublisher chatPublisher;
@@ -43,7 +50,7 @@ public class ChatService {
 		// List<String> deviceList = deviceRepository.findByMember(receiver)
 		// 	.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
 
-		if (isUserOnline(chatMessage.getSender())) {
+		if (true) {
 			System.out.println("==== CharService로 들어와서 publish 날리기 직전! =====");
 			chatPublisher.publish(topic, chatMessage);
 		} else {
@@ -83,8 +90,35 @@ public class ChatService {
 		chatMessageRepository.save(message);
 
 		Map<String, String> map = new HashMap<>();
-		map.put("sender", chatMessage.getSender());
+		map.put("sender", String.valueOf(chatMessage.getSender()));
 		map.put("Message", chatMessage.getMessage());
 		return map;
+	}
+
+	public void saveChattingRoom(String roomId, Map<String, Long> userList) {
+		ChatRoom room = ChatRoom.of(roomId, userList.get("user1"), userList.get("user2"));
+		chatRoomRepository.save(room);
+	}
+
+	public List<ChatRoom> findRoom(Long memberNo) {
+		List<ChatRoom> roomList = chatRoomRepository.findByParticipantsContaining(memberNo);
+		return roomList;
+	}
+
+	public List<ChatRoomList> giveChatRoomList(List<ChatRoom> roomList) {
+		List<String> roomIdList = new ArrayList<>();
+		roomList.forEach(chatRoom -> roomIdList.add(chatRoom.getRoomId()));
+
+		List<ChatMessage> messageList = chatMessageRepository.findByRoomId(roomIdList);
+		List<ChatRoomList> chatRoomList = new ArrayList<>();
+		messageList.forEach(chatMessage -> {
+			Member member = memberRepository.findById(chatMessage.getUser()).orElseThrow(() -> new CustomException(
+				ErrorCode.MEMBER_NOT_FOUND));
+			ChatRoomList chatRoom = ChatRoomList.of(member, chatMessage.getRoomId(), chatMessage.getDateTime(),
+				chatMessage.getContent());
+			chatRoomList.add(chatRoom);
+		});
+
+		return chatRoomList;
 	}
 }

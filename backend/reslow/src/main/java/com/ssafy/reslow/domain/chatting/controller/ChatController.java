@@ -2,6 +2,7 @@ package com.ssafy.reslow.domain.chatting.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
+import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
 import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
+import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
 import com.ssafy.reslow.domain.chatting.service.ChatSubscriber;
@@ -58,16 +62,34 @@ public class ChatController {
 		chatService.sendMessage(chatMessage, channels.get(chatMessage.getRoomId()));
 	}
 
-	// 토픽 생성
+	// 채팅방 목록확인
+	@GetMapping("/roomList")
+	public List<ChatRoomList> chatRoomList(Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return chatService.giveChatRoomList(chatService.findRoom(memberNo));
+	}
+
+	@PostMapping("/fuck")
+	public void aa(@RequestBody ChatMessage message) {
+		ChatMessage room = ChatMessage.of(message.getRoomId(), message.getUser(), message.getContent(),
+			message.getDateTime());
+		chatMessageRepository.save(room);
+
+	}
+
+	// 채팅방 생성 - 토픽 생성, roomId 저장
 	@PostMapping("/{roomId}")
-	public Map<String, String> createChatRoom(@PathVariable String roomId) {
+	public Map<String, String> createChatRoom(@PathVariable String roomId, @RequestBody Map<String, Long> userList) {
 		// roomId로 topic 등록
 		ChannelTopic channel = new ChannelTopic(roomId);
 		redisMessageListener.addMessageListener(chatSubscriber, channel);
 		channels.put(roomId, channel);
 
+		// roomId 저장
+		chatService.saveChattingRoom(roomId, userList);
+
 		HashMap<String, String> map = new HashMap<>();
-		map.put("topic", "ok");
+		map.put("room", roomId);
 		return map;
 	}
 
@@ -91,6 +113,7 @@ public class ChatController {
 		return map;
 	}
 
+	// FCM 토큰 등록
 	@PostMapping("/fcm/token")
 	public Map<String, String> registerUserToken(
 		@RequestBody Map<String, String> token,
@@ -99,6 +122,7 @@ public class ChatController {
 		return memberService.addDeviceToken(memberNo, token.get("preToken"), token.get("newToken"));
 	}
 
+	// FCM 토큰 삭제
 	@DeleteMapping("/fcm/token")
 	public Map<String, String> deleterUserToken(
 		@RequestBody Map<String, String> token,
@@ -114,7 +138,8 @@ public class ChatController {
 		firebaseCloudMessageService.sendMessageTo(
 			requestDTO.getTargetToken(),
 			requestDTO.getTitle(),
-			requestDTO.getBody());
+			requestDTO.getBody(),
+			requestDTO.getRoomId());
 		return ResponseEntity.ok().build();
 	}
 
