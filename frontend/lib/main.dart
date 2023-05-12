@@ -1,18 +1,30 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/frame.dart';
 import 'package:reslow/pages/knowhow/knowhow.dart';
 import 'package:reslow/pages/market/market.dart';
 import 'package:reslow/providers/auth_provider.dart';
+import 'package:reslow/providers/fcmtoken_provider.dart';
 import 'package:reslow/providers/socket_provider.dart';
 import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
 import 'package:reslow/pages/knowhow/knowhowregister.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
-void main() {
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("받았음 메세지 아이디는 ${message.messageId}");
+  print("받았음 메세지 데이터는 ${message.data}");
+  // 백그라운드에서 수신한 FCM 메시지 처리
+  // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -23,14 +35,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  void initFirebaseMessaging() {
+    // FirebaseMessaging 설정
+    FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+    // 백그라운드에서 수신한 FCM 메시지 처리 핸들러 등록
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    initFirebaseMessaging(); // initFirebaseMessaging() 메서드 호출
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => SocketManager())
+          ChangeNotifierProvider(create: (_) => SocketManager()),
+          ChangeNotifierProvider(create: (_) => FCMTokenProvider())
         ],
         child: MaterialApp(
           title: 'My App',

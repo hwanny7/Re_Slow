@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "475202418428",
+    "project_id": "reslow-ce26b",
+    "storage_bucket": "reslow-ce26b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475202418428:android:56c8401f4ad4cbf9254979",
+        "android_client_info": {
+          "package_name": "com.ssafy.reslow.reslow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475202418428-3filhtil3u54pvst3qshu8bjpl5v4l3j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9xJsaa6DD21Vs-CxQ1JR8iGp4l94XD8g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475202418428-3filhtil3u54pvst3qshu8bjpl5v4l3j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "475202418428-9qo5r9b03ap3a5nbjam8citrb2vu5d1k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ssafy.reslow.reslow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

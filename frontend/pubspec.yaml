@@ -47,6 +47,9 @@ dependencies:
   iamport_flutter: ^0.10.0
   flutter_local_notifications: ^14.0.0+1
   webview_flutter: ^4.2.0
+  firebase_core: ^2.11.0
+  firebase_auth: ^4.5.0
+  firebase_messaging: ^14.5.0
 
 dev_dependencies:
   flutter_test:

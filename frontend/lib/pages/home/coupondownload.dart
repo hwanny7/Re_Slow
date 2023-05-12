@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
 // import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -54,97 +55,104 @@ class _CouponDownloadState extends State<CouponDownload> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(40.0),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: const Column(
+      body: coupon == null
+          ? const Center(child: CircularProgressIndicator())
+          : Center(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    '50%', // set the discount percentage here
-                    style: TextStyle(fontSize: 48.0, color: Colors.white),
-                    textAlign: TextAlign.center,
+                  Container(
+                    padding: EdgeInsets.all(40.0),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          // '${priceDot(coupon!.discountAmount)}',
+                          coupon!.discountType == 1
+                              ? priceDot(
+                                  coupon!.discountAmount) // Amount discount
+                              : '${coupon!.discountPercent}% OFF', // Percent discount
+                          style: TextStyle(fontSize: 48.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20.0),
+                        Text(
+                          coupon!.content, // set the description here
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20.0),
+                        Text(
+                          '사용기간 ${coupon!.startDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')} ~ ${coupon!.endDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')}', // set the start and end dates here
+                          style: TextStyle(fontSize: 16.0, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    '모든 상품에 적용 가능', // set the description here
-                    style: TextStyle(fontSize: 20.0, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 20.0),
-                  Text(
-                    '사용기간 2023-05-01 ~ 2023-05-31', // set the start and end dates here
-                    style: TextStyle(fontSize: 16.0, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
+                  SizedBox(height: 30.0),
+                  // 버튼
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 쿠폰 다운로드 버튼
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            onPressed: () async {
+                              // 쿠폰 다운로드 버튼
+                              Response response = await dioClient.dio.post(
+                                  '/coupons//${coupon?.couponNo}/issuance');
+                              // handle the response based on its status code
+                              if (response.statusCode == 200) {
+                                Map<String, dynamic> jsonData = response.data;
+                                print(jsonData);
+                                print('쿠폰 다운로드 완료!');
+                                // show a success message or perform other actions
+                              } else {
+                                print(
+                                    'HTTP request failed with status: ${response.statusCode}');
+                                // show an error message or perform other actions
+                              }
+                            },
+                            icon: Icon(Icons.download),
+                            label: Text('다운로드'),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(200, 50),
+                              backgroundColor: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.0),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('닫기'),
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(200, 50),
+                              backgroundColor: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  // 버튼 끝
                 ],
               ),
             ),
-            SizedBox(height: 30.0),
-            // 버튼
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // 쿠폰 다운로드 버튼
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        // 쿠폰 다운로드 버튼
-                        Response response = await dioClient.dio
-                            .post('/coupons//${coupon?.couponNo}/issuance');
-                        // handle the response based on its status code
-                        if (response.statusCode == 200) {
-                          Map<String, dynamic> jsonData = response.data;
-                          print(jsonData);
-                          // show a success message or perform other actions
-                        } else {
-                          print(
-                              'HTTP request failed with status: ${response.statusCode}');
-                          // show an error message or perform other actions
-                        }
-                      },
-                      icon: Icon(Icons.download),
-                      label: Text('다운로드'),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(200, 50),
-                        backgroundColor: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text('닫기'),
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(200, 50),
-                        backgroundColor: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-            // 버튼 끝
-          ],
-        ),
-      ),
     ));
   }
 }

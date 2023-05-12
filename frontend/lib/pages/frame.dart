@@ -1,8 +1,14 @@
+import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/home/recommend.dart';
 import 'package:reslow/pages/market/create_item.dart';
+import 'package:reslow/providers/fcmtoken_provider.dart';
 import 'package:reslow/utils/navigator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'chat/chat.dart';
 import 'home/home.dart';
 import 'knowhow/knowhow.dart';
@@ -17,7 +23,9 @@ class MainPage extends StatefulWidget {
   State<MainPage> createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
+  Dio dio = Dio();
+
   int _currentIndex = 0;
 
   final List<Widget> screens = [
@@ -55,6 +63,136 @@ class _MainPageState extends State<MainPage> {
     // MaterialPageRoute(
     //   builder: (context) => NotificationPage(),
     // ),
+  }
+
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  void showNotification(String? title, String? body) async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your_channel_id',
+      'your_channel_name',
+      channelDescription: 'your_channel_description',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: 'your payload',
+    );
+  }
+
+  // Future<void> _firebaseMessagingBackgroundHandler(
+  //     RemoteMessage message) async {
+  //   // await Firebase.initializeApp();
+  //   if (message != null) {
+  //     print('Handling a background message: ${message.messageId}');
+  //     print('$message');
+
+  //     // 백그라운드 상태에서 알림 처리
+  //     // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
+  //   }
+
+  //   // 백그라운드 상태에서 알림 처리
+  //   // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    _updateFCMToken();
+    WidgetsBinding.instance!.removeObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
+  }
+
+  void _updateFCMToken() async {
+    print("FCM토큰 받으러 왔어요");
+    String? fcmToken = await FirebaseMessaging.instance.getToken(
+        vapidKey:
+            "BCuQB-Qb6ULUXqwfyenXdLVq56BRx_vP5TBUp2-8_-KsCXhMsWWI5Xdh3P0oP1Z-Yja2TrkVXUtTw6Bux4JPzxI");
+    print("fcmToken$fcmToken");
+    FCMTokenProvider nowToken =
+        Provider.of<FCMTokenProvider>(context, listen: false);
+    if (nowToken.fcmToken != fcmToken) {
+      print("FCM토큰 업데이트 할 거예요");
+      nowToken.setFCMToken(fcmToken);
+      _sendFCMToken(nowToken.fcmToken, fcmToken);
+    }
+  }
+
+  Future<String?> _getTokenFromSharedPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken');
+  }
+
+  void _sendFCMToken(String preToken, String? newToken) async {
+    try {
+      final token = await _getTokenFromSharedPreferences();
+      await dio
+          .post(
+        'http://k8b306.p.ssafy.io:8080/chattings/fcm/token',
+        data: FormData.fromMap({"preToken": preToken, "newToken": newToken}),
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      )
+          .then(
+        (value) {
+          if (value.data["device"] == "ok") {
+            FCMTokenProvider nowToken = Provider.of<FCMTokenProvider>(context);
+            nowToken.setFCMToken(newToken);
+          }
+        },
+      );
+    } on DioError catch (e) {
+      print('sendfcmtokenerror: $e');
+    }
+    ;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _updateFCMToken();
+        // 서버로 open 보내기
+        print("resumed");
+        break;
+      case AppLifecycleState.inactive:
+        // 서버로 close 보내기
+        print("inactive");
+        break;
+      case AppLifecycleState.detached:
+        // 서버로 close 보내기
+        print("detached");
+        break;
+      case AppLifecycleState.paused:
+        // 서버로 close 보내기
+        print("paused");
+        break;
+    }
   }
 
   @override
