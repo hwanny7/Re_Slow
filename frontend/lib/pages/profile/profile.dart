@@ -368,7 +368,8 @@ class _ProfileState extends State<Profile> {
                           child: GestureDetector(
                               child: Container(
                                 padding: EdgeInsets.all(5),
-                                child: Row(
+                                alignment: Alignment.centerLeft,
+                                child: const Row(
                                   children: [
                                     Icon(Icons.logout),
                                     SizedBox(
@@ -380,10 +381,19 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ],
                                 ),
-                                alignment: Alignment.centerLeft,
                               ),
                               onTap: () {
-                                UserPreferences().removeUser();
+                                UserPreferences()
+                                    .removeUser(context)
+                                    .then((res) {
+                                  if (res) {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                      '/login',
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  }
+                                });
                               })),
                       // 로그아웃 끝
                     ],

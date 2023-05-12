@@ -44,6 +44,7 @@ class ItemInfo extends StatelessWidget {
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              // mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(item.title,
                                     style: TextStyle(
@@ -67,8 +68,8 @@ class ItemInfo extends StatelessWidget {
                   right: 10.0,
                   child: Row(
                     children: [
-                      Icon(Icons.favorite_border),
-                      SizedBox(width: 5),
+                      const Icon(Icons.favorite_border),
+                      const SizedBox(width: 5),
                       Text('${item.likeCount}'),
                     ],
                   ),
