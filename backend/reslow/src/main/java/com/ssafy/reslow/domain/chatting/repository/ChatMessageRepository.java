@@ -2,6 +2,8 @@ package com.ssafy.reslow.domain.chatting.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -15,5 +17,11 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
 		"{$project: {_id: 0, roomId: '$_id', user: '$lastChat.user', content: '$lastChat.content', dateTime: '$lastChat.dateTime'}}"
 	})
 	List<ChatMessage> findByRoomId(List<String> roomIdList);
+
+	@Aggregation(pipeline = {
+		"{$match: {roomId: {$eq: ?0}}}",
+		"{$sort: {dateTime: -1}}"
+	})
+	Slice<ChatMessage> findByRoomId(String roomId, Pageable pageable);
 
 }

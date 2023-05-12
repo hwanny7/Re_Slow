@@ -29,7 +29,8 @@ public enum ErrorCode {
 	COUPON_ALREADY_ISSUED(HttpStatus.NOT_FOUND, -19, "이미 발급받은 쿠폰입니다."),
 	PAYMENT_FAILED(HttpStatus.NOT_FOUND, -20, "결제에 실패하였습니다."),
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, -21, "채팅방을 찾을 수 없습니다."),
-	DEVICETOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, -22, "디바이스 토큰을 찾을 수 없습니다.");
+	DEVICETOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, -22, "디바이스 토큰을 찾을 수 없습니다."),
+	NOT_CHATROOM_USER(HttpStatus.UNAUTHORIZED, -23, "해당 채팅방에 속한 유저가 아닙니다.");
 
 	private final HttpStatus status;
 	private final int code;
