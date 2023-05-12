@@ -8,7 +8,7 @@ public class OrderRegistRequest {
 	private Long productNo;
 	private Long issuedCouponNo;
 	private String recipient;
-	private Long zipcode;
+	private int zipcode;
 	private String address;
 	private String addressDetail;
 	private String phoneNumber;
