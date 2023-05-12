@@ -30,7 +30,6 @@ import com.ssafy.reslow.domain.member.dto.MemberNicknameRequest;
 import com.ssafy.reslow.domain.member.dto.MemberNoNickPicResponse;
 import com.ssafy.reslow.domain.member.dto.MemberSignUpRequest;
 import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
-import com.ssafy.reslow.domain.member.dto.MemberUpdateResponse;
 import com.ssafy.reslow.domain.member.entity.Device;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.entity.MemberAccount;
@@ -135,8 +134,20 @@ public class MemberService {
 		return map;
 	}
 
-	public MemberUpdateResponse updateUser(Long memberNo, MemberUpdateRequest request, MultipartFile file)
-		throws IOException {
+	public Map<String, Long> updateUser(Long memberNo, MemberUpdateRequest request) {
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		if(member.getMemberAddress() != null){
+			throw new CustomException(ALREADY_EXISTS_ADDRESS);
+		}
+		MemberAddress memberAddress = MemberAddress.toEntity(request);
+		member.registAddress(memberAddress);
+		Map<String, Long> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		return map;
+	}
+
+	public Map<String, Long> updateProfile(Long memberNo, MultipartFile file) throws IOException {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		String imageUrl = DEFAULT_IMAGE_S3;
@@ -147,20 +158,20 @@ public class MemberService {
 		} else {
 			imageUrl = member.getProfilePic();
 		}
-		member.updateMember(request.getNickname(), imageUrl);
+		member.updateProfilePic(imageUrl);
 		memberRepository.save(member);
-		MemberAddress memberAddress = MemberAddress.toEntity(request);
-		MemberUpdateResponse updateUser = MemberUpdateResponse.of(member, memberAddress);
-		return updateUser;
+		Map<String, Long> map = new HashMap<>();
+		map.put("memberNo", memberNo);
+		return map;
 	}
 
 	public MemberAddressResponse userAddress(Long memberNo) {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		MemberAddress memberAddress = member.getMemberAddress();
-		if (memberAddress == null) {
+		if(member.getMemberAddress() == null){
 			throw new CustomException(ADDRESS_NOT_FOUND);
 		}
+		MemberAddress memberAddress = member.getMemberAddress();
 		MemberAddressResponse response = MemberAddressResponse.of(memberAddress);
 		return response;
 	}
