@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/frame.dart';
 import 'package:reslow/pages/knowhow/knowhow.dart';
@@ -21,10 +22,37 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
 }
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+Future<void> _showNotification(String? title, String? body) async {
+  final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'channelId', 'channelName',
+      channelDescription: 'your_channel_description',
+      importance: Importance.max,
+      priority: Priority.high);
+
+  final platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  await flutterLocalNotificationsPlugin.show(
+      0, title, body, platformChannelSpecifics);
+}
+
+Future<void> initializeNotifications() async {
+  final AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  final InitializationSettings initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  await initializeNotifications(); // 알림 초기화
   runApp(const MyApp());
 }
 
@@ -41,6 +69,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     // 백그라운드에서 수신한 FCM 메시지 처리 핸들러 등록
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // 포그라운드에서 수신한 FCM 메시지 처리 핸들러 등록
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _showNotification(
+          message.notification?.title, message.notification?.body);
+    });
   }
 
   // This widget is the root of your application.

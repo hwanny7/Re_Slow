@@ -1,14 +1,9 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:reslow/utils/dio_client.dart';
 import 'dart:io';
-
-import 'package:reslow/pages/knowhow/knowhow.dart';
 
 class KnowhowRegister extends StatefulWidget {
   const KnowhowRegister({Key? key}) : super(key: key);
