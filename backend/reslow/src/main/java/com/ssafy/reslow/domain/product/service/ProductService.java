@@ -184,7 +184,7 @@ public class ProductService {
         Slice<Product> list = null;
         if (status == COMPLETE_PAYMENT.getValue()) {
             list = productRepository.findByMemberAndOrder_StatusOrOrderIsNullOrderByUpdatedDateDesc(
-                member,
+                member.getNo(),
                 OrderStatus.ofValue(status),
                 pageable);
         } else if (status == COMPLETE_DELIVERY.getValue()) {
