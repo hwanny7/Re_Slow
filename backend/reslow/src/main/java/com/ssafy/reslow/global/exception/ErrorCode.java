@@ -31,8 +31,8 @@ public enum ErrorCode {
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, -21, "채팅방을 찾을 수 없습니다."),
 	DEVICETOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, -22, "디바이스 토큰을 찾을 수 없습니다."),
 	NOT_CHATROOM_USER(HttpStatus.UNAUTHORIZED, -23, "해당 채팅방에 속한 유저가 아닙니다."),
-	ALREADY_EXISTS_ACCOUNT(HttpStatus.UNAUTHORIZED, -24, "이미 계좌가 존재합니다."),
-	ALREADY_EXISTS_ADDRESS(HttpStatus.UNAUTHORIZED, -25, "이미 배송지가 존재합니다.");
+	ALREADY_EXISTS_ACCOUNT(HttpStatus.NOT_FOUND, -24, "이미 계좌가 존재합니다."),
+	ALREADY_EXISTS_ADDRESS(HttpStatus.NOT_FOUND, -25, "이미 배송지가 존재합니다.");
 
 	private final HttpStatus status;
 	private final int code;
