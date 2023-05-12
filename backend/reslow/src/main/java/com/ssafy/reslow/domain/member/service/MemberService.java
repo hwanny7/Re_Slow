@@ -65,7 +65,7 @@ public class MemberService {
 	private String DEFAULT_IMAGE_S3;
 
 	public Map<String, Object> signUp(MemberSignUpRequest signUp) {
-		if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(signUp.getId())) {
+		if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(signUp.getNickname())) {
 			throw new CustomException(MEBER_ALREADY_EXSIST);
 		}
 		Member member = memberRepository.save(
