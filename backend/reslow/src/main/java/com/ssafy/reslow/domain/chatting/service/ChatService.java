@@ -139,4 +139,17 @@ public class ChatService {
 		return chatMessageRepository.findByRoomId(roomId, pageable);
 	}
 
+	// 존재하는 채팅방인지 확인
+	public Map<String, Boolean> checkRoomId(String roomId) {
+		// 채팅방이 존재하는지 확인
+		Map<String, Boolean> map = new HashMap<>();
+		if (chatRoomRepository.existsByRoomId(roomId)) {
+			map.put("room", true);
+		} else {
+			map.put("room", false);
+		}
+
+		return map;
+	}
+
 }

@@ -13,4 +13,6 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, Long> {
 	List<ChatRoom> findByParticipantsContaining(Long userId);
 
 	Optional<ChatRoom> findByRoomId(String roomId);
+
+	boolean existsByRoomId(String roomId);
 }

@@ -153,4 +153,9 @@ public class ChatController {
 		return ResponseEntity.ok().build();
 	}
 
+	// 존재하는 채팅방인지 확인
+	@GetMapping("/check/{roomId}")
+	public Map<String, Boolean> checkRoomId(@PathVariable String roomId) {
+		return chatService.checkRoomId(roomId);
+	}
 }
