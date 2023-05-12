@@ -100,7 +100,6 @@ class _MySellListState extends State<MySellList>
         setState(() {
           _data[tabIndex].addAll(List<MyBuyItem>.from(
               jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson))));
-          // 높이를 처음으로 변경하기
         });
       }
     } else {

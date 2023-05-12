@@ -9,3 +9,15 @@ Future<Response> accountRegister(Map<String, dynamic> formData) async {
 
   return response;
 }
+
+Future<Response> getShipmentInfo() async {
+  Response response = await dioClient.dio.get('/members/address');
+
+  return response;
+}
+
+Future<Response> registerShipmentInfo(Map<String, dynamic> formData) async {
+  Response response = await dioClient.dio.put('/members/', data: formData);
+
+  return response;
+}

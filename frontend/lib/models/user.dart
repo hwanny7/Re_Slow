@@ -19,3 +19,34 @@ class User {
         refreshTokenExpirationTime: responseData['refreshTokenExpirationTime']);
   }
 }
+
+class Shipment {
+  String recipient = "";
+  String zipcode = "";
+  String address = "";
+  String addressDetail = "";
+  String phoneNumber = "";
+  String memo = "";
+
+  Shipment();
+
+  Shipment.fromJson(Map<String, dynamic> json) {
+    recipient = json['recipient'];
+    zipcode = json['zipcode'].toString();
+    address = json['address'];
+    addressDetail = json['addressDetail'];
+    phoneNumber = json['phoneNumber'];
+    memo = json['memo'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'recipient': recipient,
+      'zipCode': zipcode,
+      'address': address,
+      'addressDetail': addressDetail,
+      'phoneNumber': phoneNumber,
+      'phoneNum': memo,
+    };
+  }
+}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reslow/pages/profile/account_register.dart';
+import 'package:reslow/pages/profile/shipment_register.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
@@ -19,7 +20,7 @@ class UserInfo extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  leftToRightNavigator(const AccountRegister(), context);
+                  leftToRightNavigator(const ShipmentRegister(), context);
                 },
                 child: const Padding(
                   padding: EdgeInsets.only(bottom: 15),
