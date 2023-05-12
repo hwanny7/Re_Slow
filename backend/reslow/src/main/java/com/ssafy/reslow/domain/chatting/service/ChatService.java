@@ -72,7 +72,7 @@ public class ChatService {
 			connection.subscribe((Message message, byte[] pattern) -> {
 				// Redis에서 수신한 메시지를 WebSocket 클라이언트에게 전송
 				String messageJson = (String)redisTemplate.getValueSerializer().deserialize(message.getBody());
-				messagingTemplate.convertAndSend("/sub/chat/room/" + roomId, messageJson);
+				messagingTemplate.convertAndSend("/chat/sub/room/" + roomId, messageJson);
 			}, roomId.getBytes());
 			return null;
 		});
