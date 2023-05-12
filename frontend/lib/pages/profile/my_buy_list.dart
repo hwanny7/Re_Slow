@@ -38,6 +38,7 @@ class _MyBuyListState extends State<MyBuyList>
   void initState() {
     super.initState();
     _controller = TabController(length: 4, vsync: this);
+    _controller.addListener(_onTabChanged);
     for (int i = 0; i < _scrollControllers.length; i++) {
       final scrollController = _scrollControllers[i];
       scrollController.addListener(() => _scrollListener(i));
@@ -48,15 +49,16 @@ class _MyBuyListState extends State<MyBuyList>
   @override
   void dispose() {
     _controller.dispose();
+    _controller.removeListener(_onTabChanged);
     for (final controller in _scrollControllers) {
       controller.dispose();
     }
     super.dispose();
   }
 
-  void _onTabChanged(int tabNumber) async {
-    if (firstLoading[tabNumber] == true) {
-      await fetchData(tabNumber);
+  void _onTabChanged() async {
+    if (firstLoading[_controller.index] == true) {
+      await fetchData(_controller.index);
     }
     print('여기!');
     // 페이지 + 시키는 거 옮겨야함. 안 그러면 다시 돌아왔을 때 또 실행됨
@@ -88,10 +90,10 @@ class _MyBuyListState extends State<MyBuyList>
         firstLoading[tabIndex] = false;
       });
     }
-    print('땡겨옴!');
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data['content'];
+      print(jsonData);
       if (jsonData.isEmpty) {
         isLast[tabIndex] = true;
       } else {
@@ -113,14 +115,31 @@ class _MyBuyListState extends State<MyBuyList>
         title: Text('주문내역'),
         bottom: TabBar(
           controller: _controller,
-          onTap: (index) {
-            _onTabChanged(index);
-          },
-          tabs: const [
-            Tab(text: '결제 완료'),
-            Tab(text: '배송 준비'),
-            Tab(text: '배송 중'),
-            Tab(text: '배송 완료'),
+          tabs: [
+            GestureDetector(
+              onTap: () => _controller.index = 0,
+              child: const Tab(
+                text: '결제 완료',
+              ),
+            ),
+            GestureDetector(
+              onTap: () => _controller.index = 1,
+              child: const Tab(
+                text: '배송 준비',
+              ),
+            ),
+            GestureDetector(
+              onTap: () => _controller.index = 2,
+              child: const Tab(
+                text: '배송 중',
+              ),
+            ),
+            GestureDetector(
+              onTap: () => _controller.index = 3,
+              child: const Tab(
+                text: '배송 완료',
+              ),
+            ),
           ],
         ),
       ),
@@ -138,6 +157,13 @@ class _MyBuyListState extends State<MyBuyList>
 
   Widget _buildTab(int tabIndex) {
     final data = _data[tabIndex];
+
+    void removeItem(int index) {
+      setState(() {
+        data.removeAt(index);
+      });
+    }
+
     if (firstLoading[tabIndex]) {
       return const Center(child: CircularProgressIndicator());
     } else if (data.isEmpty) {
@@ -150,7 +176,11 @@ class _MyBuyListState extends State<MyBuyList>
         itemCount: data.length,
         itemBuilder: (context, index) {
           return BuyItemInfo(
-              key: Key(data[index].orderNo.toString()), item: data[index]);
+            removeItem: removeItem,
+            key: Key(data[index].orderNo.toString()),
+            item: data[index],
+            index: index,
+          );
         },
       );
     }

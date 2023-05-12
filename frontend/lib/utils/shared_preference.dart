@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:reslow/models/user.dart';
 import 'dart:async';
 
@@ -8,7 +9,6 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString("accessToken", user.accessToken!);
-    // null aware operator
     prefs.setString("refreshToken", user.refreshToken!);
 
     return prefs;
@@ -27,11 +27,15 @@ class UserPreferences {
     );
   }
 
-  void removeUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    prefs.remove("accessToken");
-    prefs.remove("refreshToken");
+  Future<bool> removeUser(BuildContext context) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.remove("accessToken");
+      prefs.remove("refreshToken");
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<bool> getToken() async {

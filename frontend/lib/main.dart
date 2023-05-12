@@ -97,7 +97,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   return const CircularProgressIndicator();
                 } else {
                   if (snapshot.data == true) {
-                    return SplashScreen();
+                    return const MainPage();
                   } else {
                     return const Login();
                   }

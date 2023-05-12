@@ -21,11 +21,29 @@ Future<Response> getOrder(int pk) async {
 Future<Response> getBuyItems(Map<String, dynamic> queryParams) async {
   Response response =
       await dioClient.dio.get('/orders/purchase', queryParameters: queryParams);
+
   return response;
 }
 
 Future<Response> getSellItems(Map<String, dynamic> queryParams) async {
   Response response =
       await dioClient.dio.get('/products/sale', queryParameters: queryParams);
+
+  return response;
+}
+
+Future<Response> changeStatus(
+    int orderNo, Map<String, dynamic> formData) async {
+  Response response =
+      await dioClient.dio.patch('/orders/$orderNo', data: formData);
+
+  return response;
+}
+
+Future<Response> InputDelivery(
+    int orderNo, Map<String, dynamic> formData) async {
+  Response response =
+      await dioClient.dio.patch('/orders/$orderNo/carrier', data: formData);
+
   return response;
 }
