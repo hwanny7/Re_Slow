@@ -24,6 +24,7 @@ public class ProductDetailResponse {
 	private List<String> images;
 	private boolean myHeart;
 	private Long heartCount;
+	private Long memberNo;
 
 	public static ProductDetailResponse of(Product product, String category, boolean mine, boolean myHeart,
 		Long heartCount, List<String> images) {
@@ -40,6 +41,7 @@ public class ProductDetailResponse {
 			.heartCount(heartCount)
 			.date(product.getCreatedDate())
 			.images(images)
+			.memberNo(product.getMember().getNo())
 			.build();
 	}
 }
