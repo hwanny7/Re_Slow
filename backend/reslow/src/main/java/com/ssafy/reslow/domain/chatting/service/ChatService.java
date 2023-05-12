@@ -1,15 +1,18 @@
 package com.ssafy.reslow.domain.chatting.service;
 
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -65,20 +68,15 @@ public class ChatService {
 
 	public void subscribeToChatRoom(String roomId, Long memberNo) {
 		// Redis Pub/Sub의 subscribe 메소드를 사용하여 채팅방(Room) 구독(subscribe)
-		redisTemplate.execute(new RedisCallback<Void>() {
-			@Override
-			public Void doInRedis(RedisConnection connection) throws DataAccessException {
-				connection.subscribe(new MessageListener() {
-					@Override
-					public void onMessage(Message message, byte[] pattern) {
-						// Redis에서 수신한 메시지를 WebSocket 클라이언트에게 전송
-						String messageJson = (String)redisTemplate.getValueSerializer().deserialize(message.getBody());
-						messagingTemplate.convertAndSend("/sub/chat/room/" + roomId, messageJson);
-					}
-				}, roomId.getBytes());
-				return null;
-			}
+		redisTemplate.execute((RedisConnection connection) -> {
+			connection.subscribe((Message message, byte[] pattern) -> {
+				// Redis에서 수신한 메시지를 WebSocket 클라이언트에게 전송
+				String messageJson = (String)redisTemplate.getValueSerializer().deserialize(message.getBody());
+				messagingTemplate.convertAndSend("/sub/chat/room/" + roomId, messageJson);
+			}, roomId.getBytes());
+			return null;
 		});
+
 		System.out.println("====== ChatService에 들어와서 subscribe 등록 완료~~~~~~~!! =====");
 		// Redis Set에 해당 클라이언트의 no 추가
 		redisTemplate.opsForSet().add(roomId, memberNo);
@@ -109,7 +107,12 @@ public class ChatService {
 		List<String> roomIdList = new ArrayList<>();
 		roomList.forEach(chatRoom -> roomIdList.add(chatRoom.getRoomId()));
 
-		List<ChatMessage> messageList = chatMessageRepository.findByRoomId(roomIdList);
+		List<ChatMessage> messageList = new ArrayList<>(
+			chatMessageRepository.findByRoomId(
+				roomIdList)); // mongoRepository 인터페이스는 수정 불가능한 List를 반환하므로 ArrayList로 변환했음
+		// 최신순으로 정렬
+		Collections.sort(messageList, Comparator.comparing(ChatMessage::getDateTime).reversed());
+
 		List<ChatRoomList> chatRoomList = new ArrayList<>();
 		messageList.forEach(chatMessage -> {
 			Member member = memberRepository.findById(chatMessage.getUser()).orElseThrow(() -> new CustomException(
@@ -121,4 +124,19 @@ public class ChatService {
 
 		return chatRoomList;
 	}
+
+	// 채팅방 내용 확인
+	public Slice<ChatMessage> showChatDetail(Long memberNo, String roomId, Pageable pageable) {
+		// 채팅방이 존재하는지 확인
+		ChatRoom chatRoom = chatRoomRepository.findByRoomId(roomId)
+			.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+		// 채팅방에 있는 유저에 해당하는지 확인
+		if (!chatRoom.getParticipants().contains(memberNo)) {
+			throw new CustomException(NOT_CHATROOM_USER);
+		}
+
+		return chatMessageRepository.findByRoomId(roomId, pageable);
+	}
+
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +71,15 @@ public class ChatController {
 		return chatService.giveChatRoomList(chatService.findRoom(memberNo));
 	}
 
-	@PostMapping("/fuck")
+	// 채팅방 내용확인
+	@GetMapping("/detail/{roomId}")
+	public Slice<ChatMessage> chatRoomDetail(Authentication authentication, @PathVariable String roomId,
+		Pageable pageable) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return chatService.showChatDetail(memberNo, roomId, pageable);
+	}
+
+	@PostMapping("/addChatTest")
 	public void aa(@RequestBody ChatMessage message) {
 		ChatMessage room = ChatMessage.of(message.getRoomId(), message.getUser(), message.getContent(),
 			message.getDateTime());
