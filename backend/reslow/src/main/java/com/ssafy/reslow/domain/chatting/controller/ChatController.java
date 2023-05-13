@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
+import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
 import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
@@ -146,10 +147,13 @@ public class ChatController {
 		System.out.println(requestDTO.getRoomId());
 		// firebaseCloudMessageService.makeMessage(
 		firebaseCloudMessageService.sendMessageTo(
-			requestDTO.getTargetToken(),
-			requestDTO.getTitle(),
-			requestDTO.getBody(),
-			requestDTO.getRoomId());
+			FcmMessage.SendMessage.builder()
+				.targetToken(requestDTO.getTargetToken())
+				.title(requestDTO.getTitle())
+				.body(requestDTO.getBody())
+				.roomId(requestDTO.getRoomId())
+				.type(requestDTO.getType())
+				.build());
 		return ResponseEntity.ok().build();
 	}
 

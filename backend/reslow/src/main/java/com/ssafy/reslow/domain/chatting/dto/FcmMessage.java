@@ -18,7 +18,6 @@ public class FcmMessage {
 		private Notification notification;
 		private String token;
 		private Data data;
-		// private List<String> registration_tokens;
 	}
 
 	@Builder
@@ -35,6 +34,18 @@ public class FcmMessage {
 	@Getter
 	public static class Data {
 		private String roomId;
+		private MessageType type;
+	}
+
+	@Builder
+	@AllArgsConstructor
+	@Getter
+	public static class SendMessage {
+		String targetToken;
+		String title;
+		String body;
+		String roomId;
+		MessageType type;
 	}
 
 }
