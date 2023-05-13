@@ -45,10 +45,10 @@ public class MemberAddress extends BaseEntity {
 	public static MemberAddress toEntity(MemberUpdateRequest request) {
 		return MemberAddress.builder()
 			.recipient(request.getRecipient())
-			.zipCode(request.getZipCode())
+			.zipCode(request.getZipcode())
 			.address(request.getAddress())
 			.addressDetail(request.getAddressDetail())
-			.phoneNum(request.getPhoneNum())
+			.phoneNum(request.getPhoneNumber())
 			.memo(request.getMemo())
 			.build();
 	}
