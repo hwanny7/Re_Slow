@@ -141,6 +141,9 @@ public class ChatController {
 	@PostMapping("/api/fcm")
 	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO) throws IOException,
 		FirebaseMessagingException {
+
+		System.out.println("데이터는 안갈거니?????????????????");
+		System.out.println(requestDTO.getRoomId());
 		// firebaseCloudMessageService.makeMessage(
 		firebaseCloudMessageService.sendMessageTo(
 			requestDTO.getTargetToken(),
