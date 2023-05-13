@@ -14,6 +14,8 @@ import 'package:reslow/pages/home/recommend.dart';
 import 'calendarselection.dart';
 
 class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
+
   @override
   _ProfileState createState() => _ProfileState();
 }

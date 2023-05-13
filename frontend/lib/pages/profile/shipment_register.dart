@@ -37,10 +37,9 @@ class _ShipmentRegisterState extends State<ShipmentRegister> {
   }
 
   void submit() async {
+    print(shipment.toJson());
     Response response = await registerShipmentInfo(shipment.toJson());
-    print(response);
     if (response.statusCode == 200) {
-      print(shipment.toJson());
       Map<String, dynamic> jsonData = response.data;
       // setState(() {
       //   shipment = Shipment.fromJson(jsonData);
@@ -205,7 +204,7 @@ class _ShipmentRegisterState extends State<ShipmentRegister> {
                 },
                 maxLines: 10,
                 decoration: const InputDecoration(
-                  hintText: '요청사항',
+                  hintText: '요청사항 (선택사항)',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16.0),
                 ),

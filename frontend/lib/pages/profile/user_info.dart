@@ -15,7 +15,7 @@ class UserInfo extends StatelessWidget {
         title: "내 정보 관리",
       ),
       body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Column(
             children: [
               InkWell(

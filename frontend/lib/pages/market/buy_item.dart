@@ -45,7 +45,8 @@ class _BuyItemState extends State<BuyItem> {
           children: [
             Container(
               width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
@@ -64,7 +65,8 @@ class _BuyItemState extends State<BuyItem> {
             ),
             Container(
               width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
@@ -85,7 +87,8 @@ class _BuyItemState extends State<BuyItem> {
               children: [
                 Container(
                   width: 265,
-                  margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  margin: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.grey),
                   ),
@@ -94,7 +97,7 @@ class _BuyItemState extends State<BuyItem> {
                       enabled: false,
                       hintText: zipcode == '-' ? '우편번호' : zipcode,
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(16.0),
+                      contentPadding: const EdgeInsets.all(16.0),
                     ),
                   ),
                 ),
@@ -102,10 +105,11 @@ class _BuyItemState extends State<BuyItem> {
                   child: Text('주소 검색'),
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                      EdgeInsets.symmetric(vertical: 19.0, horizontal: 11.0),
+                      const EdgeInsets.symmetric(
+                          vertical: 19.0, horizontal: 11.0),
                     ),
                     side: MaterialStateProperty.all<BorderSide>(
-                      BorderSide(color: Colors.grey, width: 1.0),
+                      const BorderSide(color: Colors.grey, width: 1.0),
                     ),
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Colors.grey),
@@ -133,7 +137,8 @@ class _BuyItemState extends State<BuyItem> {
             ),
             Container(
               width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
@@ -142,13 +147,14 @@ class _BuyItemState extends State<BuyItem> {
                 decoration: InputDecoration(
                   hintText: roadAddress == '-' ? '주소' : roadAddress,
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.0),
+                  contentPadding: const EdgeInsets.all(16.0),
                 ),
               ),
             ),
             Container(
               width: double.infinity,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
@@ -168,7 +174,8 @@ class _BuyItemState extends State<BuyItem> {
             Container(
               width: double.infinity,
               height: 200,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
               ),
@@ -187,7 +194,8 @@ class _BuyItemState extends State<BuyItem> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: Column(
                 children: [
                   const Divider(

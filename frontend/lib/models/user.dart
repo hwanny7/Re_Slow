@@ -42,11 +42,11 @@ class Shipment {
   Map<String, dynamic> toJson() {
     return {
       'recipient': recipient,
-      'zipCode': zipcode,
+      'zipcode': int.parse(zipcode),
       'address': address,
       'addressDetail': addressDetail,
       'phoneNumber': phoneNumber,
-      'phoneNum': memo,
+      'memo': memo,
     };
   }
 }
