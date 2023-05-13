@@ -31,9 +31,6 @@ public class FirebaseCloudMessageService {
 		FirebaseMessagingException {
 		String message = makeMessage(targetToken, title, body, roomId);
 
-		System.out.println("보낼 메시지 찍어보기");
-		System.out.println(message);
-
 		OkHttpClient client = new OkHttpClient();
 		RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
 		Request request = new Request.Builder()
@@ -46,40 +43,14 @@ public class FirebaseCloudMessageService {
 		Response response = client.newCall(request)
 			.execute();
 
-		System.out.println(response.body().string());
 	}
 
 	public String makeMessage(String targetToken, String title, String body, String roomId) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
-		// List<String> tokenList = new ArrayList<>();
-		// tokenList.add(targetToken);
-		// MulticastMessage multicastMessage = MulticastMessage.builder()
-		// 	.setNotification(Notification.builder()
-		// 		.setTitle("멀티캐스트 테스트~~~!! 타이틀이얏")
-		// 		.setBody("이거는 바디^^")
-		// 		.build())
-		// 	.addAllTokens(tokenList)
-		// 	.build();
-		//
-		// BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(multicastMessage);
-		// if (response.getFailureCount() > 0) {
-		// 	List<SendResponse> responses = response.getResponses();
-		// 	List<String> failedTokens = new ArrayList<>();
-		// 	for (int i = 0; i < responses.size(); i++) {
-		// 		if (!responses.get(i).isSuccessful()) {
-		// 			failedTokens.add(tokenList.get(i));
-		// 		}
-		// 	}
-		//
-		// 	System.out.println("List of tokens that caused failures: "
-		// 		+ failedTokens);
-		// }
 		FcmMessage fcmMessage = FcmMessage.builder()
 			.message(FcmMessage.Message.builder()
-				// .registration_ids(list)
 				.token(targetToken)
-				// .registration_tokens(list)
 				.notification(FcmMessage.Notification.builder()
 					.title(title)
 					.body(body)
