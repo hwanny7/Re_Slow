@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,9 +13,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
 import com.ssafy.reslow.domain.member.entity.Member;
-import com.ssafy.reslow.domain.member.repository.MemberRepository;
-import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
@@ -24,17 +21,16 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class FirebaseCloudMessageService {
-	private final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
-	private final ObjectMapper objectMapper;
-	private final MemberRepository memberRepository;
+	private static final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	public void sendMessageTo(FcmMessage.SendMessage sendMessage, Long memberNo) throws
+	public static void sendMessageTo(FcmMessage.SendMessage sendMessage, Member member) throws
 		IOException,
 		FirebaseMessagingException {
-		String message = makeMessage(sendMessage, memberNo);
+		String message = makeMessage(sendMessage, member);
 
 		System.out.println("보내는 메시지 : " + message);
 
@@ -53,12 +49,9 @@ public class FirebaseCloudMessageService {
 		System.out.println("결과 : " + response);
 	}
 
-	public String makeMessage(FcmMessage.SendMessage sendMessage, Long memberNo) throws
+	public static String makeMessage(FcmMessage.SendMessage sendMessage, Member member) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
-		Member sender = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
 		FcmMessage fcmMessage = FcmMessage.builder()
 			.message(FcmMessage.Message.builder()
 				.token(sendMessage.getTargetToken())
@@ -70,8 +63,8 @@ public class FirebaseCloudMessageService {
 				.data(FcmMessage.Data.builder()
 					.roomId(sendMessage.getRoomId())
 					.type(sendMessage.getType())
-					.senderNickname(sender.getNickname())
-					.senderProfilePic(sender.getProfilePic())
+					.senderNickname(member.getNickname())
+					.senderProfilePic(member.getProfilePic())
 					.build())
 				.build()
 			)
@@ -81,7 +74,7 @@ public class FirebaseCloudMessageService {
 		return objectMapper.writeValueAsString(fcmMessage);
 	}
 
-	private String getAccessToken() throws IOException {
+	private static String getAccessToken() throws IOException {
 		String firebaseConfigPath = "firebase/firebase-service-key.json";
 		GoogleCredentials googleCredentials = GoogleCredentials
 			.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream())
@@ -90,3 +83,4 @@ public class FirebaseCloudMessageService {
 		return googleCredentials.getAccessToken().getTokenValue();
 	}
 }
+

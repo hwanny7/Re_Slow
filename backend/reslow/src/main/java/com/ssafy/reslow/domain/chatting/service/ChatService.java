@@ -2,6 +2,7 @@ package com.ssafy.reslow.domain.chatting.service;
 
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,17 +10,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.connection.Message;
-import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Service;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
+import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
@@ -37,22 +41,36 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class ChatService {
+	private final DeviceRepository deviceRepository;
+	private final RedisMessageListenerContainer redisMessageListenerContainer; // 채팅방(topic)에 발행되는 메시지 처리할 Listener
+	private final ChatSubscriber chatSubscriber;
+	public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
+	private Map<String, ChannelTopic> topics;
+	private HashOperations<String, String, String> hashOpsEnterInfo;
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
 
 	private final ChatPublisher chatPublisher;
-	private final DeviceRepository deviceRepository;
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
-	private final SimpMessagingTemplate messagingTemplate;
 
-	public void sendMessage(ChatMessageRequest chatMessage, ChannelTopic topic) {
-		if (true) {
-			System.out.println("==== CharService로 들어와서 publish 날리기 직전! =====");
-			chatPublisher.publish(topic, chatMessage);
-		} else {
-			// fcmService.sendNotification(chatMessage.getReceiver(), chatMessage.getMessage());
-		}
+	@PostConstruct
+	private void init() {
+		hashOpsEnterInfo = redisTemplate.opsForHash();
+		topics = new HashMap<>();
+	}
+
+	public void sendMessage(ChatMessageRequest chatMessage) throws IOException, FirebaseMessagingException {
+		// redis로 publish
+		chatPublisher.publish(topics.get(chatMessage.getRoomId()), chatMessage);
+		// FCM으로 알림 보내기
+		// 토큰 찾아와
+		Member member = memberRepository.findById(chatMessage.getSender())
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		String token = deviceRepository.findByMember(member)
+			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
+
+		FirebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.of(chatMessage, token), member);
 	}
 
 	private boolean isUserOnline(String username) {
@@ -72,32 +90,31 @@ public class ChatService {
 		return map;
 	}
 
-	public void subscribeToChatRoom(String roomId, Long memberNo) {
-		// Redis Pub/Sub의 subscribe 메소드를 사용하여 채팅방(Room) 구독(subscribe)
-		redisTemplate.execute((RedisConnection connection) -> {
-			connection.subscribe((Message message, byte[] pattern) -> {
-				// Redis에서 수신한 메시지를 WebSocket 클라이언트에게 전송
-				String messageJson = (String)redisTemplate.getValueSerializer().deserialize(message.getBody());
-				messagingTemplate.convertAndSend("/sub/chat/room/" + roomId, messageJson);
-			}, roomId.getBytes());
-			return null;
-		});
-
-		System.out.println("====== ChatService에 들어와서 subscribe 등록 완료~~~~~~~!! =====");
-		// Redis Set에 해당 클라이언트의 no 추가
-		redisTemplate.opsForSet().add(roomId, memberNo);
-	}
-
-	public void saveChattingRoom(String roomId, Map<String, Long> userList) {
+	// 채팅방 저장
+	public void createChattingRoom(String roomId, Map<String, Long> userList) {
 		ChatRoom room = ChatRoom.of(roomId, userList.get("user1"), userList.get("user2"));
 		chatRoomRepository.save(room);
 	}
 
+	// 채팅방 입장
+	public void enterChattingRoom(String roomId, Long memberNo) {
+		ChannelTopic topic = topics.get(roomId);
+
+		// 없던 topic이면 새로 만든다.
+		if (topic == null) {
+			topic = new ChannelTopic(roomId);
+		}
+		redisMessageListenerContainer.addMessageListener(chatSubscriber, topic);
+		topics.put(roomId, topic);
+	}
+
+	// 해당 멤버가 가진 모든 채팅방 목록 가져오기
 	public List<ChatRoom> findRoom(Long memberNo) {
 		List<ChatRoom> roomList = chatRoomRepository.findByParticipantsContaining(memberNo);
 		return roomList;
 	}
 
+	// 가져온 멤버의 채팅방 목록에서 채팅방 정보 가져오기
 	public List<ChatRoomList> giveChatRoomList(List<ChatRoom> roomList) {
 		List<String> roomIdList = new ArrayList<>();
 		roomList.forEach(chatRoom -> roomIdList.add(chatRoom.getRoomId()));
@@ -145,6 +162,21 @@ public class ChatService {
 		}
 
 		return map;
+	}
+
+	// 유저가 입장한 채팅방ID와 유저 세션ID 맵핑 정보 저장
+	public void setUserEnterInfo(String sessionId, String roomId) {
+		hashOpsEnterInfo.put(ENTER_INFO, sessionId, roomId);
+	}
+
+	// 유저 세션으로 입장해 있는 채팅방 ID 조회
+	public String getUserEnterRoomId(String sessionId) {
+		return hashOpsEnterInfo.get(ENTER_INFO, sessionId);
+	}
+
+	// 유저 세션정보와 맵핑된 채팅방ID 삭제
+	public void removeUserEnterInfo(String sessionId) {
+		hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
 	}
 
 }
