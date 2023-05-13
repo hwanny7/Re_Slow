@@ -48,6 +48,16 @@ public class FcmMessage {
 		String body;
 		String roomId;
 		MessageType type;
+
+		public static SendMessage of(ChatMessageRequest request, String token) {
+			return SendMessage.builder()
+				.targetToken(token)
+				.title(null)
+				.body(request.getMessage())
+				.roomId(request.getRoomId())
+				.type(MessageType.CHATTING)
+				.build();
+		}
 	}
 
 }
