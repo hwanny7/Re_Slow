@@ -10,4 +10,5 @@ public class FcmRequest {
 	private String body;
 	private String roomId;
 	private String targetToken;
+	private MessageType type;
 }
