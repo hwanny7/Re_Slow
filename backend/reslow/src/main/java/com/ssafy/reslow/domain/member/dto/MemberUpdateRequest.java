@@ -8,10 +8,10 @@ import lombok.Getter;
 public class MemberUpdateRequest {
 
 	private String recipient;
-	private int zipCode;
+	private int zipcode;
 	private String address;
 	private String addressDetail;
-	private String phoneNum;
+	private String phoneNumber;
 	private String memo;
 
 	public static MemberUpdateRequest of(String recipient, int zipCode, String address,
@@ -19,10 +19,10 @@ public class MemberUpdateRequest {
 		String phoneNum, String memo) {
 		return MemberUpdateRequest.builder()
 			.recipient(recipient)
-			.zipCode(zipCode)
+			.zipcode(zipCode)
 			.address(address)
 			.addressDetail(addressDetail)
-			.phoneNum(phoneNum)
+			.phoneNumber(phoneNum)
 			.memo(memo)
 			.build();
 	}
