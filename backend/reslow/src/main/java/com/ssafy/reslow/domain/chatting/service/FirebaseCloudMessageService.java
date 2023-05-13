@@ -26,10 +26,10 @@ public class FirebaseCloudMessageService {
 	private final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
 	private final ObjectMapper objectMapper;
 
-	public void sendMessageTo(String targetToken, String title, String body, String roomId) throws
+	public void sendMessageTo(FcmMessage.SendMessage sendMessage) throws
 		IOException,
 		FirebaseMessagingException {
-		String message = makeMessage(targetToken, title, body, roomId);
+		String message = makeMessage(sendMessage);
 
 		OkHttpClient client = new OkHttpClient();
 		RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
@@ -45,26 +45,24 @@ public class FirebaseCloudMessageService {
 
 	}
 
-	public String makeMessage(String targetToken, String title, String body, String roomId) throws
+	public String makeMessage(FcmMessage.SendMessage sendMessage) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
 		FcmMessage fcmMessage = FcmMessage.builder()
 			.message(FcmMessage.Message.builder()
-				.token(targetToken)
+				.token(sendMessage.getTargetToken())
 				.notification(FcmMessage.Notification.builder()
-					.title(title)
-					.body(body)
-					.image(null)
+					.title(sendMessage.getTitle())
+					.body(sendMessage.getBody())
 					.build()
 				)
-				.data(FcmMessage.Data.builder().roomId(roomId).build())
+				.data(FcmMessage.Data.builder().roomId(sendMessage.getRoomId()).type(sendMessage.getType()).build())
 				.build()
 			)
 			.validate_only(false)
 			.build();
 
 		return objectMapper.writeValueAsString(fcmMessage);
-		// return objectMapper.writeValueAsString(response);
 	}
 
 	private String getAccessToken() throws IOException {
