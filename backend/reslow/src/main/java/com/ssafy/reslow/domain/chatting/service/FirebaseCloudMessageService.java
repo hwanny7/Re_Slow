@@ -12,6 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
+import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
@@ -25,11 +29,14 @@ import okhttp3.Response;
 public class FirebaseCloudMessageService {
 	private final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
 	private final ObjectMapper objectMapper;
+	private final MemberRepository memberRepository;
 
-	public void sendMessageTo(FcmMessage.SendMessage sendMessage) throws
+	public void sendMessageTo(FcmMessage.SendMessage sendMessage, Long memberNo) throws
 		IOException,
 		FirebaseMessagingException {
-		String message = makeMessage(sendMessage);
+		String message = makeMessage(sendMessage, memberNo);
+
+		System.out.println("보내는 메시지 : " + message);
 
 		OkHttpClient client = new OkHttpClient();
 		RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
@@ -43,11 +50,15 @@ public class FirebaseCloudMessageService {
 		Response response = client.newCall(request)
 			.execute();
 
+		System.out.println("결과 : " + response);
 	}
 
-	public String makeMessage(FcmMessage.SendMessage sendMessage) throws
+	public String makeMessage(FcmMessage.SendMessage sendMessage, Long memberNo) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
+		Member sender = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
 		FcmMessage fcmMessage = FcmMessage.builder()
 			.message(FcmMessage.Message.builder()
 				.token(sendMessage.getTargetToken())
@@ -56,7 +67,12 @@ public class FirebaseCloudMessageService {
 					.body(sendMessage.getBody())
 					.build()
 				)
-				.data(FcmMessage.Data.builder().roomId(sendMessage.getRoomId()).type(sendMessage.getType()).build())
+				.data(FcmMessage.Data.builder()
+					.roomId(sendMessage.getRoomId())
+					.type(sendMessage.getType())
+					.senderNickname(sender.getNickname())
+					.senderProfilePic(sender.getProfilePic())
+					.build())
 				.build()
 			)
 			.validate_only(false)
