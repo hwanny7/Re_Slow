@@ -34,6 +34,8 @@ public class FcmMessage {
 	@Getter
 	public static class Data {
 		private String roomId;
+		private String senderNickname;
+		private String senderProfilePic;
 		private MessageType type;
 	}
 

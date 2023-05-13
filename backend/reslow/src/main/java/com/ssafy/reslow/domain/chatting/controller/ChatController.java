@@ -145,7 +145,6 @@ public class ChatController {
 
 		System.out.println("데이터는 안갈거니?????????????????");
 		System.out.println(requestDTO.getRoomId());
-		// firebaseCloudMessageService.makeMessage(
 		firebaseCloudMessageService.sendMessageTo(
 			FcmMessage.SendMessage.builder()
 				.targetToken(requestDTO.getTargetToken())
@@ -153,7 +152,7 @@ public class ChatController {
 				.body(requestDTO.getBody())
 				.roomId(requestDTO.getRoomId())
 				.type(requestDTO.getType())
-				.build());
+				.build(), 1L);
 		return ResponseEntity.ok().build();
 	}
 
