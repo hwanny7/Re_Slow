@@ -41,7 +41,6 @@ public class ChatService {
 	private final ChatMessageRepository chatMessageRepository;
 
 	private final ChatPublisher chatPublisher;
-	private final FcmService fcmService;
 	private final DeviceRepository deviceRepository;
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
@@ -80,17 +79,6 @@ public class ChatService {
 		System.out.println("====== ChatService에 들어와서 subscribe 등록 완료~~~~~~~!! =====");
 		// Redis Set에 해당 클라이언트의 no 추가
 		redisTemplate.opsForSet().add(roomId, memberNo);
-	}
-
-	public Map<String, String> saveChatMessage(ChatMessageRequest chatMessage) {
-		ChatMessage message = ChatMessage.of(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage.getMessage(),
-			chatMessage.getDateTime());
-		chatMessageRepository.save(message);
-
-		Map<String, String> map = new HashMap<>();
-		map.put("sender", String.valueOf(chatMessage.getSender()));
-		map.put("Message", chatMessage.getMessage());
-		return map;
 	}
 
 	public void saveChattingRoom(String roomId, Map<String, Long> userList) {
