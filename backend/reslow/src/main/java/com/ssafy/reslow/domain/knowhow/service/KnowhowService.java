@@ -200,8 +200,24 @@ public class KnowhowService {
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 
-		setOperations.remove(String.valueOf(knowhowNo), String.valueOf(memberNo));
-		zSetOperations.incrementScore("knowhow", String.valueOf(knowhowNo), -1);
+		String knowhowString = String.valueOf(knowhowNo);
+		Set<String> likedMember = setOperations.members(knowhowString);
+		Iterator<String> itor = likedMember.iterator();
+
+		while (itor.hasNext()) {
+			// 사용자가 좋아하는 카테고리 개수 -1
+			zSetOperations.incrementScore("knowhow_" + memberNo,
+				String.valueOf(knowhow.getKnowhowCategory().getNo()),
+				-1);
+
+			// 사용자의 좋아요 목록에서 제거
+			zSetOperations.remove(memberNo + "_like_knowhow", knowhowString);
+		}
+
+		// 글 삭제
+		setOperations.remove(knowhowString, String.valueOf(memberNo));
+		// 사용자의 좋아요 개수 -1
+		zSetOperations.incrementScore("knowhow", knowhowString, -1);
 		return "글 삭제 완료";
 	}
 
