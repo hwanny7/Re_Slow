@@ -47,11 +47,6 @@ public class ChatService {
 	private final SimpMessagingTemplate messagingTemplate;
 
 	public void sendMessage(ChatMessageRequest chatMessage, ChannelTopic topic) {
-		// Member receiver = memberRepository.findByNickname(chatMessage.getReceiver())
-		// 	.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		// List<String> deviceList = deviceRepository.findByMember(receiver)
-		// 	.orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
-
 		if (true) {
 			System.out.println("==== CharService로 들어와서 publish 날리기 직전! =====");
 			chatPublisher.publish(topic, chatMessage);
@@ -63,6 +58,18 @@ public class ChatService {
 	private boolean isUserOnline(String username) {
 		// Check if the user is online using some mechanism (e.g. Redis)
 		return true;
+	}
+
+	// 받은 채팅 mongoDB에 저장
+	public Map<String, String> saveChatMessage(ChatMessageRequest chatMessage) {
+		ChatMessage message = ChatMessage.of(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage.getMessage(),
+			chatMessage.getDateTime());
+		chatMessageRepository.save(message);
+
+		Map<String, String> map = new HashMap<>();
+		map.put("sender", String.valueOf(chatMessage.getSender()));
+		map.put("message", chatMessage.getMessage());
+		return map;
 	}
 
 	public void subscribeToChatRoom(String roomId, Long memberNo) {

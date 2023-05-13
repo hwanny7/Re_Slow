@@ -20,7 +20,7 @@ public class ChatMessageController {
 	public void handleChatMessage(@Payload ChatMessageRequest chatMessage) {
 		System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
 		// mongoDB에 저장하기
-		// chatService.saveChatMessage(chatMessage);
+		chatService.saveChatMessage(chatMessage);
 		// 채팅 보내기
 		// chatService.sendMessage(chatMessage, channels.get(chatMessage.getRoomId()));
 	}
