@@ -31,6 +31,9 @@ public class FirebaseCloudMessageService {
 		FirebaseMessagingException {
 		String message = makeMessage(targetToken, title, body, roomId);
 
+		System.out.println("보낼 메시지 찍어보기");
+		System.out.println(message);
+
 		OkHttpClient client = new OkHttpClient();
 		RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
 		Request request = new Request.Builder()
