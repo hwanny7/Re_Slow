@@ -13,6 +13,8 @@ public class MyProductListResponse {
 
 	private Long productNo;
 	private Long orderNo;
+	private String carrierTrack;
+	private String carrierCompany;
 	private String title;
 	private int price;
 	private int status;
@@ -23,6 +25,8 @@ public class MyProductListResponse {
 		return MyProductListResponse.builder()
 			.productNo(product.getNo())
 			.orderNo(product.getOrder() == null ? null : product.getOrder().getNo())
+			.carrierTrack(product.getOrder() == null ? null : product.getOrder().getCarrierTrack())
+			.carrierCompany(product.getOrder() == null ? null : product.getOrder().getCarrierCompany())
 			.title(product.getTitle())
 			.price(product.getPrice())
 			.status(status)
