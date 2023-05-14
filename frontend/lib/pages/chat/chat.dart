@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/chat/chatdetail.dart';
 import 'package:reslow/providers/socket_provider.dart';
+import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 
@@ -14,32 +16,7 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
-List<Map<String, dynamic>> content = [
-  {
-    "id": 1,
-    "time": "2023-05-04T00:00:00",
-    "userimage": "assets/image/user.png",
-    "username": "춘식이 집사",
-    "recentText": "고양이 밥그릇 사고 싶은데 다 팔렸나요??ㅠㅠ",
-    "unseenTextCnt": 3
-  },
-  {
-    "id": 2,
-    "time": "2023-05-03T00:00:00",
-    "userimage": "assets/image/user.png",
-    "username": "춘식이 집사2",
-    "recentText": "고양이 밥그릇 대박임",
-    "unseenTextCnt": 0
-  },
-  {
-    "id": 3,
-    "time": "2023-05-03T00:00:00",
-    "userimage": "assets/image/user.png",
-    "username": "춘식이 집사3",
-    "recentText": "고양이 밥그릇 사고 싶은데 다 팔렸나요??ㅠㅠ",
-    "unseenTextCnt": 0
-  }
-];
+List<dynamic> content = [];
 
 Map unseen = {};
 
@@ -50,11 +27,25 @@ class _ChatState extends State<Chat> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _requestRoomList();
     setState(() {
       // content = context.watch<SocketManager>().recentData;
       // unseen = context.watch<SocketManager>().unseenMsg;
       // order = context.watch<SocketManager>().chatOrder.toList();
     });
+  }
+
+  Future<void> _requestRoomList() async {
+    try {
+      dioClient.dio.get('/chat/roomList').then((res) {
+        setState(() {
+          content = res.data;
+        });
+        print(content);
+      });
+    } on DioError catch (e) {
+      print('error: $e');
+    }
   }
 
   Widget chatList(int index) {
@@ -64,7 +55,11 @@ class _ChatState extends State<Chat> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ChatDetail(chatNo: index),
+              builder: (context) => ChatDetail(
+                roomId: content[index]["roomId"],
+                otherPic: content[index]["profilePic"] ?? "",
+                otherNick: content[index]["nickname"],
+              ),
             ),
           );
         },
@@ -82,10 +77,15 @@ class _ChatState extends State<Chat> {
                   margin: const EdgeInsets.fromLTRB(8, 8, 12, 8),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(50),
-                      child: Image.asset(
-                        content[index]["userimage"],
-                        width: 50,
-                      ))),
+                      child: content[index]["profilePic"] == null
+                          ? Image.asset(
+                              "assets/image/user.png",
+                              width: 50,
+                            )
+                          : Image.network(
+                              content[index]["profilePic"],
+                              width: 50,
+                            ))),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -96,16 +96,17 @@ class _ChatState extends State<Chat> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              content[index]["username"],
+                              content[index]["nickname"],
                               style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                            Text(formatTimeDifference(content[index]["time"]))
+                            Text(formatTimeDifference(
+                                content[index]["dateTime"]))
                           ])),
                   Container(
                       margin: const EdgeInsets.fromLTRB(4, 4, 0, 0),
                       child: Text(
-                        content[index]["recentText"],
+                        content[index]["lastMessage"],
                         style: const TextStyle(fontSize: 14),
                       ))
                 ],
