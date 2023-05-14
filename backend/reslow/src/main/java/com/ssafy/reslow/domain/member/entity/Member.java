@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.member.entity;
 
+import com.ssafy.reslow.domain.member.dto.MemberUpdateRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -67,7 +68,7 @@ public class Member extends BaseEntity implements UserDetails {
 	@JoinColumn(name = "MEMBER_ACCOUNT_PK")
 	private MemberAccount memberAccount;
 
-	@OneToOne(cascade = CascadeType.PERSIST)
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "MEMBER_ADDRESS_PK")
 	private MemberAddress memberAddress;
 
