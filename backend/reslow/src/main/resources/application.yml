@@ -76,3 +76,8 @@ iamport:
 delivery:
   api:
     key: ${DELIVERY_API_KEY}
+
+logging:
+  level:
+    root:
+      debug
