@@ -13,5 +13,4 @@ public class ChatMessageRequest {
 	private String roomId;
 	private Long sender; // 보낸사람
 	private String message; // 보낸 메시지
-	private String dateTime; // 메시지 보낸 시각
 }
