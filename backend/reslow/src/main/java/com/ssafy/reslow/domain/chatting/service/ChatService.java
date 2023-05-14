@@ -28,6 +28,7 @@ import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
 import com.ssafy.reslow.domain.chatting.repository.ChatRoomRepository;
+import com.ssafy.reslow.domain.member.entity.Device;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
@@ -70,11 +71,12 @@ public class ChatService {
 		// 토큰 찾아와
 		Member member = memberRepository.findById(chatMessage.getSender())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		String token = deviceRepository.findByMember(member)
+		Device device = deviceRepository.findByMember(member)
 			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
 
 		System.out.println("알림 보내러 출발!!!!!!");
-		FirebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.of(chatMessage, token), member);
+		FirebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.of(chatMessage, device.getDeviceToken()),
+			member);
 	}
 
 	private boolean isUserOnline(String username) {

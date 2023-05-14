@@ -10,7 +10,7 @@ import com.ssafy.reslow.domain.member.entity.Member;
 
 @Repository
 public interface DeviceRepository extends JpaRepository<Device, Long> {
-	Optional<String> findByMember(Member member);
+	Optional<Device> findByMember(Member member);
 
 	Optional<Device> findByMemberAndDeviceToken(Member member, String deviceToken);
 }
