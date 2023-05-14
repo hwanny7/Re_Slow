@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.chatting.dto;
 
+import java.time.LocalDateTime;
+
 import com.ssafy.reslow.domain.member.entity.Member;
 
 import lombok.Builder;
@@ -12,10 +14,10 @@ public class ChatRoomList {
 	Long memberNo; // 상대방No
 	String nickname;
 	String profilePic;
-	String dateTime;
+	LocalDateTime dateTime;
 	String lastMessage;
 
-	public static ChatRoomList of(Member member, String roomId, String dateTime, String message) {
+	public static ChatRoomList of(Member member, String roomId, LocalDateTime dateTime, String message) {
 		return ChatRoomList.builder()
 			.roomId(roomId)
 			.memberNo(member.getNo())
