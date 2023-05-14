@@ -32,12 +32,11 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
     try {
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
-      final response =
-          await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/likes',
-              options: Options(headers: {
-                'Authorization': 'Bearer $token',
-              }),
-              queryParameters: {"page": 0, "size": 10}).then(
+      await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/likes/',
+          options: Options(headers: {
+            'Authorization': 'Bearer $token',
+          }),
+          queryParameters: {"page": 0, "size": 4}).then(
         (value) {
           print("여기${value.data}");
           setState(() {
@@ -67,9 +66,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          setState(() {
-            content[index]["likeCnt"] = value.data["count"];
-          });
+          _requestMyLikeKnowhow();
         });
         print(response);
       } else {
@@ -81,9 +78,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          setState(() {
-            content[index]["likeCnt"] = value.data["count"];
-          });
+          _requestMyLikeKnowhow();
         });
         print(response);
       }

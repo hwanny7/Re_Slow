@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/chat/chatdetail.dart';
 import 'package:reslow/pages/market/buy_item.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/dio_client.dart';
@@ -23,6 +24,9 @@ class _ItemDetailState extends State<ItemDetail> {
   final PageController _pageController = PageController();
   int _currentPicture = 0;
   String price = '';
+  dynamic myinfo;
+  bool isRoomId = false;
+  String roomId = "";
 
   @override
   void initState() {
@@ -40,6 +44,7 @@ class _ItemDetailState extends State<ItemDetail> {
 
       setState(() {
         item = MarketItemDetail.fromJson(jsonData);
+        print(item!.memberNo);
         price = priceDot(item!.price);
       });
     } else {
@@ -73,6 +78,48 @@ class _ItemDetailState extends State<ItemDetail> {
         // Handle any errors or display an error message
         print('HTTP request failed with status: ${response.statusCode}');
       }
+    }
+  }
+
+  Future<void> _requestMyInfo() async {
+    try {
+      await dioClient.dio.get('/members/info').then((res) {
+        setState(() {
+          myinfo = res.data;
+        });
+        print("정보 내놔 $myinfo");
+      });
+    } on DioError catch (e) {
+      print('requestMyInfoerror: $e');
+    }
+  }
+
+  Future<void> _requestCheckRoomId(String roomId) async {
+    try {
+      await dioClient.dio.get('/chat/check/$roomId').then((res) {
+        setState(() {
+          isRoomId = res.data["room"];
+        });
+      });
+    } on DioError catch (e) {
+      print('requestCheckRoomIderror: $e');
+    }
+  }
+
+  Future<void> _requestCreateRoom(String roomId) async {
+    try {
+      Map data;
+      if (myinfo["memberNo"] < item!.memberNo) {
+        data = {"user1": myinfo["memberNo"], "user2": item!.memberNo};
+      } else {
+        data = {"user2": myinfo["memberNo"], "user1": item!.memberNo};
+      }
+      print(data);
+      print(myinfo["memberNo"]);
+      print(item!.memberNo);
+      await dioClient.dio.post('/chat/$roomId', data: data);
+    } on DioError catch (e) {
+      print('requestCreateRoomerror: $e');
     }
   }
 
@@ -254,7 +301,56 @@ class _ItemDetailState extends State<ItemDetail> {
                         padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                         color: const Color(0xFF165B40),
                         minWidth: MediaQuery.of(context).size.width * 0.05,
-                        onPressed: () => {},
+                        onPressed: () async {
+                          print("눌림");
+                          // 내 번호랑 닉네임 받아오기
+                          await _requestMyInfo();
+                          print("내 번호랑 닉네임 받아옴");
+                          print(myinfo);
+                          // /productNo/usernumber/othernumber(작은 숫자를 앞으로)라는 방 이름이 있나요?
+                          if (myinfo != null) {
+                            if (myinfo["memberNo"] < item!.memberNo) {
+                              roomId =
+                                  "${item!.productNo}-${myinfo["memberNo"]}-${item!.memberNo}";
+                            } else {
+                              roomId =
+                                  "${item!.productNo}-${item!.memberNo}-${myinfo["memberNo"]}";
+                            }
+                            await _requestCheckRoomId(roomId);
+                            print("방 아이디가 있나요? $isRoomId");
+                            if (isRoomId) {
+                              print("chatDetail 넘어갑니다");
+                              // 방 ID 있다면 그냥 push
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatDetail(
+                                    roomId: roomId,
+                                    otherNick: item!.nickname,
+                                    otherPic: item!.profileImg,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              print("방 생성 API 시작");
+                              // 없다면 방 생성 API 보낸 후 push
+                              await _requestCreateRoom(roomId);
+                              print("방 생성 후, chatDetail 넘어갑니다");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChatDetail(
+                                    roomId: roomId,
+                                    otherNick: item!.nickname,
+                                    otherPic: item!.profileImg,
+                                  ),
+                                ),
+                              );
+                            }
+                          } else {
+                            print(myinfo);
+                          }
+                        },
                         child: const Text(
                           "채팅",
                           textAlign: TextAlign.center,
