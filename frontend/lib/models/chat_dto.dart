@@ -1,12 +1,12 @@
 class Msg {
   String roomId;
-  String sender;
-  String receiver;
+  int sender;
+  String dateTime;
   String message;
 
   Msg(
       {required this.roomId,
       required this.sender,
-      required this.receiver,
+      required this.dateTime,
       required this.message});
 }

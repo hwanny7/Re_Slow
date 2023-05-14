@@ -15,7 +15,7 @@ class KnowHow extends StatefulWidget {
   _KnowHowState createState() => _KnowHowState();
 }
 
-List<dynamic> content = [];
+// List<dynamic> itemList = [];
 
 int _selectedindex = -1;
 
@@ -70,6 +70,7 @@ class _KnowHowState extends State<KnowHow> {
 
   Future<void> _requestKnowhow(bool isInfinite) async {
     try {
+      print(knowhowpage);
       if (!isInfinite) {
         knowhowpage = 0;
         knowhowisLast = false;
@@ -131,11 +132,9 @@ class _KnowHowState extends State<KnowHow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          setState(() {
-            content[index]["likeCnt"] = value.data["count"];
-          });
+          print(value);
+          _requestKnowhow(false);
         });
-        print(response);
       } else {
         final token = await _getTokenFromSharedPreferences();
         print("token $token");
@@ -145,11 +144,9 @@ class _KnowHowState extends State<KnowHow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          setState(() {
-            content[index]["likeCnt"] = value.data["count"];
-          });
+          print(value);
+          _requestKnowhow(false);
         });
-        print(response);
       }
     } on DioError catch (e) {
       print('likeerror: $e');
@@ -171,7 +168,7 @@ class _KnowHowState extends State<KnowHow> {
       Expanded(
           child: ListView.builder(
               controller: _scrollController,
-              itemCount: content.length,
+              itemCount: itemList.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: [
@@ -181,8 +178,8 @@ class _KnowHowState extends State<KnowHow> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             ProfileSmall(
-                                url: content[index]["profilePic"],
-                                name: content[index]["writer"]),
+                                url: itemList[index].profile,
+                                name: itemList[index].writer),
                             Image.asset(
                               "assets/image/share.png",
                               width: 24,
@@ -199,7 +196,7 @@ class _KnowHowState extends State<KnowHow> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => KnowHowDetail(
-                                      knowhowNo: content[index]["knowhowNo"]),
+                                      knowhowNo: itemList[index].knowhowNo),
                                 ),
                               )
                             },
@@ -211,8 +208,8 @@ class _KnowHowState extends State<KnowHow> {
                                   child: Column(children: [
                                 Center(
                                     child: KnowHowGrid(
-                                  images: content[index]["pictureList"],
-                                  imageLTH: content[index]["pictureCnt"],
+                                  images: itemList[index].pictureList,
+                                  imageLTH: itemList[index].pictureCnt,
                                 ))
                               ]))),
                           Container(
@@ -226,7 +223,7 @@ class _KnowHowState extends State<KnowHow> {
                                             MediaQuery.of(context).size.width *
                                                 0.6,
                                         child: Text(
-                                          content[index]["title"],
+                                          itemList[index].title,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                               fontSize: 20,
@@ -237,12 +234,12 @@ class _KnowHowState extends State<KnowHow> {
                                         InkWell(
                                             onTap: () {
                                               setState(() {
-                                                content[index]["like"] =
-                                                    !content[index]["like"];
+                                                itemList[index].like =
+                                                    !itemList[index].like;
                                               });
                                               _requestKnowhowLike(
-                                                  content[index]["knowhowNo"],
-                                                  content[index]["like"],
+                                                  itemList[index].knowhowNo,
+                                                  itemList[index].like,
                                                   index);
                                             },
                                             child: Row(children: [
@@ -251,14 +248,14 @@ class _KnowHowState extends State<KnowHow> {
                                                       const EdgeInsets.fromLTRB(
                                                           8, 0, 8, 0),
                                                   child: Image.asset(
-                                                    (content[index]["like"] ??
+                                                    (itemList[index].like ??
                                                             false)
                                                         ? "assets/image/full_heart.png"
                                                         : "assets/image/heart.png",
                                                     width: 24,
                                                   )),
                                               Text(
-                                                "${content[index]["likeCnt"]}",
+                                                "${itemList[index].likeCnt}",
                                                 style: const TextStyle(
                                                     fontSize: 18),
                                               )
@@ -274,9 +271,9 @@ class _KnowHowState extends State<KnowHow> {
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           Knowhowcomment(
-                                                              knowhowid: content[
-                                                                      index][
-                                                                  "knowhowNo"]),
+                                                              knowhowid: itemList[
+                                                                      index]
+                                                                  .knowhowNo),
                                                     ),
                                                   )
                                                 },
@@ -290,7 +287,7 @@ class _KnowHowState extends State<KnowHow> {
                                                     width: 24,
                                                   )),
                                               Text(
-                                                "${content[index]["commentCnt"]}",
+                                                "${itemList[index].commentCnt}",
                                                 style: const TextStyle(
                                                     fontSize: 18),
                                               )

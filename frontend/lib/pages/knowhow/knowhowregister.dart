@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:reslow/widgets/common/category_tap_bar.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,28 @@ class KnowhowRegister extends StatefulWidget {
 
 class _KnowhowRegisterState extends State<KnowhowRegister> {
   Future<void> _requestRegister() async {
+    //제목 선택했는지 확인
+    if (title == "") {
+      FlutterDialog("글의 제목을 입력해주세요");
+      return;
+    }
+    //카테고리 선택했는지 확인
+    if (knowhowregicategory == -1) {
+      FlutterDialog("글의 카테고리를 선택해주세요");
+      return;
+    }
+    //글, 사진 쌍 잘 들어가있는지 확인
+    for (int i = 0; i < pickedImgs.length; i++) {
+      if (contentTexts[i] == "") {
+        FlutterDialog("${i + 1}번째 내용을 채워주세요");
+        return;
+      }
+      if (pickedImgs[i].length == 0) {
+        FlutterDialog("${i + 1}번째 사진을 채워주세요");
+        return;
+      }
+    }
+
     final Dio dio = Dio();
 
     List<dynamic> imageList = [];
@@ -24,7 +47,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
       imageList.add(await MultipartFile.fromBytes(bytes, filename: filename));
     }
     FormData formData = FormData.fromMap({
-      "categoryNo": 1,
+      "categoryNo": knowhowregicategory + 1,
       "title": title,
       "contentList": contentTexts,
       "imageList": imageList
@@ -106,6 +129,44 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
     // print("DELETE");
     // print(index);
     // print(number);
+  }
+
+  void FlutterDialog(String text) {
+    showDialog(
+        context: context,
+        //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            // RoundedRectangleBorder - Dialog 화면 모서리 둥글게 조절
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+            //Dialog Main Title
+            title: Column(
+              children: <Widget>[
+                new Text("알림"),
+              ],
+            ),
+            //
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  text,
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -217,6 +278,12 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
     );
   }
 
+  int knowhowregicategory = -1;
+
+  void _getCategory(int index) {
+    knowhowregicategory = index;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -242,20 +309,10 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
               )),
           Container(width: 1, height: 30, color: const Color(0xffDBDBDB)),
           Expanded(
-              child: Container(
-                  color: Colors.grey.withOpacity(0.03),
-                  child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            categoryTag(1, "의류"),
-                            categoryTag(2, "서적"),
-                            categoryTag(3, "가구"),
-                            categoryTag(4, "악세사리"),
-                            categoryTag(5, "잡화"),
-                            categoryTag(6, "잘 넘어가니?")
-                          ]))))
+            child: CategoryTapBar(
+              callback: _getCategory,
+            ),
+          )
         ]),
         Container(
             width: MediaQuery.of(context).size.width,

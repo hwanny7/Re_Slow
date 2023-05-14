@@ -95,12 +95,12 @@ class _MyKnowhowState extends State<MyKnowhow> {
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
       await dio
-          .delete('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}',
+          .delete('http://k8b306.p.ssafy.io:8080/knowhows/$KnowhowNo',
               options: Options(headers: {
                 'Authorization': 'Bearer $token',
               }))
           .then((value) {
-        print("이건 뭐가 오나 $value");
+        _requestMyKnowhow();
       });
     } on DioError catch (e) {
       print('deleteerror: $e');
