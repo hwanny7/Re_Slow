@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
+import 'package:reslow/pages/chat/chatdetail.dart';
 import 'package:reslow/pages/frame.dart';
 import 'package:reslow/pages/knowhow/knowhow.dart';
 import 'package:reslow/pages/market/market.dart';
@@ -16,9 +17,11 @@ import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("받았음 메세지 아이디는 ${message.messageId}");
+  print("받았음 메세지 제목은 ${message.notification?.title}");
+  print("받았음 메세지 내용은 ${message.notification?.body}");
   print("받았음 메세지 데이터는 ${message.data}");
   // 백그라운드에서 수신한 FCM 메시지 처리
+  _showNotification(message.notification?.title, message.notification?.body);
   // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
 }
 
@@ -72,8 +75,30 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     // 포그라운드에서 수신한 FCM 메시지 처리 핸들러 등록
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("받았음 메세지 제목은 ${message.notification?.title}");
+      print("받았음 메세지 내용은 ${message.notification?.body}");
+      print("받았음 메세지 데이터는 ${message.data}");
       _showNotification(
           message.notification?.title, message.notification?.body);
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+      print(message.data["type"]);
+      print(message.data["senderProfilePic"]);
+      print(message.data["senderNickname"]);
+      if (message.data["type"] == "CHATTING") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatDetail(
+              roomId: message.data["roomId"],
+              otherPic: message.data["senderProfilePic"],
+              otherNick: message.data["senderNickname"],
+            ),
+          ),
+        );
+      }
     });
   }
 

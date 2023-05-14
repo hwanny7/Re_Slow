@@ -20,6 +20,15 @@ class SocketManager extends ChangeNotifier {
   Map<String, dynamic> recentData = {};
   Queue<String> chatOrder = Queue();
   Map<String, int> unseenMsg = {};
+  late String roomId;
+  late int myId;
+
+  void setInitial(String roomId, int myId) {
+    this.roomId = roomId;
+    this.myId = myId;
+    print(this.roomId);
+    print(this.myId);
+  }
 
   Dio dio = Dio();
 
@@ -40,29 +49,28 @@ class SocketManager extends ChangeNotifier {
 
   void onConnect(StompFrame frame) {
     stompClient!.subscribe(
-        destination: "sub/chat/room/1_test1212_test1234",
+        destination: "/chat/sub/room/50-3-33",
         callback: (StompFrame frame) {
           if (frame.body != null) {
             Map<String, dynamic> obj = json.decode(frame.body!);
             Msg message = Msg(
-                roomId: "/1_test1212_test1234",
-                sender: "test1212",
-                receiver: "test1234",
-                message: "하이 서영");
+                roomId: "50-3-33",
+                sender: 33,
+                dateTime: new DateTime.now().toString(),
+                message: "");
           }
         });
   }
 
-  void sendMessage(
-      String roomId, String sender, String receiver, String message) {
+  void sendMessage() {
     print("sendMessage 시작");
     stompClient!.send(
-        destination: "/pub/chat/message",
+        destination: "/chat/pub/message",
         body: json.encode({
-          "roomId": roomId,
-          "sender": sender,
-          "receiver": receiver,
-          "message": message
+          "roomId": "50-3-33",
+          "sender": 33,
+          "message": "이거 되면 프론트에서 인스턴스로 소켓 못 여는 거임",
+          "dateTime": DateTime.now().toString()
         }));
   }
 
