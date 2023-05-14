@@ -74,7 +74,9 @@ public class ChatService {
 		// 받을사람 No 가져오기
 		String[] roomInfo = roomId.split("-");
 		Long receiverNo = Long.valueOf(roomInfo[1]) == chatMessage.getSender()
-			? Long.valueOf(roomInfo[0]) : Long.valueOf(roomInfo[1]);
+			? Long.valueOf(roomInfo[2]) : Long.valueOf(roomInfo[1]);
+
+		System.out.println("받는사람 No nonononononno: " + receiverNo);
 
 		Member sender = memberRepository.findById(chatMessage.getSender())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
