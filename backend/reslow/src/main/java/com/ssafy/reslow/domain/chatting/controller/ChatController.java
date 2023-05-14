@@ -73,7 +73,7 @@ public class ChatController {
 	@GetMapping("/roomList")
 	public List<ChatRoomList> chatRoomList(Authentication authentication) {
 		Long memberNo = Long.parseLong(authentication.getName());
-		return chatService.giveChatRoomList(chatService.findRoom(memberNo));
+		return chatService.giveChatRoomList(chatService.findRoom(memberNo), memberNo);
 	}
 
 	// 채팅방 내용확인
