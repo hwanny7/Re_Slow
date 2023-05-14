@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p from Product p join fetch p.order o where p.member.no = :no and (p.order.no IS NULL or o.status = :status) ORDER BY p.updatedDate DESC")
+    @Query("SELECT p from Product p join p.order o where p.member.no = :no and (p.order.no IS NULL or o.status = :status) GROUP BY p.no ORDER BY p.updatedDate DESC")
     Slice<Product> findByMemberAndOrder_StatusOrOrderIsNullOrderByUpdatedDateDesc(Long no,
         OrderStatus status,
         Pageable pageable);
