@@ -94,7 +94,7 @@ public class ChatService {
 
 	// 받은 채팅 mongoDB에 저장
 	public Map<String, String> saveChatMessage(ChatMessageRequest chatMessage) {
-		System.out.println("===========mongo에 저장하는 service로 들어옴!!!!!!!===========");
+		System.out.println("===========mongo에 저장하는 service로 들어옴!!!!!!!============");
 		String nowDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now());
 		ChatMessage message = ChatMessage.of(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage.getMessage(),
 			nowDate);
