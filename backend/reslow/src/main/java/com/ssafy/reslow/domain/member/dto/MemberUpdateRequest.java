@@ -13,17 +13,4 @@ public class MemberUpdateRequest {
 	private String addressDetail;
 	private String phoneNumber;
 	private String memo;
-
-	public static MemberUpdateRequest of(String recipient, int zipCode, String address,
-		String addressDetail,
-		String phoneNum, String memo) {
-		return MemberUpdateRequest.builder()
-			.recipient(recipient)
-			.zipcode(zipCode)
-			.address(address)
-			.addressDetail(addressDetail)
-			.phoneNumber(phoneNum)
-			.memo(memo)
-			.build();
-	}
 }

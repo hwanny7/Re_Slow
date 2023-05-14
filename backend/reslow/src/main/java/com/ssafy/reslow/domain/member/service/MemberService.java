@@ -139,10 +139,12 @@ public class MemberService {
 		Member member = memberRepository.findById(memberNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		if(member.getMemberAddress() != null){
-			throw new CustomException(ALREADY_EXISTS_ADDRESS);
+			MemberAddress memberAddress = member.getMemberAddress();
+			memberAddress.update(request);
+		} else {
+			MemberAddress updateAddress = MemberAddress.toEntity(request);
+			member.registAddress(updateAddress);
 		}
-		MemberAddress memberAddress = MemberAddress.toEntity(request);
-		member.registAddress(memberAddress);
 		Map<String, Long> map = new HashMap<>();
 		map.put("memberNo", memberNo);
 		return map;
