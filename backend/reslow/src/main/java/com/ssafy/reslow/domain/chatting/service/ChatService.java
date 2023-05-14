@@ -62,21 +62,32 @@ public class ChatService {
 	}
 
 	public void sendMessage(ChatMessageRequest chatMessage) throws IOException, FirebaseMessagingException {
+		String roomId = chatMessage.getRoomId();
+
 		System.out.println("!!sendMessage로 들어옴!!");
 		// redis로 publish
-		chatPublisher.publish(topics.get(chatMessage.getRoomId()), chatMessage);
+		chatPublisher.publish(topics.get(roomId), chatMessage);
 
 		System.out.println("publish 수행완료!");
 		// FCM으로 알림 보내기
 		// 토큰 찾아와
-		Member member = memberRepository.findById(chatMessage.getSender())
+		// 받을사람 No 가져오기
+		String[] roomInfo = roomId.split("-");
+		Long receiverNo = Long.valueOf(roomInfo[1]) == chatMessage.getSender()
+			? Long.valueOf(roomInfo[0]) : Long.valueOf(roomInfo[1]);
+
+		Member sender = memberRepository.findById(chatMessage.getSender())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		Device device = deviceRepository.findByMember(member)
+		Member receiver = memberRepository.findById(receiverNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+		Device device = deviceRepository.findByMember(receiver)
 			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
 
 		System.out.println("알림 보내러 출발!!!!!!");
+		System.out.println("보낸사람: " + sender.getNickname());
+		System.out.println("받는사람: " + receiver.getNickname());
 		FirebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.of(chatMessage, device.getDeviceToken()),
-			member);
+			sender);
 	}
 
 	private boolean isUserOnline(String username) {
