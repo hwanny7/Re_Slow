@@ -41,7 +41,6 @@ class _CuponListState extends State<CuponList> {
     Response response = await getMyCupons(queryParams);
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      print(jsonData);
       if (jsonData["content"].isEmpty) {
         isLast = true;
         print("empty");
@@ -91,7 +90,7 @@ class _CuponListState extends State<CuponList> {
           ],
         ),
         body: couponList.isEmpty
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(child: Text("등록된 쿠폰이 없습니다."))
             : Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 16),

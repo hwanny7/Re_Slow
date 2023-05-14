@@ -2,9 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/coupon_model.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/models/user.dart';
 import 'package:reslow/pages/market/cupon_list.dart';
 import 'package:reslow/pages/market/payment.dart';
-import 'package:reslow/services/Market.dart';
+import 'package:reslow/services/auth_modify.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:kpostal/kpostal.dart';
@@ -19,25 +20,42 @@ class BuyItem extends StatefulWidget {
 }
 
 class _BuyItemState extends State<BuyItem> {
-  String zipcode = '-';
-  String roadAddress = '-';
+  Shipment shipment = Shipment();
+  final TextEditingController _recipientController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _addressDetailController =
+      TextEditingController();
+  final TextEditingController _memoDetailController = TextEditingController();
+  Shipment registeredShipment = Shipment();
+
   String price = '';
-  String deliveryFee = '';
   int intPrice = 0;
-  String recipient = '';
-  String phoneNumber = '';
-  String memo = '';
-  String addressDetail = '';
+  String deliveryFee = '';
   int? issuedCouponNo;
   MyCoupons? coupon;
   int couponPrice = 0;
 
+  bool? _isChecked = false;
+
   @override
   void initState() {
+    super.initState();
     price = priceDot(widget.item!.price);
     deliveryFee = priceDot(widget.item!.deliveryFee);
     intPrice = widget.item!.price + widget.item!.deliveryFee;
-    super.initState();
+    fetchData();
+  }
+
+  void fetchData() async {
+    Response response = await getShipmentInfo();
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      setState(() {
+        registeredShipment = Shipment.fromJson(jsonData);
+      });
+    } else {
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
   }
 
   void setCoupon(MyCoupons newCoupon) {
@@ -60,6 +78,36 @@ class _BuyItemState extends State<BuyItem> {
         body: SingleChildScrollView(
             child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Text(
+                  '기본 배송지와 동일',
+                  textAlign: TextAlign.end,
+                ),
+                Checkbox(
+                  value: _isChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked = value;
+                      if (_isChecked!) {
+                        shipment = registeredShipment;
+                        _recipientController.text = shipment.recipient;
+                        _phoneNumberController.text = shipment.phoneNumber;
+                        _addressDetailController.text = shipment.addressDetail;
+                        _memoDetailController.text = shipment.memo;
+                      } else {
+                        shipment = Shipment();
+                        _recipientController.text = '';
+                        _phoneNumberController.text = '';
+                        _addressDetailController.text = '';
+                        _memoDetailController.text = '';
+                      }
+                    });
+                  },
+                ),
+              ],
+            ),
             Container(
               width: double.infinity,
               margin:
@@ -70,9 +118,10 @@ class _BuyItemState extends State<BuyItem> {
               child: TextField(
                 onChanged: (value) {
                   setState(() {
-                    recipient = value;
+                    shipment.recipient = value;
                   });
                 },
+                controller: _recipientController,
                 decoration: const InputDecoration(
                   hintText: '수령인',
                   border: InputBorder.none,
@@ -90,9 +139,10 @@ class _BuyItemState extends State<BuyItem> {
               child: TextField(
                 onChanged: (value) {
                   setState(() {
-                    phoneNumber = value;
+                    shipment.phoneNumber = value;
                   });
                 },
+                controller: _phoneNumberController,
                 decoration: const InputDecoration(
                   hintText: '연락처',
                   border: InputBorder.none,
@@ -112,7 +162,8 @@ class _BuyItemState extends State<BuyItem> {
                     child: TextField(
                       decoration: InputDecoration(
                         enabled: false,
-                        hintText: zipcode == '-' ? '우편번호' : zipcode,
+                        hintText:
+                            shipment.zipcode == "" ? '우편번호' : shipment.zipcode,
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.all(16.0),
                       ),
@@ -135,8 +186,8 @@ class _BuyItemState extends State<BuyItem> {
                               // kakaoKey: '{Add your KAKAO DEVELOPERS JS KEY}',
                               callback: (Kpostal result) {
                                 setState(() {
-                                  zipcode = result.postCode;
-                                  roadAddress = result.address;
+                                  shipment.zipcode = result.postCode;
+                                  shipment.address = result.address;
                                 });
                               },
                             ),
@@ -168,7 +219,7 @@ class _BuyItemState extends State<BuyItem> {
               child: TextField(
                 enabled: false,
                 decoration: InputDecoration(
-                  hintText: roadAddress == '-' ? '주소' : roadAddress,
+                  hintText: shipment.address == "" ? '주소' : shipment.address,
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.all(16.0),
                 ),
@@ -184,9 +235,10 @@ class _BuyItemState extends State<BuyItem> {
               child: TextField(
                 onChanged: (value) {
                   setState(() {
-                    addressDetail = value;
+                    shipment.addressDetail = value;
                   });
                 },
+                controller: _addressDetailController,
                 decoration: const InputDecoration(
                   hintText: '상세주소',
                   border: InputBorder.none,
@@ -205,12 +257,13 @@ class _BuyItemState extends State<BuyItem> {
               child: TextField(
                 onChanged: (value) {
                   setState(() {
-                    memo = value;
+                    shipment.memo = value;
                   });
                 },
+                controller: _memoDetailController,
                 maxLines: 10,
                 decoration: const InputDecoration(
-                  hintText: '요청사항',
+                  hintText: '요청사항 (선택사항)',
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(16.0),
                 ),
@@ -364,7 +417,7 @@ class _BuyItemState extends State<BuyItem> {
                       const Spacer(),
                       Text(
                         coupon?.discountAmount == null
-                            ? "0원"
+                            ? "- 0원"
                             : "- ${priceDot(coupon?.discountAmount)}",
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
@@ -399,22 +452,33 @@ class _BuyItemState extends State<BuyItem> {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  Material(
-                    elevation: 5,
-                    borderRadius: BorderRadius.circular(4),
-                    color: const Color(0xFF165B40),
-                    child: MaterialButton(
-                        padding: const EdgeInsets.fromLTRB(20, 15, 20, 15),
-                        minWidth: MediaQuery.of(context).size.width,
-                        onPressed: () {
+                  const SizedBox(
+                    height: 20.0,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        )),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+            child: SizedBox(
+              height: 50,
+              child: ElevatedButton(
+                  onPressed: shipment.address.isNotEmpty &&
+                          shipment.addressDetail.isNotEmpty &&
+                          shipment.phoneNumber.isNotEmpty &&
+                          shipment.recipient.isNotEmpty &&
+                          shipment.zipcode.isNotEmpty
+                      ? () {
                           OrderingInformation orderingInformation =
                               OrderingInformation(
-                                  recipient: recipient,
-                                  zipcode: int.parse(zipcode),
-                                  address: roadAddress,
-                                  addressDetail: addressDetail,
-                                  phoneNumber: phoneNumber,
-                                  memo: memo,
+                                  recipient: shipment.recipient,
+                                  zipcode: int.parse(shipment.zipcode),
+                                  address: shipment.address,
+                                  addressDetail: shipment.addressDetail,
+                                  phoneNumber: shipment.phoneNumber,
+                                  memo: shipment.memo,
                                   issuedCouponNo: coupon?.issuedCouponNo,
                                   productNo: widget.item!.productNo);
                           Navigator.push(
@@ -424,23 +488,16 @@ class _BuyItemState extends State<BuyItem> {
                                     totalPrice: intPrice,
                                     orderingInformation: orderingInformation)),
                           );
-                        },
-                        child: const Text(
-                          "구매하기",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
-                        )),
-                  ),
-                  const SizedBox(
-                    height: 20.0,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        )));
+                        }
+                      : null,
+                  child: const Text(
+                    "구매하기",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  )),
+            )));
   }
 }

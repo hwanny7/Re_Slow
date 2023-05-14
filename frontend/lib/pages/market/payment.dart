@@ -58,7 +58,8 @@ class Payment extends StatelessWidget {
           if (response.statusCode == 200) {
             Map<String, dynamic> jsonData = response.data;
             if (context.mounted) {
-              Navigator.pushReplacement(
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => OrderDetail(

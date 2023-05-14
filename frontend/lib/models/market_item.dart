@@ -192,3 +192,85 @@ class MyBuyItem {
         status: responseData['status']);
   }
 }
+
+class DeliveryMan {
+  String? adUrl;
+  bool? complete;
+  int? invoiceNo;
+  String? itemName;
+  int? level;
+  String? receiverAddr;
+  String? receiverName;
+  String? recipient;
+  String? result;
+  String? senderName;
+  List<TrackingDetails>? trackingDetails;
+
+  DeliveryMan(
+      {this.adUrl,
+      this.complete,
+      this.invoiceNo,
+      this.itemName,
+      this.level,
+      this.receiverAddr,
+      this.receiverName,
+      this.recipient,
+      this.result,
+      this.senderName,
+      this.trackingDetails});
+
+  DeliveryMan.fromJson(Map<String, dynamic> json) {
+    adUrl = json['adUrl'];
+    complete = json['complete'];
+    invoiceNo = json['invoiceNo'];
+    itemName = json['itemName'];
+    level = json['level'];
+    receiverAddr = json['receiverAddr'];
+    receiverName = json['receiverName'];
+    recipient = json['recipient'];
+    result = json['result'];
+    senderName = json['senderName'];
+    if (json['trackingDetails'] != null) {
+      trackingDetails = <TrackingDetails>[];
+      json['trackingDetails'].forEach((v) {
+        trackingDetails!.add(TrackingDetails.fromJson(v));
+      });
+    }
+  }
+}
+
+class TrackingDetails {
+  String? kind;
+  int? level;
+  String? manName;
+  String? manPic;
+  String? telno;
+  String? telno2;
+  int? time;
+  String? timeString;
+  String? where;
+
+  TrackingDetails({
+    this.kind,
+    this.level,
+    this.manName,
+    this.manPic,
+    this.telno,
+    this.telno2,
+    this.time,
+    this.timeString,
+    this.where,
+  });
+
+  TrackingDetails.fromJson(Map<String, dynamic> json) {
+    kind = json['kind'];
+    level = json['level'];
+    manName = json['manName'];
+    manPic = json['manPic'];
+    telno = json['telno'];
+    telno2 = json['telno2'];
+    time = json['time'];
+    timeString = json['timeString'];
+    where = json['where'];
+  }
+}
