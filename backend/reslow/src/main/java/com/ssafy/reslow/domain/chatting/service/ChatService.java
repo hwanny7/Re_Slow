@@ -100,6 +100,8 @@ public class ChatService {
 			nowDate);
 		chatMessageRepository.save(message);
 
+		System.out.println("mongo에 저장한 메시지: " + message.getContent() + ", 날짜: " + message.getDateTime());
+
 		Map<String, String> map = new HashMap<>();
 		map.put("sender", String.valueOf(chatMessage.getSender()));
 		map.put("message", chatMessage.getMessage());
