@@ -13,6 +13,8 @@ import lombok.Getter;
 public class OrderListResponse {
 
 	private Long orderNo;
+	private String carrierTrack;
+	private String carrierCompany;
 	private Long productNo;
 	private String title;
 	private int price;
@@ -24,6 +26,8 @@ public class OrderListResponse {
 		return OrderListResponse.builder()
 			.title(product.getTitle())
 			.orderNo(order.getNo())
+			.carrierTrack(order.getCarrierTrack())
+			.carrierCompany(order.getCarrierCompany())
 			.productNo(product.getNo())
 			.price(product.getPrice())
 			.date(order.getCreatedDate())
