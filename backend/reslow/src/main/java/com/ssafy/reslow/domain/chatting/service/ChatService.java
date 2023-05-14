@@ -33,7 +33,6 @@ import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,16 +70,10 @@ public class ChatService {
 		System.out.println("publish 수행완료!");
 		// FCM으로 알림 보내기
 		// 토큰 찾아와
-		// 받을사람 No 가져오기
-		String[] roomInfo = roomId.split("-");
-		Long receiverNo = Long.valueOf(roomInfo[1]) == chatMessage.getSender()
-			? Long.valueOf(roomInfo[2]) : Long.valueOf(roomInfo[1]);
 
-		System.out.println("받는사람 No nonononononno: " + receiverNo);
-
+		// 받을사람 Member객체 가져오기
+		Member receiver = findReceiver(roomId, chatMessage.getSender());
 		Member sender = memberRepository.findById(chatMessage.getSender())
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		Member receiver = memberRepository.findById(receiverNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Device device = deviceRepository.findByMember(receiver)
 			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
@@ -111,8 +104,13 @@ public class ChatService {
 
 	// 채팅방 저장
 	public void createChattingRoom(String roomId, Map<String, Long> userList) {
-		ChatRoom room = ChatRoom.of(roomId, userList.get("user1"), userList.get("user2"));
-		chatRoomRepository.save(room);
+		log.debug("====" + userList.get("user1") + "와 " + userList.get("user2") + "가 " + roomId + "채팅방을 생성함! ====");
+		if (chatRoomRepository.findByRoomId(roomId).isEmpty()) {
+			ChatRoom room = ChatRoom.of(roomId, userList.get("user1"), userList.get("user2"));
+			chatRoomRepository.save(room);
+		} else {
+			log.debug("이미 생성된 채팅방이 있음!");
+		}
 	}
 
 	// 채팅방 입장
@@ -123,6 +121,7 @@ public class ChatService {
 		if (topic == null) {
 			topic = new ChannelTopic(roomId);
 		}
+		log.debug("====" + memberNo + "가 채팅방 " + topic.getTopic() + "에 참여함 ====");
 		redisMessageListenerContainer.addMessageListener(chatSubscriber, topic);
 		topics.put(roomId, topic);
 	}
@@ -146,9 +145,8 @@ public class ChatService {
 
 		List<ChatRoomList> chatRoomList = new ArrayList<>();
 		messageList.forEach(chatMessage -> {
-			Member member = memberRepository.findById(chatMessage.getUser()).orElseThrow(() -> new CustomException(
-				ErrorCode.MEMBER_NOT_FOUND));
-			ChatRoomList chatRoom = ChatRoomList.of(member, chatMessage.getRoomId(), chatMessage.getDateTime(),
+			Member receiver = findReceiver(chatMessage.getRoomId(), chatMessage.getUser());
+			ChatRoomList chatRoom = ChatRoomList.of(receiver, chatMessage.getRoomId(), chatMessage.getDateTime(),
 				chatMessage.getContent());
 			chatRoomList.add(chatRoom);
 		});
@@ -196,6 +194,16 @@ public class ChatService {
 	// 유저 세션정보와 맵핑된 채팅방ID 삭제
 	public void removeUserEnterInfo(String sessionId) {
 		hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
+	}
+
+	// 채팅방 ID로 상대방 Member객체 가져오기
+	public Member findReceiver(String roomId, Long senderNo) {
+		String[] roomInfo = roomId.split("-");
+		Long receiverNo =
+			Long.valueOf(roomInfo[1]).equals(senderNo) ? Long.valueOf(roomInfo[2]) : Long.valueOf(roomInfo[1]);
+
+		return memberRepository.findById(receiverNo)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 	}
 
 }
