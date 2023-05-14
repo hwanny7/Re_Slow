@@ -11,13 +11,15 @@ class CustomAppBar extends AppBar {
     // List<Widget>? actions,
   }) : super(
           key: key,
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.white,
+          iconTheme: const IconThemeData(color: Colors.black),
           centerTitle: true,
           elevation: 0,
           leading: leading,
           title: Text(
             title,
             style: const TextStyle(
+              color: Colors.black,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -29,6 +31,7 @@ class CustomAppBar extends AppBar {
                     child: Text(
                       actions,
                       style: const TextStyle(
+                        color: Colors.black,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),

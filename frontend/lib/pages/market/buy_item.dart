@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/market/cupon_list.dart';
 import 'package:reslow/pages/market/payment.dart';
+import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:kpostal/kpostal.dart';
@@ -33,7 +36,22 @@ class _BuyItemState extends State<BuyItem> {
     deliveryFee = priceDot(widget.item!.deliveryFee);
     intPrice = widget.item!.price + widget.item!.deliveryFee;
     totalPrice = priceDot(intPrice);
+    fetchData();
     super.initState();
+  }
+
+  void fetchData() async {
+    print('Hello');
+    Response response = await getMyCupons();
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      print(jsonData["content"]);
+      // setState(() {
+      //   order = GetOrder.fromJson(jsonData);
+      // });
+    } else {
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
   }
 
   @override
@@ -83,57 +101,63 @@ class _BuyItemState extends State<BuyItem> {
                 ),
               ),
             ),
-            Row(
-              children: [
-                Container(
-                  width: 265,
-                  margin: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      enabled: false,
-                      hintText: zipcode == '-' ? '우편번호' : zipcode,
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.all(16.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    width: 265,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
                     ),
-                  ),
-                ),
-                ElevatedButton(
-                  child: Text('주소 검색'),
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                      const EdgeInsets.symmetric(
-                          vertical: 19.0, horizontal: 11.0),
-                    ),
-                    side: MaterialStateProperty.all<BorderSide>(
-                      const BorderSide(color: Colors.grey, width: 1.0),
-                    ),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.grey),
-                  ),
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => KpostalView(
-                          // useLocalServer: false,
-                          // localPort: 8080,
-                          // kakaoKey: '{Add your KAKAO DEVELOPERS JS KEY}',
-                          callback: (Kpostal result) {
-                            setState(() {
-                              zipcode = result.postCode;
-                              roadAddress = result.address;
-                            });
-                          },
-                        ),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        enabled: false,
+                        hintText: zipcode == '-' ? '우편번호' : zipcode,
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.all(16.0),
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 7),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: const Color(0xff3C9F61)),
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => KpostalView(
+                              // useLocalServer: false,
+                              // localPort: 8080,
+                              // kakaoKey: '{Add your KAKAO DEVELOPERS JS KEY}',
+                              callback: (Kpostal result) {
+                                setState(() {
+                                  zipcode = result.postCode;
+                                  roadAddress = result.address;
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        backgroundColor: Colors.white,
+                      ),
+                      child: const Text('주소 검색',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xff3C9F61),
+                            fontSize: 13,
+                          )),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Container(
               width: double.infinity,
@@ -198,6 +222,73 @@ class _BuyItemState extends State<BuyItem> {
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: Column(
                 children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        flex: 21, // 65% width
+                        child: Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.only(bottom: 8.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: const TextField(
+                            enabled: false,
+                            decoration: InputDecoration(
+                              hintText: '쿠폰 할인',
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.all(16.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 6, // 30% width
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 11, bottom: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: const Color(0xff3C9F61)),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  transitionDuration:
+                                      const Duration(milliseconds: 500),
+                                  transitionsBuilder: (context, animation,
+                                      secondaryAnimation, child) {
+                                    return SlideTransition(
+                                      position: Tween<Offset>(
+                                        begin: const Offset(0.0, 1.0),
+                                        end: Offset.zero,
+                                      ).animate(animation),
+                                      child: child,
+                                    );
+                                  },
+                                  pageBuilder:
+                                      (context, animation, secondaryAnimation) {
+                                    return const CuponList();
+                                  },
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              backgroundColor: Colors.white,
+                            ),
+                            child: const Text('사용',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff3C9F61),
+                                  fontSize: 13,
+                                )),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   const Divider(
                     color: Color(0xFFBDBDBD),
                     thickness: 0.5,

@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:reslow/models/user.dart';
-import 'package:reslow/services/authModify.dart';
+import 'package:reslow/services/auth_modify.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class ShipmentRegister extends StatefulWidget {

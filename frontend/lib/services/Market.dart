@@ -47,3 +47,9 @@ Future<Response> InputDelivery(
 
   return response;
 }
+
+Future<Response> getMyCupons() async {
+  Response response = await dioClient.dio.get('/coupons/my');
+
+  return response;
+}
