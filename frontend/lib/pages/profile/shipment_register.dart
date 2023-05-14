@@ -55,7 +55,6 @@ class _ShipmentRegisterState extends State<ShipmentRegister> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                // title: const Text('주소 등록'),
                 content: const Text("주소 등록이 완료되었습니다."),
                 actions: [
                   Row(

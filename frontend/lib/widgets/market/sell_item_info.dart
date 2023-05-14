@@ -253,7 +253,11 @@ class _SellItemInfoState extends State<SellItemInfo> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => DeliveryCheck()),
+                                        builder: (context) => DeliveryCheck(
+                                              tcode: widget.item.carrierTrack,
+                                              tinvoice:
+                                                  widget.item.carrierCompany,
+                                            )),
                                   );
                                 }
                               },

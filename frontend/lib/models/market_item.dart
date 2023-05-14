@@ -169,10 +169,15 @@ class MyBuyItem {
   final int price;
   final String date;
   final String image;
+  final String carrierTrack;
+  final String carrierCompany;
+
   int status;
 
   MyBuyItem({
     this.orderNo,
+    required this.carrierTrack,
+    required this.carrierCompany,
     required this.productNo,
     required this.price,
     required this.title,
@@ -184,6 +189,8 @@ class MyBuyItem {
   factory MyBuyItem.fromJson(Map<String, dynamic> responseData) {
     return MyBuyItem(
         productNo: responseData['productNo'],
+        carrierTrack: responseData['carrierTrack'],
+        carrierCompany: responseData['carrierCompany'],
         title: responseData['title'],
         price: responseData['price'],
         orderNo: responseData['orderNo'],
