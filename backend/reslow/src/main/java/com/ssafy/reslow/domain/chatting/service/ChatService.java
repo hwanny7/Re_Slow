@@ -94,7 +94,7 @@ public class ChatService {
 	// 받은 채팅 mongoDB에 저장
 	public Map<String, String> saveChatMessage(ChatMessageRequest chatMessage) {
 		ChatMessage message = ChatMessage.of(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage.getMessage(),
-			LocalDateTime.now());
+			String.valueOf(LocalDateTime.now()));
 		chatMessageRepository.save(message);
 
 		Map<String, String> map = new HashMap<>();

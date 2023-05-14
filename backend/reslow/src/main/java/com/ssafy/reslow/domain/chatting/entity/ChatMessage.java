@@ -1,7 +1,5 @@
 package com.ssafy.reslow.domain.chatting.entity;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Id;
 
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,9 +17,9 @@ public class ChatMessage {
 	private String roomId; // 글번호No + /대화상대1No + /대화상대2No
 	private Long user;
 	private String content;
-	private LocalDateTime dateTime;
+	private String dateTime;
 
-	public static ChatMessage of(String roomId, Long user, String content, LocalDateTime dateTime) {
+	public static ChatMessage of(String roomId, Long user, String content, String dateTime) {
 		return ChatMessage.builder()
 			.roomId(roomId)
 			.user(user)
