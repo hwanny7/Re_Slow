@@ -20,7 +20,7 @@ String formatTimeDifference(String dateTimeString) {
   }
 }
 
-String priceDot(int price) {
+String priceDot(int? price) {
   String priceString = price.toString();
 
   String formattedPrice = '';

@@ -48,8 +48,9 @@ Future<Response> InputDelivery(
   return response;
 }
 
-Future<Response> getMyCupons() async {
-  Response response = await dioClient.dio.get('/coupons/my');
+Future<Response> getMyCupons(Map<String, dynamic> queryParams) async {
+  Response response =
+      await dioClient.dio.get('/coupons/my', queryParameters: queryParams);
 
   return response;
 }

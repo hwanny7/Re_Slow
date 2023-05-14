@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/models/coupon_model.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/cupon_list.dart';
 import 'package:reslow/pages/market/payment.dart';
@@ -23,35 +24,33 @@ class _BuyItemState extends State<BuyItem> {
   String price = '';
   String deliveryFee = '';
   int intPrice = 0;
-  String totalPrice = '';
   String recipient = '';
   String phoneNumber = '';
   String memo = '';
   String addressDetail = '';
   int? issuedCouponNo;
+  MyCoupons? coupon;
+  int couponPrice = 0;
 
   @override
   void initState() {
     price = priceDot(widget.item!.price);
     deliveryFee = priceDot(widget.item!.deliveryFee);
     intPrice = widget.item!.price + widget.item!.deliveryFee;
-    totalPrice = priceDot(intPrice);
-    fetchData();
     super.initState();
   }
 
-  void fetchData() async {
-    print('Hello');
-    Response response = await getMyCupons();
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonData = response.data;
-      print(jsonData["content"]);
-      // setState(() {
-      //   order = GetOrder.fromJson(jsonData);
-      // });
-    } else {
-      print('HTTP request failed with status: ${response.statusCode}');
-    }
+  void setCoupon(MyCoupons newCoupon) {
+    setState(() {
+      coupon = newCoupon;
+      if (coupon?.discountType != 1) {
+        coupon?.discountAmount =
+            (widget.item!.price * coupon!.discountPercent ~/ 100);
+      }
+      intPrice = intPrice < coupon!.discountAmount
+          ? 0
+          : (intPrice - coupon!.discountAmount);
+    });
   }
 
   @override
@@ -232,12 +231,12 @@ class _BuyItemState extends State<BuyItem> {
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey),
                           ),
-                          child: const TextField(
+                          child: TextField(
                             enabled: false,
                             decoration: InputDecoration(
-                              hintText: '쿠폰 할인',
+                              hintText: coupon == null ? '쿠폰 할인' : coupon?.name,
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(16.0),
+                              contentPadding: const EdgeInsets.all(16.0),
                             ),
                           ),
                         ),
@@ -269,7 +268,7 @@ class _BuyItemState extends State<BuyItem> {
                                   },
                                   pageBuilder:
                                       (context, animation, secondaryAnimation) {
-                                    return const CuponList();
+                                    return CuponList(setCoupon: setCoupon);
                                   },
                                 ),
                               );
@@ -352,6 +351,29 @@ class _BuyItemState extends State<BuyItem> {
                       ),
                     ],
                   ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        '쿠폰 할인',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const Spacer(),
+                      Text(
+                        coupon?.discountAmount == null
+                            ? "0원"
+                            : "- ${priceDot(coupon?.discountAmount)}",
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
                   const Divider(
                     color: Color(0xFFBDBDBD),
                     thickness: 0.5,
@@ -368,7 +390,7 @@ class _BuyItemState extends State<BuyItem> {
                       ),
                       const Spacer(),
                       Text(
-                        totalPrice,
+                        priceDot(intPrice),
                         style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
@@ -393,7 +415,7 @@ class _BuyItemState extends State<BuyItem> {
                                   addressDetail: addressDetail,
                                   phoneNumber: phoneNumber,
                                   memo: memo,
-                                  issuedCouponNo: issuedCouponNo,
+                                  issuedCouponNo: coupon?.issuedCouponNo,
                                   productNo: widget.item!.productNo);
                           Navigator.push(
                             context,

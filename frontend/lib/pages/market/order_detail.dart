@@ -98,6 +98,7 @@ class _OrderDetailState extends State<OrderDetail> {
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold),
                                     ),
+                                    SizedBox(height: 15),
                                     Row(
                                       children: [
                                         Text('주문 금액',
