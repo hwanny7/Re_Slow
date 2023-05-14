@@ -43,8 +43,7 @@ public class FirebaseCloudMessageService {
 			.addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
 			.build();
 
-		Response response = client.newCall(request)
-			.execute();
+		Response response = client.newCall(request).execute();
 
 		System.out.println("결과 : " + response);
 	}
@@ -56,7 +55,7 @@ public class FirebaseCloudMessageService {
 			.message(FcmMessage.Message.builder()
 				.token(sendMessage.getTargetToken())
 				.notification(FcmMessage.Notification.builder()
-					.title(sendMessage.getTitle())
+					.title(member.getNickname())
 					.body(sendMessage.getBody())
 					.build()
 				)
