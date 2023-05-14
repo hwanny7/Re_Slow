@@ -35,12 +35,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@EventListener
 	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-		System.out.println("소켓 연결됨!!!!!!!!!!!!!!");
-		log.info("Received a new web socket connection");
+		log.info("소켓 연결됨!!!!!!!!");
 	}
 
 	@EventListener
 	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event) {
-		System.out.println("소켓 끊어짐 ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ");
+		log.info("소켓 끊어짐 ㅂㅂㅂㅂ");
 	}
 }
