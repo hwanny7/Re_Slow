@@ -67,7 +67,7 @@ public class Member extends BaseEntity implements UserDetails {
 	@JoinColumn(name = "MEMBER_ACCOUNT_PK")
 	private MemberAccount memberAccount;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "MEMBER_ADDRESS_PK")
 	private MemberAddress memberAddress;
 
