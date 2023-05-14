@@ -61,8 +61,11 @@ public class ChatService {
 	}
 
 	public void sendMessage(ChatMessageRequest chatMessage) throws IOException, FirebaseMessagingException {
+		System.out.println("!!sendMessage로 들어옴!!");
 		// redis로 publish
 		chatPublisher.publish(topics.get(chatMessage.getRoomId()), chatMessage);
+
+		System.out.println("publish 수행완료!");
 		// FCM으로 알림 보내기
 		// 토큰 찾아와
 		Member member = memberRepository.findById(chatMessage.getSender())
@@ -70,6 +73,7 @@ public class ChatService {
 		String token = deviceRepository.findByMember(member)
 			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
 
+		System.out.println("알림 보내러 출발!!!!!!");
 		FirebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.of(chatMessage, token), member);
 	}
 
