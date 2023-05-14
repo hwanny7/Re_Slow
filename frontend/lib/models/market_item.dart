@@ -40,6 +40,7 @@ class MarketItemDetail {
   final String nickname;
   final String profileImg;
   final int productNo;
+  final int memberNo;
   int heartCount;
   bool myHeart;
 
@@ -57,6 +58,7 @@ class MarketItemDetail {
     required this.heartCount,
     required this.myHeart,
     required this.productNo,
+    required this.memberNo,
   });
 
   factory MarketItemDetail.fromJson(Map<String, dynamic> responseData) {
@@ -73,7 +75,8 @@ class MarketItemDetail {
         nickname: responseData['nickname'],
         profileImg: responseData['profileImg'],
         productNo: responseData['productNo'],
-        description: responseData['description']);
+        description: responseData['description'],
+        memberNo: responseData['memberNo']);
   }
 }
 

@@ -1,91 +1,174 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:reslow/pages/knowhow/knowhowcomment.dart';
-import 'package:reslow/providers/socket_provider.dart';
+// import 'package:reslow/models/chat_dto.dart';
+// import 'package:reslow/pages/knowhow/knowhowcomment.dart';
+// import 'package:reslow/providers/socket_provider.dart';
+import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
-import 'package:reslow/widgets/common/profile_small.dart';
+// import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stomp_dart_client/stomp.dart';
+import 'package:stomp_dart_client/stomp_config.dart';
+import 'package:stomp_dart_client/stomp_frame.dart';
 
 class ChatDetail extends StatefulWidget {
-  final int chatNo; // 플리마켓 글 번호
-  const ChatDetail({Key? key, required this.chatNo}) : super(key: key);
+  final String roomId; // 방 ID
+  final String otherPic;
+  final String otherNick;
+
+  const ChatDetail(
+      {Key? key,
+      required this.roomId,
+      required this.otherNick,
+      required this.otherPic})
+      : super(key: key);
   @override
   _ChatDetailState createState() => _ChatDetailState();
 }
 
-Map<dynamic, dynamic> content = {
-  "id": 3,
-  "userimage": "assets/image/user.png",
-  "username": "리폼왕춘식이",
-  "otherimage": "assets/image/user.png",
-  "othername": "춘식이 집사3",
-  "chat": [
-    {
-      "sender": 0,
-      "chatText": "우앵우앵 이렇게 써도 밖으로 안 튀어나가게 하고 싶어요 가능할까요?",
-      "time": "2023-05-03T00:00:00",
-    },
-    {
-      "sender": 1,
-      "chatText": "우앵우앵",
-      "time": "2023-05-03T00:00:00",
-    },
-    {
-      "sender": 0,
-      "chatText": "우앵우앵",
-      "time": "2023-05-03T00:00:00",
-    },
-    {
-      "sender": 0,
-      "chatText": "우앵우앵",
-      "time": "2023-05-03T00:00:00",
-    },
-    {
-      "sender": 1,
-      "chatText": "우앵우앵",
-      "time": "2023-05-03T00:00:00",
-    },
-  ]
-};
+List<dynamic> content = [];
 Map heartYN = {"YN": true};
 
 class _ChatDetailState extends State<ChatDetail> {
   Dio dio = Dio();
   String chatMsg = "";
   TextEditingController _chatController = TextEditingController();
-  dynamic socketManager = SocketManager();
+  // dynamic socketManager = SocketManager();
+  StompClient? stompClient;
+  int myId = -1;
 
   @override
   void initState() {
     print("initState 시작");
     // TODO: implement initState
     //_requestChatDetail();
-    // stomp 구독
-    socketManager.connect();
-    print("소켓 매니저야 연결 되어있니? ${socketManager.isConnect()}");
+    _requestSubscribe();
+    _requestMyInfo();
+    _requestChatDetail();
+
+    connect();
+    // socketManager.setInitial(widget.roomId, myId);
+    print("소켓 연결 되어있니? ${isConnect()}");
+
     super.initState();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    stompClient!.deactivate();
+    print("소켓 끊어졌나? ${isConnect()}");
+  }
+
+  // 소켓 연결되어 있는지 확인
+  bool isConnect() {
+    if (stompClient!.isActive) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // 소켓 연결!
+  void connect() {
+    if (stompClient == null) {
+      stompClient = StompClient(
+          config: StompConfig.SockJS(
+        url: "http://k8b306.p.ssafy.io:8080/ws",
+        onConnect: onConnect,
+        onWebSocketError: (dynamic error) => print(error.toString()),
+      ));
+      stompClient!.activate();
+    }
+  }
+
+  // 연결되면 실행할 함수 여기서 콜백이 메세지 오면 할 행동
+  void onConnect(StompFrame frame) {
+    stompClient!.subscribe(
+        destination: "/sub/chat/room/${widget.roomId}",
+        callback: (StompFrame frame) {
+          if (frame.body != null) {
+            Map<String, dynamic> obj = json.decode(frame.body!);
+            Map<String, dynamic> message = {
+              "roomId": obj["roomId"],
+              "sender": obj["sender"],
+              "dateTime": obj["dateTime"],
+              "message": obj["message"]
+            };
+            setState(() {
+              content.insert(0, message);
+            });
+          }
+        });
+  }
+
+  // 메세지 보내기
+  void sendMessage(String message) async {
+    print("sendMessage 시작");
+    print(stompClient);
+    Map data = {
+      "roomId": widget.roomId,
+      "sender": myId,
+      "message": message,
+      "dateTime": DateTime.now().toString()
+    };
+    if (!stompClient!.isActive) {
+      stompClient!.activate();
+    }
+    stompClient!
+        .send(destination: "/pub/chat/message", body: json.encode(data));
+    setState(() {
+      content.insert(0, data);
+    });
+  }
+
+  Future<void> _requestMyInfo() async {
+    try {
+      await dioClient.dio.get('/members/info').then((res) {
+        setState(() {
+          myId = res.data["memberNo"];
+        });
+      });
+    } on DioError catch (e) {
+      print('myinfoerror: $e');
+    }
+  }
+
+  Future<void> _requestSubscribe() async {
+    try {
+      await dioClient.dio.post('/chat/subscribe/${widget.roomId}');
+      print("구독했음");
+    } on DioError catch (e) {
+      print('subscribeerror: $e');
+    }
+  }
+
   Future<void> _requestChatDetail() async {
-    print("요청 시작");
+    print("chatdetail요청 시작");
     try {
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
-      // final response = await dio
-      //     .get('http://k8b306.p.ssafy.io:8080/knowhows/',
-      //         options: Options(headers: {
-      //           'Authorization': 'Bearer $token',
-      //         }))
-      //     .then(
-      //   (value) {
-      //     setState(() {
-      //       content = value.data;
-      //     });
-      //   },
-      // );
+      await dio
+          .get('http://k8b306.p.ssafy.io:8080/chat/detail/${widget.roomId}',
+              options: Options(headers: {
+                'Authorization': 'Bearer $token',
+              }),
+              queryParameters: {
+            "page": 0,
+            "size": 30,
+          }).then(
+        (value) {
+          setState(() {
+            content = value.data["content"];
+          });
+          print(content);
+        },
+      );
     } on DioError catch (e) {
-      print('error: $e');
+      print('chatdetailerror: $e');
     }
   }
 
@@ -95,7 +178,7 @@ class _ChatDetailState extends State<ChatDetail> {
   }
 
   Widget _Chat(int index) {
-    if (content["chat"][index]["sender"] == 0) {
+    if (content[index]["user"] == myId) {
       return Container(
           margin: const EdgeInsets.all(4),
           child: Row(
@@ -105,7 +188,7 @@ class _ChatDetailState extends State<ChatDetail> {
               Container(
                   margin: const EdgeInsets.fromLTRB(16, 8, 0, 8),
                   child: Text(
-                      formatTimeDifference(content["chat"][index]["time"]))),
+                      "${DateTime.parse(content[index]["dateTime"]).hour}:${DateTime.parse(content[index]["dateTime"]).minute}")),
               Flexible(
                   fit: FlexFit.tight,
                   child: Container(
@@ -117,7 +200,7 @@ class _ChatDetailState extends State<ChatDetail> {
                       child: RichText(
                           maxLines: 100,
                           text: TextSpan(
-                              text: content["chat"][index]["chatText"],
+                              text: content[index]["content"],
                               style: const TextStyle(color: Colors.black)))))
             ],
           ));
@@ -145,12 +228,12 @@ class _ChatDetailState extends State<ChatDetail> {
                       child: RichText(
                           maxLines: 100,
                           text: TextSpan(
-                              text: content["chat"][index]["chatText"],
+                              text: content[index]["content"],
                               style: const TextStyle(color: Colors.black))))),
               Container(
                   margin: const EdgeInsets.fromLTRB(0, 8, 16, 8),
                   child: Text(
-                      formatTimeDifference(content["chat"][index]["time"]))),
+                      "${DateTime.parse(content[index]["dateTime"]).hour}:${DateTime.parse(content[index]["dateTime"]).minute}")),
             ],
           ));
     }
@@ -161,23 +244,30 @@ class _ChatDetailState extends State<ChatDetail> {
     return SafeArea(
         child: Scaffold(
             appBar: CustomAppBar(
-              title: content["othername"] ?? "",
+              title: widget.otherNick,
             ),
             body: Column(children: [
               Expanded(
                   child: Column(
-                children: [
-                  Expanded(
-                      child: ListView.builder(
-                          itemCount: content["chat"].length,
-                          itemBuilder: (context, index) {
-                            return _Chat(index);
-                          })),
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 1,
-                      color: const Color(0xffDBDBDB)),
-                ],
+                children: content.isNotEmpty
+                    ? [
+                        Expanded(
+                            child: ListView.builder(
+                                itemCount: content.length,
+                                itemBuilder: (context, index) {
+                                  return _Chat(content.length - (index + 1));
+                                })),
+                        Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 1,
+                            color: const Color(0xffDBDBDB)),
+                      ]
+                    : [
+                        Expanded(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [Text("아직 채팅이 없습니다.")]))
+                      ],
               )),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Container(
@@ -218,16 +308,16 @@ class _ChatDetailState extends State<ChatDetail> {
                             width: 1, color: Colors.grey.withOpacity(0.4))),
                     height: 75,
                     child: TextButton(
-                        onPressed: () {
-                          socketManager.sendMessage("/1_test1212_test1234",
-                              "test1212", "test1234", chatMsg);
+                        onPressed: () async {
+                          sendMessage(chatMsg);
                           print("눌리긴 했음");
                           print(chatMsg);
-                          print(socketManager.isConnect());
+                          // print(socketManager.isConnect());
                           setState(() {
                             chatMsg = "";
                             _chatController.clear();
                           });
+                          _requestChatDetail();
                         },
                         child: Text("완료")))
               ])

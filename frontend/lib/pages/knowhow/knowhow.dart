@@ -70,6 +70,7 @@ class _KnowHowState extends State<KnowHow> {
 
   Future<void> _requestKnowhow(bool isInfinite) async {
     try {
+      print(knowhowpage);
       if (!isInfinite) {
         knowhowpage = 0;
         knowhowisLast = false;
@@ -131,14 +132,9 @@ class _KnowHowState extends State<KnowHow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          List<dynamic> jsonData = value.data;
-          setState(() {
-            itemList.addAll(List<KnowhowItem>.from(
-                jsonData.map((itemJson) => KnowhowItem.fromJson(itemJson))));
-            // 높이를 처음으로 변경하기
-          });
+          print(value);
+          _requestKnowhow(false);
         });
-        print(response);
       } else {
         final token = await _getTokenFromSharedPreferences();
         print("token $token");
@@ -148,11 +144,9 @@ class _KnowHowState extends State<KnowHow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          setState(() {
-            itemList[index].likeCnt = value.data["count"];
-          });
+          print(value);
+          _requestKnowhow(false);
         });
-        print(response);
       }
     } on DioError catch (e) {
       print('likeerror: $e');

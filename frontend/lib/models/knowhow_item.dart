@@ -5,7 +5,7 @@ class KnowhowItem {
   final String title;
   final String writer;
   final String? profile;
-  final List<String> pictureList;
+  final List<dynamic> pictureList;
   final int pictureCnt;
   int likeCnt;
   bool like;
