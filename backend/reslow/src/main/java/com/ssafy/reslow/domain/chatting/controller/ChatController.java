@@ -19,12 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
+import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
 import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
+import com.ssafy.reslow.domain.chatting.dto.MessageType;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
 import com.ssafy.reslow.domain.chatting.service.FirebaseCloudMessageService;
+import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.member.service.MemberService;
+import com.ssafy.reslow.global.exception.CustomException;
+import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @RequestMapping("/chat")
 public class ChatController {
+	private final MemberRepository memberRepository;
 	private final ChatMessageRepository chatMessageRepository;
 	private final ChatService chatService;
 	private final MemberService memberService;
@@ -110,19 +117,25 @@ public class ChatController {
 	}
 
 	@PostMapping("/api/fcm")
-	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO) throws IOException,
+	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO, Authentication authentication) throws
+		IOException,
 		FirebaseMessagingException {
+
+		Long memberNo = Long.parseLong(authentication.getName());
+		Member member = memberRepository.findById(memberNo)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		System.out.println("데이터는 안갈거니?????????????????");
 		System.out.println(requestDTO.getRoomId());
-		// firebaseCloudMessageService.sendMessageTo(
-		// FcmMessage.SendMessage.builder()
-		// 	.targetToken(requestDTO.getTargetToken())
-		// 	.title(requestDTO.getTitle())
-		// 	.body(requestDTO.getBody())
-		// 	.roomId(requestDTO.getRoomId())
-		// 	.type(requestDTO.getType())
-		// 	.build());
+		firebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.builder()
+			.targetToken(
+				requestDTO.getTargetToken())
+			.title(requestDTO.getTitle())
+			.body(requestDTO.getBody())
+			.type(MessageType.CHATTING)
+			.roomId(
+				requestDTO.getRoomId())
+			.build(), member);
 		return ResponseEntity.ok().build();
 	}
 
