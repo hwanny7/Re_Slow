@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/item_detail.dart';
 import 'package:reslow/pages/market/order_detail.dart';
+import 'package:reslow/pages/profile/delivery_check.dart';
 import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/navigator.dart';
@@ -186,7 +187,18 @@ class _BuyItemInfoState extends State<BuyItemInfo> {
                       child: MaterialButton(
                           minWidth: MediaQuery.of(context).size.width,
                           onPressed: () {
-                            buttonHandler(widget.item.status);
+                            if (widget.item.status == 3) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DeliveryCheck(
+                                          tcode: widget.item.carrierTrack,
+                                          tinvoice: widget.item.carrierCompany,
+                                        )),
+                              );
+                            } else {
+                              buttonHandler(widget.item.status);
+                            }
                           },
                           child: Text(
                             buttonText[widget.item.status],

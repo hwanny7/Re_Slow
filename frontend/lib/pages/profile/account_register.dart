@@ -1,8 +1,6 @@
-import 'dart:ffi';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:reslow/services/authModify.dart';
+import 'package:reslow/services/auth_modify.dart';
 import 'package:reslow/utils/shared_preference.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
@@ -103,7 +101,7 @@ class _AccountRegisterState extends State<AccountRegister> {
     Response response = await accountRegister(formData);
     if (response.statusCode == 200) {
       UserPreferences().setTrueAccount();
-      Navigator.pop(context);
+      if (context.mounted) Navigator.pop(context);
     } else {
       print('HTTP request failed with status: ${response.statusCode}');
     }
