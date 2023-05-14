@@ -133,7 +133,7 @@ public class ChatService {
 	}
 
 	// 가져온 멤버의 채팅방 목록에서 채팅방 정보 가져오기
-	public List<ChatRoomList> giveChatRoomList(List<ChatRoom> roomList) {
+	public List<ChatRoomList> giveChatRoomList(List<ChatRoom> roomList, Long memberNo) {
 		List<String> roomIdList = new ArrayList<>();
 		roomList.forEach(chatRoom -> roomIdList.add(chatRoom.getRoomId()));
 
@@ -145,7 +145,7 @@ public class ChatService {
 
 		List<ChatRoomList> chatRoomList = new ArrayList<>();
 		messageList.forEach(chatMessage -> {
-			Member receiver = findReceiver(chatMessage.getRoomId(), chatMessage.getUser());
+			Member receiver = findReceiver(chatMessage.getRoomId(), memberNo);
 			ChatRoomList chatRoom = ChatRoomList.of(receiver, chatMessage.getRoomId(), chatMessage.getDateTime(),
 				chatMessage.getContent());
 			chatRoomList.add(chatRoom);
@@ -201,6 +201,8 @@ public class ChatService {
 		String[] roomInfo = roomId.split("-");
 		Long receiverNo =
 			Long.valueOf(roomInfo[1]).equals(senderNo) ? Long.valueOf(roomInfo[2]) : Long.valueOf(roomInfo[1]);
+
+		log.debug("senderNo: " + senderNo + ", receiverNo: " + receiverNo);
 
 		return memberRepository.findById(receiverNo)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
