@@ -4,6 +4,7 @@ import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -93,8 +94,9 @@ public class ChatService {
 
 	// 받은 채팅 mongoDB에 저장
 	public Map<String, String> saveChatMessage(ChatMessageRequest chatMessage) {
+		String nowDate = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now());
 		ChatMessage message = ChatMessage.of(chatMessage.getRoomId(), chatMessage.getSender(), chatMessage.getMessage(),
-			String.valueOf(LocalDateTime.now()));
+			nowDate);
 		chatMessageRepository.save(message);
 
 		Map<String, String> map = new HashMap<>();
