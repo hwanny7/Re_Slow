@@ -20,7 +20,7 @@ public class KnowhowRepositoryImpl implements KnowhowRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public List<Knowhow> findByMemberIsNotAndCategoryAndKeyword(KnowhowRecommendRequest keywords, Long category,
+	public List<Knowhow> findByKeywordsAndCategory(KnowhowRecommendRequest keywords, Long category,
 		Pageable pageable) {
 
 		BooleanBuilder searchBuilder = null;

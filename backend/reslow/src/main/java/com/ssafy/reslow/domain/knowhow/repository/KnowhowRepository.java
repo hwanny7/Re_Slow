@@ -16,7 +16,7 @@ public interface KnowhowRepository extends JpaRepository<Knowhow, Long>, Knowhow
 
 	Page<Knowhow> findAllByMember_No(Pageable pageable, Long memberNo);
 
-	List<Knowhow> findByMemberIsNotAndCategoryAndKeyword(KnowhowRecommendRequest keywords, Long category,
+	List<Knowhow> findByKeywordsAndCategory(KnowhowRecommendRequest keywords, Long category,
 		Pageable pageable);
 
 	List<Knowhow> findByNoIn(List<Long> pkList);

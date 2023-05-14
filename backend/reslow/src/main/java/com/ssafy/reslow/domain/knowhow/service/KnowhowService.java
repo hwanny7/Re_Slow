@@ -224,7 +224,7 @@ public class KnowhowService {
 	public List<KnowhowListResponse> getKnowhowList(Long memberNo, Pageable pageable, Long category,
 		KnowhowRecommendRequest keywords) {
 
-		List<Knowhow> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keywords, category,
+		List<Knowhow> list = knowhowRepository.findByKeywordsAndCategory(keywords, category,
 			pageable);
 
 		List<KnowhowListResponse> knowhowListResponseList = new ArrayList<>();
@@ -237,11 +237,18 @@ public class KnowhowService {
 		return knowhowListResponseList;
 	}
 
+	/**
+	 * 키워드별 노하우 추천
+	 * @param memberNo
+	 * @param pageable
+	 * @param keywords
+	 * @return 추천된 노하우 정보 List
+	 */
 	public List<KnowhowListResponse> getRecommendKnowhowList(Long memberNo, Pageable pageable,
 		KnowhowRecommendRequest keywords) {
 		Long category = checkMostLikedCategory(memberNo);
 
-		List<Knowhow> list = knowhowRepository.findByMemberIsNotAndCategoryAndKeyword(keywords, category,
+		List<Knowhow> list = knowhowRepository.findByKeywordsAndCategory(keywords, category,
 			pageable);
 
 		List<KnowhowListResponse> knowhowListResponseList = new ArrayList<>();

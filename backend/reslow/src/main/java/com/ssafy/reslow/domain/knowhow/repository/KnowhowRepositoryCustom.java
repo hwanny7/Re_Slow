@@ -8,6 +8,6 @@ import com.ssafy.reslow.domain.knowhow.dto.KnowhowRecommendRequest;
 import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 
 public interface KnowhowRepositoryCustom {
-	List<Knowhow> findByMemberIsNotAndCategoryAndKeyword(KnowhowRecommendRequest keywords, Long category,
+	List<Knowhow> findByKeywordsAndCategory(KnowhowRecommendRequest keywords, Long category,
 		Pageable pageable);
 }
