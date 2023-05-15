@@ -2,6 +2,8 @@ package com.ssafy.reslow.domain.settlement.dto;
 
 import java.time.LocalDateTime;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.ssafy.reslow.domain.settlement.entity.Settlement;
 
 import lombok.Builder;
@@ -10,10 +12,10 @@ import lombok.Getter;
 @Builder
 @Getter
 public class SettlementListResponse {
-
-	private int amount;
-	private LocalDateTime settlementDt;
 	private Long orderNo;
+	private int amount;
+	@DateTimeFormat(pattern = "yyyy-DD-mm HH:mm:ss")
+	private LocalDateTime settlementDt;
 
 	public static SettlementListResponse of(Settlement settlement) {
 		return SettlementListResponse.builder()
