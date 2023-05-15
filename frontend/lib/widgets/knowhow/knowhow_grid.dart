@@ -36,12 +36,21 @@ class _KnowHowGridState extends State<KnowHowGrid> {
     } else if (imagenumber == 1) {
       return ClipRRect(
           borderRadius: BorderRadius.circular(0.0),
-          child: Image.network(
-            widget.images[0],
-            width: fullWidth,
-            height: fullHeight,
-            fit: BoxFit.cover,
-          ));
+          child: widget.images == null
+              ? Image.asset(
+                  "assets/image/spin.gif",
+                  width: fullWidth,
+                  height: fullHeight,
+                  fit: BoxFit.cover,
+                )
+              : Container(
+                  width: fullWidth,
+                  height: fullHeight,
+                  child: FadeInImage.assetNetwork(
+                    placeholder: "assets/image/spin.gif",
+                    image: widget.images[0],
+                    fit: BoxFit.cover,
+                  )));
       // 사진 두 개일 때
     } else if (imagenumber == 2) {
       return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -49,22 +58,40 @@ class _KnowHowGridState extends State<KnowHowGrid> {
             margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(0.0),
-                child: Image.network(
-                  widget.images[0],
-                  width: fullWidth / 2,
-                  height: fullHeight,
-                  fit: BoxFit.cover,
-                ))),
+                child: widget.images == null
+                    ? Image.asset(
+                        "assets/image/spin.gif",
+                        width: fullWidth / 2,
+                        height: fullHeight,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: fullWidth / 2,
+                        height: fullHeight,
+                        child: FadeInImage.assetNetwork(
+                          placeholder: "assets/image/spin.gif",
+                          image: widget.images[0],
+                          fit: BoxFit.cover,
+                        )))),
         Container(
             margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(0.0),
-                child: Image.network(
-                  widget.images[1],
-                  width: fullWidth / 2,
-                  height: fullHeight,
-                  fit: BoxFit.cover,
-                )))
+                child: widget.images == null
+                    ? Image.asset(
+                        "assets/image/spin.gif",
+                        width: fullWidth / 2,
+                        height: fullHeight,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(
+                        width: fullWidth / 2,
+                        height: fullHeight,
+                        child: FadeInImage.assetNetwork(
+                          placeholder: "assets/image/spin.gif",
+                          image: widget.images[1],
+                          fit: BoxFit.cover,
+                        ))))
       ]);
       // 사진 세 개일 때
     } else if (imagenumber == 3) {
@@ -75,34 +102,61 @@ class _KnowHowGridState extends State<KnowHowGrid> {
               margin: const EdgeInsets.fromLTRB(0, 0, 2, 0),
               child: ClipRRect(
                   borderRadius: BorderRadius.circular(0.0),
-                  child: Image.network(
-                    widget.images[0],
-                    width: fullWidth / 2,
-                    height: fullHeight,
-                    fit: BoxFit.cover,
-                  ))),
+                  child: widget.images == null
+                      ? Image.asset(
+                          "assets/image/spin.gif",
+                          width: fullWidth / 2,
+                          height: fullHeight,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: fullWidth / 2,
+                          height: fullHeight,
+                          child: FadeInImage.assetNetwork(
+                            placeholder: "assets/image/spin.gif",
+                            image: widget.images[0],
+                            fit: BoxFit.cover,
+                          )))),
           Column(
             children: [
               Container(
                   margin: const EdgeInsets.fromLTRB(2, 0, 0, 2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.network(
-                        widget.images[1],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
+                      child: widget.images == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: widget.images[1],
+                                fit: BoxFit.cover,
+                              )))),
               Container(
                   margin: const EdgeInsets.fromLTRB(2, 2, 0, 0),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.network(
-                        widget.images[2],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
+                      child: widget.images == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: widget.images[2],
+                                fit: BoxFit.cover,
+                              ))))
             ],
           )
         ],
@@ -118,22 +172,40 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.network(
-                        widget.images[0],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
+                      child: widget.images == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: widget.images[0],
+                                fit: BoxFit.cover,
+                              )))),
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.network(
-                        widget.images[1],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
+                      child: widget.images == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: widget.images[1],
+                                fit: BoxFit.cover,
+                              ))))
             ],
           ),
           Column(
@@ -142,22 +214,40 @@ class _KnowHowGridState extends State<KnowHowGrid> {
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.network(
-                        widget.images[2],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      ))),
+                      child: widget.images == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: widget.images[2],
+                                fit: BoxFit.cover,
+                              )))),
               Container(
                   margin: const EdgeInsets.all(2),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(0.0),
-                      child: Image.network(
-                        widget.images[3],
-                        width: fullWidth / 2,
-                        height: fullHeight / 2,
-                        fit: BoxFit.cover,
-                      )))
+                      child: widget.images == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: fullWidth / 2,
+                              height: fullHeight / 2,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: widget.images[3],
+                                fit: BoxFit.cover,
+                              ))))
             ],
           )
         ],
