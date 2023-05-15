@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -23,15 +22,13 @@ public class ChatMessageController {
 	private final ChatPublisher chatPublisher;
 
 	@MessageMapping("/chat/message")
-	public void handleChatMessage(@Payload ChatMessageRequest chatMessage,
-		SimpMessageHeaderAccessor headerAccessor) throws
+	public void handleChatMessage(@Payload ChatMessageRequest chatMessage) throws
 		IOException,
 		FirebaseMessagingException {
 		System.out.println("받은 메시지 확인!!!!!!!!!!!!" + chatMessage.getMessage());
-		System.out.println("해당 세션 확인! : " + headerAccessor.getSessionId());
 		// mongoDB에 저장하기
 		chatService.saveChatMessage(chatMessage);
 
-		chatService.sendMessage(chatMessage, headerAccessor.getSessionId());
+		chatService.sendMessage(chatMessage);
 	}
 }

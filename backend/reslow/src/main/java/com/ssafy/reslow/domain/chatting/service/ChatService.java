@@ -17,7 +17,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -50,7 +49,6 @@ public class ChatService {
 	public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
 	// private Map<String, ChannelTopic> topics;
 	private ValueOperations<String, Object> valueOpsTopicInfo;
-	private SetOperations<String, Object> setOpsSocketInfo;
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
 
@@ -60,12 +58,11 @@ public class ChatService {
 
 	@PostConstruct
 	private void init() {
-		setOpsSocketInfo = redisTemplate.opsForSet();
 		valueOpsTopicInfo = redisTemplate.opsForValue();
 		// topics = new HashMap<>();
 	}
 
-	public void sendMessage(ChatMessageRequest chatMessage, String sessionId) throws
+	public void sendMessage(ChatMessageRequest chatMessage) throws
 		IOException,
 		FirebaseMessagingException {
 		String roomId = chatMessage.getRoomId();
@@ -74,14 +71,15 @@ public class ChatService {
 
 		Member receiver = findReceiver(roomId, chatMessage.getSender());
 
-		if (isUserOnline(sessionId, receiver)) {
+		// 상대방이 소켓에 참여중이라면 publish로 보낸다.
+		if (isUserOnline(roomId, receiver)) {
 			String topicName = (String)valueOpsTopicInfo.get(roomId);
 			if (topicName == null) {
 				throw new CustomException(CHATROOM_NOT_FOUND);
 			}
-			
+
 			ChannelTopic topic = new ChannelTopic(topicName);
-			// // redis로 publish
+			// redis로 publish
 			chatPublisher.publish(topic, chatMessage);
 
 			System.out.println("소켓이 연결되어 있으므로, publish 수행완료!");
@@ -105,7 +103,7 @@ public class ChatService {
 	// 유저가 소켓에 참여중인지 체크
 	private boolean isUserOnline(String sessionId, Member member) {
 		// 소켓에 참여중이라면
-		if (setOpsSocketInfo.isMember(sessionId, member.getNo())) {
+		if (redisTemplate.opsForSet().isMember(sessionId, member.getNo())) {
 			System.out.println("소켓에 참여중임!!!!!! 그럼 알림 안갈거야~~!!");
 			return true;
 		}
@@ -141,20 +139,22 @@ public class ChatService {
 
 	// 채팅방 입장
 	public void enterChattingRoom(String roomId, Long memberNo) {
-		// ChannelTopic topic = topics.get(roomId);
 		ChannelTopic topic = new ChannelTopic(roomId);
 		valueOpsTopicInfo.set(roomId, topic.getTopic());
 
-		// // 없던 topic이면 새로 만든다.
-		// if (topic == null) {
-		// 	topic = new ChannelTopic(roomId);
-		// }
 		System.out.println("====" + memberNo + "가 채팅방 " + topic.getTopic() + "에 참여함 ====");
+		// topic에 대한 메시지를 받으면, 이를 chatSubscriber에게 전달함
 		redisMessageListenerContainer.addMessageListener(chatSubscriber, topic);
-		// topics.put(roomId, topic);
+		redisTemplate.opsForSet().add(roomId, memberNo);
 	}
 
 	// 채팅방 나가기
+	public void quitChattingRoom(String roomId, Long memberNo) {
+		System.out.println("====" + memberNo + "가 채팅방 나감");
+		redisTemplate.opsForSet().remove(roomId, memberNo);
+	}
+
+	// 채팅방 삭제
 	public void leaveChattingRoom(String roomId, Long memberNo) {
 		// ChannelTopic topic = topics.get(roomId);
 		String topicName = (String)valueOpsTopicInfo.get(roomId);
@@ -219,18 +219,6 @@ public class ChatService {
 
 	public void setRoomInfo(String roomId, Long memberNo) {
 
-	}
-
-	// 해당 방 소켓에 참여함
-	public void setUserSocketInfo(String roomId, Long memberNo) {
-		System.out.println("해당 소켓에 참여: " + roomId + " ,멤버: " + memberNo);
-		setOpsSocketInfo.add(roomId, memberNo);
-	}
-
-	// 해당 방 소켓에서 나옴
-	public void removeUserSocketInfo(String roomId, Long memberNo) {
-		System.out.println("해당 소켓에서 나감!!: " + roomId + " ,멤버: " + memberNo);
-		setOpsSocketInfo.remove(roomId, memberNo);
 	}
 
 	// 채팅방 ID로 상대방 Member객체 가져오기

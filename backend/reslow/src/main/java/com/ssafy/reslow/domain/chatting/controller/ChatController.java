@@ -58,14 +58,26 @@ public class ChatController {
 	}
 
 	// 채팅방 입장 = web socket에 들어왔을 때
-	@PostMapping("/subscribe/{roomId}")
-	public Map<String, String> subscribeChatRoom(@PathVariable String roomId, Authentication authentication) {
+	@PostMapping("/enter/{roomId}")
+	public Map<String, String> enterChatRoom(@PathVariable String roomId, Authentication authentication) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		// subscribe
 		chatService.enterChattingRoom(roomId, memberNo);
 
 		HashMap<String, String> map = new HashMap<>();
-		map.put("msg", "ok");
+		map.put("enter", "ok");
+		return map;
+	}
+
+	// 채팅방 나감 = web socket에서 나옴
+	@PostMapping("/quit/{roomId}")
+	public Map<String, String> quitChatRoom(@PathVariable String roomId, Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		// quit room
+		chatService.quitChattingRoom(roomId, memberNo);
+
+		HashMap<String, String> map = new HashMap<>();
+		map.put("quit", "ok");
 		return map;
 	}
 
@@ -91,7 +103,7 @@ public class ChatController {
 		chatMessageRepository.save(room);
 	}
 
-	// 채팅방 나가기
+	// 채팅방 삭제
 	@DeleteMapping("/{roomId}")
 	public Map<String, String> deleteTopic(@PathVariable String roomId, Authentication authentication) {
 		Long memberNo = Long.parseLong(authentication.getName());
