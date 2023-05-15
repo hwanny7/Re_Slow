@@ -84,7 +84,7 @@ public class BatchConfig {
     @Bean
     public ItemWriter<Order> orderItemWriter() {
         return order -> order.forEach(orderItem -> {
-            orderItem.updateStatus(OrderStatus.COMPLETE_TRANSACTION);
+            orderItem.updateStatus(OrderStatus.ORDER_CONFIRMED);
             orderRepository.save(orderItem);
         });
     }
