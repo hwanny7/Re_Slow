@@ -434,6 +434,14 @@ class _ProfileState extends State<Profile> {
             ),
           );
         } else if (snapshot.hasError) {
+          UserPreferences().removeUser(context).then((res) {
+            if (res) {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/login',
+                (Route<dynamic> route) => false,
+              );
+            }
+          });
           return Text('Error: ${snapshot.error}');
         } else {
           return const CircularProgressIndicator();
