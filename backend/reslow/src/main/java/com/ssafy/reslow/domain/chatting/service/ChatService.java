@@ -71,17 +71,23 @@ public class ChatService {
 		String roomId = chatMessage.getRoomId();
 
 		System.out.println("!!sendMessage로 들어옴!!");
-		// 해당 토픽이 존재하지 않다면 채팅방을 찾을 수 없음 처리
-		String topicName = (String)valueOpsTopicInfo.get(roomId);
-		ChannelTopic topic = new ChannelTopic(topicName);
-		// // redis로 publish
-		chatPublisher.publish(topic, chatMessage);
-
-		System.out.println("publish 수행완료!");
 
 		Member receiver = findReceiver(roomId, chatMessage.getSender());
+
+		if (isUserOnline(sessionId, receiver)) {
+			String topicName = (String)valueOpsTopicInfo.get(roomId);
+			if (topicName == null) {
+				throw new CustomException(CHATROOM_NOT_FOUND);
+			}
+			
+			ChannelTopic topic = new ChannelTopic(topicName);
+			// // redis로 publish
+			chatPublisher.publish(topic, chatMessage);
+
+			System.out.println("소켓이 연결되어 있으므로, publish 수행완료!");
+		}
 		// 상대방이 소켓에 참여중이지 않다면 FCM 알림 보내기
-		if (!isUserOnline(sessionId, receiver)) {
+		else {
 			// 받을사람 Member객체 가져오기
 			Member sender = memberRepository.findById(chatMessage.getSender())
 				.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
