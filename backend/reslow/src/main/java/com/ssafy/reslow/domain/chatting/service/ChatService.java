@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -46,6 +47,7 @@ public class ChatService {
 	private final DeviceRepository deviceRepository;
 	private final RedisMessageListenerContainer redisMessageListenerContainer; // 채팅방(topic)에 발행되는 메시지 처리할 Listener
 	private final ChatSubscriber chatSubscriber;
+	private SetOperations<String, Object> setOpsChatRoom;
 	private ValueOperations<String, Object> valueOpsTopicInfo;
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -56,8 +58,8 @@ public class ChatService {
 
 	@PostConstruct
 	private void init() {
+		setOpsChatRoom = redisTemplate.opsForSet();
 		valueOpsTopicInfo = redisTemplate.opsForValue();
-		// topics = new HashMap<>();
 	}
 
 	public void sendMessage(ChatMessageRequest chatMessage) throws
@@ -101,11 +103,14 @@ public class ChatService {
 
 	// 유저가 소켓에 참여중인지 체크
 	private boolean isUserOnline(String roomId, Member member) {
+		System.out.println("유저가 온라인인지 체크 시작");
 		// 소켓에 참여중이라면
-		if (redisTemplate.opsForSet().isMember(roomId, member.getNo())) {
+		if (Boolean.TRUE.equals(setOpsChatRoom.isMember(roomId, member.getNo()))) {
 			System.out.println("소켓에 참여중임!!!!!! 그럼 알림 안갈거야~~!!");
 			return true;
 		}
+
+		System.out.println("내려왔다면 여기서 나는 오류는 아님..........");
 		return false;
 	}
 
@@ -144,13 +149,13 @@ public class ChatService {
 		System.out.println("====" + memberNo + "가 채팅방 " + topic.getTopic() + "에 참여함 ====");
 		// topic에 대한 메시지를 받으면, 이를 chatSubscriber에게 전달함
 		redisMessageListenerContainer.addMessageListener(chatSubscriber, topic);
-		redisTemplate.opsForSet().add(roomId, memberNo);
+		setOpsChatRoom.add(roomId, memberNo);
 	}
 
 	// 채팅방 나가기
 	public void quitChattingRoom(String roomId, Long memberNo) {
 		System.out.println("====" + memberNo + "가 채팅방 나감");
-		redisTemplate.opsForSet().remove(roomId, memberNo);
+		setOpsChatRoom.remove(roomId, memberNo);
 	}
 
 	// 채팅방 삭제
