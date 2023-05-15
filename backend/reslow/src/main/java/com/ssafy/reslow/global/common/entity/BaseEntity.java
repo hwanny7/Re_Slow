@@ -1,12 +1,15 @@
 package com.ssafy.reslow.global.common.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -31,13 +34,26 @@ public abstract class BaseEntity {
 	@GeneratedValue
 	private Long no;
 
-	@Column(name = "CREATED_DT", updatable = false)
 	@CreatedDate
-	@DateTimeFormat(pattern = "yyyy-DD-mm HH:mm:ss")
+	@Column(name = "CREATED_DT", updatable = false)
 	private LocalDateTime createdDate;
+
 	@Column(name = "UPDATED_DT")
 	@LastModifiedDate
-	@DateTimeFormat(pattern = "yyyy-DD-mm HH:mm:ss")
 	private LocalDateTime updatedDate;
+
+	@PrePersist
+	public void onPrePersist() {
+		String customLocalDateTimeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		LocalDateTime parsedCreatedDate = LocalDateTime.parse(customLocalDateTimeFormat, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		this.createdDate = parsedCreatedDate;
+	}
+
+	@PreUpdate
+	public void onPreUpdate(){
+		String customLocalDateTimeFormat = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		LocalDateTime parsedUpdatedDate = LocalDateTime.parse(customLocalDateTimeFormat, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+		this.updatedDate = parsedUpdatedDate;
+	}
 
 }
