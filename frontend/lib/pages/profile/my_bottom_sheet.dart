@@ -34,7 +34,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
 
     return Container(
       height: screenHeight * 0.5,
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           Row(
@@ -49,7 +49,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
               GestureDetector(
                 onTap: () {
                   if (_number != null) {
-                    widget.gotDeliveryMan(_selectedValue, _number.toString());
+                    widget.gotDeliveryMan(_number.toString(), _selectedValue);
                     Navigator.of(context).pop();
                   }
                 },

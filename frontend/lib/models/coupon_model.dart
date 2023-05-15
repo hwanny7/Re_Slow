@@ -83,3 +83,46 @@ class CouponDetail {
     );
   }
 }
+
+class MyCoupons {
+  int? couponNo;
+  String? name;
+  String? content;
+  int? discountType;
+  int discountAmount;
+  int discountPercent;
+  int? minimumOrderAmount;
+  int? totalQuantity;
+  String? startDate;
+  String? endDate;
+  int? issuedCouponNo;
+
+  MyCoupons(
+      {this.couponNo,
+      this.issuedCouponNo,
+      this.name,
+      this.content,
+      this.discountType,
+      required this.discountAmount,
+      required this.discountPercent,
+      this.minimumOrderAmount,
+      this.totalQuantity,
+      this.startDate,
+      this.endDate});
+
+  factory MyCoupons.fromJson(Map<String, dynamic> json) {
+    return MyCoupons(
+      couponNo: json['couponNo'],
+      issuedCouponNo: json['issuedCouponNo'],
+      name: json['name'],
+      content: json['content'],
+      discountType: json['discountType'],
+      discountAmount: json['discountAmount'],
+      discountPercent: json['discountPercent'],
+      minimumOrderAmount: json['minimumOrderAmount'],
+      totalQuantity: json['totalQuantity'],
+      startDate: json['startDate'],
+      endDate: json['endDate'],
+    );
+  }
+}

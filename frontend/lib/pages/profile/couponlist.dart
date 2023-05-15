@@ -12,7 +12,7 @@ class Couponlist extends StatefulWidget {
 
 class _CouponlistState extends State<Couponlist> {
   final DioClient dioClient = DioClient();
-  List<Coupon> coupons = [];
+  List<MyCoupons> coupons = [];
 
   Future<void> fetchData() async {
     Map<String, dynamic> queryParams = {
@@ -29,22 +29,8 @@ class _CouponlistState extends State<Couponlist> {
 
       setState(() {
         // Update the state with the fetched data
-        coupons = List<Coupon>.from(jsonData['content'].map((itemJson) {
-          var couponJson = itemJson['coupon'];
-          return Coupon(
-            couponNo: couponJson['couponNo'],
-            name: couponJson['name'],
-            content: couponJson['content'],
-            discountType: couponJson['discountType'],
-            discountAmount: couponJson['discountAmount'],
-            discountPercent: couponJson['discountPercent'],
-            minimumOrderAmount: couponJson['minimumOrderAmount'],
-            totalQuantity: couponJson['totalQuantity'],
-            startDate: couponJson['startDate'],
-            endDate: couponJson['endDate'],
-          );
-        }));
-        print(coupons);
+        coupons = List<MyCoupons>.from(
+            jsonData["content"].map((coupon) => MyCoupons.fromJson(coupon)));
       });
     } else {
       // Handle any errors or display an error message
@@ -78,7 +64,7 @@ class _CouponlistState extends State<Couponlist> {
                     child: ListView.builder(
                       itemCount: coupons.length,
                       itemBuilder: (BuildContext context, int index) {
-                        Coupon coupon = coupons[index];
+                        MyCoupons coupon = coupons[index];
                         return Card(
                           color: Colors.green.shade200,
                           child: Padding(
@@ -89,7 +75,8 @@ class _CouponlistState extends State<Couponlist> {
                               children: [
                                 Text(
                                   coupon!.discountType == 1
-                                      ? '${priceDot(coupon!.discountAmount)}' // Amount discount
+                                      ? priceDot(coupon
+                                          .discountAmount!) // Amount discount
                                       : '${coupon!.discountPercent}% OFF', // Percent discount
                                   style: TextStyle(
                                       fontSize: 40.0, color: Colors.white),
@@ -97,14 +84,14 @@ class _CouponlistState extends State<Couponlist> {
                                 ),
                                 SizedBox(height: 20.0),
                                 Text(
-                                  coupon!.name, // set the description here
+                                  coupon.name!, // set the description here
                                   style: TextStyle(
                                       fontSize: 20.0, color: Colors.white),
                                   textAlign: TextAlign.center,
                                 ),
                                 SizedBox(height: 20.0),
                                 Text(
-                                  '사용기간 ${coupon!.startDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')} ~ ${coupon!.endDate.substring(0, coupon!.startDate.length - 3).replaceAll('T', ' ')}', // set the start and end dates here
+                                  '사용기간 ${coupon.startDate!.substring(0, coupon!.startDate!.length - 3).replaceAll('T', ' ')} ~ ${coupon!.endDate!.substring(0, coupon!.startDate!.length - 3).replaceAll('T', ' ')}', // set the start and end dates here
                                   style: TextStyle(
                                       fontSize: 16.0, color: Colors.white),
                                   textAlign: TextAlign.center,

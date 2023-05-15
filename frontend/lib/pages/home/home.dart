@@ -11,6 +11,8 @@ import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }

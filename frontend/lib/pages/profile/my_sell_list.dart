@@ -94,13 +94,13 @@ class _MySellListState extends State<MySellList>
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data['content'];
+      print(jsonData);
       if (jsonData.isEmpty) {
         isLast[tabIndex] = true;
       } else {
         setState(() {
           _data[tabIndex].addAll(List<MyBuyItem>.from(
               jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson))));
-          // 높이를 처음으로 변경하기
         });
       }
     } else {

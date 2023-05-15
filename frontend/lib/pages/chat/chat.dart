@@ -10,6 +10,7 @@ import 'package:reslow/widgets/common/profile_small.dart';
 class Chat extends StatefulWidget {
   // dynamic socketManager;
   // Chat({Key? key, this.socketManager}) : super(key: key);
+  const Chat({Key? key}) : super(key: key);
 
   @override
   _ChatState createState() => _ChatState();

@@ -6,6 +6,7 @@ import 'package:iamport_flutter/model/payment_data.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/order_detail.dart';
 import 'package:reslow/services/Market.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class Payment extends StatelessWidget {
   final int totalPrice;
@@ -18,8 +19,8 @@ class Payment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IamportPayment(
-      appBar: AppBar(
-        title: const Text('아임포트 결제'),
+      appBar: CustomAppBar(
+        title: '아임포트 결제',
       ),
       /* 웹뷰 로딩 컴포넌트 */
       initialChild: const Center(
@@ -56,16 +57,19 @@ class Payment extends StatelessWidget {
               result['imp_uid'], orderingInformation.toJson());
           if (response.statusCode == 200) {
             Map<String, dynamic> jsonData = response.data;
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => OrderDetail(
-                        orderPk: jsonData['orderNo'],
-                      )),
-            );
+            if (context.mounted) {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => OrderDetail(
+                          orderPk: jsonData['orderNo'],
+                        )),
+              );
+            }
           } else {
             print('HTTP request failed with status: ${response.statusCode}');
-            Navigator.pop(context);
+            if (context.mounted) Navigator.pop(context);
           }
         }
       },

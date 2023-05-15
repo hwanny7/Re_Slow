@@ -84,6 +84,7 @@ class AuthProvider with ChangeNotifier {
     } else {
       result = {'status': false, 'message': responseData['message']};
       _registeredInStatus = Status.NotRegistered;
+      notifyListeners();
     }
     return result;
   }
