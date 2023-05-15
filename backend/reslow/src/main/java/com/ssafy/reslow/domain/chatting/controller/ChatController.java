@@ -89,13 +89,17 @@ public class ChatController {
 		ChatMessage room = ChatMessage.of(message.getRoomId(), message.getUser(), message.getContent(),
 			message.getDateTime());
 		chatMessageRepository.save(room);
-
 	}
 
 	// 채팅방 나가기
 	@DeleteMapping("/{roomId}")
-	public void deleteTopic(@PathVariable String roomId) {
-		// redisMessageListener.removeMessageListener(chatSubscriber, channel);
+	public Map<String, String> deleteTopic(@PathVariable String roomId, Authentication authentication) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		chatService.leaveChattingRoom(roomId, memberNo);
+
+		HashMap<String, String> map = new HashMap<>();
+		map.put("roomId", roomId);
+		return map;
 	}
 
 	// FCM 토큰 등록
