@@ -25,10 +25,11 @@ public class SettlementController {
 	@GetMapping
 	public Slice<SettlementListResponse> getSettlementList(
 		Authentication authentication,
-		@RequestParam(value="startDate", defaultValue="2023-01-01") LocalDate startDate,
+		@RequestParam(value="startDate") LocalDate startDate,
 		@RequestParam(value="endDate") LocalDate endDate,
 		Pageable pageable) {
 		Long memberNo = Long.parseLong(authentication.getName());
+		if(startDate==null) startDate = LocalDate.of(2023,1,1);
 		if(endDate==null) endDate = LocalDate.now();
 		return settlementService.getSettlementList(memberNo, startDate, endDate, pageable);
 	}
