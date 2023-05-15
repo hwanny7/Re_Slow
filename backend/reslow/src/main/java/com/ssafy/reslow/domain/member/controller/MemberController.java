@@ -117,4 +117,9 @@ public class MemberController {
         Long memberNo = Long.parseLong(authentication.getName());
         return memberService.getMemberNoAndNicknameAndProfilePic(memberNo);
     }
+
+    @GetMapping("/redis")
+    public String redisSetting() {
+        return memberService.redisSetting();
+    }
 }
