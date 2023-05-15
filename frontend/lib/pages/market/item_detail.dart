@@ -137,7 +137,7 @@ class _ItemDetailState extends State<ItemDetail> {
                     ? const Center(child: CircularProgressIndicator())
                     : Scaffold(
                         appBar: AppBar(
-                            backgroundColor: Colors.black.withOpacity(0.2)),
+                            backgroundColor: Colors.black.withOpacity(0.8)),
                         bottomNavigationBar: BottomAppBar(
                           child: Container(
                             decoration: const BoxDecoration(
@@ -184,8 +184,9 @@ class _ItemDetailState extends State<ItemDetail> {
                                 style: const TextStyle(
                                     fontSize: 22, fontWeight: FontWeight.bold),
                               ),
-                              const Spacer(),
-                              if (snapshot.data?.nickname != item!.nickname)
+                              if (snapshot.data?.nickname !=
+                                  item!.nickname) ...[
+                                const Spacer(),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 8.0),
                                   child: MaterialButton(
@@ -265,75 +266,78 @@ class _ItemDetailState extends State<ItemDetail> {
                                             fontWeight: FontWeight.bold),
                                       )),
                                 ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: MaterialButton(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        12, 12, 12, 12),
-                                    color: const Color(0xFF165B40),
-                                    minWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.05,
-                                    onPressed: () async {
-                                      print("눌림");
-                                      // 내 번호랑 닉네임 받아오기
-                                      await _requestMyInfo();
-                                      print("내 번호랑 닉네임 받아옴");
-                                      print(myinfo);
-                                      // /productNo/usernumber/othernumber(작은 숫자를 앞으로)라는 방 이름이 있나요?
-                                      if (myinfo != null) {
-                                        if (myinfo["memberNo"] <
-                                            item!.memberNo) {
-                                          roomId =
-                                              "${item!.productNo}-${myinfo["memberNo"]}-${item!.memberNo}";
-                                        } else {
-                                          roomId =
-                                              "${item!.productNo}-${item!.memberNo}-${myinfo["memberNo"]}";
-                                        }
-                                        await _requestCheckRoomId(roomId);
-                                        print("방 아이디가 있나요? $isRoomId");
-                                        if (isRoomId) {
-                                          print("chatDetail 넘어갑니다");
-                                          // 방 ID 있다면 그냥 push
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ChatDetail(
-                                                roomId: roomId,
-                                                otherNick: item!.nickname,
-                                                otherPic: item!.profileImg,
-                                              ),
-                                            ),
-                                          );
-                                        } else {
-                                          print("방 생성 API 시작");
-                                          // 없다면 방 생성 API 보낸 후 push
-                                          await _requestCreateRoom(roomId);
-                                          print("방 생성 후, chatDetail 넘어갑니다");
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ChatDetail(
-                                                roomId: roomId,
-                                                otherNick: item!.nickname,
-                                                otherPic: item!.profileImg,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      } else {
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: MaterialButton(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          12, 12, 12, 12),
+                                      color: const Color(0xFF165B40),
+                                      minWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
+                                      onPressed: () async {
+                                        print("눌림");
+                                        // 내 번호랑 닉네임 받아오기
+                                        await _requestMyInfo();
+                                        print("내 번호랑 닉네임 받아옴");
                                         print(myinfo);
-                                      }
-                                    },
-                                    child: const Text(
-                                      "채팅",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                              ),
+                                        // /productNo/usernumber/othernumber(작은 숫자를 앞으로)라는 방 이름이 있나요?
+                                        if (myinfo != null) {
+                                          if (myinfo["memberNo"] <
+                                              item!.memberNo) {
+                                            roomId =
+                                                "${item!.productNo}-${myinfo["memberNo"]}-${item!.memberNo}";
+                                          } else {
+                                            roomId =
+                                                "${item!.productNo}-${item!.memberNo}-${myinfo["memberNo"]}";
+                                          }
+                                          await _requestCheckRoomId(roomId);
+                                          print("방 아이디가 있나요? $isRoomId");
+                                          if (isRoomId) {
+                                            print("chatDetail 넘어갑니다");
+                                            // 방 ID 있다면 그냥 push
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChatDetail(
+                                                  roomId: roomId,
+                                                  otherNick: item!.nickname,
+                                                  otherPic: item!.profileImg,
+                                                ),
+                                              ),
+                                            );
+                                          } else {
+                                            print("방 생성 API 시작");
+                                            // 없다면 방 생성 API 보낸 후 push
+                                            await _requestCreateRoom(roomId);
+                                            print("방 생성 후, chatDetail 넘어갑니다");
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChatDetail(
+                                                  roomId: roomId,
+                                                  otherNick: item!.nickname,
+                                                  otherPic: item!.profileImg,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        } else {
+                                          print(myinfo);
+                                        }
+                                      },
+                                      child: const Text(
+                                        "채팅",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                ),
+                              ]
                             ]),
                           ),
                         ),
@@ -450,9 +454,12 @@ class _ItemDetailState extends State<ItemDetail> {
                   child: Text('Error: ${snapshot.error}'),
                 );
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
+                return const SafeArea(
+                    child: Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ));
               }
             }));
   }

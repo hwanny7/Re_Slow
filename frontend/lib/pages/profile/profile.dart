@@ -277,8 +277,9 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(5),
-                          child: Row(
+                          padding: const EdgeInsets.all(5),
+                          alignment: Alignment.centerLeft,
+                          child: const Row(
                             children: [
                               Icon(Icons.attach_money),
                               SizedBox(width: 10),
@@ -288,7 +289,6 @@ class _ProfileState extends State<Profile> {
                               ),
                             ],
                           ),
-                          alignment: Alignment.centerLeft,
                         ),
                       ),
 
