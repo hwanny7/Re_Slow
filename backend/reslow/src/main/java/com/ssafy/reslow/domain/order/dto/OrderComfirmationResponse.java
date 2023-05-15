@@ -28,17 +28,18 @@ public class OrderComfirmationResponse {
 
 	public static OrderComfirmationResponse of(Product product, Order order) {
 		int totalPrice = product.getPrice() + product.getDeliveryFee();
-		double discount = 0;
+		int discountPrice = 0;
 		if (order.getIssuedCoupon() != null) {
-			discount = order.getIssuedCoupon().getCoupon().getDiscountPercent() * 0.01;
-			totalPrice -= (int)(totalPrice * discount);
+			double discount = order.getIssuedCoupon().getCoupon().getDiscountPercent() * 0.01;
+			discountPrice = (int)(totalPrice * discount);
+			totalPrice -= discountPrice;
 		}
 		return OrderComfirmationResponse.builder()
 			.title(product.getTitle())
 			.image(product.getProductImages().isEmpty() ? null : product.getProductImages().get(0).getUrl())
 			.totalPrice(totalPrice)
 			.productPrice(product.getPrice())
-			.discountPrice((int)discount)
+			.discountPrice(discountPrice)
 			.deliveryFee(product.getDeliveryFee())
 			.date(order.getCreatedDate())
 			.recipient(order.getRecipient())
