@@ -7,14 +7,15 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -29,6 +30,32 @@ public class Order extends BaseEntity {
     @Convert(converter = OrderStatusConverter.class)
     private OrderStatus status;
 
+    @Column(name = "RECIPIENT")
+    private String recipient;
+
+    @ColumnDefault("0")
+    @Column(name = "ZIPCODE")
+    private int zipcode;
+
+    @Column(name = "ADDRESS")
+    private String address;
+
+    @Column(name = "ADDRESS_DETAIL")
+    private String addressDetail;
+
+    @Column(name = "PHONE_NUM")
+    private String phoneNumber;
+
+    @Column(name = "MEMO")
+    private String memo;
+
+    @Column(name = "CARRIER_COMPANY")
+    private String carrierCompany;
+
+    @Column(name = "CARRIER_TRACK")
+    private String carrierTrack;
+
+    @ColumnDefault("0")
     @Column(name = "TOTAL_PRICE")
     private Long totalPrice;
 

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: ${ACTIVE}
   jpa:
     hibernate:
       ddl-auto: update
@@ -36,3 +36,12 @@ spring:
   config:
     activate:
       on-profile: dev
+
+iamport:
+  api:
+    key: ${IAMPORT_KEY}
+    secret: ${IAMPORT_SECRET}
+
+delivery:
+  api:
+    key: ${DELIVERY_API_KEY}
