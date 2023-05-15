@@ -67,11 +67,6 @@ class _BuyItemInfoState extends State<BuyItemInfo> {
         print('HTTP request failed with status: ${response.statusCode}');
       }
     }
-    // else if (status case 3) {
-    //   break;
-    // } else if (status case 4) {
-    //   break;
-    // }
   }
 
   @override

@@ -78,22 +78,12 @@ class _CreateArticleState extends State<CreateArticle> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      // Navigator.pushAndRemoveUntil(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => Market()),
-      //   (Route<dynamic> route) => false,
-      // );
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => Market()),
-      // );
-      if (jsonData.containsKey('productNo')) {
+      if (context.mounted) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
         leftToRightNavigator(
             ItemDetail(itemPk: jsonData['productNo']), context);
       }
-      // print(jsonData.productNo);
     } else {
-      // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
     }
   }

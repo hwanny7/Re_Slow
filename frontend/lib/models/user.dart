@@ -4,10 +4,14 @@ class User {
   String? refreshToken;
   int? refreshTokenExpirationTime;
   bool? existAccount;
+  String? nickname;
+  String? profileImg;
 
   User(
       {this.refreshTokenExpirationTime,
       this.accessToken,
+      this.nickname,
+      this.profileImg,
       this.refreshToken,
       this.existAccount});
 
@@ -16,6 +20,8 @@ class User {
         accessToken: responseData['accessToken'],
         existAccount: responseData['existAccount'],
         refreshToken: responseData['refreshToken'],
+        profileImg: responseData['profileImg'],
+        nickname: responseData['nickname'],
         refreshTokenExpirationTime: responseData['refreshTokenExpirationTime']);
   }
 }
