@@ -1,10 +1,16 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:reslow/models/user.dart';
 import 'package:reslow/pages/profile/my_buy_list.dart';
 import 'package:reslow/pages/profile/my_sell_list.dart';
 import 'package:reslow/pages/profile/myknowhow.dart';
 import 'package:reslow/pages/profile/mylikeknowhow.dart';
+import 'package:reslow/pages/profile/profile_bottom_sheet.dart';
 import 'package:reslow/pages/profile/user_info.dart';
+import 'package:reslow/services/auth_modify.dart';
 import 'package:reslow/utils/navigator.dart';
 
 import 'package:reslow/utils/shared_preference.dart';
@@ -22,6 +28,47 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  File? _image;
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      if (_image != null) {
+        _image!.delete();
+      }
+
+      _image = File(pickedImage.path);
+
+      if (context.mounted) {
+        showModalBottomSheet(
+          context: context,
+          builder: (_) => ProfileBottomSheet(
+            selectedImage: _image,
+            onConfirmProfileChange: _confirmProfileChange,
+          ),
+        );
+      }
+    }
+  }
+
+  void _confirmProfileChange() async {
+    FormData formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(_image?.path ?? ""),
+    });
+    Response response = await addProfilePic(formData);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    } else {
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<User>(
@@ -38,13 +85,35 @@ class _ProfileState extends State<Profile> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ClipOval(
-                        child: Image.network(
-                          snapshot.data?.profileImg ?? "",
-                          fit: BoxFit.cover,
-                          width: 100,
-                          height: 100,
-                        ),
+                      Stack(
+                        children: [
+                          GestureDetector(
+                            onTap: _pickImage,
+                            child: ClipOval(
+                              child: Image.network(
+                                snapshot.data?.profileImg ?? "",
+                                fit: BoxFit.cover,
+                                width: 100,
+                                height: 100,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey.withOpacity(0.5),
+                              radius: 15,
+                              child: IconButton(
+                                icon: const Icon(Icons.camera_alt),
+                                onPressed: () {},
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       Row(
                         children: [
