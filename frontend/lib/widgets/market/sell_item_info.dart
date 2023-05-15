@@ -59,9 +59,14 @@ class _SellItemInfoState extends State<SellItemInfo> {
   }
 
   void gotDeliveryMan(String carrierTrack, String carrierCompany) async {
+    print(carrierCompany);
+    print(carrierTrack);
     Response response = await InputDelivery(widget.item.orderNo!,
-        {"carrierTrack": carrierTrack, "carrierCompany": "carrierCompany"});
+        {"carrierTrack": carrierTrack, "carrierCompany": carrierCompany});
     if (response.statusCode == 200) {
+      print("성공");
+      widget.item.carrierCompany = carrierCompany;
+      widget.item.carrierTrack = carrierTrack;
       widget.removeItem(widget.index, "변경");
     } else {
       print('HTTP request failed with status: ${response.statusCode}');
@@ -254,9 +259,9 @@ class _SellItemInfoState extends State<SellItemInfo> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => DeliveryCheck(
-                                              tcode: widget.item.carrierTrack,
+                                              tcode: widget.item.carrierCompany,
                                               tinvoice:
-                                                  widget.item.carrierCompany,
+                                                  widget.item.carrierTrack,
                                             )),
                                   );
                                 }

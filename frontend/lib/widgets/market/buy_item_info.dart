@@ -192,8 +192,8 @@ class _BuyItemInfoState extends State<BuyItemInfo> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DeliveryCheck(
-                                          tcode: widget.item.carrierTrack,
-                                          tinvoice: widget.item.carrierCompany,
+                                          tcode: widget.item.carrierCompany,
+                                          tinvoice: widget.item.carrierTrack,
                                         )),
                               );
                             } else {

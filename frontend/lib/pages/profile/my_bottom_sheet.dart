@@ -49,7 +49,7 @@ class _MyBottomSheetState extends State<MyBottomSheet> {
               GestureDetector(
                 onTap: () {
                   if (_number != null) {
-                    widget.gotDeliveryMan(_selectedValue, _number.toString());
+                    widget.gotDeliveryMan(_number.toString(), _selectedValue);
                     Navigator.of(context).pop();
                   }
                 },

@@ -169,8 +169,8 @@ class MyBuyItem {
   final int price;
   final String date;
   final String image;
-  final String carrierTrack;
-  final String carrierCompany;
+  String? carrierTrack;
+  String? carrierCompany;
 
   int status;
 
