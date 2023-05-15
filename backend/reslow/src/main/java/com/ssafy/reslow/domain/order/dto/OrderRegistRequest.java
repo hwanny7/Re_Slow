@@ -5,12 +5,12 @@ import lombok.Getter;
 @Getter
 public class OrderRegistRequest {
 
-	private Long productNo;
-	private Long issuedCouponNo;
-	private String recipient;
-	private int zipcode;
-	private String address;
-	private String addressDetail;
-	private String phoneNumber;
-	private String memo;
+    private Long productNo;
+    private Long issuedCouponNo;
+    private String recipient;
+    private int zipcode;
+    private String address;
+    private String addressDetail;
+    private String phoneNumber;
+    private String memo;
 }
