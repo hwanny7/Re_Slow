@@ -46,8 +46,6 @@ public class ChatService {
 	private final DeviceRepository deviceRepository;
 	private final RedisMessageListenerContainer redisMessageListenerContainer; // 채팅방(topic)에 발행되는 메시지 처리할 Listener
 	private final ChatSubscriber chatSubscriber;
-	public static final String ENTER_INFO = "ENTER_INFO"; // 채팅룸에 입장한 클라이언트의 sessionId와 채팅룸 id를 맵핑한 정보 저장
-	// private Map<String, ChannelTopic> topics;
 	private ValueOperations<String, Object> valueOpsTopicInfo;
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
@@ -70,17 +68,18 @@ public class ChatService {
 		System.out.println("!!sendMessage로 들어옴!!");
 
 		Member receiver = findReceiver(roomId, chatMessage.getSender());
+		System.out.println("보내는사람 찾음: " + receiver.getNickname());
 
 		// 상대방이 소켓에 참여중이라면 publish로 보낸다.
 		if (isUserOnline(roomId, receiver)) {
 			String topicName = (String)valueOpsTopicInfo.get(roomId);
+			System.out.println("TOPIC name : " + topicName);
 			if (topicName == null) {
 				throw new CustomException(CHATROOM_NOT_FOUND);
 			}
 
-			ChannelTopic topic = new ChannelTopic(topicName);
 			// redis로 publish
-			chatPublisher.publish(topic, chatMessage);
+			chatPublisher.publish(topicName, chatMessage);
 
 			System.out.println("소켓이 연결되어 있으므로, publish 수행완료!");
 		}
@@ -101,9 +100,9 @@ public class ChatService {
 	}
 
 	// 유저가 소켓에 참여중인지 체크
-	private boolean isUserOnline(String sessionId, Member member) {
+	private boolean isUserOnline(String roomId, Member member) {
 		// 소켓에 참여중이라면
-		if (redisTemplate.opsForSet().isMember(sessionId, member.getNo())) {
+		if (redisTemplate.opsForSet().isMember(roomId, member.getNo())) {
 			System.out.println("소켓에 참여중임!!!!!! 그럼 알림 안갈거야~~!!");
 			return true;
 		}
@@ -140,7 +139,7 @@ public class ChatService {
 	// 채팅방 입장
 	public void enterChattingRoom(String roomId, Long memberNo) {
 		ChannelTopic topic = new ChannelTopic(roomId);
-		valueOpsTopicInfo.set(roomId, topic.getTopic());
+		valueOpsTopicInfo.set(roomId, roomId);
 
 		System.out.println("====" + memberNo + "가 채팅방 " + topic.getTopic() + "에 참여함 ====");
 		// topic에 대한 메시지를 받으면, 이를 chatSubscriber에게 전달함
