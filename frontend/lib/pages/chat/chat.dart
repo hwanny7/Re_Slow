@@ -35,6 +35,11 @@ class _ChatState extends State<Chat> {
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<void> _requestRoomList() async {
     try {
       dioClient.dio.get('/chat/roomList').then((res) {
@@ -44,7 +49,7 @@ class _ChatState extends State<Chat> {
         print(content);
       });
     } on DioError catch (e) {
-      print('error: $e');
+      print('chatListerror: $e');
     }
   }
 
@@ -101,12 +106,14 @@ class _ChatState extends State<Chat> {
                                   fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                             Text(formatTimeDifference(
-                                content[index]["dateTime"]))
+                                content[index]["dateTime"].toString()))
                           ])),
                   Container(
+                      width: MediaQuery.of(context).size.width * 0.7,
                       margin: const EdgeInsets.fromLTRB(4, 4, 0, 0),
                       child: Text(
                         content[index]["lastMessage"],
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontSize: 14),
                       ))
                 ],

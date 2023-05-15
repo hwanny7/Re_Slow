@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -33,6 +34,7 @@ List<dynamic> content = [];
 Map heartYN = {"YN": true};
 
 class _ChatDetailState extends State<ChatDetail> {
+  final ScrollController _scrollController = ScrollController();
   Dio dio = Dio();
   String chatMsg = "";
   TextEditingController _chatController = TextEditingController();
@@ -40,18 +42,31 @@ class _ChatDetailState extends State<ChatDetail> {
   StompClient? stompClient;
   int myId = -1;
 
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
   @override
   void initState() {
     print("initState 시작");
     // TODO: implement initState
     //_requestChatDetail();
     _requestSubscribe();
-    _requestMyInfo();
-    _requestChatDetail();
 
     connect();
     // socketManager.setInitial(widget.roomId, myId);
     print("소켓 연결 되어있니? ${isConnect()}");
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _requestMyInfo().then((res) {
+        _scrollToBottom();
+      });
+    });
 
     super.initState();
   }
@@ -61,6 +76,7 @@ class _ChatDetailState extends State<ChatDetail> {
     super.dispose();
     stompClient!.deactivate();
     print("소켓 끊어졌나? ${isConnect()}");
+    _scrollController.dispose();
   }
 
   // 소켓 연결되어 있는지 확인
@@ -92,11 +108,12 @@ class _ChatDetailState extends State<ChatDetail> {
         callback: (StompFrame frame) {
           if (frame.body != null) {
             Map<String, dynamic> obj = json.decode(frame.body!);
+            print("obj 확인 ${obj}");
             Map<String, dynamic> message = {
               "roomId": obj["roomId"],
               "sender": obj["sender"],
-              "dateTime": obj["dateTime"],
-              "message": obj["message"]
+              "dateTime": new DateTime.now().toString(),
+              "content": obj["message"]
             };
             setState(() {
               content.insert(0, message);
@@ -113,7 +130,9 @@ class _ChatDetailState extends State<ChatDetail> {
       "roomId": widget.roomId,
       "sender": myId,
       "message": message,
-      "dateTime": DateTime.now().toString()
+      "dateTime": new DateTime.now().toString(),
+      "senderProfilePic": widget.otherPic,
+      "senderNickname": widget.otherNick,
     };
     if (!stompClient!.isActive) {
       stompClient!.activate();
@@ -123,6 +142,10 @@ class _ChatDetailState extends State<ChatDetail> {
     setState(() {
       content.insert(0, data);
     });
+    print("넣자마자 확인 ${content}");
+    Timer(Duration(milliseconds: 300), () {
+      _scrollToBottom();
+    });
   }
 
   Future<void> _requestMyInfo() async {
@@ -131,6 +154,8 @@ class _ChatDetailState extends State<ChatDetail> {
         setState(() {
           myId = res.data["memberNo"];
         });
+
+        _requestChatDetail();
       });
     } on DioError catch (e) {
       print('myinfoerror: $e');
@@ -178,7 +203,7 @@ class _ChatDetailState extends State<ChatDetail> {
   }
 
   Widget _Chat(int index) {
-    if (content[index]["user"] == myId) {
+    if (content[index]["user"] == myId.toInt()) {
       return Container(
           margin: const EdgeInsets.all(4),
           child: Row(
@@ -190,7 +215,7 @@ class _ChatDetailState extends State<ChatDetail> {
                   child: Text(
                       "${DateTime.parse(content[index]["dateTime"]).hour}:${DateTime.parse(content[index]["dateTime"]).minute}")),
               Flexible(
-                  fit: FlexFit.tight,
+                  fit: FlexFit.loose,
                   child: Container(
                       decoration: BoxDecoration(
                           color: Color(0xffCDE8E8),
@@ -213,12 +238,24 @@ class _ChatDetailState extends State<ChatDetail> {
             children: [
               ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: Image.asset(
-                    "assets/image/user.png",
-                    width: 50,
-                  )),
+                  child: widget.otherPic == null
+                      ? Image.asset(
+                          "assets/image/spin.gif",
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: 50,
+                          height: 50,
+                          child: FadeInImage.assetNetwork(
+                            placeholder: "assets/image/spin.gif",
+                            image: widget.otherPic,
+                            fit: BoxFit.cover,
+                          ),
+                        )),
               Flexible(
-                  fit: FlexFit.tight,
+                  fit: FlexFit.loose,
                   child: Container(
                       decoration: BoxDecoration(
                           color: Color(0xffF1F1F1),
@@ -253,6 +290,7 @@ class _ChatDetailState extends State<ChatDetail> {
                     ? [
                         Expanded(
                             child: ListView.builder(
+                                controller: _scrollController,
                                 itemCount: content.length,
                                 itemBuilder: (context, index) {
                                   return _Chat(content.length - (index + 1));
@@ -274,9 +312,7 @@ class _ChatDetailState extends State<ChatDetail> {
                     width: MediaQuery.of(context).size.width * 0.838,
                     child: TextFormField(
                       onChanged: (text) {
-                        setState(() {
-                          chatMsg = text;
-                        });
+                        chatMsg = text;
                       },
                       validator: (value) {
                         if (value == "") {
