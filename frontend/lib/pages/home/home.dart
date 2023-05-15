@@ -1,14 +1,17 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/providers/auth_provider.dart';
 import 'package:reslow/providers/socket_provider.dart';
+import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'coupondownload.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:dio/dio.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
+import 'package:reslow/models/recommend.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,8 +22,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   int _current = 0;
   final DioClient dioClient = DioClient();
   final CarouselController _controller = CarouselController();
-  // List<dynamic> couponImage = [];
   List<Coupon> coupons = [];
+  List<dynamic> recommends1 = [];
+  List<dynamic> recommends2 = [];
+  List<dynamic> recommends3 = [];
+  List<dynamic> displayrecommends3 = [];
 
   Future<void> fetchData() async {
     Map<String, dynamic> queryParams = {
@@ -28,22 +34,60 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       'size': 10,
       'sort': 'createdDate,desc',
     };
+
+// 쿠폰
     Response response =
         await dioClient.dio.get('/coupons', queryParameters: queryParams);
-
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
       print(jsonData);
-
       List<Coupon> fetchedCoupons = List<Coupon>.from(
           jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
-
       setState(() {
         coupons = fetchedCoupons;
-        // couponImage = fetchedCoupons.map((coupon) => coupon.imageUrl).toList();
       });
     } else {
       print('HTTP request failed with status: ${response.statusCode}');
+    }
+// 추천
+    Response response1 = await dioClient.dio.get('/knowhows/recommends/main');
+    Response response2 = await dioClient.dio.get('/products/recommends');
+    Response response3 = await dioClient.dio.get('/products/recommends/orders');
+    if (response1.statusCode == 200) {
+      setState(() {
+        recommends1 = (response1.data as List<dynamic>)
+            .map((json) => Recommend1.fromJson(json))
+            .toList();
+      });
+      print("들어온 데이터 ${response1}");
+      print("추천1 ${recommends1[0].imageList[0]}");
+    } else {
+      print('HTTP request failed with status: ${response1.statusCode}');
+    }
+    if (response2.statusCode == 200) {
+      setState(() {
+        recommends2 = (response2.data as List<dynamic>)
+            .map((json) => Recommend2.fromJson(json))
+            .toList();
+      });
+      print("들어온 데이터 ${response2}");
+      print("추천2 ${recommends2}");
+    } else {
+      print('HTTP request failed with status: ${response2.statusCode}');
+    }
+    if (response3.statusCode == 200) {
+      setState(() {
+        recommends3 = (response3.data as List<dynamic>)
+            .map((json) => Recommend3.fromJson(json))
+            .toList();
+      });
+      setState(() {
+        displayrecommends3 = recommends3.sublist(0, 3);
+      });
+      print("들어온 데이터 ${response3}");
+      print("추천3 ${recommends3}");
+    } else {
+      print('HTTP request failed with status: ${response3.statusCode}');
     }
   }
 
@@ -60,42 +104,239 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     WidgetsBinding.instance!.removeObserver(this);
   }
 
+  void showAllList() {
+    setState(() {
+      displayrecommends3 = recommends3;
+    });
+  }
+
+  void hideAllList() {
+    setState(() {
+      displayrecommends3 = recommends3.sublist(0, 3);
+    });
+  }
+
+  Widget RCM1image(String image) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: image == null
+                  ? Image.asset(
+                      "assets/image/spin.gif",
+                      width: 140,
+                      height: 140,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(
+                      width: 140,
+                      height: 140,
+                      child: FadeInImage.assetNetwork(
+                        placeholder: "assets/image/spin.gif",
+                        image: image,
+                        fit: BoxFit.cover,
+                      ),
+                    ))
+        ],
+      ),
+    );
+  }
+
+  Widget RCM1(Recommend1 content) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  content.title,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Row(
+                children: [
+                  ClipRRect(
+                      borderRadius: BorderRadius.circular(50.0),
+                      child: content.profilePic == null
+                          ? Image.asset(
+                              "assets/image/spin.gif",
+                              width: 40,
+                              height: 40,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(
+                              width: 40,
+                              height: 40,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: "assets/image/spin.gif",
+                                image: content.profilePic,
+                                fit: BoxFit.cover,
+                              ),
+                            )),
+                  SizedBox(width: 8),
+                  Text(
+                    content.writer,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 600,
+          height: 1,
+          color: const Color(0xffDBDBDB),
+          margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+              children: content.imageList.map((e) => RCM1image(e)).toList() +
+                  [
+                    Container(
+                        width: 140,
+                        height: 140,
+                        child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => KnowHowDetail(
+                                          knowhowNo: content.knowhowNo)));
+                            },
+                            child: const Text("글 보러가기")))
+                  ]),
+        ),
+        Container(width: 600, height: 8, color: const Color(0xffDBDBDB)),
+      ], // children
+    );
+  }
+
+  Widget RCM2(Recommend2 content) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: content.image == null
+                  ? Image.asset(
+                      "assets/image/spin.gif",
+                      width: 140,
+                      height: 140,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(
+                      width: 140,
+                      height: 140,
+                      child: FadeInImage.assetNetwork(
+                        placeholder: "assets/image/spin.gif",
+                        image: content.image,
+                        fit: BoxFit.cover,
+                      ),
+                    )),
+          SizedBox(height: 8),
+          Text(
+            content.title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 4),
+          // Text(
+          //   "Product Title 1",
+          //   style: TextStyle(fontSize: 12),
+          // ),
+          SizedBox(height: 4),
+          Text(
+            "${content.price.toString()} 원",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 4),
+          Row(
+            children: [
+              Icon(
+                Icons.favorite_border,
+                color: Colors.grey,
+                size: 16,
+              ),
+              SizedBox(width: 4),
+              Text(content.heartCount.toString()),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget RCM3(Recommend3 content) {
+    return Row(
+      children: [
+        Container(
+            margin: const EdgeInsets.all(8),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: content.image == null
+                  ? Image.asset(
+                      "assets/image/spin.gif",
+                      width: 80,
+                      height: 80,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(
+                      width: 80,
+                      height: 80,
+                      child: FadeInImage.assetNetwork(
+                        placeholder: "assets/image/spin.gif",
+                        image: content.image,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+            )),
+        SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              content.title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            // Text(
+            //   "Title",
+            //   style: TextStyle(fontSize: 14),
+            // ),
+            // const SizedBox(height: 8),
+            Text(
+              "${content.price.toString()} 원",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Icon(Icons.favorite_border, size: 16),
+                const SizedBox(width: 4),
+                Text(content.heartCount.toString(),
+                    style: TextStyle(fontSize: 14)),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // dynamic socketManager = Provider.of<SocketManager>(context);
-    // socketManager.receivedChatData();
-
-    // @override
-    // void didChangeAppLifecycleState(AppLifecycleState state) {
-    //   super.didChangeAppLifecycleState(state);
-    //   switch (state) {
-    //     case AppLifecycleState.resumed:
-    //       socketManager.connect();
-    //       // 서버로 open 보내기
-    //       print("resumed");
-    //       break;
-    //     case AppLifecycleState.inactive:
-    //       socketManager.disconnect();
-    //       // 서버로 close 보내기
-    //       print("inactive");
-    //       break;
-    //     case AppLifecycleState.detached:
-    //       socketManager.disconnect();
-    //       // 서버로 close 보내기
-    //       print("detached");
-    //       break;
-    //     case AppLifecycleState.paused:
-    //       socketManager.disconnect();
-    //       // 서버로 close 보내기
-    //       print("paused");
-    //       break;
-    //   }
-    // }
-
-    // socketManager.connect();
-
-    // print(socketManager.isConnect());
-
     return SingleChildScrollView(
         child: Column(children: [
       Container(
@@ -160,147 +401,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
-          children: [
-            // 상품 1
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
-                      "assets/image/image 1.png",
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Product Name 1",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Product Title 1",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Price 1",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        color: Colors.grey,
-                        size: 16,
-                      ),
-                      SizedBox(width: 4),
-                      Text("1"),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
-                      "assets/image/image 2.png",
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Product Name 2",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Product Title 2",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Price 2",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        color: Colors.grey,
-                        size: 16,
-                      ),
-                      SizedBox(width: 4),
-                      Text("2"),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Image.asset(
-                      "assets/image/image 3.png",
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    "Product Name 3",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Product Title 3",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    "Price 3",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        color: Colors.grey,
-                        size: 16,
-                      ),
-                      SizedBox(width: 4),
-                      Text("3"),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
+          children: recommends2.map((e) => RCM2(e)).toList(),
         ),
       ),
       // recommended goods
@@ -315,14 +416,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              "리폼왕춘식이 님을 위한 추천 상품!\u{1f4d3}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text("더보기"),
-            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
+              child: Text(
+                "리폼왕춘식이 님을 위한 추천 상품!\u{1f4d3}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            )
           ],
         ),
       ),
@@ -333,96 +433,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.all(8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 4.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Name",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Title",
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Price",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.favorite_border, size: 16),
-                      const SizedBox(width: 4),
-                      const Text("Number", style: TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-          Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.all(8),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10.0),
-                  child: Image.asset(
-                    "assets/image/image 5.png",
-                    width: 140,
-                    height: 140,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Name",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Title",
-                    style: TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    "Price",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Icon(Icons.favorite_border, size: 16),
-                      const SizedBox(width: 4),
-                      const Text("Number", style: TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+        children: displayrecommends3.map((e) => RCM3(e)).toList(),
+      ),
+      TextButton(
+        onPressed: () {
+          if (displayrecommends3.length == 3) {
+            showAllList();
+          } else {
+            hideAllList();
+          }
+        },
+        child: Text(displayrecommends3.length == 3 ? "더보기" : "접기"),
       ),
 
       // popular knowhow
@@ -442,189 +463,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       Container(width: 600, height: 1, color: const Color(0xffDBDBDB)),
       // 이미지 부분
       Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    "Title1",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage('assets/image/test.jpg'),
-                      radius: 20,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      "Username",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          "assets/image/image 7.png",
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          "assets/image/image 8.png",
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          "assets/image/image 9.png",
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ], // children
-      ),
-      // 이미지 부분 Column
-      // 하나 더
-      // 이미지 부분 2222
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    "Title2",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Row(
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: AssetImage('assets/image/test.jpg'),
-                      radius: 20,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      "Username",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          "assets/image/image 7.png",
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          "assets/image/image 8.png",
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.asset(
-                          "assets/image/image 9.png",
-                          width: 140,
-                          height: 140,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ], // children
+        children: recommends1.map((e) => RCM1(e)).toList(),
       ),
     ]));
   }
