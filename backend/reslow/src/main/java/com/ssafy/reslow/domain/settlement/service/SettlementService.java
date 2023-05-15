@@ -12,6 +12,8 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.settlement.dto.SettlementListResponse;
 import com.ssafy.reslow.domain.settlement.entity.Settlement;
 import com.ssafy.reslow.domain.settlement.repository.SettlementRepository;
@@ -24,10 +26,14 @@ import lombok.RequiredArgsConstructor;
 public class SettlementService {
 
 	private final SettlementRepository settlementRepository;
+	private final MemberRepository memberRepository;
+
 	public Slice<SettlementListResponse> getSettlementList(Long memberNo, LocalDate startDate, LocalDate endDate, Pageable pageable) {
 		LocalDateTime startDt = startDate.atStartOfDay();
 		LocalDateTime endDt = endDate.atTime(LocalTime.MAX);
-		Slice<Settlement> settlementSlice = settlementRepository.findByMemberAndCreatedDateGreaterThanEqualAndCreatedDateLessThanEqual(memberNo, startDt, endDt, pageable);
+		Member member = memberRepository.getReferenceById(memberNo);
+		Slice<Settlement> settlementSlice = settlementRepository.findByMemberAndCreatedDateGreaterThanEqualAndCreatedDateLessThanEqual(
+			member.getNo(), startDt, endDt, pageable);
 		List<SettlementListResponse> list = settlementSlice.getContent()
 			.stream()
 			.map(SettlementListResponse::of)
