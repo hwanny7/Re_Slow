@@ -65,22 +65,22 @@ public class ChatService {
 		// topics = new HashMap<>();
 	}
 
-	public void sendMessage(ChatMessageRequest chatMessage) throws IOException, FirebaseMessagingException {
+	public void sendMessage(ChatMessageRequest chatMessage, String sessionId) throws
+		IOException,
+		FirebaseMessagingException {
 		String roomId = chatMessage.getRoomId();
 
 		System.out.println("!!sendMessage로 들어옴!!");
 		// 해당 토픽이 존재하지 않다면 채팅방을 찾을 수 없음 처리
-		// if (topics.get(roomId) == null) {
-		// 	throw new CustomException(CHATROOM_NOT_FOUND);
-		// }
+		ChannelTopic topic = (ChannelTopic)valueOpsTopicInfo.get(roomId);
 		// // redis로 publish
-		// chatPublisher.publish(topics.get(roomId), chatMessage);
+		chatPublisher.publish(topic, chatMessage);
 
 		System.out.println("publish 수행완료!");
 
 		Member receiver = findReceiver(roomId, chatMessage.getSender());
 		// 상대방이 소켓에 참여중이지 않다면 FCM 알림 보내기
-		if (!isUserOnline(roomId, receiver)) {
+		if (!isUserOnline(sessionId, receiver)) {
 			// 받을사람 Member객체 가져오기
 			Member sender = memberRepository.findById(chatMessage.getSender())
 				.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -96,9 +96,10 @@ public class ChatService {
 	}
 
 	// 유저가 소켓에 참여중인지 체크
-	private boolean isUserOnline(String roomId, Member member) {
+	private boolean isUserOnline(String sessionId, Member member) {
 		// 소켓에 참여중이라면
-		if (setOpsSocketInfo.isMember(roomId, member.getNo())) {
+		if (setOpsSocketInfo.isMember(sessionId, member.getNo())) {
+			System.out.println("소켓에 참여중임!!!!!! 그럼 알림 안갈거야~~!!");
 			return true;
 		}
 		return false;
