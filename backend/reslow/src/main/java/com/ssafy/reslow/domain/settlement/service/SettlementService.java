@@ -33,7 +33,7 @@ public class SettlementService {
 		LocalDateTime endDt = endDate.atTime(LocalTime.MAX);
 		Member member = memberRepository.getReferenceById(memberNo);
 		Slice<Settlement> settlementSlice = settlementRepository.findByMemberAndCreatedDateGreaterThanEqualAndCreatedDateLessThanEqual(
-			member.getNo(), startDt, endDt, pageable);
+			member, startDt, endDt, pageable);
 		List<SettlementListResponse> list = settlementSlice.getContent()
 			.stream()
 			.map(SettlementListResponse::of)
