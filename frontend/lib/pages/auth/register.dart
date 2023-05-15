@@ -101,19 +101,47 @@ class RegisterState extends State<Register> {
         final nickname = nicknameController.text;
         Map<String, dynamic> response =
             await auth.register(id, password, nickname);
-
         if (response['status'] == true) {
           Map<String, dynamic> response = await auth.login(id, password);
-
-          if (response['status'] == true) {
-            User user = User.fromJson(response['user']);
-            userProvider.setUser(user);
-            Navigator.pushReplacementNamed(context, '/main');
-          } else {
-            print(response['message']);
-          }
+          User user = User.fromJson(response['user']);
+          userProvider.setUser(user);
+          Navigator.pushReplacementNamed(context, '/main');
         } else {
-          print(response['message']);
+          if (context.mounted) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('회원가입 오류'),
+                    content: Text(response['message']),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  '닫기',
+                                  style: TextStyle(
+                                    fontSize: 22, // Set the font size to 24
+                                    color: Colors
+                                        .blue, // Set the font color to blue
+                                    fontWeight:
+                                        FontWeight.bold, // Make the text bold
+                                  ),
+                                ),
+                              )),
+                        ],
+                      )
+                    ],
+                  );
+                });
+          }
         }
       }
     }

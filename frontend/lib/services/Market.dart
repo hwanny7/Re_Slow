@@ -12,7 +12,6 @@ Future<Response> createOrder(
 }
 
 Future<Response> getOrder(int pk) async {
-  print(pk);
   Response response = await dioClient.dio.get('/orders/$pk');
 
   return response;
@@ -44,6 +43,20 @@ Future<Response> InputDelivery(
     int orderNo, Map<String, dynamic> formData) async {
   Response response =
       await dioClient.dio.patch('/orders/$orderNo/carrier', data: formData);
+
+  return response;
+}
+
+Future<Response> getMyCupons(Map<String, dynamic> queryParams) async {
+  Response response =
+      await dioClient.dio.get('/coupons/my', queryParameters: queryParams);
+
+  return response;
+}
+
+Future<Response> getDelivery(Map<String, dynamic> queryParams) async {
+  Response response =
+      await dioClient.dio.get('/coupons/my', queryParameters: queryParams);
 
   return response;
 }

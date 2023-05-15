@@ -82,9 +82,43 @@ class _LoginState extends State<Login> {
         if (response['status'] == true) {
           User user = User.fromJson(response['user']);
           userProvider.setUser(user);
-          Navigator.pushReplacementNamed(context, '/main');
+          if (context.mounted) Navigator.pushReplacementNamed(context, '/main');
         } else {
-          print(response['message']);
+          if (context.mounted) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('로그인 오류'),
+                    content: Text(response['message']),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text(
+                                  '닫기',
+                                  style: TextStyle(
+                                    fontSize: 22, // Set the font size to 24
+                                    color: Colors
+                                        .blue, // Set the font color to blue
+                                    fontWeight:
+                                        FontWeight.bold, // Make the text bold
+                                  ),
+                                ),
+                              )),
+                        ],
+                      )
+                    ],
+                  );
+                });
+          }
         }
       }
     }

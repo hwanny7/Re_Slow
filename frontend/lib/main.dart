@@ -128,7 +128,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   }
                 }
               }),
-          theme: ThemeData(fontFamily: "NanumSquare"),
+          theme: ThemeData(
+            fontFamily: "NanumSquare",
+          ),
           routes: {
             '/main': (context) => const MainPage(),
             '/splash': (context) => SplashScreen(),

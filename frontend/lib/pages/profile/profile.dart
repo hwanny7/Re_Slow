@@ -3,6 +3,8 @@ import 'package:reslow/pages/profile/my_buy_list.dart';
 import 'package:reslow/pages/profile/my_sell_list.dart';
 import 'package:reslow/pages/profile/myknowhow.dart';
 import 'package:reslow/pages/profile/mylikeknowhow.dart';
+import 'package:reslow/pages/profile/user_info.dart';
+import 'package:reslow/utils/navigator.dart';
 
 import 'package:reslow/utils/shared_preference.dart';
 import 'notificationsetting.dart';
@@ -12,6 +14,8 @@ import 'package:reslow/pages/home/recommend.dart';
 import 'calendarselection.dart';
 
 class Profile extends StatefulWidget {
+  const Profile({Key? key}) : super(key: key);
+
   @override
   _ProfileState createState() => _ProfileState();
 }
@@ -26,7 +30,7 @@ class _ProfileState extends State<Profile> {
           Container(
             height: 150,
             color: Colors.grey[300],
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 CircleAvatar(
@@ -39,6 +43,14 @@ class _ProfileState extends State<Profile> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.edit,
+                  ),
+                  onPressed: () {
+                    leftToRightNavigator(const UserInfo(), context);
+                  },
                 ),
               ],
             ),

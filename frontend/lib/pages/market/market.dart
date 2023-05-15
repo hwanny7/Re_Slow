@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/models/coupon_model.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
