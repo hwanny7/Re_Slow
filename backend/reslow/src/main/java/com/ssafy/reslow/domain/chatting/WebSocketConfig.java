@@ -3,12 +3,15 @@ package com.ssafy.reslow.domain.chatting;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import com.ssafy.reslow.domain.chatting.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+	private final ChatService chatService;
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -35,11 +40,21 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@EventListener
 	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+		Long senderNo = (Long)headerAccessor.getSessionAttributes().get("sender");
+		String roomId = (String)headerAccessor.getSessionAttributes().get("roomId");
+
+		chatService.setUserSocketInfo(roomId, senderNo);
 		log.info("소켓 연결됨!!!!!!!!");
 	}
 
 	@EventListener
 	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event) {
+		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+		Long senderNo = (Long)headerAccessor.getSessionAttributes().get("sender");
+		String roomId = (String)headerAccessor.getSessionAttributes().get("roomId");
+
+		chatService.removeUserSocketInfo(roomId, senderNo);
 		log.info("소켓 끊어짐 ㅂㅂㅂㅂ");
 	}
 }
