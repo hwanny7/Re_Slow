@@ -72,7 +72,8 @@ public class ChatService {
 
 		System.out.println("!!sendMessage로 들어옴!!");
 		// 해당 토픽이 존재하지 않다면 채팅방을 찾을 수 없음 처리
-		ChannelTopic topic = (ChannelTopic)valueOpsTopicInfo.get(roomId);
+		String topicName = (String)valueOpsTopicInfo.get(roomId);
+		ChannelTopic topic = new ChannelTopic(topicName);
 		// // redis로 publish
 		chatPublisher.publish(topic, chatMessage);
 
@@ -136,7 +137,7 @@ public class ChatService {
 	public void enterChattingRoom(String roomId, Long memberNo) {
 		// ChannelTopic topic = topics.get(roomId);
 		ChannelTopic topic = new ChannelTopic(roomId);
-		valueOpsTopicInfo.set(roomId, topic);
+		valueOpsTopicInfo.set(roomId, topic.getTopic());
 
 		// // 없던 topic이면 새로 만든다.
 		// if (topic == null) {
@@ -150,7 +151,8 @@ public class ChatService {
 	// 채팅방 나가기
 	public void leaveChattingRoom(String roomId, Long memberNo) {
 		// ChannelTopic topic = topics.get(roomId);
-		ChannelTopic topic = (ChannelTopic)valueOpsTopicInfo.get(roomId);
+		String topicName = (String)valueOpsTopicInfo.get(roomId);
+		ChannelTopic topic = new ChannelTopic(topicName);
 		redisMessageListenerContainer.removeMessageListener(chatSubscriber, topic);
 	}
 
