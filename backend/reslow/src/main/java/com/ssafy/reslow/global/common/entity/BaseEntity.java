@@ -11,6 +11,9 @@ import javax.persistence.MappedSuperclass;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,9 +33,11 @@ public abstract class BaseEntity {
 
 	@Column(name = "CREATED_DT", updatable = false)
 	@CreatedDate
+	@DateTimeFormat(pattern = "yyyy-DD-mm HH:mm:ss")
 	private LocalDateTime createdDate;
 	@Column(name = "UPDATED_DT")
 	@LastModifiedDate
+	@DateTimeFormat(pattern = "yyyy-DD-mm HH:mm:ss")
 	private LocalDateTime updatedDate;
 
 }

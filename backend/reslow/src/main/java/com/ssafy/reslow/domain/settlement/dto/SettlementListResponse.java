@@ -14,7 +14,6 @@ import lombok.Getter;
 public class SettlementListResponse {
 	private Long orderNo;
 	private int amount;
-	@DateTimeFormat(pattern = "yyyy-DD-mm HH:mm:ss")
 	private LocalDateTime settlementDt;
 
 	public static SettlementListResponse of(Settlement settlement) {
