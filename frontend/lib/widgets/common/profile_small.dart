@@ -35,10 +35,20 @@ class _ProfileSmallState extends State<ProfileSmall> {
                 borderRadius: BorderRadius.circular(50),
                 child: widget.url == null
                     ? Image.asset(
-                        "assets/image/user.png",
+                        "assets/image/spin.gif",
                         width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
                       )
-                    : Image.network(widget.url.toString(), width: 50))),
+                    : Container(
+                        width: 50,
+                        height: 50,
+                        child: FadeInImage.assetNetwork(
+                          placeholder: "assets/image/spin.gif",
+                          image: widget.url.toString(),
+                          fit: BoxFit.cover,
+                        ),
+                      ))),
         Text(
           widget.name,
           style: const TextStyle(

@@ -29,14 +29,22 @@ class ItemInfo extends StatelessWidget {
                     child: Row(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            item.image,
-                            width: mediaWidth * 0.3,
-                            height: mediaHeight * 0.15,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                            borderRadius: BorderRadius.circular(8),
+                            child: item.image == null
+                                ? Image.asset(
+                                    "assets/image/spin.gif",
+                                    width: mediaWidth * 0.3,
+                                    height: mediaHeight * 0.15,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    width: mediaWidth * 0.3,
+                                    height: mediaHeight * 0.15,
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: "assets/image/spin.gif",
+                                      image: item.image,
+                                      fit: BoxFit.cover,
+                                    ))),
                         Container(
                             height: mediaHeight * 0.15,
                             padding: EdgeInsets.only(

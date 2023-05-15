@@ -16,31 +16,8 @@ import 'package:reslow/pages/knowhow/knowhowregister.dart';
 import 'pages/auth/login.dart';
 import 'splashscreen.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("받았음 메세지 제목은 ${message.notification?.title}");
-  print("받았음 메세지 내용은 ${message.notification?.body}");
-  print("받았음 메세지 데이터는 ${message.data}");
-  // 백그라운드에서 수신한 FCM 메시지 처리
-  _showNotification(message.notification?.title, message.notification?.body);
-  // 예를 들어 데이터베이스에 알림 정보 저장 등의 작업 수행 가능
-}
-
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
-
-Future<void> _showNotification(String? title, String? body) async {
-  final androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'channelId', 'channelName',
-      channelDescription: 'your_channel_description',
-      importance: Importance.max,
-      priority: Priority.high);
-
-  final platformChannelSpecifics =
-      NotificationDetails(android: androidPlatformChannelSpecifics);
-
-  await flutterLocalNotificationsPlugin.show(
-      0, title, body, platformChannelSpecifics);
-}
 
 Future<void> initializeNotifications() async {
   final AndroidInitializationSettings initializationSettingsAndroid =
@@ -66,46 +43,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-  void initFirebaseMessaging() {
-    // FirebaseMessaging 설정
-    FirebaseMessaging.instance.setAutoInitEnabled(true);
-
-    // 백그라운드에서 수신한 FCM 메시지 처리 핸들러 등록
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    // 포그라운드에서 수신한 FCM 메시지 처리 핸들러 등록
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("받았음 메세지 제목은 ${message.notification?.title}");
-      print("받았음 메세지 내용은 ${message.notification?.body}");
-      print("받았음 메세지 데이터는 ${message.data}");
-      _showNotification(
-          message.notification?.title, message.notification?.body);
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
-      print(message.data["type"]);
-      print(message.data["senderProfilePic"]);
-      print(message.data["senderNickname"]);
-      if (message.data["type"] == "CHATTING") {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChatDetail(
-              roomId: message.data["roomId"],
-              otherPic: message.data["senderProfilePic"],
-              otherNick: message.data["senderNickname"],
-            ),
-          ),
-        );
-      }
-    });
-  }
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    initFirebaseMessaging(); // initFirebaseMessaging() 메서드 호출
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => AuthProvider()),
@@ -137,7 +77,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             '/login': (context) => Login(),
             '/market': (context) => Market(),
             '/knowhow': (context) => const KnowHow(),
-            '/knowhow/register': (context) => const KnowhowRegister(),
+            '/knowhow/register': (context) => KnowhowRegister(func: () {
+                  setState(() {});
+                }),
           },
           debugShowCheckedModeBanner: false,
         ));

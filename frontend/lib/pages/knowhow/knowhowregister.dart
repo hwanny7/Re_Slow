@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:reslow/pages/knowhow/knowhow.dart';
 import 'package:reslow/widgets/common/category_tap_bar.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class KnowhowRegister extends StatefulWidget {
-  const KnowhowRegister({Key? key}) : super(key: key);
+  Function func;
+  KnowhowRegister({Key? key, required this.func}) : super(key: key);
 
   @override
   _KnowhowRegisterState createState() => _KnowhowRegisterState();
@@ -68,6 +72,10 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
         }),
       ); // Use the appended endpoint
       Navigator.pop(context);
+      // Timer(Duration(milliseconds: 700), () {
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => KnowHow()));
+      // });
       print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ${response.data}");
     } on DioError catch (e) {
       print('error: $e');
