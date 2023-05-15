@@ -64,7 +64,7 @@ public class Order extends BaseEntity {
 
     @ColumnDefault("0")
     @Column(name = "TOTAL_PRICE")
-    private int totalPrice;
+    private Integer totalPrice;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Product product;
