@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +26,8 @@ public class SettlementController {
 	@GetMapping
 	public Slice<SettlementListResponse> getSettlementList(
 		Authentication authentication,
-		@RequestParam(value="startDate") LocalDate startDate,
-		@RequestParam(value="endDate") LocalDate endDate,
+		@RequestParam(value="startDate") @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
+		@RequestParam(value="endDate") @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate,
 		Pageable pageable) {
 		Long memberNo = Long.parseLong(authentication.getName());
 		if(startDate==null) startDate = LocalDate.of(2023,1,1);
