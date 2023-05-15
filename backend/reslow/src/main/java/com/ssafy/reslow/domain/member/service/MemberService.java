@@ -251,4 +251,23 @@ public class MemberService {
 
         return MemberNoNickPicResponse.of(memberNo, member.getNickname(), member.getProfilePic());
     }
+
+    public String redisSetting() {
+        List<Member> list = memberRepository.findAll();
+
+        list.forEach((member -> {
+            ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+            List<ProductCategory> productCategories = productCategoryRepository.findAll();
+            productCategories.forEach((productCategory -> {
+                zSetOperations.add("product_" + member.getNo(), String.valueOf(productCategory.getNo()),
+                    0);
+            }));
+            List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
+            knowhowCategoryies.forEach((knowhowCategory -> {
+                zSetOperations.add("knowhow_" + member.getNo(), String.valueOf(knowhowCategory.getNo()),
+                    0);
+            }));
+        }));
+        return "OK";
+    }
 }
