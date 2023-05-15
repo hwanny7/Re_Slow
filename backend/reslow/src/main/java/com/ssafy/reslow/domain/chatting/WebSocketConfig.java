@@ -39,15 +39,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@EventListener
 	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-		Long senderNo = Long.parseLong(
-			SecurityContextHolder.getContext().getAuthentication().getName());
-		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		String sessionId = headerAccessor.getSessionId();
-
-		System.out.println("해당 session 소켓에 참여: " + sessionId + " ,멤버: " + senderNo);
-		redisTemplate.opsForSet().add(sessionId, senderNo);
-
-		// chatService.setUserSocketInfo(roomId, senderNo);
 		log.info("소켓 연결됨!!!!!!!!");
 	}
 
