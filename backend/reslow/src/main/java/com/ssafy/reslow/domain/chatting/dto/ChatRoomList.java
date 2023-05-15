@@ -15,13 +15,14 @@ public class ChatRoomList {
 	String dateTime;
 	String lastMessage;
 
-	public static ChatRoomList of(Member member, String roomId, String dateTime, String message) {
+	public static ChatRoomList of(Member receiver, String roomId, String dateTime, String message) {
 		return ChatRoomList.builder()
 			.roomId(roomId)
-			.memberNo(member.getNo())
-			.nickname(member.getNickname())
+			.memberNo(receiver.getNo())
+			.nickname(receiver.getNickname())
 			.dateTime(dateTime)
 			.lastMessage(message)
+			.profilePic(receiver.getProfilePic())
 			.build();
 	}
 }
