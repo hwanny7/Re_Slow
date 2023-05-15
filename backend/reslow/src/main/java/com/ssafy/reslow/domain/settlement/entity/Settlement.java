@@ -1,4 +1,4 @@
-package com.ssafy.reslow.domain.calculate.entity;
+package com.ssafy.reslow.domain.settlement.entity;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -24,9 +24,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "CALCULATE_TB")
-@AttributeOverride(name = "no", column = @Column(name = "CALCULATE_PK"))
-public class Calculate extends BaseEntity {
+@Table(name = "SETTLEMENT_TB")
+@AttributeOverride(name = "no", column = @Column(name = "SETTLEMENT_PK"))
+public class Settlement extends BaseEntity {
 	@Column(name = "AMOUNT")
 	private int amount;
 
