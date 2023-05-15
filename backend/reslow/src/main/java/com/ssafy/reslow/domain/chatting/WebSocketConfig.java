@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -39,26 +40,26 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	@EventListener
-	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+	public void handleWebSocketConnectListener(SessionConnectedEvent event, Authentication authentication) {
+		Long senderNo = Long.parseLong(authentication.getName());
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		Long senderNo = (Long)headerAccessor.getSessionAttributes().get("sender");
-		String roomId = (String)headerAccessor.getSessionAttributes().get("roomId");
+		String sessionId = headerAccessor.getSessionId();
 
-		System.out.println("해당 소켓에 참여: " + roomId + " ,멤버: " + senderNo);
-		redisTemplate.opsForSet().add(roomId, senderNo);
+		System.out.println("해당 session 소켓에 참여: " + sessionId + " ,멤버: " + senderNo);
+		redisTemplate.opsForSet().add(sessionId, senderNo);
 
 		// chatService.setUserSocketInfo(roomId, senderNo);
 		log.info("소켓 연결됨!!!!!!!!");
 	}
 
 	@EventListener
-	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event) {
+	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event, Authentication authentication) {
+		Long senderNo = Long.parseLong(authentication.getName());
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		Long senderNo = (Long)headerAccessor.getSessionAttributes().get("sender");
-		String roomId = (String)headerAccessor.getSessionAttributes().get("roomId");
+		String sessionId = headerAccessor.getSessionId();
 
-		System.out.println("해당 소켓에서 나감!!: " + roomId + " ,멤버: " + senderNo);
-		redisTemplate.opsForSet().remove(roomId, senderNo);
+		System.out.println("해당 소켓에서 나감!!: " + sessionId + " ,멤버: " + senderNo);
+		redisTemplate.opsForSet().remove(sessionId, senderNo);
 
 		// chatService.removeUserSocketInfo(roomId, senderNo);
 		log.info("소켓 끊어짐 ㅂㅂㅂㅂ");
