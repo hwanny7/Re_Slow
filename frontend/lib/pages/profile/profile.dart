@@ -28,15 +28,17 @@ class _ProfileState extends State<Profile> {
         children: [
           // Profile
           Container(
-            height: 150,
-            color: Colors.grey[300],
+            height: 120,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/image/test.jpg'),
-                ),
+                Container(
+                    margin: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage('assets/image/test.jpg'),
+                    )),
                 Text(
                   '리폼왕 춘식이',
                   style: TextStyle(
@@ -55,11 +57,19 @@ class _ProfileState extends State<Profile> {
               ],
             ),
           ),
-
+          Container(
+            width: 600,
+            height: 1,
+            color: const Color(0xffDBDBDB),
+            margin: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+          ),
           // Icons
           const SizedBox(height: 20),
           Container(
-            color: Colors.green,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Color(0xff3C9F61)),
+            width: MediaQuery.of(context).size.width * 0.9,
             padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -67,7 +77,10 @@ class _ProfileState extends State<Profile> {
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(Icons.notifications),
+                      icon: Icon(
+                        Icons.notifications,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         Navigator.push(
                           context,
@@ -77,13 +90,26 @@ class _ProfileState extends State<Profile> {
                         );
                       },
                     ),
-                    Text('알림'),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      child: Text(
+                        '알림',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
                   ],
                 ),
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(Icons.local_offer),
+                      icon: Icon(
+                        Icons.local_offer,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         // Navigate to couponlist
                         Navigator.push(
@@ -94,13 +120,24 @@ class _ProfileState extends State<Profile> {
                         );
                       },
                     ),
-                    Text('쿠폰'),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      child: Text('쿠폰',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          )),
+                    )
                   ],
                 ),
                 Column(
                   children: <Widget>[
                     IconButton(
-                      icon: Icon(Icons.favorite),
+                      icon: Icon(
+                        Icons.favorite,
+                        color: Colors.white,
+                      ),
                       onPressed: () {
                         // Navigate to likes page 잠시 추천 페이지로 사용
                         Navigator.push(
@@ -111,7 +148,15 @@ class _ProfileState extends State<Profile> {
                         );
                       },
                     ),
-                    Text('관심'),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                      child: Text('관심',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.white,
+                          )),
+                    )
                   ],
                 ),
               ],
@@ -123,7 +168,7 @@ class _ProfileState extends State<Profile> {
             padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
             child: Text(
               '노하우',
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               // textAlign: TextAlign.left,
             ),
             alignment: Alignment.centerLeft,
@@ -186,10 +231,11 @@ class _ProfileState extends State<Profile> {
                 Divider(),
                 // flea market section
                 Container(
+                  margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
                   padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   child: Text(
                     '플리마켓',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   alignment: Alignment.centerLeft,
                 ),
@@ -279,10 +325,11 @@ class _ProfileState extends State<Profile> {
                 Divider(),
                 // Settings
                 Container(
+                  margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
                   padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   child: Text(
                     '설정',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   alignment: Alignment.centerLeft,
                 ),

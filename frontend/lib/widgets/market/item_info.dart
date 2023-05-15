@@ -54,11 +54,15 @@ class ItemInfo extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               // mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Text(item.title,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: mediaWidth * 0.05,
-                                    )),
+                                Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
+                                    child: Text(item.title,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: mediaWidth * 0.05,
+                                        ))),
                                 SizedBox(height: mediaHeight * 0.01),
                                 SizedBox(height: mediaHeight * 0.04),
                                 Text(formatTimeDifference(item.datetime)),

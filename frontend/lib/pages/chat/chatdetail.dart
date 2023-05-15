@@ -76,6 +76,7 @@ class _ChatDetailState extends State<ChatDetail> {
     super.dispose();
     stompClient!.deactivate();
     print("소켓 끊어졌나? ${isConnect()}");
+    dioClient.dio.post('/chat/quit/${widget.roomId}');
     _scrollController.dispose();
   }
 
@@ -164,7 +165,7 @@ class _ChatDetailState extends State<ChatDetail> {
 
   Future<void> _requestSubscribe() async {
     try {
-      await dioClient.dio.post('/chat/subscribe/${widget.roomId}');
+      await dioClient.dio.post('/chat/enter/${widget.roomId}');
       print("구독했음");
     } on DioError catch (e) {
       print('subscribeerror: $e');

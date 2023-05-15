@@ -210,11 +210,15 @@ class _ItemDetailState extends State<ItemDetail> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(children: [
-                            Text(
-                              item!.title,
-                              style: const TextStyle(
-                                  fontSize: 22, fontWeight: FontWeight.bold),
-                            ),
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: Text(
+                                  item!.title,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold),
+                                )),
                             const Spacer(),
                             Text(item!.date),
                           ]),
