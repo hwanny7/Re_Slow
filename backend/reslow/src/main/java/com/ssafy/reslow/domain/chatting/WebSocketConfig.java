@@ -3,10 +3,9 @@ package com.ssafy.reslow.domain.chatting;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -24,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	private final RedisTemplate<String, Object> redisTemplate;
-	private SetOperations<String, Object> setOpsSocketInfo;
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -40,8 +38,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	@EventListener
-	public void handleWebSocketConnectListener(SessionConnectedEvent event, Authentication authentication) {
-		Long senderNo = Long.parseLong(authentication.getName());
+	public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+		Long senderNo = Long.parseLong(
+			SecurityContextHolder.getContext().getAuthentication().getName());
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		String sessionId = headerAccessor.getSessionId();
 
@@ -53,8 +52,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	}
 
 	@EventListener
-	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event, Authentication authentication) {
-		Long senderNo = Long.parseLong(authentication.getName());
+	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event) {
+		Long senderNo = Long.parseLong(
+			SecurityContextHolder.getContext().getAuthentication().getName());
 		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 		String sessionId = headerAccessor.getSessionId();
 
