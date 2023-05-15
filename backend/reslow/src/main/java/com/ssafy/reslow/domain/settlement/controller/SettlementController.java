@@ -16,7 +16,7 @@ import com.ssafy.reslow.domain.settlement.service.SettlementService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("accounts")
+@RequestMapping("settlements")
 @RequiredArgsConstructor
 public class SettlementController {
 
