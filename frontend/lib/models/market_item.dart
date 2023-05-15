@@ -281,3 +281,18 @@ class TrackingDetails {
     where = json['where'];
   }
 }
+
+class SettlementList {
+  String? amount;
+  String? settlementDt;
+  int? orderNo;
+
+  SettlementList({this.amount, this.settlementDt, this.orderNo});
+
+  factory SettlementList.fromJson(Map<String, dynamic> json) {
+    return SettlementList(
+        amount: priceDot(json['amount']),
+        settlementDt: json['settlementDt'],
+        orderNo: json['orderNo']);
+  }
+}

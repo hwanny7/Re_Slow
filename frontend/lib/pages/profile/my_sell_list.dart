@@ -44,7 +44,7 @@ class _MySellListState extends State<MySellList>
       final scrollController = _scrollControllers[i];
       scrollController.addListener(() => _scrollListener(i));
     }
-    fetchData(0);
+    fetchData(0, false);
   }
 
   @override
@@ -58,11 +58,7 @@ class _MySellListState extends State<MySellList>
   }
 
   void _onTabChanged() async {
-    if (firstLoading[_controller.index] == true) {
-      await fetchData(_controller.index);
-    }
-    print('여기!');
-    // 페이지 + 시키는 거 옮겨야함. 안 그러면 다시 돌아왔을 때 또 실행됨
+    await fetchData(_controller.index, false);
   }
 
   void _scrollListener(int scrollIndex) async {
@@ -72,35 +68,41 @@ class _MySellListState extends State<MySellList>
         !isLoading[scrollIndex]) {
       isLoading[scrollIndex] = true;
       page[scrollIndex] += 1;
-      await fetchData(scrollIndex);
+      await fetchData(scrollIndex, true);
       isLoading[scrollIndex] = false;
     }
   }
 
-  Future<void> fetchData(int tabIndex) async {
+  Future<void> fetchData(int tabIndex, bool isInfinite) async {
+    if (!isInfinite) {
+      page[tabIndex] = 0;
+      isLast[tabIndex] = false;
+    }
     Map<String, dynamic> queryParams = {
       'page': page[tabIndex],
       'size': 4,
       'status': tabIndex + 1,
     };
-    print(queryParams);
 
     Response response = await getSellItems(queryParams);
-    if (firstLoading[tabIndex]) {
-      setState(() {
-        firstLoading[tabIndex] = false;
-      });
-    }
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data['content'];
-      print(jsonData);
-      if (jsonData.isEmpty) {
-        isLast[tabIndex] = true;
+
+      if (isInfinite) {
+        if (jsonData.isEmpty) {
+          isLast[tabIndex] = true;
+        } else {
+          setState(() {
+            _data[tabIndex].addAll(List<MyBuyItem>.from(
+                jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson))));
+          });
+        }
       } else {
         setState(() {
-          _data[tabIndex].addAll(List<MyBuyItem>.from(
-              jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson))));
+          _data[tabIndex] = List<MyBuyItem>.from(
+              jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson)));
+          firstLoading[tabIndex] = false;
         });
       }
     } else {
@@ -159,20 +161,9 @@ class _MySellListState extends State<MySellList>
     final data = _data[tabIndex];
 
     void removeItem(int index, String choice) {
-      if (choice == "거절") {
-        setState(() {
-          data.removeAt(index);
-        });
-      } else {
-        setState(() {
-          if (firstLoading[tabIndex + 1] == false) {
-            // 한 번이라도 데이터를 Load 했다면 가장 첫번째로 추가
-            data[index].status += 1;
-            _data[tabIndex + 1].insert(0, data[index]);
-          }
-          data.removeAt(index);
-        });
-      }
+      setState(() {
+        data.removeAt(index);
+      });
     }
 
     if (firstLoading[tabIndex]) {
@@ -182,7 +173,6 @@ class _MySellListState extends State<MySellList>
     } else {
       return ListView.builder(
         key: Key(tabIndex.toString()),
-        // shrinkWrap: true,
         controller: _scrollControllers[tabIndex],
         itemCount: data.length,
         itemBuilder: (context, index) {

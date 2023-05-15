@@ -43,7 +43,7 @@ class _MyBuyListState extends State<MyBuyList>
       final scrollController = _scrollControllers[i];
       scrollController.addListener(() => _scrollListener(i));
     }
-    fetchData(0);
+    fetchData(0, false);
   }
 
   @override
@@ -57,11 +57,10 @@ class _MyBuyListState extends State<MyBuyList>
   }
 
   void _onTabChanged() async {
-    if (firstLoading[_controller.index] == true) {
-      await fetchData(_controller.index);
-    }
-    print('여기!');
-    // 페이지 + 시키는 거 옮겨야함. 안 그러면 다시 돌아왔을 때 또 실행됨
+    // setState(() {
+    //   firstLoading[_controller.index] = true;
+    // });
+    await fetchData(_controller.index, false);
   }
 
   void _scrollListener(int scrollIndex) async {
@@ -71,36 +70,42 @@ class _MyBuyListState extends State<MyBuyList>
         !isLoading[scrollIndex]) {
       isLoading[scrollIndex] = true;
       page[scrollIndex] += 1;
-      await fetchData(scrollIndex);
+      await fetchData(scrollIndex, true);
       isLoading[scrollIndex] = false;
     }
   }
 
-  Future<void> fetchData(int tabIndex) async {
+  Future<void> fetchData(int tabIndex, bool isInfinite) async {
+    if (!isInfinite) {
+      page[tabIndex] = 0;
+      isLast[tabIndex] = false;
+    }
     Map<String, dynamic> queryParams = {
       'page': page[tabIndex],
       'size': 4,
       'status': tabIndex + 1,
     };
-    print(queryParams);
 
     Response response = await getBuyItems(queryParams);
-    if (firstLoading[tabIndex]) {
-      setState(() {
-        firstLoading[tabIndex] = false;
-      });
-    }
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data['content'];
       print(jsonData);
-      if (jsonData.isEmpty) {
-        isLast[tabIndex] = true;
+
+      if (isInfinite) {
+        if (jsonData.isEmpty) {
+          isLast[tabIndex] = true;
+        } else {
+          setState(() {
+            _data[tabIndex].addAll(List<MyBuyItem>.from(
+                jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson))));
+          });
+        }
       } else {
         setState(() {
-          _data[tabIndex].addAll(List<MyBuyItem>.from(
-              jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson))));
-          // 높이를 처음으로 변경하기
+          _data[tabIndex] = List<MyBuyItem>.from(
+              jsonData.map((itemJson) => MyBuyItem.fromJson(itemJson)));
+          firstLoading[tabIndex] = false;
         });
       }
     } else {

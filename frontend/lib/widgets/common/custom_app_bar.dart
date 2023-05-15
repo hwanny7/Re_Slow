@@ -30,8 +30,8 @@ class CustomAppBar extends AppBar {
                 child: GestureDetector(
                     child: Text(
                       actions,
-                      style: const TextStyle(
-                        color: Colors.black,
+                      style: TextStyle(
+                        color: Colors.blue[300],
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),

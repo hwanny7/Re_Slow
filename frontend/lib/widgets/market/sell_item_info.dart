@@ -65,8 +65,6 @@ class _SellItemInfoState extends State<SellItemInfo> {
         {"carrierTrack": carrierTrack, "carrierCompany": carrierCompany});
     if (response.statusCode == 200) {
       print("성공");
-      widget.item.carrierCompany = carrierCompany;
-      widget.item.carrierTrack = carrierTrack;
       widget.removeItem(widget.index, "변경");
     } else {
       print('HTTP request failed with status: ${response.statusCode}');

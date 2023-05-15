@@ -8,6 +8,8 @@ class UserPreferences {
   Future<SharedPreferences> saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    prefs.setString("nickname", user.nickname!);
+    prefs.setString("profileImg", user.profileImg!);
     prefs.setString("accessToken", user.accessToken!);
     prefs.setString("refreshToken", user.refreshToken!);
     prefs.setBool("existAccount", user.existAccount!);
@@ -29,13 +31,12 @@ class UserPreferences {
   Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // String userId = prefs.getString("userId")!;
-    String accessToken = prefs.getString("accessToken")!;
-    String refreshToken = prefs.getString("refreshToken")!;
+    String nickname = prefs.getString("nickname")!;
+    String profileImg = prefs.getString("profileImg")!;
 
     return User(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
+      nickname: nickname,
+      profileImg: profileImg,
     );
   }
 
