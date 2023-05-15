@@ -74,7 +74,7 @@ public class ChatService {
 
 		// 상대방이 소켓에 참여중이라면 publish로 보낸다.
 		if (isUserOnline(roomId, receiver)) {
-			String topicName = (String)valueOpsTopicInfo.get(roomId);
+			String topicName = (String)valueOpsTopicInfo.get("topic_" + roomId);
 			System.out.println("TOPIC name : " + topicName);
 			if (topicName == null) {
 				throw new CustomException(CHATROOM_NOT_FOUND);
@@ -105,7 +105,7 @@ public class ChatService {
 	private boolean isUserOnline(String roomId, Member member) {
 		System.out.println("유저가 온라인인지 체크 시작");
 		// 소켓에 참여중이라면
-		if (Boolean.TRUE.equals(setOpsChatRoom.isMember(roomId, String.valueOf(member.getNo())))) {
+		if (Boolean.TRUE.equals(setOpsChatRoom.isMember(roomId, member.getNo()))) {
 			System.out.println("소켓에 참여중임!!!!!! 그럼 알림 안갈거야~~!!");
 			return true;
 		}
@@ -144,24 +144,24 @@ public class ChatService {
 	// 채팅방 입장
 	public void enterChattingRoom(String roomId, Long memberNo) {
 		ChannelTopic topic = new ChannelTopic(roomId);
-		valueOpsTopicInfo.set(roomId, roomId);
+		valueOpsTopicInfo.set("topic_" + roomId, roomId);
 
 		System.out.println("====" + memberNo + "가 채팅방 " + topic.getTopic() + "에 참여함 ====");
 		// topic에 대한 메시지를 받으면, 이를 chatSubscriber에게 전달함
 		redisMessageListenerContainer.addMessageListener(chatSubscriber, topic);
-		setOpsChatRoom.add(roomId, String.valueOf(memberNo));
+		setOpsChatRoom.add(roomId, memberNo);
 	}
 
 	// 채팅방 나가기
 	public void quitChattingRoom(String roomId, Long memberNo) {
 		System.out.println("====" + memberNo + "가 채팅방 나감");
-		setOpsChatRoom.remove(roomId, String.valueOf(memberNo));
+		setOpsChatRoom.remove(roomId, memberNo);
 	}
 
 	// 채팅방 삭제
 	public void leaveChattingRoom(String roomId, Long memberNo) {
 		// ChannelTopic topic = topics.get(roomId);
-		String topicName = (String)valueOpsTopicInfo.get(roomId);
+		String topicName = (String)valueOpsTopicInfo.get("topic_" + roomId);
 		ChannelTopic topic = new ChannelTopic(topicName);
 		redisMessageListenerContainer.removeMessageListener(chatSubscriber, topic);
 	}
