@@ -14,6 +14,7 @@ public class KnowhowRecommendResponse {
 	String title;
 	Long knowhowNo;
 	String writer;
+	String profilePic;
 	List<String> imageList;
 
 	public static KnowhowRecommendResponse of(Knowhow knowhow) {
@@ -24,6 +25,7 @@ public class KnowhowRecommendResponse {
 			.title(knowhow.getTitle())
 			.knowhowNo(knowhow.getNo())
 			.writer(knowhow.getMember().getNickname())
+			.profilePic(knowhow.getMember().getProfilePic())
 			.imageList(imageList)
 			.build();
 	}
