@@ -1,9 +1,11 @@
 package com.ssafy.reslow.domain.product.repository;
 
+import static com.ssafy.reslow.domain.knowhow.entity.QKnowhow.knowhow;
 import static com.ssafy.reslow.domain.product.entity.QProduct.*;
 import static com.ssafy.reslow.domain.product.entity.QProductImage.*;
 import static org.springframework.util.StringUtils.*;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +18,7 @@ import com.ssafy.reslow.domain.product.dto.ProductListResponse;
 import com.ssafy.reslow.domain.product.entity.Product;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,8 +33,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 			.selectFrom(product)
 			.leftJoin(product.productImages, productImage)
 			.where(
-				(hasText(keyword) ? product.title.contains(keyword) : null).or(
-				(hasText(keyword) ? product.description.contains(keyword) : null)),
+				(product.title.containsIgnoreCase(keyword)).or(
+				(product.description.containsIgnoreCase(keyword))),
 				category == null ? null : product.productCategory.no.eq(category),
 				product.order.isNull()
 			)
