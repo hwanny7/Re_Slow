@@ -5,6 +5,8 @@ import static com.ssafy.reslow.global.exception.ErrorCode.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +46,18 @@ public class NoticeService {
 		});
 
 		return noticeResponseList;
+	}
+
+	@Transactional
+	public void deleteNotice(Long memberNo, Long noticeNo) {
+		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		// noticeNo = -1일 시, 전체삭제
+		if (noticeNo == -1) {
+			noticeRepository.deleteAllByMember(member);
+
+		} else {
+			noticeRepository.deleteById(noticeNo);
+		}
 	}
 }

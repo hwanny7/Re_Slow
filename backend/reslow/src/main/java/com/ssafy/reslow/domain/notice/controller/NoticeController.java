@@ -6,8 +6,10 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,4 +46,13 @@ public class NoticeController {
 		return noticeService.getNoticeList(memberNo, pageable);
 	}
 
+	@DeleteMapping("/{noticeNo}")
+	public Map<String, Long> deleteNotice(Authentication authentication, @PathVariable Long noticeNo) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		noticeService.deleteNotice(memberNo, noticeNo);
+
+		Map<String, Long> response = new HashMap<>();
+		response.put("delete", noticeNo);
+		return response;
+	}
 }
