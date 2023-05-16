@@ -1,5 +1,7 @@
 package com.ssafy.reslow.domain.order.dto;
 
+import com.ssafy.reslow.domain.coupon.entity.Coupon;
+import com.ssafy.reslow.domain.coupon.entity.IssuedCoupon;
 import com.ssafy.reslow.domain.order.entity.Order;
 import com.ssafy.reslow.domain.product.entity.Product;
 import java.time.LocalDateTime;
@@ -23,14 +25,22 @@ public class OrderComfirmationResponse {
     private int productPrice;
     private int discountPrice;
     private int deliveryFee;
+    private String carrierTrack;
+    private String carrierCompany;
 
     public static OrderComfirmationResponse of(Product product, Order order) {
+        IssuedCoupon issuedCoupon = order.getIssuedCoupon();
         int totalPrice = product.getPrice() + product.getDeliveryFee();
         int discountPrice = 0;
-        if (order.getIssuedCoupon() != null) {
-            double discount = order.getIssuedCoupon().getCoupon().getDiscountPercent() * 0.01;
-            discountPrice = (int) (totalPrice * discount);
-            totalPrice -= discountPrice;
+        if (issuedCoupon != null) {
+            Coupon coupon = issuedCoupon.getCoupon();
+            if(coupon.getDiscountType() == 1) { // 금액
+                discountPrice = coupon.getDiscountAmount();
+            } else {
+                double discount = issuedCoupon.getCoupon().getDiscountPercent() * 0.01;
+                discountPrice = (int) (totalPrice * discount);
+                totalPrice -= discountPrice;
+            }
         }
         return OrderComfirmationResponse.builder()
             .title(product.getTitle())
@@ -47,6 +57,8 @@ public class OrderComfirmationResponse {
             .addressDetail(order.getAddressDetail())
             .phoneNumber(order.getPhoneNumber())
             .memo(order.getMemo())
+            .carrierTrack(order.getCarrierTrack())
+            .carrierCompany(order.getCarrierCompany())
             .build();
     }
 }

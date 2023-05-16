@@ -111,15 +111,18 @@ public class OrderService {
 		Order order = Order.of(request, product, member, issuedCoupon);
 		Order savedOrder = orderRepository.save(order);
 
+		Member seller = memberRepository.findById(product.getMember().getNo())
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
 		// 상품 알림
-		Device device = deviceRepository.findByMember(member)
+		Device device = deviceRepository.findByMember(seller)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		// 알림을 꺼놓지 않았다면
 		boolean status = (boolean)redisTemplate.opsForHash()
 			.get("alert_" + product.getMember().getNo(), MessageType.ORDER);
 
-		if (status) {
+		if (device != null && status) {
 			// 작성자에게 fcm 알림을 보낸다.
 			fcmNotice(device.getDeviceToken(), product, member.getNickname());
 
