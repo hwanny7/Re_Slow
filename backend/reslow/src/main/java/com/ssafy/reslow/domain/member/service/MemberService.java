@@ -2,9 +2,6 @@ package com.ssafy.reslow.domain.member.service;
 
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
-import com.ssafy.reslow.domain.order.entity.Order;
-import com.ssafy.reslow.domain.product.entity.Product;
-import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -39,9 +36,12 @@ import com.ssafy.reslow.domain.member.entity.MemberAccount;
 import com.ssafy.reslow.domain.member.entity.MemberAddress;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.domain.product.entity.ProductCategory;
 import com.ssafy.reslow.domain.product.repository.ProductCategoryRepository;
+import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import com.ssafy.reslow.global.auth.jwt.JwtTokenProvider;
+import com.ssafy.reslow.global.common.FCM.dto.MessageType;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.infra.storage.StorageServiceImpl;
@@ -229,6 +229,11 @@ public class MemberService {
         }
         deviceRepository.save(device);
 
+        // 알림 on 표시
+        redisTemplate.opsForHash().put("alert_" + memberNo, MessageType.CHATTING, true);
+        redisTemplate.opsForHash().put("alert_" + memberNo, MessageType.COMMENT, true);
+        redisTemplate.opsForHash().put("alert_" + memberNo, MessageType.ORDER, true);
+
         Map<String, String> map = new HashMap<>();
         map.put("device", "ok");
         return map;
@@ -242,6 +247,9 @@ public class MemberService {
             .orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
         // 토큰 삭제
         deviceRepository.delete(device);
+
+        // 알림 삭제
+        redisTemplate.opsForHash().delete("alert_" + memberNo);
 
         Map<String, String> map = new HashMap<>();
         map.put("delete", "ok");
@@ -258,7 +266,7 @@ public class MemberService {
     public String redisSetting() {
         List<Member> list = memberRepository.findAll();
 
-        redisTemplate.keys("*").stream().forEach(k-> {
+        redisTemplate.keys("*").stream().forEach(k -> {
             redisTemplate.delete(k);
         });
 
@@ -282,7 +290,7 @@ public class MemberService {
 
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         for (Product product : list1) {
-            zSetOperations.incrementScore("product", product.getNo()+"", 1);
+            zSetOperations.incrementScore("product", product.getNo() + "", 1);
         }
         return "OK";
     }

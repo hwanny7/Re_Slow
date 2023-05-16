@@ -98,7 +98,8 @@ public class ChatService {
 				.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
 
 			// 디바이스 알림 상태가 true일 때 알림 보내기
-			if (device.isNotice()) {
+			boolean status = (boolean)redisTemplate.opsForHash().get("alert_" + receiver.getNo(), MessageType.CHATTING);
+			if (status) {
 				FirebaseCloudMessageService.sendChatMessageTo(
 					ChatFcmMessage.SendChatMessage.of(chatMessage, device.getDeviceToken()),
 					sender);

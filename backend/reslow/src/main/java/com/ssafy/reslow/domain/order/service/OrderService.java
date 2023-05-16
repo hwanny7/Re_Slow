@@ -116,7 +116,10 @@ public class OrderService {
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		// 알림을 꺼놓지 않았다면
-		if (device.isNotice()) {
+		boolean status = (boolean)redisTemplate.opsForHash()
+			.get("alert_" + product.getMember().getNo(), MessageType.ORDER);
+
+		if (status) {
 			// 작성자에게 fcm 알림을 보낸다.
 			fcmNotice(device.getDeviceToken(), product, member.getNickname());
 

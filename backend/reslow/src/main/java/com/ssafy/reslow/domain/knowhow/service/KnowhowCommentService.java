@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,7 @@ public class KnowhowCommentService {
 	private final KnowhowRepository knowhowRepository;
 	private final DeviceRepository deviceRepository;
 	private final NoticeRepository noticeRepository;
+	private final RedisTemplate redisTemplate;
 
 	public Slice<KnowhowCommentResponse> getCommentList(Long knowhowNo, Pageable pageable) {
 		Slice<KnowhowComment> comments = commentRepository.findByKnowhowNoAndParentIsNull(knowhowNo, pageable);
@@ -72,9 +74,11 @@ public class KnowhowCommentService {
 		Long savedCommentNo = commentRepository.save(comment).getNo();
 
 		// 알림을 꺼놓지 않았다면
-		Device device = deviceRepository.findByMember(knowhow.getMember())
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		if (device.isNotice()) {
+		boolean status = (boolean)redisTemplate.opsForHash()
+			.get("alert_" + knowhow.getMember().getNo(), MessageType.COMMENT);
+		if (status) {
+			Device device = deviceRepository.findByMember(knowhow.getMember())
+				.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 			// 작성자에게 fcm 알림을 보낸다.
 			fcmNotice(device.getDeviceToken(), knowhow, request.getContent(), member.getNickname());
 
