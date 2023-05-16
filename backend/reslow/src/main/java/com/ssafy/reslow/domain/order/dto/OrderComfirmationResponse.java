@@ -23,6 +23,8 @@ public class OrderComfirmationResponse {
     private int productPrice;
     private int discountPrice;
     private int deliveryFee;
+    private String carrierTrack;
+    private String carrierCompany;
 
     public static OrderComfirmationResponse of(Product product, Order order) {
         int totalPrice = product.getPrice() + product.getDeliveryFee();
@@ -47,6 +49,8 @@ public class OrderComfirmationResponse {
             .addressDetail(order.getAddressDetail())
             .phoneNumber(order.getPhoneNumber())
             .memo(order.getMemo())
+            .carrierTrack(order.getCarrierTrack())
+            .carrierCompany(order.getCarrierCompany())
             .build();
     }
 }

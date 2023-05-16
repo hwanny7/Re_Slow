@@ -111,17 +111,20 @@ public class OrderService {
 		Order order = Order.of(request, product, member, issuedCoupon);
 		Order savedOrder = orderRepository.save(order);
 
+		Member seller = memberRepository.findById(product.getMember().getNo())
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
 		// 상품 알림
-		Device device = deviceRepository.findByMember(member)
+		Device device = deviceRepository.findByMember(seller)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		// 알림을 꺼놓지 않았다면
 		if (device.isNotice()) {
 			// 작성자에게 fcm 알림을 보낸다.
-			fcmNotice(device.getDeviceToken(), product, member.getNickname());
+			fcmNotice(device.getDeviceToken(), product, seller.getNickname());
 
 			// 작성자가 받은 알림을 저장한다.
-			Notice notice = Notice.of(member.getNickname(), product.getTitle(), LocalDateTime.now(),
+			Notice notice = Notice.of(seller.getNickname(), product.getTitle(), LocalDateTime.now(),
 				MessageType.ORDER);
 
 			noticeRepository.save(notice);
