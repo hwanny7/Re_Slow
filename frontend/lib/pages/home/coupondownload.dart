@@ -55,7 +55,9 @@ class _CouponDownloadState extends State<CouponDownload> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: coupon == null
+            body: Padding(
+      padding: EdgeInsets.all(20.0), // set the amount of padding you want
+      child: coupon == null
           ? const Center(child: CircularProgressIndicator())
           : Center(
               child: Column(
@@ -112,10 +114,53 @@ class _CouponDownloadState extends State<CouponDownload> {
                               // handle the response based on its status code
                               if (response.statusCode == 200) {
                                 Map<String, dynamic> jsonData = response.data;
+
                                 print(jsonData);
                                 print('쿠폰 다운로드 완료!');
                                 // show a success message or perform other actions
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Coupon Downloaded'),
+                                      content: Text(
+                                          'Your coupon has been successfully downloaded.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // dismiss the dialog
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              } else if (response.statusCode == 409) {
+                                print('이미 다운로드 받은 쿠폰');
+                                // show a message when the coupon is already downloaded
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Coupon Already Downloaded'),
+                                      content: Text(
+                                          'This coupon has already been downloaded.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(); // dismiss the dialog
+                                          },
+                                          child: Text('OK'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
                               } else {
+                                print('다운로드 실패');
                                 print(
                                     'HTTP request failed with status: ${response.statusCode}');
                                 // show an error message or perform other actions
@@ -153,6 +198,6 @@ class _CouponDownloadState extends State<CouponDownload> {
                 ],
               ),
             ),
-    ));
+    )));
   }
 }
