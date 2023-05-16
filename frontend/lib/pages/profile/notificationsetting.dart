@@ -93,6 +93,23 @@ class _NotificationSettingState extends State<NotificationSetting> {
                 },
               ),
             ),
+                        Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: SwitchListTile(
+                title: Text('주문서 알림'),
+                value: _chatNotificationEnabled,
+                onChanged: (bool value) {
+                  setState(() {
+                    _chatNotificationEnabled = value;
+                    _allNotificationEnabled = _likeNotificationEnabled &&
+                        _commentNotificationEnabled &&
+                        _chatNotificationEnabled &&
+                        _eventNotificationEnabled &&
+                        _moneyNotificationEnabled;
+                  });
+                },
+              ),
+            ),
             Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: SwitchListTile(
