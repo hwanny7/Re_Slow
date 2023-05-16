@@ -1,5 +1,6 @@
 package com.ssafy.reslow.batch.config;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
@@ -19,6 +21,7 @@ import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.json.JSONObject;
+import org.springframework.data.domain.Sort;
 
 import com.ssafy.reslow.batch.entity.MemberAccount;
 import com.ssafy.reslow.batch.entity.Order;
@@ -55,6 +58,7 @@ public class SettlementBatchConfiguration {
 			.build();
 	}
 
+	@JobScope
 	@Bean
 	public Step settlementStep1(){
 		return this.stepBuilderFactory.get(SETTLEMENT_STEP1_NAME)
@@ -74,6 +78,7 @@ public class SettlementBatchConfiguration {
 			.methodName("findByStatus")
 			.pageSize(CHUNK_SIZE)
 			.arguments(OrderStatus.ORDER_CONFIRMED)
+			.sorts(Collections.singletonMap("no", Sort.Direction.ASC))
 			.build();
 	}
 
