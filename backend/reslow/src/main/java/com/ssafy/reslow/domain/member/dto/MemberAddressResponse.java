@@ -25,4 +25,15 @@ public class MemberAddressResponse {
 			.memo(memberAddress.getMemo())
 			.build();
 	}
+
+	public static MemberAddressResponse of() {
+		return MemberAddressResponse.builder()
+			.recipient(null)
+			.zipcode(0)
+			.address(null)
+			.addressDetail(null)
+			.phoneNumber(null)
+			.memo(null)
+			.build();
+	}
 }

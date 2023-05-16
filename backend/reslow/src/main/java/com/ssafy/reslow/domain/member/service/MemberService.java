@@ -51,108 +51,108 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class MemberService {
 
-	private final MemberRepository memberRepository;
-	private final ProductCategoryRepository productCategoryRepository;
-	private final KnowhowCategoryRepository knowhowCategoryRepository;
-	private final DeviceRepository deviceRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final JwtTokenProvider jwtTokenProvider;
-	private final RedisTemplate redisTemplate;
-	private final AuthenticationManager authenticationManager;
-	private final StorageServiceImpl s3Service;
-	@Value("${default-image-s3}")
-	private String DEFAULT_IMAGE_S3;
+    private final MemberRepository memberRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final KnowhowCategoryRepository knowhowCategoryRepository;
+    private final DeviceRepository deviceRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate redisTemplate;
+    private final AuthenticationManager authenticationManager;
+    private final StorageServiceImpl s3Service;
+    @Value("${default-image-s3}")
+    private String DEFAULT_IMAGE_S3;
 
-	public Map<String, Object> signUp(MemberSignUpRequest signUp) {
-		if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(
-			signUp.getNickname())) {
-			throw new CustomException(MEBER_ALREADY_EXSIST);
-		}
-		Member member = memberRepository.save(
-			Member.toEntity(signUp, DEFAULT_IMAGE_S3,
-				passwordEncoder.encode(signUp.getPassword())));
+    public Map<String, Object> signUp(MemberSignUpRequest signUp) {
+        if (memberRepository.existsById(signUp.getId()) || memberRepository.existsByNickname(
+            signUp.getNickname())) {
+            throw new CustomException(MEBER_ALREADY_EXSIST);
+        }
+        Member member = memberRepository.save(
+            Member.toEntity(signUp, DEFAULT_IMAGE_S3,
+                passwordEncoder.encode(signUp.getPassword())));
 
-		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-		List<ProductCategory> productCategories = productCategoryRepository.findAll();
-		productCategories.forEach((productCategory -> {
-			zSetOperations.add("product_" + member.getNo(), String.valueOf(productCategory.getNo()),
-				0);
-		}));
-		List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
-		knowhowCategoryies.forEach((knowhowCategory -> {
-			zSetOperations.add("knowhow_" + member.getNo(), String.valueOf(knowhowCategory.getNo()),
-				0);
-		}));
+        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        List<ProductCategory> productCategories = productCategoryRepository.findAll();
+        productCategories.forEach((productCategory -> {
+            zSetOperations.add("product_" + member.getNo(), String.valueOf(productCategory.getNo()),
+                0);
+        }));
+        List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
+        knowhowCategoryies.forEach((knowhowCategory -> {
+            zSetOperations.add("knowhow_" + member.getNo(), String.valueOf(knowhowCategory.getNo()),
+                0);
+        }));
 
-		Map<String, Object> map = new HashMap<>();
-		map.put("nickname", member.getNickname());
-		return map;
-	}
+        Map<String, Object> map = new HashMap<>();
+        map.put("nickname", member.getNickname());
+        return map;
+    }
 
-	public TokenResponse login(MemberLoginRequest login) {
-		Member member = memberRepository.findById(login.getId())
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
-			throw new CustomException(PASSWORD_NOT_MATCH);
-		}
+    public TokenResponse login(MemberLoginRequest login) {
+        Member member = memberRepository.findById(login.getId())
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        if (!passwordEncoder.matches(login.getPassword(), member.getPassword())) {
+            throw new CustomException(PASSWORD_NOT_MATCH);
+        }
 
-		UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		TokenResponse tokenInfo = jwtTokenProvider.generateToken(authentication);
-		boolean existAccount = member.getMemberAccount() != null;
-		tokenInfo.setInfo(existAccount, member);
+        UsernamePasswordAuthenticationToken authenticationToken = login.toAuthentication();
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        TokenResponse tokenInfo = jwtTokenProvider.generateToken(authentication);
+        boolean existAccount = member.getMemberAccount() != null;
+        tokenInfo.setInfo(existAccount, member);
 
-		redisTemplate.opsForValue()
-			.set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(),
-				tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
-		return tokenInfo;
-	}
+        redisTemplate.opsForValue()
+            .set("RT:" + authentication.getName(), tokenInfo.getRefreshToken(),
+                tokenInfo.getRefreshTokenExpirationTime(), TimeUnit.MILLISECONDS);
+        return tokenInfo;
+    }
 
-	public Map<String, String> logout(Authentication authentication) {
-		if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
-			redisTemplate.delete("RT:" + authentication.getName());
-		}
-		Map<String, String> map = new HashMap<>();
-		map.put("no", authentication.getName());
-		return map;
-	}
+    public Map<String, String> logout(Authentication authentication) {
+        if (redisTemplate.opsForValue().get("RT:" + authentication.getName()) != null) {
+            redisTemplate.delete("RT:" + authentication.getName());
+        }
+        Map<String, String> map = new HashMap<>();
+        map.put("no", authentication.getName());
+        return map;
+    }
 
-	public Map<String, String> idDuplicate(MemberIdRequest id) {
-		Map<String, String> map = new HashMap<>();
-		if (memberRepository.existsById(id.getId())) {
-			map.put("isPossible", "NO");
-		} else {
-			map.put("isPossible", "YES");
-		}
-		return map;
-	}
+    public Map<String, String> idDuplicate(MemberIdRequest id) {
+        Map<String, String> map = new HashMap<>();
+        if (memberRepository.existsById(id.getId())) {
+            map.put("isPossible", "NO");
+        } else {
+            map.put("isPossible", "YES");
+        }
+        return map;
+    }
 
-	public Map<String, String> nicknameDuplicate(MemberNicknameRequest nickname) {
-		Map<String, String> map = new HashMap<>();
-		if (memberRepository.existsByNickname(nickname.getNickname())) {
-			map.put("isPossible", "NO");
-		} else {
-			map.put("isPossible", "YES");
-		}
-		return map;
-	}
+    public Map<String, String> nicknameDuplicate(MemberNicknameRequest nickname) {
+        Map<String, String> map = new HashMap<>();
+        if (memberRepository.existsByNickname(nickname.getNickname())) {
+            map.put("isPossible", "NO");
+        } else {
+            map.put("isPossible", "YES");
+        }
+        return map;
+    }
 
-	@Transactional
-	public Map<String, Long> updateUser(Long memberNo, MemberUpdateRequest request) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		if (member.getMemberAddress() != null) {
-			MemberAddress memberAddress = member.getMemberAddress();
-			memberAddress.update(request);
-		} else {
-			MemberAddress updateAddress = MemberAddress.toEntity(request);
-			member.registAddress(updateAddress);
-		}
-		Map<String, Long> map = new HashMap<>();
-		map.put("memberNo", memberNo);
-		return map;
-	}
+    @Transactional
+    public Map<String, Long> updateUser(Long memberNo, MemberUpdateRequest request) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        if (member.getMemberAddress() != null) {
+            MemberAddress memberAddress = member.getMemberAddress();
+            memberAddress.update(request);
+        } else {
+            MemberAddress updateAddress = MemberAddress.toEntity(request);
+            member.registAddress(updateAddress);
+        }
+        Map<String, Long> map = new HashMap<>();
+        map.put("memberNo", memberNo);
+        return map;
+    }
 
     public Map<String, String> updateProfile(Long memberNo, MultipartFile file) throws IOException {
         Member member = memberRepository.findById(memberNo)
@@ -172,86 +172,87 @@ public class MemberService {
         return map;
     }
 
-	public MemberAddressResponse userAddress(Long memberNo) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		if (member.getMemberAddress() == null) {
-			throw new CustomException(ADDRESS_NOT_FOUND);
-		}
-		MemberAddress memberAddress = member.getMemberAddress();
-		MemberAddressResponse response = MemberAddressResponse.of(memberAddress);
-		return response;
-	}
+    public MemberAddressResponse userAddress(Long memberNo) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        if (member.getMemberAddress() == null) {
+            MemberAddressResponse response = MemberAddressResponse.of();
+            return response;
+        }
+        MemberAddress memberAddress = member.getMemberAddress();
+        MemberAddressResponse response = MemberAddressResponse.of(memberAddress);
+        return response;
+    }
 
-	@Transactional
-	public Map<String, Long> registAccount(Long memberNo, MemberAccountRequest request) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		if (member.getMemberAccount() != null) {
-			throw new CustomException(ALREADY_EXISTS_ACCOUNT);
-		}
-		MemberAccount memberAccount = MemberAccount.of(request);
-		member.registAccount(memberAccount);
-		Map<String, Long> map = new HashMap<>();
-		map.put("memberNo", memberNo);
-		return map;
-	}
+    @Transactional
+    public Map<String, Long> registAccount(Long memberNo, MemberAccountRequest request) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        if (member.getMemberAccount() != null) {
+            throw new CustomException(ALREADY_EXISTS_ACCOUNT);
+        }
+        MemberAccount memberAccount = MemberAccount.of(request);
+        member.registAccount(memberAccount);
+        Map<String, Long> map = new HashMap<>();
+        map.put("memberNo", memberNo);
+        return map;
+    }
 
-	@Transactional
-	public Map<String, Long> updateAccount(Long memberNo, MemberAccountRequest request) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		MemberAccount memberAccount = member.getMemberAccount();
-		MemberAccount updatedMemberAccount = MemberAccount.of(request);
-		memberAccount.updateAccount(updatedMemberAccount);
-		member.registAccount(memberAccount);
-		Map<String, Long> map = new HashMap<>();
-		map.put("memberNo", memberNo);
-		return map;
-	}
+    @Transactional
+    public Map<String, Long> updateAccount(Long memberNo, MemberAccountRequest request) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        MemberAccount memberAccount = member.getMemberAccount();
+        MemberAccount updatedMemberAccount = MemberAccount.of(request);
+        memberAccount.updateAccount(updatedMemberAccount);
+        member.registAccount(memberAccount);
+        Map<String, Long> map = new HashMap<>();
+        map.put("memberNo", memberNo);
+        return map;
+    }
 
-	public Map<String, String> addDeviceToken(Long memberNo, String preToken, String newToken) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		// 새로운 등록 요청
-		Device device;
-		if (preToken.equals("null")) {
-			device = Device.of(member, newToken);
-		} else {
-			device = deviceRepository.findByMemberAndDeviceToken(member, preToken)
-				.orElse(Device.of(member, newToken));
-			device.updateToken(newToken);
-		}
-		deviceRepository.save(device);
+    public Map<String, String> addDeviceToken(Long memberNo, String preToken, String newToken) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        // 새로운 등록 요청
+        Device device;
+        if (preToken.equals("null")) {
+            device = Device.of(member, newToken);
+        } else {
+            device = deviceRepository.findByMemberAndDeviceToken(member, preToken)
+                .orElse(Device.of(member, newToken));
+            device.updateToken(newToken);
+        }
+        deviceRepository.save(device);
 
-		Map<String, String> map = new HashMap<>();
-		map.put("device", "ok");
-		return map;
-	}
+        Map<String, String> map = new HashMap<>();
+        map.put("device", "ok");
+        return map;
+    }
 
-	public Map<String, String> deleteDeviceToken(Long memberNo, String token) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		// 토큰 찾아서
-		Device device = deviceRepository.findByMemberAndDeviceToken(member, token)
-			.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
-		// 토큰 삭제
-		deviceRepository.delete(device);
+    public Map<String, String> deleteDeviceToken(Long memberNo, String token) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        // 토큰 찾아서
+        Device device = deviceRepository.findByMemberAndDeviceToken(member, token)
+            .orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
+        // 토큰 삭제
+        deviceRepository.delete(device);
 
-		Map<String, String> map = new HashMap<>();
-		map.put("delete", "ok");
-		return map;
-	}
+        Map<String, String> map = new HashMap<>();
+        map.put("delete", "ok");
+        return map;
+    }
 
-	public MemberNoNickPicResponse getMemberNoAndNicknameAndProfilePic(Long memberNo) {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+    public MemberNoNickPicResponse getMemberNoAndNicknameAndProfilePic(Long memberNo) {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		return MemberNoNickPicResponse.of(memberNo, member.getNickname(), member.getProfilePic());
-	}
+        return MemberNoNickPicResponse.of(memberNo, member.getNickname(), member.getProfilePic());
+    }
 
-	public String redisSetting() {
-		List<Member> list = memberRepository.findAll();
+    public String redisSetting() {
+        List<Member> list = memberRepository.findAll();
 
         list.forEach((member -> {
             ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
