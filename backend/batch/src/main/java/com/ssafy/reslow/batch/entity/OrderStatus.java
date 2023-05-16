@@ -7,12 +7,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum OrderStatus {
-    COMPLETE_PAYMENT(1),
-    PREPARE_DELIVERY(2),
-    PROGRESS_DELIVERY(3),
-    COMPLETE_DELIVERY(4),
+    PAYMENT_COMPLETE(1),
+    DELIVERY_PREPARE(2),
+    DELIVERY_PROGRESS(3),
+    DELIVERY_COMPLETE(4),
     ORDER_CONFIRMED(5),
-    ORDER_CANCELED(6);
+    ORDER_CANCELED(6),
+    SETTLEMENT_COMPLETED(7);
 
     private final int value;
 

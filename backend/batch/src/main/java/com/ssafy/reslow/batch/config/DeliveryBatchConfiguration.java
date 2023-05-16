@@ -69,7 +69,7 @@ public class DeliveryBatchConfiguration {
             .repository(orderRepository)
             .methodName("findByUpdatedDateLessThanAndStatus")
             .pageSize(CHUNK_SIZE)
-            .arguments(daysAgo, OrderStatus.COMPLETE_DELIVERY)
+            .arguments(daysAgo, OrderStatus.DELIVERY_COMPLETE)
             .sorts(Collections.singletonMap("no", Sort.Direction.ASC))
             .build();
     }
@@ -117,7 +117,7 @@ public class DeliveryBatchConfiguration {
             .repository(orderRepository)
             .methodName("findByStatus")
             .pageSize(CHUNK_SIZE)
-            .arguments(OrderStatus.PROGRESS_DELIVERY)
+            .arguments(OrderStatus.DELIVERY_PROGRESS)
             .sorts(Collections.singletonMap("no", Sort.Direction.ASC))
             .build();
     }
@@ -138,7 +138,7 @@ public class DeliveryBatchConfiguration {
                 carrierTrack);
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.get("completeYN").equals("Y")) {
-                order.updateStatus(OrderStatus.COMPLETE_DELIVERY);
+                order.updateStatus(OrderStatus.DELIVERY_COMPLETE);
             }
             redisTemplate.opsForValue()
                 .set(carrierCompany + "_" + carrierTrack, String.valueOf(response));
