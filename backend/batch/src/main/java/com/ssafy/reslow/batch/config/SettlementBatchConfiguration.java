@@ -58,7 +58,6 @@ public class SettlementBatchConfiguration {
 			.build();
 	}
 
-	@JobScope
 	@Bean
 	public Step settlementStep1(){
 		return this.stepBuilderFactory.get(SETTLEMENT_STEP1_NAME)
