@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/chat/chatdetail.dart';
 import 'package:reslow/pages/home/recommend.dart';
+import 'package:reslow/pages/knowhow/knowhowregister.dart';
 import 'package:reslow/pages/market/create_item.dart';
 import 'package:reslow/providers/fcmtoken_provider.dart';
 import 'package:reslow/utils/navigator.dart';
@@ -117,7 +118,10 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
         leftToRightNavigator(const CreateArticle(), context);
         return;
       case 2:
-        Navigator.pushNamed(context, '/knowhow/register').then((value) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => KnowhowRegister()),
+        ).then((value) {
           setState(() {});
         });
         return;

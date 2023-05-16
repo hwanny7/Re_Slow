@@ -53,6 +53,10 @@ class _ChatState extends State<Chat> {
     }
   }
 
+  void _refresh() {
+    _requestRoomList();
+  }
+
   Widget chatList(int index) {
     return InkWell(
         onTap: () {
@@ -61,12 +65,14 @@ class _ChatState extends State<Chat> {
             context,
             MaterialPageRoute(
               builder: (context) => ChatDetail(
-                roomId: content[index]["roomId"],
-                otherPic: content[index]["profilePic"] ?? "",
-                otherNick: content[index]["nickname"],
-              ),
+                  roomId: content[index]["roomId"],
+                  otherPic: content[index]["profilePic"] ?? "",
+                  otherNick: content[index]["nickname"],
+                  refresh: _refresh),
             ),
-          );
+          ).then((res) {
+            _requestRoomList();
+          });
         },
         child: Container(
           margin: const EdgeInsets.all(16),
@@ -86,10 +92,12 @@ class _ChatState extends State<Chat> {
                           ? Image.asset(
                               "assets/image/user.png",
                               width: 50,
+                              height: 50,
                             )
                           : Image.network(
                               content[index]["profilePic"],
                               width: 50,
+                              height: 50,
                             ))),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,12 +147,26 @@ class _ChatState extends State<Chat> {
           height: 1,
           color: const Color(0xffDBDBDB)),
       Expanded(
-          child: ListView.builder(
-        itemCount: content.length,
-        itemBuilder: (context, index) {
-          return chatList(index);
-        },
-      ))
+          child: RefreshIndicator(
+              onRefresh: () async {
+                // Perform the refresh operation here
+                // You can call an API, update data, or perform any other action
+                // Make sure to await any asynchronous operation
+
+                // Example: Simulating a delay of 2 seconds before completing the refresh
+                await Future.delayed(Duration(seconds: 2));
+
+                // Once the refresh operation is completed, update the UI as needed
+                _requestRoomList();
+              },
+              child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(overscroll: false),
+                  child: ListView.builder(
+                    itemCount: content.length,
+                    itemBuilder: (context, index) {
+                      return chatList(index);
+                    },
+                  ))))
     ]);
   }
 }

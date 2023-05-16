@@ -10,8 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class KnowhowRegister extends StatefulWidget {
-  Function func;
-  KnowhowRegister({Key? key, required this.func}) : super(key: key);
+  Function? func;
+  KnowhowRegister({Key? key, this.func}) : super(key: key);
 
   @override
   _KnowhowRegisterState createState() => _KnowhowRegisterState();
@@ -64,14 +64,20 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
     print("token $token");
 
     try {
-      final response = await dio.post(
+      final response = await dio
+          .post(
         'http://k8b306.p.ssafy.io:8080/knowhows/',
         data: formData,
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),
-      ); // Use the appended endpoint
-      Navigator.pop(context);
+      )
+          .then((res) {
+        // Use the appended endpoint
+        Timer(Duration(milliseconds: 500), () {
+          Navigator.pop(context);
+        });
+      });
       // Timer(Duration(milliseconds: 700), () {
       //   Navigator.push(
       //       context, MaterialPageRoute(builder: (context) => KnowHow()));
@@ -327,7 +333,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
             height: 1,
             color: const Color(0xffDBDBDB)),
         Container(
-            child: TextField(
+            child: TextFormField(
           onChanged: (text) {
             setState(() {
               title = text;
