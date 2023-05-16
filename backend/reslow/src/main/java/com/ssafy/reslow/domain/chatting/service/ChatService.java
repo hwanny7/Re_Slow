@@ -27,6 +27,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
 import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
+import com.ssafy.reslow.domain.chatting.dto.MessageType;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
@@ -35,6 +36,10 @@ import com.ssafy.reslow.domain.member.entity.Device;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.notice.entity.Notice;
+import com.ssafy.reslow.domain.notice.repository.NoticeRepository;
+import com.ssafy.reslow.domain.product.entity.Product;
+import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import com.ssafy.reslow.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
@@ -44,14 +49,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 public class ChatService {
+	private final ProductRepository productRepository;
+	private final NoticeRepository noticeRepository;
 	private final DeviceRepository deviceRepository;
+	private final ChatRoomRepository chatRoomRepository;
+	private final ChatMessageRepository chatMessageRepository;
 	private final RedisMessageListenerContainer redisMessageListenerContainer; // 채팅방(topic)에 발행되는 메시지 처리할 Listener
 	private final ChatSubscriber chatSubscriber;
 	private SetOperations<String, Object> setOpsChatRoom;
 	private ValueOperations<String, Object> valueOpsTopicInfo;
-	private final ChatRoomRepository chatRoomRepository;
-	private final ChatMessageRepository chatMessageRepository;
-
 	private final ChatPublisher chatPublisher;
 	private final MemberRepository memberRepository;
 	private final RedisTemplate<String, Object> redisTemplate;
@@ -68,7 +74,6 @@ public class ChatService {
 		String roomId = chatMessage.getRoomId();
 
 		Member receiver = findReceiver(roomId, chatMessage.getSender());
-		System.out.println("보내는사람 찾음: " + receiver.getNickname());
 
 		// 상대방이 소켓에 참여중이라면 publish로 보낸다.
 		if (isUserOnline(roomId, receiver)) {
@@ -83,7 +88,7 @@ public class ChatService {
 
 			System.out.println("소켓이 연결되어 있으므로, publish 수행완료!");
 		}
-		// 상대방이 소켓에 참여중이지 않다면 FCM 알림 보내기
+		// 상대방이 소켓에 참여중이지 않다면
 		else {
 			// 받을사람 Member객체 가져오기
 			Member sender = memberRepository.findById(chatMessage.getSender())
@@ -91,27 +96,37 @@ public class ChatService {
 			Device device = deviceRepository.findByMember(receiver)
 				.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
 
+			// 디바이스 알림 상태가 true일 때 알림 보내기
 			if (device.isNotice()) {
-				System.out.println("알림 보내러 출발!!!!!!");
-				System.out.println("보낸사람: " + sender.getNickname());
-				System.out.println("받는사람: " + receiver.getNickname());
 				FirebaseCloudMessageService.sendMessageTo(
 					FcmMessage.SendChatMessage.of(chatMessage, device.getDeviceToken()),
 					sender);
+
+				// 보낸 알림을 저장한다. 플리마켓 글 제목, 보낸사람 닉네임, 현재시간, 메시지타입
+				String[] roomInfo = roomId.split("-");
+				Long marketNo = Long.parseLong(roomInfo[0]);
+				Product product = productRepository.findById(marketNo)
+					.orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+
+				// 해당 글에대해 상대가 채팅을 보낸 이력이 있다면 보낸 시간만 업데이트한다.
+				Notice notice = noticeRepository.findBySenderAndTitle(sender.getNickname(), product.getTitle())
+					.orElse(Notice.of(sender.getNickname(), product.getTitle(), LocalDateTime.now(),
+						MessageType.CHATTING));
+
+				notice.UpdateNotice(LocalDateTime.now());
+				noticeRepository.save(notice);
 			}
 		}
 	}
 
 	// 유저가 소켓에 참여중인지 체크
 	private boolean isUserOnline(String roomId, Member member) {
-		System.out.println("유저가 온라인인지 체크 시작");
 		// 소켓에 참여중이라면
 		if (Boolean.TRUE.equals(setOpsChatRoom.isMember(roomId, String.valueOf(member.getNo())))) {
-			System.out.println("소켓에 참여중임!!!!!! 그럼 알림 안갈거야~~!!");
+			log.info("상대 유저가 소켓에 참여중");
 			return true;
 		}
 
-		System.out.println("내려왔다면 여기서 나는 오류는 아님..........");
 		return false;
 	}
 

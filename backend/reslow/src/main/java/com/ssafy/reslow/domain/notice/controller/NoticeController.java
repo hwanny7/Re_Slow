@@ -1,14 +1,18 @@
 package com.ssafy.reslow.domain.notice.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.reslow.domain.notice.dto.NoticeResponse;
 import com.ssafy.reslow.domain.notice.dto.NoticeStatusRequest;
 import com.ssafy.reslow.domain.notice.service.NoticeService;
 
@@ -32,5 +36,11 @@ public class NoticeController {
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("alert", request.isAlert());
 		return response;
+	}
+
+	@GetMapping
+	public List<NoticeResponse> getNoticeList(Authentication authentication, Pageable pageable) {
+		Long memberNo = Long.parseLong(authentication.getName());
+		return noticeService.getNoticeList(memberNo, pageable);
 	}
 }

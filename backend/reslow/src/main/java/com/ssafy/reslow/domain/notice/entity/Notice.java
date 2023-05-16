@@ -36,8 +36,11 @@ public class Notice {
 	@Column(name = "NOTICE_PK")
 	private Long no;
 
+	@Column(name = "SENDER_NIK")
+	private String sender;
+
 	@Column(name = "CONTENT")
-	private String content;
+	private String title;
 
 	@Column(name = "NOTICE_DT", updatable = false)
 	@CreatedDate
@@ -50,4 +53,17 @@ public class Notice {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MEMBER_PK")
 	private Member member;
+
+	public static Notice of(String senderNickname, String title, LocalDateTime sendTime, MessageType type) {
+		return Notice.builder()
+			.sender(senderNickname)
+			.title(title)
+			.alertTime(sendTime)
+			.type(type)
+			.build();
+	}
+
+	public void UpdateNotice(LocalDateTime sendTime) {
+		this.alertTime = sendTime;
+	}
 }
