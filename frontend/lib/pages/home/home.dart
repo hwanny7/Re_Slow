@@ -1,16 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:reslow/pages/knowhow/knowhowdetail.dart';
-import 'package:reslow/providers/auth_provider.dart';
-import 'package:reslow/providers/socket_provider.dart';
-import 'package:reslow/widgets/common/profile_small.dart';
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:reslow/utils/date.dart';
+import 'package:reslow/pages/market/item_detail.dart';
 import 'coupondownload.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:dio/dio.dart';
 import 'package:reslow/utils/dio_client.dart';
-import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:reslow/models/recommend.dart';
 
 class Home extends StatefulWidget {
@@ -152,16 +148,27 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: Text(
-                  content.title,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ),
+              InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                KnowHowDetail(knowhowNo: content.knowhowNo)));
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: Text(
+                      content.title,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  )),
               Row(
                 children: [
                   ClipRRect(
@@ -223,118 +230,143 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Widget RCM2(Recommend2 content) {
-    return Container(
-      margin: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: content.image == null
-                  ? Image.asset(
-                      "assets/image/spin.gif",
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    )
-                  : Container(
-                      width: 140,
-                      height: 140,
-                      child: FadeInImage.assetNetwork(
-                        placeholder: "assets/image/spin.gif",
-                        image: content.image,
-                        fit: BoxFit.cover,
-                      ),
-                    )),
-          SizedBox(height: 8),
-          Text(
-            content.title,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 4),
-          // Text(
-          //   "Product Title 1",
-          //   style: TextStyle(fontSize: 12),
-          // ),
-          SizedBox(height: 4),
-          Text(
-            "${content.price.toString()} 원",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 4),
-          Row(
+    return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ItemDetail(itemPk: content.productNo)));
+        },
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.favorite_border,
-                color: Colors.grey,
-                size: 16,
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: content.image == null
+                      ? Image.asset(
+                          "assets/image/spin.gif",
+                          width: 140,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: 140,
+                          height: 140,
+                          child: FadeInImage.assetNetwork(
+                            placeholder: "assets/image/spin.gif",
+                            image: content.image,
+                            fit: BoxFit.cover,
+                          ),
+                        )),
+              SizedBox(height: 8),
+              Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                  width: 140,
+                  child: Text(
+                    content.title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  )),
+              SizedBox(height: 4),
+              // Text(
+              //   "Product Title 1",
+              //   style: TextStyle(fontSize: 12),
+              // ),
+              SizedBox(height: 4),
+              Text(
+                " ${priceDot(content.price)}",
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
               ),
-              SizedBox(width: 4),
-              Text(content.heartCount.toString()),
+              SizedBox(height: 4),
+              Row(
+                children: [
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                      child: Icon(
+                        Icons.favorite_border,
+                        color: Colors.grey,
+                        size: 16,
+                      )),
+                  SizedBox(width: 4),
+                  Text(content.heartCount.toString()),
+                ],
+              ),
             ],
           ),
-        ],
-      ),
-    );
+        ));
   }
 
   Widget RCM3(Recommend3 content) {
-    return Row(
-      children: [
-        Container(
-            margin: const EdgeInsets.all(8),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: content.image == null
-                  ? Image.asset(
-                      "assets/image/spin.gif",
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    )
-                  : Container(
-                      width: 80,
-                      height: 80,
-                      child: FadeInImage.assetNetwork(
-                        placeholder: "assets/image/spin.gif",
-                        image: content.image,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-            )),
-        SizedBox(width: 16),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ItemDetail(itemPk: content.productNo)));
+        },
+        child: Row(
           children: [
-            Text(
-              content.title,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            // Text(
-            //   "Title",
-            //   style: TextStyle(fontSize: 14),
-            // ),
-            // const SizedBox(height: 8),
-            Text(
-              "${content.price.toString()} 원",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Row(
+            Container(
+                margin: const EdgeInsets.all(8),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: content.image == null
+                      ? Image.asset(
+                          "assets/image/spin.gif",
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: 80,
+                          height: 80,
+                          child: FadeInImage.assetNetwork(
+                            placeholder: "assets/image/spin.gif",
+                            image: content.image,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                )),
+            SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.favorite_border, size: 16),
-                const SizedBox(width: 4),
-                Text(content.heartCount.toString(),
-                    style: TextStyle(fontSize: 14)),
+                Container(
+                    margin: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: Text(
+                      content.title,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    )),
+                const SizedBox(height: 8),
+                // Text(
+                //   "Title",
+                //   style: TextStyle(fontSize: 14),
+                // ),
+                // const SizedBox(height: 8),
+                Text(
+                  "${priceDot(content.price)}",
+                  style: TextStyle(fontWeight: FontWeight.w900),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.favorite_border, size: 16),
+                    const SizedBox(width: 4),
+                    Text(content.heartCount.toString(),
+                        style: TextStyle(fontSize: 14)),
+                  ],
+                ),
               ],
             ),
           ],
-        ),
-      ],
-    );
+        ));
   }
 
   @override

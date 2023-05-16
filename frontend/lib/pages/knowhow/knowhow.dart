@@ -132,8 +132,10 @@ class _KnowHowState extends State<KnowHow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
+          setState(() {
+            itemList[index].likeCnt = value.data["count"];
+          });
           print(value);
-          _requestKnowhow(false);
         });
       } else {
         final token = await _getTokenFromSharedPreferences();
@@ -144,8 +146,10 @@ class _KnowHowState extends State<KnowHow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
+          setState(() {
+            itemList[index].likeCnt = value.data["count"];
+          });
           print(value);
-          _requestKnowhow(false);
         });
       }
     } on DioError catch (e) {

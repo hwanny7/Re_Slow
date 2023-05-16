@@ -132,6 +132,7 @@ class _ProfileState extends State<Profile> {
                 const SizedBox(height: 16),
                 // konw-how-started
                 Container(
+                  margin: EdgeInsets.fromLTRB(0, 8, 0, 0),
                   padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   child: Text(
                     '노하우',

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/models/knowhow_item.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
@@ -20,28 +21,74 @@ int _selectedindex = -1;
 
 class _MylikeknowhowState extends State<Mylikeknowhow> {
   Dio dio = Dio();
+  List<KnowhowItem> content = [];
+  bool myknowhowisLoading = false;
+  bool myknowhowisLast = false;
+  int mylikeknowhowpage = 0;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     // TODO: implement initState
-    _requestMyLikeKnowhow();
+    _requestMyLikeKnowhow(false);
+    _scrollController.addListener(_scrollListener);
     super.initState();
   }
 
-  void _requestMyLikeKnowhow() async {
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.removeListener(_scrollListener);
+  }
+
+  void _scrollListener() async {
+    if (_scrollController.position != null &&
+        _scrollController.position.pixels >
+            _scrollController.position.maxScrollExtent * 0.8 &&
+        !myknowhowisLast &&
+        !myknowhowisLoading) {
+      myknowhowisLoading = true;
+      mylikeknowhowpage += 1;
+      await _requestMyLikeKnowhow(true);
+      myknowhowisLoading = false;
+    }
+  }
+
+  Future<void> _requestMyLikeKnowhow(bool isInfinite) async {
     try {
+      if (!isInfinite) {
+        mylikeknowhowpage = 0;
+        myknowhowisLast = false;
+      }
       final token = await _getTokenFromSharedPreferences();
       print("token $token");
       await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/likes/',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
           }),
-          queryParameters: {"page": 0, "size": 4}).then(
+          queryParameters: {"page": mylikeknowhowpage, "size": 4}).then(
         (value) {
-          print("여기${value.data}");
-          setState(() {
-            content = value.data["content"];
-          });
+          print(value);
+          List<dynamic> jsonData = value.data["content"];
+          // print(jsonData);
+          if (isInfinite) {
+            if (jsonData.isEmpty) {
+              myknowhowisLast = true;
+              print('empty');
+            } else {
+              setState(() {
+                content.addAll(List<KnowhowItem>.from(jsonData
+                    .map((itemJson) => KnowhowItem.fromJson(itemJson))));
+                // 높이를 처음으로 변경하기
+              });
+            }
+          } else {
+            _scrollController.jumpTo(0);
+            setState(() {
+              content = List<KnowhowItem>.from(
+                  jsonData.map((itemJson) => KnowhowItem.fromJson(itemJson)));
+            });
+          }
         },
       );
     } on DioError catch (e) {
@@ -66,7 +113,9 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          _requestMyLikeKnowhow();
+          setState(() {
+            content[index].likeCnt = value.data["count"];
+          });
         });
         print(response);
       } else {
@@ -78,7 +127,9 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                   'Authorization': 'Bearer $token',
                 }))
             .then((value) {
-          _requestMyLikeKnowhow();
+          setState(() {
+            content[index].likeCnt = value.data["count"];
+          });
         });
         print(response);
       }
@@ -101,6 +152,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                   color: const Color(0xffDBDBDB)),
               Expanded(
                   child: ListView.builder(
+                      controller: _scrollController,
                       itemCount: content.length,
                       itemBuilder: (context, index) {
                         return Column(
@@ -112,8 +164,8 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     ProfileSmall(
-                                        url: content[index]["profilePic"],
-                                        name: content[index]["writer"]),
+                                        url: content[index].profile,
+                                        name: content[index].writer),
                                     Image.asset(
                                       "assets/image/share.png",
                                       width: 24,
@@ -130,8 +182,8 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => KnowHowDetail(
-                                              knowhowNo: content[index]
-                                                  ["knowhowNo"]),
+                                              knowhowNo:
+                                                  content[index].knowhowNo),
                                         ),
                                       )
                                     },
@@ -143,10 +195,10 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                           child: Column(children: [
                                         Center(
                                             child: KnowHowGrid(
-                                                images: content[index]
-                                                    ["pictureList"],
-                                                imageLTH: content[index]
-                                                    ["pictureCnt"]))
+                                                images:
+                                                    content[index].pictureList,
+                                                imageLTH:
+                                                    content[index].pictureCnt))
                                       ]))),
                                   Container(
                                       margin: const EdgeInsets.all(16),
@@ -160,7 +212,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                                         .width *
                                                     0.6,
                                                 child: Text(
-                                                  content[index]["title"],
+                                                  content[index].title,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: const TextStyle(
@@ -173,15 +225,14 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                                 InkWell(
                                                     onTap: () {
                                                       setState(() {
-                                                        content[index]["like"] =
+                                                        content[index].like =
                                                             !content[index]
-                                                                ["like"];
+                                                                .like;
                                                       });
                                                       _requestKnowhowLike(
                                                           content[index]
-                                                              ["knowhowNo"],
-                                                          content[index]
-                                                              ["like"],
+                                                              .knowhowNo,
+                                                          content[index].like,
                                                           index);
                                                     },
                                                     child: Row(children: [
@@ -191,15 +242,15 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                                                       .fromLTRB(
                                                                   8, 0, 8, 0),
                                                           child: Image.asset(
-                                                            (content[index][
-                                                                        "like"] ??
+                                                            (content[index]
+                                                                        .like ??
                                                                     false)
                                                                 ? "assets/image/full_heart.png"
                                                                 : "assets/image/heart.png",
                                                             width: 24,
                                                           )),
                                                       Text(
-                                                        "${content[index]["likeCnt"]}",
+                                                        "${content[index].likeCnt}",
                                                         style: const TextStyle(
                                                             fontSize: 18),
                                                       )
@@ -217,8 +268,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                                                   Knowhowcomment(
                                                                       knowhowid:
                                                                           content[index]
-                                                                              [
-                                                                              "knowhowNo"]),
+                                                                              .knowhowNo),
                                                             ),
                                                           )
                                                         },
@@ -233,7 +283,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
                                                             width: 24,
                                                           )),
                                                       Text(
-                                                        "${content[index]["commentCnt"]}",
+                                                        "${content[index].commentCnt}",
                                                         style: const TextStyle(
                                                             fontSize: 18),
                                                       )

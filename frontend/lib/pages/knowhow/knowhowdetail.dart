@@ -79,7 +79,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
                     children: [
                       ProfileSmall(
                           url: content["profilePic"],
-                          name: content["writer"] ?? "Error!!!"),
+                          name: content["writer"] ?? ""),
                       Container(
                           margin: const EdgeInsets.fromLTRB(0, 0, 16, 0),
                           child: Text(
