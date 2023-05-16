@@ -156,7 +156,7 @@ public class MemberService {
         return map;
     }
 
-    public Map<String, Long> updateProfile(Long memberNo, MultipartFile file) throws IOException {
+    public Map<String, String> updateProfile(Long memberNo, MultipartFile file) throws IOException {
         Member member = memberRepository.findById(memberNo)
             .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         String imageUrl = DEFAULT_IMAGE_S3;
@@ -169,8 +169,8 @@ public class MemberService {
         }
         member.updateProfilePic(imageUrl);
         memberRepository.save(member);
-        Map<String, Long> map = new HashMap<>();
-        map.put("memberNo", memberNo);
+        Map<String, String> map = new HashMap<>();
+        map.put("memberNo", imageUrl);
         return map;
     }
 
@@ -259,12 +259,14 @@ public class MemberService {
             ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
             List<ProductCategory> productCategories = productCategoryRepository.findAll();
             productCategories.forEach((productCategory -> {
-                zSetOperations.add("product_" + member.getNo(), String.valueOf(productCategory.getNo()),
+                zSetOperations.add("product_" + member.getNo(),
+                    String.valueOf(productCategory.getNo()),
                     0);
             }));
             List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
             knowhowCategoryies.forEach((knowhowCategory -> {
-                zSetOperations.add("knowhow_" + member.getNo(), String.valueOf(knowhowCategory.getNo()),
+                zSetOperations.add("knowhow_" + member.getNo(),
+                    String.valueOf(knowhowCategory.getNo()),
                     0);
             }));
         }));
