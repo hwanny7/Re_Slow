@@ -27,10 +27,10 @@ public class FirebaseCloudMessageService {
 	private static final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	public static void sendMessageTo(FcmMessage.SendMessage sendMessage, Member member) throws
+	public static void sendMessageTo(FcmMessage.SendChatMessage sendMessage, Member member) throws
 		IOException,
 		FirebaseMessagingException {
-		String message = makeMessage(sendMessage, member);
+		String message = makeChatMessage(sendMessage, member);
 
 		System.out.println("보내는 메시지 : " + message);
 
@@ -48,7 +48,32 @@ public class FirebaseCloudMessageService {
 		System.out.println("결과 : " + response);
 	}
 
-	public static String makeMessage(FcmMessage.SendMessage sendMessage, Member member) throws
+	public static String makeChatMessage(FcmMessage.SendChatMessage sendMessage, Member member) throws
+		JsonProcessingException,
+		FirebaseMessagingException {
+		FcmMessage fcmMessage = FcmMessage.builder()
+			.message(FcmMessage.Message.builder()
+				.token(sendMessage.getTargetToken())
+				.notification(FcmMessage.Notification.builder()
+					.title(member.getNickname())
+					.body(sendMessage.getBody())
+					.build()
+				)
+				.data(FcmMessage.Data.builder()
+					.roomId(sendMessage.getRoomId())
+					.type(sendMessage.getType())
+					.senderNickname(member.getNickname())
+					.senderProfilePic(member.getProfilePic())
+					.build())
+				.build()
+			)
+			.validate_only(false)
+			.build();
+
+		return objectMapper.writeValueAsString(fcmMessage);
+	}
+
+	public static String makeCommentMessage(FcmMessage.SendChatMessage sendMessage, Member member) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
 		FcmMessage fcmMessage = FcmMessage.builder()
