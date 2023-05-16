@@ -154,23 +154,23 @@ public class MemberService {
 		return map;
 	}
 
-	public Map<String, Long> updateProfile(Long memberNo, MultipartFile file) throws IOException {
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		String imageUrl = DEFAULT_IMAGE_S3;
-		if (!file.isEmpty()) {
-			String preImg = member.getProfilePic();
-			s3Service.deleteFile(preImg);
-			imageUrl = s3Service.uploadFile(file);
-		} else {
-			imageUrl = member.getProfilePic();
-		}
-		member.updateProfilePic(imageUrl);
-		memberRepository.save(member);
-		Map<String, Long> map = new HashMap<>();
-		map.put("memberNo", memberNo);
-		return map;
-	}
+    public Map<String, String> updateProfile(Long memberNo, MultipartFile file) throws IOException {
+        Member member = memberRepository.findById(memberNo)
+            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+        String imageUrl = DEFAULT_IMAGE_S3;
+        if (!file.isEmpty()) {
+            String preImg = member.getProfilePic();
+            s3Service.deleteFile(preImg);
+            imageUrl = s3Service.uploadFile(file);
+        } else {
+            imageUrl = member.getProfilePic();
+        }
+        member.updateProfilePic(imageUrl);
+        memberRepository.save(member);
+        Map<String, String> map = new HashMap<>();
+        map.put("profileImg", imageUrl);
+        return map;
+    }
 
 	public MemberAddressResponse userAddress(Long memberNo) {
 		Member member = memberRepository.findById(memberNo)
@@ -253,19 +253,21 @@ public class MemberService {
 	public String redisSetting() {
 		List<Member> list = memberRepository.findAll();
 
-		list.forEach((member -> {
-			ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
-			List<ProductCategory> productCategories = productCategoryRepository.findAll();
-			productCategories.forEach((productCategory -> {
-				zSetOperations.add("product_" + member.getNo(), String.valueOf(productCategory.getNo()),
-					0);
-			}));
-			List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
-			knowhowCategoryies.forEach((knowhowCategory -> {
-				zSetOperations.add("knowhow_" + member.getNo(), String.valueOf(knowhowCategory.getNo()),
-					0);
-			}));
-		}));
-		return "OK";
-	}
+        list.forEach((member -> {
+            ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+            List<ProductCategory> productCategories = productCategoryRepository.findAll();
+            productCategories.forEach((productCategory -> {
+                zSetOperations.add("product_" + member.getNo(),
+                    String.valueOf(productCategory.getNo()),
+                    0);
+            }));
+            List<KnowhowCategory> knowhowCategoryies = knowhowCategoryRepository.findAll();
+            knowhowCategoryies.forEach((knowhowCategory -> {
+                zSetOperations.add("knowhow_" + member.getNo(),
+                    String.valueOf(knowhowCategory.getNo()),
+                    0);
+            }));
+        }));
+        return "OK";
+    }
 }

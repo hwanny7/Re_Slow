@@ -86,7 +86,7 @@ public class MemberController {
     }
 
     @PostMapping("/profile")
-    public Map<String, Long> updateProfile(Authentication authentication,
+    public Map<String, String> updateProfile(Authentication authentication,
         @RequestPart("file") MultipartFile file) throws IOException {
         Long memberNo = Long.parseLong(authentication.getName());
         return memberService.updateProfile(memberNo, file);
