@@ -1,4 +1,6 @@
-package com.ssafy.reslow.domain.chatting.dto;
+package com.ssafy.reslow.global.common.FCM.dto;
+
+import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +9,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @Getter
-public class FcmMessage {
+public class ChatFcmMessage {
 	private boolean validate_only;
 	private Message message;
 
@@ -65,18 +67,21 @@ public class FcmMessage {
 	@Getter
 	public static class SendCommentMessage {
 		String targetToken;
-		String title;
-		String body;
-		String knowhowNo;
+		String title; // 글 제목
+		String nickname; // 댓글 단 사람 닉네임
+		String content; // 댓글 내용
+		Long knowhowNo;
 		MessageType type;
 
-		public static SendCommentMessage of(ChatMessageRequest request, String token) {
+		public static SendCommentMessage of(String token, String title, String content, Long knowhowNo,
+			String senderNickname) {
 			return SendCommentMessage.builder()
 				.targetToken(token)
-				.title(null)
-				.body(request.getMessage())
-				.knowhowNo(request.getRoomId())
-				.type(MessageType.CHATTING)
+				.title(title)
+				.content(content)
+				.nickname(senderNickname)
+				.knowhowNo(knowhowNo)
+				.type(MessageType.COMMENT)
 				.build();
 		}
 	}

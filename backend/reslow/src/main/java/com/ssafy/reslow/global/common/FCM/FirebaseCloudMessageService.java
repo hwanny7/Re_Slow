@@ -1,4 +1,4 @@
-package com.ssafy.reslow.domain.chatting.service;
+package com.ssafy.reslow.global.common.FCM;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,8 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.messaging.FirebaseMessagingException;
-import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
 import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.global.common.FCM.dto.ChatFcmMessage;
 
 import lombok.RequiredArgsConstructor;
 import okhttp3.MediaType;
@@ -27,7 +27,7 @@ public class FirebaseCloudMessageService {
 	private static final String API_URL = "https://fcm.googleapis.com/v1/projects/reslow-ce26b/messages:send";
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	public static void sendMessageTo(FcmMessage.SendChatMessage sendMessage, Member member) throws
+	public static void sendChatMessageTo(ChatFcmMessage.SendChatMessage sendMessage, Member member) throws
 		IOException,
 		FirebaseMessagingException {
 		String message = makeChatMessage(sendMessage, member);
@@ -48,18 +48,39 @@ public class FirebaseCloudMessageService {
 		System.out.println("결과 : " + response);
 	}
 
-	public static String makeChatMessage(FcmMessage.SendChatMessage sendMessage, Member member) throws
+	public static void sendCommentMessageTo(ChatFcmMessage.SendCommentMessage sendMessage) throws
+		IOException,
+		FirebaseMessagingException {
+		String message = makeCommentMessage(sendMessage);
+
+		System.out.println("보내는 메시지 : " + message);
+
+		OkHttpClient client = new OkHttpClient();
+		RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));
+		Request request = new Request.Builder()
+			.url(API_URL)
+			.post(requestBody)
+			.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+			.addHeader(HttpHeaders.CONTENT_TYPE, "application/json; UTF-8")
+			.build();
+
+		Response response = client.newCall(request).execute();
+
+		System.out.println("결과 : " + response);
+	}
+
+	public static String makeChatMessage(ChatFcmMessage.SendChatMessage sendMessage, Member member) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
-		FcmMessage fcmMessage = FcmMessage.builder()
-			.message(FcmMessage.Message.builder()
+		ChatFcmMessage fcmMessage = ChatFcmMessage.builder()
+			.message(ChatFcmMessage.Message.builder()
 				.token(sendMessage.getTargetToken())
-				.notification(FcmMessage.Notification.builder()
+				.notification(ChatFcmMessage.Notification.builder()
 					.title(member.getNickname())
 					.body(sendMessage.getBody())
 					.build()
 				)
-				.data(FcmMessage.Data.builder()
+				.data(ChatFcmMessage.Data.builder()
 					.roomId(sendMessage.getRoomId())
 					.type(sendMessage.getType())
 					.senderNickname(member.getNickname())
@@ -73,22 +94,21 @@ public class FirebaseCloudMessageService {
 		return objectMapper.writeValueAsString(fcmMessage);
 	}
 
-	public static String makeCommentMessage(FcmMessage.SendChatMessage sendMessage, Member member) throws
+	public static String makeCommentMessage(ChatFcmMessage.SendCommentMessage sendMessage) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
-		FcmMessage fcmMessage = FcmMessage.builder()
-			.message(FcmMessage.Message.builder()
+		ChatFcmMessage fcmMessage = ChatFcmMessage.builder()
+			.message(ChatFcmMessage.Message.builder()
 				.token(sendMessage.getTargetToken())
-				.notification(FcmMessage.Notification.builder()
-					.title(member.getNickname())
-					.body(sendMessage.getBody())
+				.notification(ChatFcmMessage.Notification.builder()
+					.title(sendMessage.getTitle())
+					.body(sendMessage.getContent())
 					.build()
 				)
-				.data(FcmMessage.Data.builder()
-					.roomId(sendMessage.getRoomId())
+				.data(ChatFcmMessage.Data.builder()
+					.roomId(String.valueOf(sendMessage.getKnowhowNo()))
 					.type(sendMessage.getType())
-					.senderNickname(member.getNickname())
-					.senderProfilePic(member.getProfilePic())
+					.senderNickname(sendMessage.getNickname())
 					.build())
 				.build()
 			)

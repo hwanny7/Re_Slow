@@ -1,5 +1,6 @@
 package com.ssafy.reslow.domain.knowhow.controller;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowCommentCreateRequest;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowCommentResponse;
 import com.ssafy.reslow.domain.knowhow.dto.KnowhowCommentUpdateRequest;
@@ -42,7 +44,7 @@ public class KnowhowCommentController {
 	public Map<String, Object> createComment(
 		Authentication authentication,
 		@RequestBody KnowhowCommentCreateRequest request
-	) {
+	) throws IOException, FirebaseMessagingException {
 		UserDetails principal = (UserDetails)authentication.getPrincipal();
 		Long memberNo = Long.parseLong(principal.getUsername());
 		return commentService.createComment(memberNo, request);

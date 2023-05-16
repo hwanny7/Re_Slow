@@ -1,13 +1,11 @@
 package com.ssafy.reslow.domain.chatting.controller;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,20 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
-import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
-import com.ssafy.reslow.domain.chatting.dto.FcmRequest;
-import com.ssafy.reslow.domain.chatting.dto.MessageType;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
 import com.ssafy.reslow.domain.chatting.service.ChatService;
-import com.ssafy.reslow.domain.chatting.service.FirebaseCloudMessageService;
-import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
 import com.ssafy.reslow.domain.member.service.MemberService;
-import com.ssafy.reslow.global.exception.CustomException;
-import com.ssafy.reslow.global.exception.ErrorCode;
+import com.ssafy.reslow.global.common.FCM.FirebaseCloudMessageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -132,28 +123,28 @@ public class ChatController {
 		return memberService.deleteDeviceToken(memberNo, token.get("token"));
 	}
 
-	@PostMapping("/api/fcm")
-	public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO, Authentication authentication) throws
-		IOException,
-		FirebaseMessagingException {
-
-		Long memberNo = Long.parseLong(authentication.getName());
-		Member member = memberRepository.findById(memberNo)
-			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-
-		System.out.println("데이터는 안갈거니?????????????????");
-		System.out.println(requestDTO.getRoomId());
-		firebaseCloudMessageService.sendMessageTo(FcmMessage.SendChatMessage.builder()
-			.targetToken(
-				requestDTO.getTargetToken())
-			.title(requestDTO.getTitle())
-			.body(requestDTO.getBody())
-			.type(MessageType.CHATTING)
-			.roomId(
-				requestDTO.getRoomId())
-			.build(), member);
-		return ResponseEntity.ok().build();
-	}
+	// @PostMapping("/api/fcm")
+	// public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO, Authentication authentication) throws
+	// 	IOException,
+	// 	FirebaseMessagingException {
+	//
+	// 	Long memberNo = Long.parseLong(authentication.getName());
+	// 	Member member = memberRepository.findById(memberNo)
+	// 		.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+	//
+	// 	System.out.println("데이터는 안갈거니?????????????????");
+	// 	System.out.println(requestDTO.getRoomId());
+	// 	firebaseCloudMessageService.sendMessageTo(FcmMessage.SendChatMessage.builder()
+	// 		.targetToken(
+	// 			requestDTO.getTargetToken())
+	// 		.title(requestDTO.getTitle())
+	// 		.body(requestDTO.getBody())
+	// 		.type(MessageType.CHATTING)
+	// 		.roomId(
+	// 			requestDTO.getRoomId())
+	// 		.build(), member);
+	// 	return ResponseEntity.ok().build();
+	// }
 
 	// 존재하는 채팅방인지 확인
 	@GetMapping("/check/{roomId}")
