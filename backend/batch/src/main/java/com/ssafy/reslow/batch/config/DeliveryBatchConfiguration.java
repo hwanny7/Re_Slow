@@ -22,7 +22,6 @@ import org.springframework.batch.item.data.builder.RepositoryItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.core.RedisTemplate;
 
 @Slf4j
 @Configuration
@@ -33,7 +32,6 @@ public class DeliveryBatchConfiguration {
     final public JobBuilderFactory jobBuilderFactory;
     final public StepBuilderFactory stepBuilderFactory;
     final private OrderRepository orderRepository;
-    private final RedisTemplate redisTemplate;
     private final DeliveryService deliveryService;
 
     private static final int CHUNK_SIZE = 10;
@@ -140,8 +138,6 @@ public class DeliveryBatchConfiguration {
             if (jsonObject.get("completeYN").equals("Y")) {
                 order.updateStatus(OrderStatus.DELIVERY_COMPLETE);
             }
-            redisTemplate.opsForValue()
-                .set(carrierCompany + "_" + carrierTrack, String.valueOf(response));
         });
     }
 }
