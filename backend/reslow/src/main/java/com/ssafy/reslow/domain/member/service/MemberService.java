@@ -170,7 +170,7 @@ public class MemberService {
         member.updateProfilePic(imageUrl);
         memberRepository.save(member);
         Map<String, String> map = new HashMap<>();
-        map.put("memberNo", imageUrl);
+        map.put("profileImg", imageUrl);
         return map;
     }
 
