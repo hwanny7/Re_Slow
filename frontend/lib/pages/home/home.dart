@@ -161,7 +161,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                                 KnowHowDetail(knowhowNo: content.knowhowNo)));
                   },
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.7,
+                    width: MediaQuery.of(context).size.width * 0.64,
                     child: Text(
                       content.title,
                       overflow: TextOverflow.ellipsis,
@@ -170,6 +170,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     ),
                   )),
               Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ClipRRect(
                       borderRadius: BorderRadius.circular(50.0),
@@ -190,10 +191,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                               ),
                             )),
                   SizedBox(width: 8),
-                  Text(
-                    content.writer,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.12,
+                    margin: const EdgeInsets.fromLTRB(2, 0, 0, 0),
+                    child: Text(
+                      content.writer,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  )
                 ],
               ),
             ],

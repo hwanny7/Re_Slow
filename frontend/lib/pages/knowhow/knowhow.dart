@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:reslow/models/knowhow_item.dart';
 import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/pages/knowhow/knowhowdetail.dart';
+import 'package:reslow/utils/navigator.dart';
 import 'package:reslow/widgets/common/profile_small.dart';
 import 'package:reslow/widgets/knowhow/knowhow_grid.dart';
 import 'package:reslow/widgets/common/search_bar.dart';
@@ -66,6 +67,10 @@ class _KnowHowState extends State<KnowHow> {
       await _requestKnowhow(true);
       knowhowisLoading = false;
     }
+  }
+
+  void _refresh() async {
+    setState(() {});
   }
 
   Future<void> _requestKnowhow(bool isInfinite) async {
@@ -170,143 +175,172 @@ class _KnowHowState extends State<KnowHow> {
         initNumber: knowhowcategory,
       ),
       Expanded(
-          child: ListView.builder(
-              controller: _scrollController,
-              itemCount: itemList.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Container(
-                        margin: const EdgeInsets.fromLTRB(4, 0, 16, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: RefreshIndicator(
+              onRefresh: () async {
+                // Perform the refresh operation here
+                // You can call an API, update data, or perform any other action
+                // Make sure to await any asynchronous operation
+
+                // Example: Simulating a delay of 2 seconds before completing the refresh
+                await Future.delayed(Duration(seconds: 2));
+
+                // Once the refresh operation is completed, update the UI as needed
+                _requestKnowhow(false);
+              },
+              child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(overscroll: false),
+                  child: ListView.builder(
+                      controller: _scrollController,
+                      itemCount: itemList.length,
+                      itemBuilder: (context, index) {
+                        return Column(
                           children: [
-                            ProfileSmall(
-                                url: itemList[index].profile,
-                                name: itemList[index].writer),
-                            Image.asset(
-                              "assets/image/share.png",
-                              width: 24,
-                            )
-                          ],
-                        )),
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 1,
-                        color: const Color(0xffDBDBDB)),
-                    InkWell(
-                        onTap: () => {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => KnowHowDetail(
-                                      knowhowNo: itemList[index].knowhowNo),
-                                ),
-                              )
-                            },
-                        child: Column(children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: const EdgeInsets.all(0),
-                              child: Center(
-                                  child: Column(children: [
-                                Center(
-                                    child: KnowHowGrid(
-                                  images: itemList[index].pictureList,
-                                  imageLTH: itemList[index].pictureCnt,
-                                ))
-                              ]))),
-                          Container(
-                              margin: const EdgeInsets.all(16),
-                              child: Row(
+                            Container(
+                                margin: const EdgeInsets.fromLTRB(4, 0, 16, 0),
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.6,
-                                        child: Text(
-                                          itemList[index].title,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        )),
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                            onTap: () {
-                                              setState(() {
-                                                itemList[index].like =
-                                                    !itemList[index].like;
-                                              });
-                                              _requestKnowhowLike(
-                                                  itemList[index].knowhowNo,
-                                                  itemList[index].like,
-                                                  index);
-                                            },
-                                            child: Row(children: [
-                                              Container(
-                                                  margin:
-                                                      const EdgeInsets.fromLTRB(
-                                                          8, 0, 8, 0),
-                                                  child: Image.asset(
-                                                    (itemList[index].like ??
-                                                            false)
-                                                        ? "assets/image/full_heart.png"
-                                                        : "assets/image/heart.png",
-                                                    width: 24,
-                                                  )),
-                                              Text(
-                                                "${itemList[index].likeCnt}",
-                                                style: const TextStyle(
-                                                    fontSize: 18),
-                                              )
-                                            ])),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        InkWell(
-                                            onTap: () => {
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Knowhowcomment(
-                                                              knowhowid: itemList[
-                                                                      index]
-                                                                  .knowhowNo),
-                                                    ),
-                                                  )
-                                                },
-                                            child: Row(children: [
-                                              Container(
-                                                  margin:
-                                                      const EdgeInsets.fromLTRB(
-                                                          8, 0, 8, 0),
-                                                  child: Image.asset(
-                                                    "assets/image/comment.png",
-                                                    width: 24,
-                                                  )),
-                                              Text(
-                                                "${itemList[index].commentCnt}",
-                                                style: const TextStyle(
-                                                    fontSize: 18),
-                                              )
-                                            ])),
-                                      ],
+                                    ProfileSmall(
+                                        url: itemList[index].profile,
+                                        name: itemList[index].writer),
+                                    Image.asset(
+                                      "assets/image/share.png",
+                                      width: 24,
                                     )
-                                  ])),
-                        ])),
-                    Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 8,
-                        color: const Color(0xffDBDBDB)),
-                  ],
-                );
-              })),
+                                  ],
+                                )),
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 1,
+                                color: const Color(0xffDBDBDB)),
+                            InkWell(
+                                onTap: () => {
+                                      // leftToRightNavigator(
+                                      //     KnowHowDetail(
+                                      //         knowhowNo:
+                                      //             itemList[index].knowhowNo),
+                                      //     context)
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => KnowHowDetail(
+                                              knowhowNo:
+                                                  itemList[index].knowhowNo),
+                                        ),
+                                      )
+                                    },
+                                child: Column(children: [
+                                  Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: const EdgeInsets.all(0),
+                                      child: Center(
+                                          child: Column(children: [
+                                        Center(
+                                            child: KnowHowGrid(
+                                          images: itemList[index].pictureList,
+                                          imageLTH: itemList[index].pictureCnt,
+                                        ))
+                                      ]))),
+                                  Container(
+                                      margin: const EdgeInsets.all(16),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.6,
+                                                child: Text(
+                                                  itemList[index].title,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                            Row(
+                                              children: [
+                                                InkWell(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        itemList[index].like =
+                                                            !itemList[index]
+                                                                .like;
+                                                      });
+                                                      _requestKnowhowLike(
+                                                          itemList[index]
+                                                              .knowhowNo,
+                                                          itemList[index].like,
+                                                          index);
+                                                    },
+                                                    child: Row(children: [
+                                                      Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .fromLTRB(
+                                                                  8, 0, 8, 0),
+                                                          child: Image.asset(
+                                                            (itemList[index]
+                                                                        .like ??
+                                                                    false)
+                                                                ? "assets/image/full_heart.png"
+                                                                : "assets/image/heart.png",
+                                                            width: 24,
+                                                          )),
+                                                      Text(
+                                                        "${itemList[index].likeCnt}",
+                                                        style: const TextStyle(
+                                                            fontSize: 18),
+                                                      )
+                                                    ])),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                InkWell(
+                                                    onTap: () => {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  Knowhowcomment(
+                                                                      knowhowid:
+                                                                          itemList[index]
+                                                                              .knowhowNo),
+                                                            ),
+                                                          )
+                                                        },
+                                                    child: Row(children: [
+                                                      Container(
+                                                          margin:
+                                                              const EdgeInsets
+                                                                      .fromLTRB(
+                                                                  8, 0, 8, 0),
+                                                          child: Image.asset(
+                                                            "assets/image/comment.png",
+                                                            width: 24,
+                                                          )),
+                                                      Text(
+                                                        "${itemList[index].commentCnt}",
+                                                        style: const TextStyle(
+                                                            fontSize: 18),
+                                                      )
+                                                    ])),
+                                              ],
+                                            )
+                                          ])),
+                                ])),
+                            Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: 8,
+                                color: const Color(0xffDBDBDB)),
+                          ],
+                        );
+                      })))),
     ]);
   }
 }
