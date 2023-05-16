@@ -26,8 +26,6 @@ import org.springframework.stereotype.Service;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.ssafy.reslow.domain.chatting.dto.ChatMessageRequest;
 import com.ssafy.reslow.domain.chatting.dto.ChatRoomList;
-import com.ssafy.reslow.domain.chatting.dto.FcmMessage;
-import com.ssafy.reslow.domain.chatting.dto.MessageType;
 import com.ssafy.reslow.domain.chatting.entity.ChatMessage;
 import com.ssafy.reslow.domain.chatting.entity.ChatRoom;
 import com.ssafy.reslow.domain.chatting.repository.ChatMessageRepository;
@@ -40,6 +38,9 @@ import com.ssafy.reslow.domain.notice.entity.Notice;
 import com.ssafy.reslow.domain.notice.repository.NoticeRepository;
 import com.ssafy.reslow.domain.product.entity.Product;
 import com.ssafy.reslow.domain.product.repository.ProductRepository;
+import com.ssafy.reslow.global.common.FCM.FirebaseCloudMessageService;
+import com.ssafy.reslow.global.common.FCM.dto.ChatFcmMessage;
+import com.ssafy.reslow.global.common.FCM.dto.MessageType;
 import com.ssafy.reslow.global.exception.CustomException;
 
 import lombok.RequiredArgsConstructor;
@@ -98,8 +99,8 @@ public class ChatService {
 
 			// 디바이스 알림 상태가 true일 때 알림 보내기
 			if (device.isNotice()) {
-				FirebaseCloudMessageService.sendMessageTo(
-					FcmMessage.SendChatMessage.of(chatMessage, device.getDeviceToken()),
+				FirebaseCloudMessageService.sendChatMessageTo(
+					ChatFcmMessage.SendChatMessage.of(chatMessage, device.getDeviceToken()),
 					sender);
 
 				// 보낸 알림을 저장한다. 플리마켓 글 제목, 보낸사람 닉네임, 현재시간, 메시지타입
