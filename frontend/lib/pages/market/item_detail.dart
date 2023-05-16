@@ -152,30 +152,42 @@ class _ItemDetailState extends State<ItemDetail> {
                             height: 60.0,
                             child: Row(children: [
                               Container(
-                                decoration: const BoxDecoration(
-                                  border: Border(
-                                    right: BorderSide(
-                                      color: Color(
-                                          0xFFBDBDBD), // Set the top border color
-                                      width:
-                                          0.5, // Set the top border thickness
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      right: BorderSide(
+                                        color: Color(
+                                            0xFFBDBDBD), // Set the top border color
+                                        width:
+                                            0.5, // Set the top border thickness
+                                      ),
                                     ),
                                   ),
-                                ),
-                                height: 60.0,
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.favorite,
-                                    color: item!.myHeart
-                                        ? Colors.red
-                                        : Colors
-                                            .grey, // Change color based on condition
-                                  ),
-                                  onPressed: () {
-                                    changeHeart(item!.myHeart);
-                                  },
-                                ),
-                              ),
+                                  height: 60.0,
+                                  child: Stack(
+                                    alignment: Alignment.topCenter,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.favorite,
+                                          color: item!.myHeart
+                                              ? Colors.red
+                                              : Colors
+                                                  .grey, // Change color based on condition
+                                        ),
+                                        onPressed: () {
+                                          changeHeart(item!.myHeart);
+                                        },
+                                      ),
+                                      Positioned(
+                                        bottom: 5,
+                                        child: Text('관심 ${item!.heartCount}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                                color: Colors.grey[600])),
+                                      )
+                                    ],
+                                  )),
                               const SizedBox(
                                 width: 16.0,
                               ),
@@ -441,9 +453,6 @@ class _ItemDetailState extends State<ItemDetail> {
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      Text('관심 ${item!.heartCount}',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold))
                                     ],
                                   ),
                                 ),
