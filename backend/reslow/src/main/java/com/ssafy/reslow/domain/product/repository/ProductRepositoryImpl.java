@@ -30,8 +30,8 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 			.selectFrom(product)
 			.leftJoin(product.productImages, productImage)
 			.where(
-				(hasText(keyword) ? product.title.contains(keyword) : null),
-				(hasText(keyword) ? product.description.contains(keyword) : null),
+				(hasText(keyword) ? product.title.contains(keyword) : null).or(
+				(hasText(keyword) ? product.description.contains(keyword) : null)),
 				category == null ? null : product.productCategory.no.eq(category),
 				product.order.isNull()
 			)
