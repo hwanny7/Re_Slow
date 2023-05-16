@@ -61,6 +61,9 @@ class _ProfileState extends State<Profile> {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
+      setState(() {
+        UserPreferences().changeProfilePicture(jsonData["profileImg"]);
+      });
       if (context.mounted) {
         Navigator.pop(context);
       }
