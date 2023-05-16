@@ -121,39 +121,44 @@ class _DeliveryCheckState extends State<DeliveryCheck> {
                                 SizedBox(
                                   height: 8,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: 150,
-                                        child: Text("시간",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
+                                data?["trackingDetails"].length == 0
+                                    ? const Text("유효하지 않은 송장 정보입니다.")
+                                    : Padding(
+                                        padding: EdgeInsets.only(top: 10),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 150,
+                                              child: Text("시간",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
+                                            Container(
+                                              width: 100,
+                                              child: Text("현재 위치",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
+                                            Container(
+                                              width: 80,
+                                              child: Text("배송 상태",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Container(
-                                        width: 100,
-                                        child: Text("현재 위치",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Container(
-                                        width: 80,
-                                        child: Text("배송 상태",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                                 SizedBox(
                                   height: 16,
                                 ),
