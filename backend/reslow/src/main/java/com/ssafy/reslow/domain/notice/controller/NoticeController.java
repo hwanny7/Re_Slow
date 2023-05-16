@@ -43,4 +43,5 @@ public class NoticeController {
 		Long memberNo = Long.parseLong(authentication.getName());
 		return noticeService.getNoticeList(memberNo, pageable);
 	}
+
 }
