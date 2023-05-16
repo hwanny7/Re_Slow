@@ -2,7 +2,6 @@ package com.ssafy.reslow.domain.notice.service;
 
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +40,7 @@ public class NoticeService {
 
 		List<NoticeResponse> noticeResponseList = new ArrayList<>();
 		noticeRepository.findByMemberOrderByAlertTimeDesc(member, pageable).forEach(notice -> {
-			noticeResponseList.add(NoticeResponse.of(
-				notice.getSender(),
-				notice.getTitle(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(notice.getAlertTime()),
-				notice.getType()
-			));
+			noticeResponseList.add(NoticeResponse.of(notice));
 		});
 
 		return noticeResponseList;
