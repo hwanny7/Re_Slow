@@ -74,9 +74,6 @@ class _OrderDetailState extends State<OrderDetail> {
                             color: Color(0xFFBDBDBD),
                             thickness: 0.5,
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
                           Row(
                             children: [
                               SizedBox(
@@ -87,9 +84,9 @@ class _OrderDetailState extends State<OrderDetail> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
+                              Spacer(),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                padding: const EdgeInsets.only(left: 12.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
