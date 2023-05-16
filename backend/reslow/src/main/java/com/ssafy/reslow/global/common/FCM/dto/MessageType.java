@@ -1,4 +1,4 @@
-package com.ssafy.reslow.domain.chatting.dto;
+package com.ssafy.reslow.global.common.FCM.dto;
 
 public enum MessageType {
 	CHATTING, COMMENT,

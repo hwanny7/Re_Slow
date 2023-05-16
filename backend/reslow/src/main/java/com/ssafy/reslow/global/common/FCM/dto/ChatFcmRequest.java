@@ -1,11 +1,11 @@
-package com.ssafy.reslow.domain.chatting.dto;
+package com.ssafy.reslow.global.common.FCM.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FcmRequest {
+public class ChatFcmRequest {
 	private String title;
 	private String body;
 	private String roomId;

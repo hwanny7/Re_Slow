@@ -2,8 +2,8 @@ package com.ssafy.reslow.domain.notice.dto;
 
 import java.time.format.DateTimeFormatter;
 
-import com.ssafy.reslow.domain.chatting.dto.MessageType;
 import com.ssafy.reslow.domain.notice.entity.Notice;
+import com.ssafy.reslow.global.common.FCM.dto.MessageType;
 
 import lombok.Builder;
 import lombok.Getter;

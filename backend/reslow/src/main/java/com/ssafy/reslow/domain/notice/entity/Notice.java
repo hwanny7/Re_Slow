@@ -15,8 +15,8 @@ import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 
-import com.ssafy.reslow.domain.chatting.dto.MessageType;
 import com.ssafy.reslow.domain.member.entity.Member;
+import com.ssafy.reslow.global.common.FCM.dto.MessageType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
