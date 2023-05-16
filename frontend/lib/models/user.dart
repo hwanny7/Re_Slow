@@ -38,7 +38,8 @@ class Shipment {
 
   Shipment.fromJson(Map<String, dynamic> json) {
     recipient = json['recipient'];
-    zipcode = json['zipcode'].toString();
+    // zipcode = json['zipcode'].toString();
+    zipcode = json['zipcode'] == 0 ? "" : json['zipcode'].toString();
     address = json['address'];
     addressDetail = json['addressDetail'];
     phoneNumber = json['phoneNumber'];

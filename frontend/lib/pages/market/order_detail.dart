@@ -92,13 +92,17 @@ class _OrderDetailState extends State<OrderDetail> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      order!.title,
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(height: 15),
+                                    SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.49,
+                                        child: Text(order!.title,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ))),
+                                    const SizedBox(height: 15),
                                     Row(
                                       children: [
                                         Text('주문 금액',
@@ -217,6 +221,9 @@ class _OrderDetailState extends State<OrderDetail> {
                           Row(
                             children: [
                               const Text('배송지',
+                                  overflow: TextOverflow
+                                      .ellipsis, // Display "..." at the end if the text overflows
+                                  maxLines: 1,
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               const Spacer(),
