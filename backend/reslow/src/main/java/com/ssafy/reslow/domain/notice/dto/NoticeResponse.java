@@ -11,7 +11,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class NoticeResponse {
-	Long alertNo;
+	Long noticeNo;
 	String senderNickname;
 	String title;
 	String time;
@@ -19,7 +19,7 @@ public class NoticeResponse {
 
 	public static NoticeResponse of(Notice notice) {
 		return NoticeResponse.builder()
-			.alertNo(notice.getNo())
+			.noticeNo(notice.getNo())
 			.senderNickname(notice.getSender())
 			.title(notice.getTitle())
 			.time(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(notice.getAlertTime()))
