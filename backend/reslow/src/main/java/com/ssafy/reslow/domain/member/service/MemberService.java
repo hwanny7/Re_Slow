@@ -1,11 +1,24 @@
 package com.ssafy.reslow.domain.member.service;
 
-import static com.ssafy.reslow.global.exception.ErrorCode.ADDRESS_NOT_FOUND;
-import static com.ssafy.reslow.global.exception.ErrorCode.ALREADY_EXISTS_ACCOUNT;
-import static com.ssafy.reslow.global.exception.ErrorCode.DEVICETOKEN_NOT_FOUND;
-import static com.ssafy.reslow.global.exception.ErrorCode.MEBER_ALREADY_EXSIST;
-import static com.ssafy.reslow.global.exception.ErrorCode.MEMBER_NOT_FOUND;
-import static com.ssafy.reslow.global.exception.ErrorCode.PASSWORD_NOT_MATCH;
+import static com.ssafy.reslow.global.exception.ErrorCode.*;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
@@ -29,24 +42,9 @@ import com.ssafy.reslow.global.auth.jwt.JwtTokenProvider;
 import com.ssafy.reslow.global.common.dto.TokenResponse;
 import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.infra.storage.StorageServiceImpl;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -223,7 +221,7 @@ public class MemberService {
         } else {
             device = deviceRepository.findByMemberAndDeviceToken(member, preToken)
                 .orElse(Device.of(member, newToken));
-            device.update(newToken);
+            device.updateToken(newToken);
         }
         deviceRepository.save(device);
 

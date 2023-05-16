@@ -42,7 +42,11 @@ public class Device extends BaseEntity {
 		return Device.builder().deviceToken(token).member(member).notice(true).build();
 	}
 
-	public void update(String newDeviceToken) {
+	public void updateToken(String newDeviceToken) {
 		this.deviceToken = newDeviceToken;
+	}
+
+	public void updateNoticeStatus(boolean notice) {
+		this.notice = notice;
 	}
 }
