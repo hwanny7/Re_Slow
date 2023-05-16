@@ -13,10 +13,9 @@ class KnowHowDetail extends StatefulWidget {
   _KnowHowDetailState createState() => _KnowHowDetailState();
 }
 
-Map<dynamic, dynamic> content = {};
-Map heartYN = {"YN": true};
-
 class _KnowHowDetailState extends State<KnowHowDetail> {
+  Map<dynamic, dynamic> content = {};
+  Map heartYN = {"YN": true};
   Dio dio = Dio();
 
   @override

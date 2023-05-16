@@ -19,12 +19,14 @@ class ChatDetail extends StatefulWidget {
   final String roomId; // 방 ID
   final String otherPic;
   final String otherNick;
+  Function? refresh;
 
-  const ChatDetail(
+  ChatDetail(
       {Key? key,
       required this.roomId,
       required this.otherNick,
-      required this.otherPic})
+      required this.otherPic,
+      this.refresh})
       : super(key: key);
   @override
   _ChatDetailState createState() => _ChatDetailState();
@@ -41,6 +43,7 @@ class _ChatDetailState extends State<ChatDetail> {
   // dynamic socketManager = SocketManager();
   StompClient? stompClient;
   int myId = -1;
+  Map _product = {};
 
   void _scrollToBottom() {
     if (_scrollController.hasClients) {
@@ -67,7 +70,7 @@ class _ChatDetailState extends State<ChatDetail> {
         _scrollToBottom();
       });
     });
-
+    _requestProductInfo();
     super.initState();
   }
 
@@ -140,8 +143,11 @@ class _ChatDetailState extends State<ChatDetail> {
     }
     stompClient!
         .send(destination: "/pub/chat/message", body: json.encode(data));
-    setState(() {
-      content.insert(0, data);
+    Timer(Duration(milliseconds: 300), () {
+      setState(() {
+        content.insert(0, data);
+        widget.refresh;
+      });
     });
     print("넣자마자 확인 ${content}");
     Timer(Duration(milliseconds: 300), () {
@@ -153,13 +159,29 @@ class _ChatDetailState extends State<ChatDetail> {
     try {
       await dioClient.dio.get('/members/info').then((res) {
         setState(() {
-          myId = res.data["memberNo"];
+          myId = res.data["memberNo"].toInt();
         });
 
         _requestChatDetail();
       });
     } on DioError catch (e) {
       print('myinfoerror: $e');
+    }
+  }
+
+  Future<void> _requestProductInfo() async {
+    try {
+      await dioClient.dio
+          .get('/products/${widget.roomId.split("-")[0]}')
+          .then((res) {
+        setState(() {
+          _product = res.data;
+        });
+        print("뭐가 날아오는 거야${_product}");
+        print("사진 있잖아 ${_product["images"][0]}");
+      });
+    } on DioError catch (e) {
+      print('productinfoerror: $e');
     }
   }
 
@@ -203,8 +225,8 @@ class _ChatDetailState extends State<ChatDetail> {
     return prefs.getString('accessToken');
   }
 
-  Widget _Chat(int index) {
-    if (content[index]["user"] == myId.toInt()) {
+  Widget _chat(int index) {
+    if (content[index]["user"] == myId) {
       return Container(
           margin: const EdgeInsets.all(4),
           child: Row(
@@ -230,7 +252,7 @@ class _ChatDetailState extends State<ChatDetail> {
                               style: const TextStyle(color: Colors.black)))))
             ],
           ));
-    } else {
+    } else if (content[index]["user"] != -1) {
       return Container(
           margin: const EdgeInsets.all(4),
           child: Row(
@@ -239,22 +261,15 @@ class _ChatDetailState extends State<ChatDetail> {
             children: [
               ClipRRect(
                   borderRadius: BorderRadius.circular(50),
-                  child: widget.otherPic == null
-                      ? Image.asset(
-                          "assets/image/spin.gif",
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          width: 50,
-                          height: 50,
-                          child: FadeInImage.assetNetwork(
-                            placeholder: "assets/image/spin.gif",
-                            image: widget.otherPic,
-                            fit: BoxFit.cover,
-                          ),
-                        )),
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "assets/image/spin.gif",
+                      image: widget.otherPic,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
               Flexible(
                   fit: FlexFit.loose,
                   child: Container(
@@ -275,6 +290,7 @@ class _ChatDetailState extends State<ChatDetail> {
             ],
           ));
     }
+    return Container();
   }
 
   @override
@@ -285,6 +301,43 @@ class _ChatDetailState extends State<ChatDetail> {
               title: widget.otherNick,
             ),
             body: Column(children: [
+              Row(
+                children: [
+                  _product["images"] == null
+                      ? Image.asset(
+                          width: 100, height: 100, "assets/image/spin.gif")
+                      : Container(
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                          child: FadeInImage.assetNetwork(
+                            placeholder: "assets/image/spin.gif",
+                            image: _product["images"][0] ?? "",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                  Container(
+                      margin: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _product["title"] ?? "",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            priceDot(_product["price"]) ?? "",
+                            style: TextStyle(fontSize: 14),
+                          )
+                        ],
+                      ))
+                ],
+              ),
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 1,
+                  color: const Color(0xffDBDBDB)),
               Expanded(
                   child: Column(
                 children: content.isNotEmpty
@@ -294,7 +347,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                 controller: _scrollController,
                                 itemCount: content.length,
                                 itemBuilder: (context, index) {
-                                  return _Chat(content.length - (index + 1));
+                                  return _chat(content.length - (index + 1));
                                 })),
                         Container(
                             width: MediaQuery.of(context).size.width,
