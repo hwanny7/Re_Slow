@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/pages/market/order_detail.dart';
 import 'package:reslow/services/Market.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
@@ -24,6 +25,7 @@ class _CalendarSelectionState extends State<CalendarSelection> {
   int page = 0;
   int amount = 0;
   List<SettlementList> itemList = [];
+  bool isFirst = true;
 
   @override
   void initState() {
@@ -51,6 +53,7 @@ class _CalendarSelectionState extends State<CalendarSelection> {
 
   Future<void> fetchList(bool isInfinite) async {
     if (!isInfinite) {
+      isFirst = true;
       page = 0;
       isLast = false;
       fetchData();
@@ -58,7 +61,7 @@ class _CalendarSelectionState extends State<CalendarSelection> {
 
     Map<String, dynamic> queryParams = {
       'page': page,
-      'size': 4,
+      'size': 8,
       "startDate": _startDate.toString().substring(0, 10),
       'endDate': _endDate.toString().substring(0, 10),
     };
@@ -79,6 +82,7 @@ class _CalendarSelectionState extends State<CalendarSelection> {
         }
       } else {
         setState(() {
+          isFirst = false;
           itemList = List<SettlementList>.from(
               jsonData.map((itemJson) => SettlementList.fromJson(itemJson)));
         });
@@ -222,7 +226,37 @@ class _CalendarSelectionState extends State<CalendarSelection> {
                       ),
                     ],
                   ),
-                  // 달력 부분 끝
+                  const SizedBox(height: 16.0),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '총 정산금액 ',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize:
+                                        16, // Adjust the font size as needed
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: priceDot(amount),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        20, // Adjust the font size as needed
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
+                  ),
                   const SizedBox(height: 16.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -230,61 +264,101 @@ class _CalendarSelectionState extends State<CalendarSelection> {
                       ElevatedButton(
                         onPressed: _filterToday,
                         child: Text('당일'),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[400]),
                       ),
                       SizedBox(width: 10), // Add a 10 pixel space
                       ElevatedButton(
-                        onPressed: _filterOneWeek,
-                        child: Text('1주일'),
-                      ),
+                          onPressed: _filterOneWeek,
+                          child: Text('1주일'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[400])),
                       SizedBox(width: 10), // Add a 10 pixel space
                       ElevatedButton(
-                        onPressed: _filterOneMonth,
-                        child: Text('1개월'),
-                      ),
+                          onPressed: _filterOneMonth,
+                          child: Text('1개월'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[400])),
                       SizedBox(width: 10), // Add a 10 pixel space
                       ElevatedButton(
-                        onPressed: _filterOneYear,
-                        child: Text('1년'),
-                      ),
+                          onPressed: _filterOneYear,
+                          child: Text('1년'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[400])),
                     ],
                   ),
-                  Expanded(
-                      child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: itemList.length,
-                    itemBuilder: (context, idx) {
-                      return GestureDetector(
-                          onTap: () {
-                            leftToRightNavigator(
-                                OrderDetail(
-                                  orderPk: itemList[idx].orderNo ?? 0,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Divider(color: Colors.grey[800], thickness: 2),
+                  ),
+                  isFirst
+                      ? CircularProgressIndicator()
+                      : itemList.isEmpty
+                          ? Expanded(
+                              child: Container(
+                                child: Center(
+                                  child: Text('정산 내역이 없습니다.'),
                                 ),
-                                context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Container(
-                                color: Colors.grey[200],
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 16),
-                                height: 150,
-                                width: double.infinity,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 16),
-                                    Text('주문번호: ${itemList[idx].orderNo}'),
-                                    const SizedBox(height: 10),
-                                    Text('정산 금액: ${itemList[idx].amount}'),
-                                    const SizedBox(height: 35),
-                                    Text(itemList[idx].settlementDt ?? ""),
-                                  ],
-                                )),
-                          ));
-                    },
-                  )),
+                              ),
+                            )
+                          : Expanded(
+                              child: ListView.builder(
+                              controller: _scrollController,
+                              itemCount: itemList.length,
+                              itemBuilder: (context, idx) {
+                                return GestureDetector(
+                                    onTap: () {
+                                      leftToRightNavigator(
+                                          OrderDetail(
+                                            orderPk: itemList[idx].orderNo ?? 0,
+                                          ),
+                                          context);
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.grey,
+                                                width: 1.0,
+                                              ),
+                                            ),
+                                          ),
+                                          height: 100,
+                                          width: double.infinity,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                      'No. ${itemList[idx].orderNo}  [상세보기]',
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                  const Spacer(),
+                                                  Text(
+                                                      '+ ${itemList[idx].amount}',
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text(itemList[idx].settlementDt ??
+                                                  ""),
+                                            ],
+                                          )),
+                                    ));
+                              },
+                            )),
                 ],
               ),
             )));

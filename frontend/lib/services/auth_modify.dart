@@ -21,3 +21,10 @@ Future<Response> registerShipmentInfo(Map<String, dynamic> formData) async {
 
   return response;
 }
+
+Future<Response> addProfilePic(FormData formData) async {
+  Response response = await dioClient.dio.post('/members/profile',
+      data: formData, options: Options(contentType: 'multipart/form-data'));
+
+  return response;
+}

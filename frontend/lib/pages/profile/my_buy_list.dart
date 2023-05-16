@@ -117,32 +117,66 @@ class _MyBuyListState extends State<MyBuyList>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('주문내역'),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        centerTitle: true,
+        title: Text(
+          '주문내역',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         bottom: TabBar(
           controller: _controller,
           tabs: [
             GestureDetector(
               onTap: () => _controller.index = 0,
               child: const Tab(
-                text: '결제 완료',
+                child: Text(
+                  '결제 완료',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black), // Set the desired text color
+                ),
               ),
             ),
             GestureDetector(
               onTap: () => _controller.index = 1,
               child: const Tab(
-                text: '배송 준비',
+                child: Text(
+                  '배송 준비',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black), // Set the desired text color
+                ),
               ),
             ),
             GestureDetector(
               onTap: () => _controller.index = 2,
               child: const Tab(
-                text: '배송 중',
+                child: Text(
+                  '배송 중',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black), // Set the desired text color
+                ),
               ),
             ),
             GestureDetector(
               onTap: () => _controller.index = 3,
               child: const Tab(
-                text: '배송 완료',
+                child: Text(
+                  '배송 완료',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black), // Set the desired text color
+                ),
               ),
             ),
           ],
