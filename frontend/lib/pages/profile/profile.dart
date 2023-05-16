@@ -118,25 +118,13 @@ class _ProfileState extends State<Profile> {
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            snapshot.data?.nickname ?? '',
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.edit,
-                            ),
-                            onPressed: () {
-                              leftToRightNavigator(const UserInfo(), context);
-                            },
-                          ),
-                        ],
-                      )
+                      Text(
+                        snapshot.data?.nickname ?? '',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -199,19 +187,16 @@ class _ProfileState extends State<Profile> {
                       Column(
                         children: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.favorite, color: Colors.white),
+                            icon: const Icon(
+                              Icons.edit,
+                              color: Colors.white,
+                            ),
                             onPressed: () {
-                              // Navigate to likes page 잠시 추천 페이지로 사용
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Recommend(),
-                                ),
-                              );
+                              leftToRightNavigator(const UserInfo(), context);
                             },
                           ),
                           Text(
-                            '관심',
+                            '관리',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),

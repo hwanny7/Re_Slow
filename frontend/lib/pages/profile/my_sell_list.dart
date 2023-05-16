@@ -203,7 +203,7 @@ class _MySellListState extends State<MySellList>
     if (firstLoading[tabIndex]) {
       return const Center(child: CircularProgressIndicator());
     } else if (data.isEmpty) {
-      return const Center(child: Text("데이터가 없습니다."));
+      return const Center(child: Text("내역이 존재하지 않습니다."));
     } else {
       return RefreshIndicator(
           child: ScrollConfiguration(

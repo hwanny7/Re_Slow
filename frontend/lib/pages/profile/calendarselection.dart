@@ -26,12 +26,26 @@ class _CalendarSelectionState extends State<CalendarSelection> {
   int amount = 0;
   List<SettlementList> itemList = [];
   bool isFirst = true;
+  int totalAmount = 0;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_scrollListener);
     fetchList(false);
+    getTotal();
+  }
+
+  void getTotal() async {
+    Response response = await getTotalSettlement({});
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonData = response.data;
+      setState(() {
+        totalAmount = jsonData["amount"];
+      });
+    } else {
+      print('HTTP request failed with status: ${response.statusCode}');
+    }
   }
 
   void fetchData() async {
@@ -237,6 +251,36 @@ class _CalendarSelectionState extends State<CalendarSelection> {
                               children: [
                                 TextSpan(
                                   text: '총 정산금액 ',
+                                  style: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontSize:
+                                        16, // Adjust the font size as needed
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: priceDot(totalAmount),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize:
+                                        20, // Adjust the font size as needed
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '기간 정산금액 ',
                                   style: TextStyle(
                                     color: Colors.grey[600],
                                     fontSize:

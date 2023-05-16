@@ -135,7 +135,7 @@ class _CouponDownloadState extends State<CouponDownload> {
                                     );
                                   },
                                 );
-                              } else if (response.statusCode == 409) {
+                              } else if (response.statusCode == 404) {
                                 print('이미 다운로드 받은 쿠폰');
                                 // show a message when the coupon is already downloaded
                                 showDialog(
