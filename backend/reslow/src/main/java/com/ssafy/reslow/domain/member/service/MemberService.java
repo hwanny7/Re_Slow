@@ -2,6 +2,9 @@ package com.ssafy.reslow.domain.member.service;
 
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
+import com.ssafy.reslow.domain.order.entity.Order;
+import com.ssafy.reslow.domain.product.entity.Product;
+import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ProductRepository productRepository;
     private final ProductCategoryRepository productCategoryRepository;
     private final KnowhowCategoryRepository knowhowCategoryRepository;
     private final DeviceRepository deviceRepository;
@@ -254,6 +258,10 @@ public class MemberService {
     public String redisSetting() {
         List<Member> list = memberRepository.findAll();
 
+        redisTemplate.keys("*").stream().forEach(k-> {
+            redisTemplate.delete(k);
+        });
+
         list.forEach((member -> {
             ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
             List<ProductCategory> productCategories = productCategoryRepository.findAll();
@@ -269,6 +277,13 @@ public class MemberService {
                     0);
             }));
         }));
+
+        List<Product> list1 = productRepository.findAll();
+
+        ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+        for (Product product : list1) {
+            zSetOperations.incrementScore("product", product.getNo()+"", 1);
+        }
         return "OK";
     }
 }
