@@ -93,11 +93,14 @@ public class ChatService {
 			Device device = deviceRepository.findByMember(receiver)
 				.orElseThrow(() -> new CustomException(DEVICETOKEN_NOT_FOUND));
 
-			System.out.println("알림 보내러 출발!!!!!!");
-			System.out.println("보낸사람: " + sender.getNickname());
-			System.out.println("받는사람: " + receiver.getNickname());
-			FirebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.of(chatMessage, device.getDeviceToken()),
-				sender);
+			if (device.isNotice()) {
+				System.out.println("알림 보내러 출발!!!!!!");
+				System.out.println("보낸사람: " + sender.getNickname());
+				System.out.println("받는사람: " + receiver.getNickname());
+				FirebaseCloudMessageService.sendMessageTo(
+					FcmMessage.SendChatMessage.of(chatMessage, device.getDeviceToken()),
+					sender);
+			}
 		}
 	}
 
