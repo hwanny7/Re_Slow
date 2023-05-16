@@ -178,7 +178,8 @@ public class MemberService {
         Member member = memberRepository.findById(memberNo)
             .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         if (member.getMemberAddress() == null) {
-            throw new CustomException(ADDRESS_NOT_FOUND);
+            MemberAddressResponse response = MemberAddressResponse.of();
+            return response;
         }
         MemberAddress memberAddress = member.getMemberAddress();
         MemberAddressResponse response = MemberAddressResponse.of(memberAddress);
