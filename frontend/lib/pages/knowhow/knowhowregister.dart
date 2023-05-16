@@ -40,6 +40,11 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
         return;
       }
     }
+    // 글과 사진을 세 개 이상 작성 확인
+    if (contentTexts.length < 3) {
+      FlutterDialog("아래의 추가 버튼을 눌러 글과 사진을 세 개 이상 올려주세요!");
+      return;
+    }
 
     final Dio dio = Dio();
 
@@ -82,7 +87,6 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
       //   Navigator.push(
       //       context, MaterialPageRoute(builder: (context) => KnowHow()));
       // });
-      print("aaaaaaaaaaaaaaaaaaaaaaaaaaaa ${response.data}");
     } on DioError catch (e) {
       print('error: $e');
     }

@@ -265,10 +265,13 @@ class _OrderDetailState extends State<OrderDetail> {
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                               const Spacer(),
-                              Text(
-                                  '(${order!.zipcode}) ${order!.address} ${order!.addressDetail}',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold))
+                              Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  child: Text(
+                                      '(${order!.zipcode}) ${order!.address} ${order!.addressDetail}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)))
                             ],
                           ),
                           const SizedBox(

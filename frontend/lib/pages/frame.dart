@@ -103,14 +103,15 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                Knowhowcomment(knowhowid: message.data["roomId"]),
+                Knowhowcomment(knowhowid: message.data["roomId"].toInt()),
           ),
         );
       } else if (message.data["type"] == "ORDER") {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OrderDetail(orderPk: message.data["roomId"]),
+            builder: (context) =>
+                OrderDetail(orderPk: message.data["roomId"].toInt()),
           ),
         );
       }
