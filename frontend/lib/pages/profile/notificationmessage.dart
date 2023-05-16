@@ -25,25 +25,35 @@ class NotificationMessage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.notifications, size: 20, color: Colors.purple.shade400),
+          Icon(Icons.notifications, size: 30, color: Colors.green.shade400),
           SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(title,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 SizedBox(height: 5),
-                Text(subtitle),
+                Text(subtitle, style: TextStyle(fontSize: 15)),
                 SizedBox(height: 5),
-                Text(time, style: TextStyle(fontSize: 12, color: Colors.grey)),
+                Text(time, style: TextStyle(fontSize: 15, color: Colors.grey)),
               ],
             ),
           ),
+          SizedBox(width: 10),
           // 알림 삭제 버튼
-          IconButton(
-            icon:
-                Icon(Icons.remove_circle, size: 20, color: Colors.red.shade400),
-            onPressed: () => onDeletePressed(), // notificationpage에서 index정의
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              icon: Icon(
+                Icons.remove_circle,
+                size: 22,
+                color: Colors.red.shade400,
+              ),
+              onPressed: () => onDeletePressed(),
+            ),
           ),
         ],
       ),
