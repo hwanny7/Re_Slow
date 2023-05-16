@@ -65,7 +65,9 @@ class _ChatDetailState extends State<ChatDetail> {
     print("소켓 연결 되어있니? ${isConnect()}");
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _requestMyInfo().then((res) {
-        _scrollToBottom();
+        Timer(Duration(milliseconds: 300), () {
+          _scrollToBottom();
+        });
       });
     });
     _requestProductInfo();
@@ -372,6 +374,11 @@ class _ChatDetailState extends State<ChatDetail> {
                 Container(
                     width: MediaQuery.of(context).size.width * 0.838,
                     child: TextFormField(
+                      onTap: () {
+                        Timer(Duration(milliseconds: 200), () {
+                          _scrollToBottom();
+                        });
+                      },
                       onChanged: (text) {
                         chatMsg = text;
                       },
@@ -407,7 +414,9 @@ class _ChatDetailState extends State<ChatDetail> {
                         height: 75,
                         child: TextButton(
                             onPressed: () async {
-                              sendMessage(chatMsg);
+                              if (chatMsg != "") {
+                                sendMessage(chatMsg);
+                              }
                               print("눌리긴 했음");
                               print(chatMsg);
                               // print(socketManager.isConnect());
