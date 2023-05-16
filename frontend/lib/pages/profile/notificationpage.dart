@@ -95,6 +95,19 @@ class _NotificationPageState extends State<NotificationPage> {
                             'HTTP request failed with status: ${response.statusCode}');
                       }
                     },
+                    // onDeleteAllPressed: (index) async {
+                    //   final noticeNo = notifications[index]['noticeNo'];
+                    //   final response = await dioClient.dio
+                    //       .delete('/notices/$noticeNo'); // 알림 삭제
+                    //   if (response.statusCode == 200) {
+                    //     setState(() {
+                    //       notifications.removeAt(index);
+                    //     });
+                    //   } else {
+                    //     print(
+                    //         'HTTP request failed with status: ${response.statusCode}');
+                    //   }
+                    // },
                   ),
                 );
               },
