@@ -3,6 +3,7 @@ package com.ssafy.reslow.domain.knowhow.service;
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,11 @@ import com.ssafy.reslow.domain.member.entity.Device;
 import com.ssafy.reslow.domain.member.entity.Member;
 import com.ssafy.reslow.domain.member.repository.DeviceRepository;
 import com.ssafy.reslow.domain.member.repository.MemberRepository;
+import com.ssafy.reslow.domain.notice.entity.Notice;
+import com.ssafy.reslow.domain.notice.repository.NoticeRepository;
 import com.ssafy.reslow.global.common.FCM.FirebaseCloudMessageService;
 import com.ssafy.reslow.global.common.FCM.dto.ChatFcmMessage;
+import com.ssafy.reslow.global.common.FCM.dto.MessageType;
 import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.global.exception.ErrorCode;
 
@@ -42,6 +46,7 @@ public class KnowhowCommentService {
 	private final MemberRepository memberRepository;
 	private final KnowhowRepository knowhowRepository;
 	private final DeviceRepository deviceRepository;
+	private final NoticeRepository noticeRepository;
 
 	public Slice<KnowhowCommentResponse> getCommentList(Long knowhowNo, Pageable pageable) {
 		Slice<KnowhowComment> comments = commentRepository.findByKnowhowNoAndParentIsNull(knowhowNo, pageable);
@@ -70,7 +75,14 @@ public class KnowhowCommentService {
 		Device device = deviceRepository.findByMember(knowhow.getMember())
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		if (device.isNotice()) {
+			// 작성자에게 fcm 알림을 보낸다.
 			fcmNotice(device.getDeviceToken(), knowhow, request.getContent(), member.getNickname());
+
+			// 작성자가 받은 알림을 저장한다.
+			Notice notice = Notice.of(member.getNickname(), knowhow.getTitle(), LocalDateTime.now(),
+				MessageType.COMMENT);
+
+			noticeRepository.save(notice);
 		}
 
 		Map<String, Object> map = new HashMap<>();
