@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
+import 'package:reslow/pages/profile/delivery_check.dart';
 import 'package:reslow/services/Market.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
@@ -200,7 +201,16 @@ class _OrderDetailState extends State<OrderDetail> {
                                 color: Colors.white,
                                 child: MaterialButton(
                                     minWidth: MediaQuery.of(context).size.width,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => DeliveryCheck(
+                                                  tcode: order!.carrierCompany,
+                                                  tinvoice: order!.carrierTrack,
+                                                )),
+                                      );
+                                    },
                                     child: const Text(
                                       "배송 조회",
                                       textAlign: TextAlign.center,

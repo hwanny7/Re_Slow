@@ -122,16 +122,14 @@ class _CouponDownloadState extends State<CouponDownload> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Coupon Downloaded'),
-                                      content: Text(
-                                          'Your coupon has been successfully downloaded.'),
+                                      title: Text('쿠폰이 발급되었습니다.'),
                                       actions: [
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.of(context)
-                                                .pop(); // dismiss the dialog
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
                                           },
-                                          child: Text('OK'),
+                                          child: Text('확인'),
                                         ),
                                       ],
                                     );

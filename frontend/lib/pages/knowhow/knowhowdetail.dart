@@ -43,7 +43,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
         'Authorization': 'Bearer $token',
       }),
     );
-    print(response.data);
+
     return response.data;
   }
 
