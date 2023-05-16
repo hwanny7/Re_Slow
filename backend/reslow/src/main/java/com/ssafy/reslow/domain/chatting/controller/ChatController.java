@@ -123,29 +123,6 @@ public class ChatController {
 		return memberService.deleteDeviceToken(memberNo, token.get("token"));
 	}
 
-	// @PostMapping("/api/fcm")
-	// public ResponseEntity pushMessage(@RequestBody FcmRequest requestDTO, Authentication authentication) throws
-	// 	IOException,
-	// 	FirebaseMessagingException {
-	//
-	// 	Long memberNo = Long.parseLong(authentication.getName());
-	// 	Member member = memberRepository.findById(memberNo)
-	// 		.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
-	//
-	// 	System.out.println("데이터는 안갈거니?????????????????");
-	// 	System.out.println(requestDTO.getRoomId());
-	// 	firebaseCloudMessageService.sendMessageTo(FcmMessage.SendChatMessage.builder()
-	// 		.targetToken(
-	// 			requestDTO.getTargetToken())
-	// 		.title(requestDTO.getTitle())
-	// 		.body(requestDTO.getBody())
-	// 		.type(MessageType.CHATTING)
-	// 		.roomId(
-	// 			requestDTO.getRoomId())
-	// 		.build(), member);
-	// 	return ResponseEntity.ok().build();
-	// }
-
 	// 존재하는 채팅방인지 확인
 	@GetMapping("/check/{roomId}")
 	public Map<String, Boolean> checkRoomId(@PathVariable String roomId) {

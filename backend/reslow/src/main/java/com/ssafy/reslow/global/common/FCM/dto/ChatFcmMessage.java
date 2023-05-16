@@ -65,25 +65,24 @@ public class ChatFcmMessage {
 	@Builder
 	@AllArgsConstructor
 	@Getter
-	public static class SendCommentMessage {
+	public static class SendCommentOrderMessage {
 		String targetToken;
 		String title; // 글 제목
 		String nickname; // 댓글 단 사람 닉네임
 		String content; // 댓글 내용
-		Long knowhowNo;
+		Long boardNo;
 		MessageType type;
 
-		public static SendCommentMessage of(String token, String title, String content, Long knowhowNo,
+		public static SendCommentOrderMessage of(String token, String title, String content, Long boardNo,
 			String senderNickname) {
-			return SendCommentMessage.builder()
+			return SendCommentOrderMessage.builder()
 				.targetToken(token)
 				.title(title)
 				.content(content)
 				.nickname(senderNickname)
-				.knowhowNo(knowhowNo)
+				.boardNo(boardNo)
 				.type(MessageType.COMMENT)
 				.build();
 		}
 	}
-
 }

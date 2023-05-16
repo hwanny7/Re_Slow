@@ -48,7 +48,7 @@ public class FirebaseCloudMessageService {
 		System.out.println("결과 : " + response);
 	}
 
-	public static void sendCommentMessageTo(ChatFcmMessage.SendCommentMessage sendMessage) throws
+	public static void sendCommentOrderMessageTo(ChatFcmMessage.SendCommentOrderMessage sendMessage) throws
 		IOException,
 		FirebaseMessagingException {
 		String message = makeCommentMessage(sendMessage);
@@ -94,7 +94,7 @@ public class FirebaseCloudMessageService {
 		return objectMapper.writeValueAsString(fcmMessage);
 	}
 
-	public static String makeCommentMessage(ChatFcmMessage.SendCommentMessage sendMessage) throws
+	public static String makeCommentMessage(ChatFcmMessage.SendCommentOrderMessage sendMessage) throws
 		JsonProcessingException,
 		FirebaseMessagingException {
 		ChatFcmMessage fcmMessage = ChatFcmMessage.builder()
@@ -106,7 +106,7 @@ public class FirebaseCloudMessageService {
 					.build()
 				)
 				.data(ChatFcmMessage.Data.builder()
-					.roomId(String.valueOf(sendMessage.getKnowhowNo()))
+					.roomId(String.valueOf(sendMessage.getBoardNo()))
 					.type(sendMessage.getType())
 					.senderNickname(sendMessage.getNickname())
 					.build())
