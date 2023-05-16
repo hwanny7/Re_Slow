@@ -109,7 +109,7 @@ class _CalendarSelectionState extends State<CalendarSelection> {
 
     final picked = await showDateRangePicker(
       context: context,
-      firstDate: DateTime(2023),
+      firstDate: DateTime(2022),
       lastDate: DateTime(2024),
       initialDateRange: initialDateRange,
     );

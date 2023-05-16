@@ -146,11 +146,15 @@ class _BuyItemInfoState extends State<BuyItemInfo> {
                                     ItemDetail(itemPk: widget.item.productNo),
                                     context);
                               },
-                              child: Text(widget.item.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
-                                  )),
+                              child: SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.6,
+                                  child: Text(widget.item.title,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ))),
                             ),
                             const SizedBox(height: 8),
                             Text(price,

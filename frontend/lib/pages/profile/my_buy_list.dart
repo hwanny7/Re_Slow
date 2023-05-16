@@ -120,9 +120,9 @@ class _MyBuyListState extends State<MyBuyList>
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
         centerTitle: true,
-        title: Text(
+        title: const Text(
           '주문내역',
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -208,20 +208,27 @@ class _MyBuyListState extends State<MyBuyList>
     } else if (data.isEmpty) {
       return const Center(child: Text("데이터가 없습니다."));
     } else {
-      return ListView.builder(
-        key: Key(tabIndex.toString()),
-        // shrinkWrap: true,
-        controller: _scrollControllers[tabIndex],
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return BuyItemInfo(
-            removeItem: removeItem,
-            key: Key(data[index].orderNo.toString()),
-            item: data[index],
-            index: index,
-          );
-        },
-      );
+      return RefreshIndicator(
+          child: ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(overscroll: false),
+            child: ListView.builder(
+              key: Key(tabIndex.toString()),
+              // shrinkWrap: true,
+              controller: _scrollControllers[tabIndex],
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return BuyItemInfo(
+                  removeItem: removeItem,
+                  key: Key(data[index].orderNo.toString()),
+                  item: data[index],
+                  index: index,
+                );
+              },
+            ),
+          ),
+          onRefresh: () async {
+            await fetchData(tabIndex, false);
+          });
     }
   }
 }

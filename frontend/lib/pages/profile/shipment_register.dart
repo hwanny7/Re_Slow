@@ -40,6 +40,9 @@ class _ShipmentRegisterState extends State<ShipmentRegister> {
         isLoaded = true;
       });
     } else {
+      setState(() {
+        isLoaded = true;
+      });
       print('HTTP request failed with status: ${response.statusCode}');
     }
   }

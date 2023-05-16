@@ -204,7 +204,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                   child: MaterialButton(
                                       padding: const EdgeInsets.fromLTRB(
                                           12, 12, 12, 12),
-                                      color: const Color(0xFF165B40),
+                                      color: Color.fromARGB(255, 22, 55, 91),
                                       minWidth:
                                           MediaQuery.of(context).size.width *
                                               0.05,
@@ -283,7 +283,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                   child: MaterialButton(
                                       padding: const EdgeInsets.fromLTRB(
                                           12, 12, 12, 12),
-                                      color: const Color(0xFF165B40),
+                                      color: Color.fromARGB(255, 22, 91, 22),
                                       minWidth:
                                           MediaQuery.of(context).size.width *
                                               0.05,
@@ -435,12 +435,17 @@ class _ItemDetailState extends State<ItemDetail> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Row(children: [
-                                        Text(
-                                          item!.title,
-                                          style: const TextStyle(
-                                              fontSize: 22,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.7,
+                                            child: Text(item!.title,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ))),
                                         const Spacer(),
                                         Text(item!.date),
                                       ]),

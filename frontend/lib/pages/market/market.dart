@@ -22,6 +22,7 @@ class _MarketState extends State<Market> {
   int category = 0;
   int page = 0;
   String searchText = "";
+  bool isFirst = true;
 
   void _getCategory(int index) {
     category = index;
@@ -61,6 +62,9 @@ class _MarketState extends State<Market> {
 
   Future<void> fetchData(bool isInfinite) async {
     if (!isInfinite) {
+      setState(() {
+        isFirst = true;
+      });
       page = 0;
       isLast = false;
     }
@@ -78,7 +82,6 @@ class _MarketState extends State<Market> {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data;
-      // print(jsonData);
       if (isInfinite) {
         if (jsonData.isEmpty) {
           isLast = true;
@@ -91,8 +94,8 @@ class _MarketState extends State<Market> {
           });
         }
       } else {
-        _scrollController.jumpTo(0);
         setState(() {
+          isFirst = false;
           itemList = List<MarketItem>.from(
               jsonData.map((itemJson) => MarketItem.fromJson(itemJson)));
         });
@@ -113,19 +116,35 @@ class _MarketState extends State<Market> {
           callback: _getCategory,
           initNumber: category,
         ),
-        Expanded(
-            child: ListView.builder(
-          controller: _scrollController,
-          itemCount: itemList.length,
-          itemBuilder: (context, idx) {
-            return ItemInfo(
-              mediaWidth: MediaQuery.of(context).size.width,
-              mediaHeight: MediaQuery.of(context).size.height,
-              item: itemList[idx],
-              key: Key(itemList[idx].productNo.toString()),
-            );
-          },
-        )),
+        isFirst
+            ? const Center(child: CircularProgressIndicator())
+            : itemList.isEmpty
+                ? const Expanded(
+                    child: Center(
+                      child: Text('검색 내역이 없습니다.'),
+                    ),
+                  )
+                : Expanded(
+                    child: RefreshIndicator(
+                    child: ScrollConfiguration(
+                        behavior:
+                            const ScrollBehavior().copyWith(overscroll: false),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount: itemList.length,
+                          itemBuilder: (context, idx) {
+                            return ItemInfo(
+                              mediaWidth: MediaQuery.of(context).size.width,
+                              mediaHeight: MediaQuery.of(context).size.height,
+                              item: itemList[idx],
+                              key: Key(itemList[idx].productNo.toString()),
+                            );
+                          },
+                        )),
+                    onRefresh: () async {
+                      fetchData(false);
+                    },
+                  )),
       ],
     );
   }

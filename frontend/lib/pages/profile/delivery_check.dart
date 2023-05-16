@@ -114,77 +114,90 @@ class _DeliveryCheckState extends State<DeliveryCheck> {
                                     ),
                                   ],
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Container(
-                                        width: 150,
-                                        child: Text("시간",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Container(
-                                        width: 100,
-                                        child: Text("현재 위치",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Container(
-                                        width: 80,
-                                        child: Text("배송 상태",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                    ],
-                                  ),
+                                const Divider(
+                                  thickness: 1.5,
+                                  color: Colors.black,
                                 ),
-                                Expanded(
-                                  child: ListView.builder(
-                                    reverse: true,
-                                    itemCount: data?["trackingDetails"].length,
-                                    itemBuilder: (context, index) {
-                                      final detail =
-                                          data?["trackingDetails"][index];
-                                      return Container(
-                                          color: index % 2 == 1
-                                              ? Colors.blue[100]
-                                              : null,
-                                          child: ListTile(
-                                            title: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(detail["timeString"],
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(detail["where"],
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(detail["kind"],
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                data?["trackingDetails"].length == 0
+                                    ? const Text("유효하지 않은 송장 정보입니다.")
+                                    : Padding(
+                                        padding: EdgeInsets.only(top: 10),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              width: 150,
+                                              child: Text("시간",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
                                             ),
-                                          ));
-                                    },
-                                  ),
-                                )
+                                            Container(
+                                              width: 100,
+                                              child: Text("현재 위치",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
+                                            Container(
+                                              width: 80,
+                                              child: Text("배송 상태",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                ListView.builder(
+                                  reverse: true,
+                                  shrinkWrap: true,
+                                  itemCount: data?["trackingDetails"].length,
+                                  itemBuilder: (context, index) {
+                                    final detail =
+                                        data?["trackingDetails"][index];
+                                    return Container(
+                                        color: index % 2 == 1
+                                            ? Colors.blue[100]
+                                            : null,
+                                        child: ListTile(
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(detail["timeString"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(detail["where"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(detail["kind"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ],
+                                          ),
+                                        ));
+                                  },
+                                ),
                               ],
                             ))
                     : CircularProgressIndicator())));
