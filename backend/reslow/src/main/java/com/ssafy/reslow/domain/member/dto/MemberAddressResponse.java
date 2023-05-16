@@ -28,12 +28,12 @@ public class MemberAddressResponse {
 
 	public static MemberAddressResponse of() {
 		return MemberAddressResponse.builder()
-			.recipient(null)
+			.recipient("")
 			.zipcode(0)
-			.address(null)
-			.addressDetail(null)
-			.phoneNumber(null)
-			.memo(null)
+			.address("")
+			.addressDetail("")
+			.phoneNumber("")
+			.memo("")
 			.build();
 	}
 }
