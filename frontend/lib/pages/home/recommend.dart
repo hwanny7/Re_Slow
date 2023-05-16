@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:dio/dio.dart';
 import 'package:reslow/utils/dio_client.dart';
@@ -45,6 +46,13 @@ class _RecommendState extends State<Recommend>
       // Handle any errors or display an error message
       print('HTTP request failed with status: ${response.statusCode}');
     }
+  }
+
+  void _goKnowhow(knowhowNo) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => KnowHowDetail(knowhowNo: knowhowNo)));
   }
 
   @override
@@ -226,123 +234,129 @@ class _RecommendState extends State<Recommend>
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.white,
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      // container start
-                                      Container(
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            topRight: Radius.circular(10),
-                                          ),
-                                          // pictureList 의 첫번째 사진.jpg
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                recommendations[0]
-                                                    .pictureList[0]),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Positioned(
-                                              bottom: 0,
-                                              left: 0,
-                                              right: 0,
-                                              child: Container(
-                                                height: 1,
-                                                color: Colors.grey,
-                                              ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      _goKnowhow(recommendations[0].knowhowNo);
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        // container start
+                                        Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              topRight: Radius.circular(10),
                                             ),
-                                            Positioned(
-                                              bottom: 0,
-                                              right: 110,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: ClipOval(
-                                                  child: Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            recommendations[0]
-                                                                .profile),
-                                                        fit: BoxFit.cover,
+                                            // pictureList 의 첫번째 사진.jpg
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  recommendations[0]
+                                                      .pictureList[0]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  height: 1,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 110,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: ClipOval(
+                                                    child: Container(
+                                                      width: 60,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              recommendations[0]
+                                                                  .profile),
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      //container end
-
-                                      Padding(
-                                        padding: EdgeInsets.all(16),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                // writer 노하우 글 작성자 이름
-                                                recommendations[0].writer,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Text(
-                                                recommendations[0].title,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons
-                                                          .favorite_border),
-                                                      SizedBox(width: 8),
-                                                      Text(recommendations[0]
-                                                          .likeCnt
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                  SizedBox(width: 16),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.comment),
-                                                      SizedBox(width: 8),
-                                                      Text(recommendations[0]
-                                                          .commentCnt
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ],
+
+                                        //container end
+
+                                        Padding(
+                                          padding: EdgeInsets.all(16),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  // writer 노하우 글 작성자 이름
+                                                  recommendations[0].writer,
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Text(
+                                                  recommendations[0].title,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .favorite_border),
+                                                        SizedBox(width: 8),
+                                                        Text(recommendations[0]
+                                                            .likeCnt
+                                                            .toString()),
+                                                      ],
+                                                    ),
+                                                    SizedBox(width: 16),
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.comment),
+                                                        SizedBox(width: 8),
+                                                        Text(recommendations[0]
+                                                            .commentCnt
+                                                            .toString()),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -393,122 +407,128 @@ class _RecommendState extends State<Recommend>
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.white,
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      // container start
-                                      Container(
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            topRight: Radius.circular(10),
-                                          ),
-                                          // pictureList 의 첫번째 사진.jpg
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                recommendations[1]
-                                                    .pictureList[0]),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Positioned(
-                                              bottom: 0,
-                                              left: 0,
-                                              right: 0,
-                                              child: Container(
-                                                height: 1,
-                                                color: Colors.grey,
-                                              ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      _goKnowhow(recommendations[1].knowhowNo);
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        // container start
+                                        Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              topRight: Radius.circular(10),
                                             ),
-                                            Positioned(
-                                              bottom: 0,
-                                              right: 110,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: ClipOval(
-                                                  child: Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            recommendations[1]
-                                                                .profile),
-                                                        fit: BoxFit.cover,
+                                            // pictureList 의 첫번째 사진.jpg
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  recommendations[1]
+                                                      .pictureList[0]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  height: 1,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 110,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: ClipOval(
+                                                    child: Container(
+                                                      width: 60,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              recommendations[1]
+                                                                  .profile),
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      //container end
-
-                                      Padding(
-                                        padding: EdgeInsets.all(16),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                recommendations[1].writer,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Text(
-                                                recommendations[1].title,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons
-                                                          .favorite_border),
-                                                      SizedBox(width: 8),
-                                                      Text(recommendations[1]
-                                                          .likeCnt
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                  SizedBox(width: 16),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.comment),
-                                                      SizedBox(width: 8),
-                                                      Text(recommendations[1]
-                                                          .commentCnt
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ],
+
+                                        //container end
+
+                                        Padding(
+                                          padding: EdgeInsets.all(16),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  recommendations[1].writer,
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Text(
+                                                  recommendations[1].title,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .favorite_border),
+                                                        SizedBox(width: 8),
+                                                        Text(recommendations[1]
+                                                            .likeCnt
+                                                            .toString()),
+                                                      ],
+                                                    ),
+                                                    SizedBox(width: 16),
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.comment),
+                                                        SizedBox(width: 8),
+                                                        Text(recommendations[1]
+                                                            .commentCnt
+                                                            .toString()),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -553,122 +573,128 @@ class _RecommendState extends State<Recommend>
                                     borderRadius: BorderRadius.circular(10),
                                     color: Colors.white,
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      // container start
-                                      Container(
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(10),
-                                            topRight: Radius.circular(10),
-                                          ),
-                                          // pictureList 의 첫번째 사진.jpg
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                                recommendations[2]
-                                                    .pictureList[0]),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        child: Stack(
-                                          children: [
-                                            Positioned(
-                                              bottom: 0,
-                                              left: 0,
-                                              right: 0,
-                                              child: Container(
-                                                height: 1,
-                                                color: Colors.grey,
-                                              ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      _goKnowhow(recommendations[2].knowhowNo);
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        // container start
+                                        Container(
+                                          height: 200,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              topRight: Radius.circular(10),
                                             ),
-                                            Positioned(
-                                              bottom: 0,
-                                              right: 110,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8),
-                                                child: ClipOval(
-                                                  child: Container(
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            recommendations[2]
-                                                                .profile),
-                                                        fit: BoxFit.cover,
+                                            // pictureList 의 첫번째 사진.jpg
+                                            image: DecorationImage(
+                                              image: NetworkImage(
+                                                  recommendations[2]
+                                                      .pictureList[0]),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                child: Container(
+                                                  height: 1,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                              Positioned(
+                                                bottom: 0,
+                                                right: 110,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: ClipOval(
+                                                    child: Container(
+                                                      width: 60,
+                                                      height: 60,
+                                                      decoration: BoxDecoration(
+                                                        image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              recommendations[2]
+                                                                  .profile),
+                                                          fit: BoxFit.cover,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      //container end
-
-                                      Padding(
-                                        padding: EdgeInsets.all(16),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                recommendations[2].writer,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Text(
-                                                recommendations[2].title,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(height: 16),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons
-                                                          .favorite_border),
-                                                      SizedBox(width: 8),
-                                                      Text(recommendations[2]
-                                                          .likeCnt
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                  SizedBox(width: 16),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.comment),
-                                                      SizedBox(width: 8),
-                                                      Text(recommendations[2]
-                                                          .commentCnt
-                                                          .toString()),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ],
+
+                                        //container end
+
+                                        Padding(
+                                          padding: EdgeInsets.all(16),
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  recommendations[2].writer,
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Text(
+                                                  recommendations[2].title,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 16),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons
+                                                            .favorite_border),
+                                                        SizedBox(width: 8),
+                                                        Text(recommendations[2]
+                                                            .likeCnt
+                                                            .toString()),
+                                                      ],
+                                                    ),
+                                                    SizedBox(width: 16),
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.comment),
+                                                        SizedBox(width: 8),
+                                                        Text(recommendations[2]
+                                                            .commentCnt
+                                                            .toString()),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

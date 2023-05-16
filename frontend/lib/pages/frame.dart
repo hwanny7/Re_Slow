@@ -6,8 +6,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:reslow/pages/chat/chatdetail.dart';
 import 'package:reslow/pages/home/recommend.dart';
+import 'package:reslow/pages/knowhow/knowhowcomment.dart';
 import 'package:reslow/pages/knowhow/knowhowregister.dart';
 import 'package:reslow/pages/market/create_item.dart';
+import 'package:reslow/pages/market/order_detail.dart';
 import 'package:reslow/providers/fcmtoken_provider.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -94,6 +96,21 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
               otherPic: message.data["senderProfilePic"],
               otherNick: message.data["senderNickname"],
             ),
+          ),
+        );
+      } else if (message.data["type"] == "COMMENT") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                Knowhowcomment(knowhowid: message.data["roomId"]),
+          ),
+        );
+      } else if (message.data["type"] == "ORDER") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrderDetail(orderPk: message.data["roomId"]),
           ),
         );
       }
