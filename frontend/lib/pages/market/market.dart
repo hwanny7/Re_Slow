@@ -75,13 +75,16 @@ class _MarketState extends State<Market> {
       'category': category == 0 ? '' : category,
       'keyword': searchText,
     };
+
     print(page);
+    print(queryParams);
 
     Response response =
         await dioClient.dio.get('/products/', queryParameters: queryParams);
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data;
+      print(jsonData);
       if (isInfinite) {
         if (jsonData.isEmpty) {
           isLast = true;

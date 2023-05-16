@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:reslow/models/market_item.dart';
 import 'package:reslow/services/Market.dart';
+import 'package:reslow/utils/date.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 
 class OrderDetail extends StatefulWidget {
@@ -73,9 +74,6 @@ class _OrderDetailState extends State<OrderDetail> {
                             color: Color(0xFFBDBDBD),
                             thickness: 0.5,
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
                           Row(
                             children: [
                               SizedBox(
@@ -86,9 +84,9 @@ class _OrderDetailState extends State<OrderDetail> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
+                              Spacer(),
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
+                                padding: const EdgeInsets.only(left: 12.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -103,46 +101,86 @@ class _OrderDetailState extends State<OrderDetail> {
                                               fontSize: 18,
                                             ))),
                                     const SizedBox(height: 15),
-                                    Row(
-                                      children: [
-                                        Text('주문 금액',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text('${order!.totalPrice}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold))
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('상품 금액',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text('${order!.productPrice}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold))
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('배송 금액',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text('+ ${order!.deliveryFee}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold))
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('쿠폰 할인',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold)),
-                                        Text('- ${order!.discountPrice}',
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold))
-                                      ],
-                                    ),
+                                    Container(
+                                        width: 180,
+                                        height: 100,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text('주문 금액',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                const Spacer(),
+                                                Text(
+                                                    priceDot(order!.totalPrice),
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold))
+                                              ],
+                                            ),
+                                            Divider(
+                                              thickness: 1,
+                                              color: Colors.grey[800],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text('상품 금액',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    )),
+                                                const Spacer(),
+                                                Text(
+                                                    priceDot(
+                                                        order!.productPrice),
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Colors.blue[500]))
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text('배송 금액',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    )),
+                                                const Spacer(),
+                                                Text(
+                                                    '+ ${priceDot(order!.deliveryFee)}',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Colors.blue[500]))
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text('쿠폰 할인',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                                const Spacer(),
+                                                Text(
+                                                    '- ${priceDot(order!.discountPrice)}',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color:
+                                                            Colors.blue[500]))
+                                              ],
+                                            ),
+                                          ],
+                                        )),
                                   ],
                                 ),
                               )
