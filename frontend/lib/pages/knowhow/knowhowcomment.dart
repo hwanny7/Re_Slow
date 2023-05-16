@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-List<dynamic> content = [];
-
 class Knowhowcomment extends StatefulWidget {
   final int knowhowid;
 
@@ -16,6 +14,7 @@ class Knowhowcomment extends StatefulWidget {
 
 class _KnowhowcommentState extends State<Knowhowcomment> {
   Dio dio = Dio();
+  List<dynamic> content = [];
 
   int category = 0;
   String commentText = "";

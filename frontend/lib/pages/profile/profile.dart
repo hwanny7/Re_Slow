@@ -84,7 +84,7 @@ class _ProfileState extends State<Profile> {
                 // Profile
                 Container(
                   height: 140,
-                  color: Colors.grey[300],
+                  color: Colors.white,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -142,16 +142,21 @@ class _ProfileState extends State<Profile> {
                 ),
                 // const SizedBox(height: 20),
                 Container(
-                  color: Colors.green,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   padding:
                       EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.green,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Column(
                         children: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.notifications),
+                            icon:
+                                Icon(Icons.notifications, color: Colors.white),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -161,13 +166,18 @@ class _ProfileState extends State<Profile> {
                               );
                             },
                           ),
-                          Text('알림'),
+                          Text(
+                            '알림',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ],
                       ),
                       Column(
                         children: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.local_offer),
+                            icon: Icon(Icons.local_offer, color: Colors.white),
                             onPressed: () {
                               // Navigate to couponlist
                               Navigator.push(
@@ -178,13 +188,18 @@ class _ProfileState extends State<Profile> {
                               );
                             },
                           ),
-                          Text('쿠폰'),
+                          Text(
+                            '쿠폰',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ],
                       ),
                       Column(
                         children: <Widget>[
                           IconButton(
-                            icon: Icon(Icons.favorite),
+                            icon: Icon(Icons.favorite, color: Colors.white),
                             onPressed: () {
                               // Navigate to likes page 잠시 추천 페이지로 사용
                               Navigator.push(
@@ -195,7 +210,12 @@ class _ProfileState extends State<Profile> {
                               );
                             },
                           ),
-                          Text('관심'),
+                          Text(
+                            '관심',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
                         ],
                       ),
                     ],
@@ -208,7 +228,7 @@ class _ProfileState extends State<Profile> {
                   padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   child: Text(
                     '노하우',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     // textAlign: TextAlign.left,
                   ),
                   alignment: Alignment.centerLeft,
@@ -276,7 +296,8 @@ class _ProfileState extends State<Profile> {
                         padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                         child: Text(
                           '플리마켓',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         alignment: Alignment.centerLeft,
                       ),
@@ -371,7 +392,8 @@ class _ProfileState extends State<Profile> {
                         padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                         child: Text(
                           '설정',
-                          style: TextStyle(fontSize: 20),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         alignment: Alignment.centerLeft,
                       ),

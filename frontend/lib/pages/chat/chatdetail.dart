@@ -32,10 +32,8 @@ class ChatDetail extends StatefulWidget {
   _ChatDetailState createState() => _ChatDetailState();
 }
 
-List<dynamic> content = [];
-Map heartYN = {"YN": true};
-
 class _ChatDetailState extends State<ChatDetail> {
+  List<dynamic> content = [];
   final ScrollController _scrollController = ScrollController();
   Dio dio = Dio();
   String chatMsg = "";
@@ -67,7 +65,9 @@ class _ChatDetailState extends State<ChatDetail> {
     print("소켓 연결 되어있니? ${isConnect()}");
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _requestMyInfo().then((res) {
-        _scrollToBottom();
+        Timer(Duration(milliseconds: 300), () {
+          _scrollToBottom();
+        });
       });
     });
     _requestProductInfo();
@@ -119,9 +119,9 @@ class _ChatDetailState extends State<ChatDetail> {
               "dateTime": new DateTime.now().toString(),
               "content": obj["message"]
             };
-            setState(() {
-              content.insert(0, message);
-            });
+            // setState(() {
+            //   content.insert(0, message);
+            // });
           }
         });
   }
@@ -143,15 +143,23 @@ class _ChatDetailState extends State<ChatDetail> {
     }
     stompClient!
         .send(destination: "/pub/chat/message", body: json.encode(data));
-    Timer(Duration(milliseconds: 300), () {
-      setState(() {
-        content.insert(0, data);
-        widget.refresh;
-      });
+
+    Map obj = {
+      "id": "kdsjlkghlkaf;l",
+      "roomId": data["roomId"],
+      "user": data["sender"],
+      "content": data["message"],
+      "dateTime": data["dateTime"]
+    };
+    setState(() {
+      print("이게 왔어요${obj}");
+      content.insert(0, obj);
+      widget.refresh;
     });
     print("넣자마자 확인 ${content}");
-    Timer(Duration(milliseconds: 300), () {
+    Timer(Duration(milliseconds: 1300), () {
       _scrollToBottom();
+      print("1300ms 후에 확인 ${content}");
     });
   }
 
@@ -253,6 +261,7 @@ class _ChatDetailState extends State<ChatDetail> {
             ],
           ));
     } else if (content[index]["user"] != -1) {
+      print("타인의 메세지${content}");
       return Container(
           margin: const EdgeInsets.all(4),
           child: Row(
@@ -290,7 +299,7 @@ class _ChatDetailState extends State<ChatDetail> {
             ],
           ));
     }
-    return Container();
+    return Text("");
   }
 
   @override
@@ -327,7 +336,7 @@ class _ChatDetailState extends State<ChatDetail> {
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            priceDot(_product["price"]) ?? "",
+                            priceDot(_product["price"] ?? 0),
                             style: TextStyle(fontSize: 14),
                           )
                         ],
@@ -365,6 +374,11 @@ class _ChatDetailState extends State<ChatDetail> {
                 Container(
                     width: MediaQuery.of(context).size.width * 0.838,
                     child: TextFormField(
+                      onTap: () {
+                        Timer(Duration(milliseconds: 200), () {
+                          _scrollToBottom();
+                        });
+                      },
                       onChanged: (text) {
                         chatMsg = text;
                       },
@@ -392,24 +406,27 @@ class _ChatDetailState extends State<ChatDetail> {
                       keyboardType: TextInputType.multiline,
                       maxLines: 2,
                     )),
-                Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 1, color: Colors.grey.withOpacity(0.4))),
-                    height: 75,
-                    child: TextButton(
-                        onPressed: () async {
-                          sendMessage(chatMsg);
-                          print("눌리긴 했음");
-                          print(chatMsg);
-                          // print(socketManager.isConnect());
-                          setState(() {
-                            chatMsg = "";
-                            _chatController.clear();
-                          });
-                          _requestChatDetail();
-                        },
-                        child: Text("완료")))
+                Expanded(
+                    child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1, color: Colors.grey.withOpacity(0.4))),
+                        height: 75,
+                        child: TextButton(
+                            onPressed: () async {
+                              if (chatMsg != "") {
+                                sendMessage(chatMsg);
+                              }
+                              print("눌리긴 했음");
+                              print(chatMsg);
+                              // print(socketManager.isConnect());
+                              setState(() {
+                                chatMsg = "";
+                                _chatController.clear();
+                              });
+                              _requestChatDetail();
+                            },
+                            child: Text("완료"))))
               ])
             ])));
   }

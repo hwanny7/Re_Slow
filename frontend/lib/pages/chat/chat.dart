@@ -16,13 +16,12 @@ class Chat extends StatefulWidget {
   _ChatState createState() => _ChatState();
 }
 
-List<dynamic> content = [];
-
-Map unseen = {};
-
-List order = [];
-
 class _ChatState extends State<Chat> {
+  List<dynamic> content = [];
+
+  Map unseen = {};
+
+  List order = [];
   @override
   void initState() {
     // TODO: implement initState
