@@ -116,10 +116,10 @@ public class OrderService {
 
 		// 상품 알림
 		Device device = deviceRepository.findByMember(seller)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+			.orElse(null);
 
 		// 알림을 꺼놓지 않았다면
-		if (device.isNotice()) {
+		if (device != null && device.isNotice()) {
 			// 작성자에게 fcm 알림을 보낸다.
 			fcmNotice(device.getDeviceToken(), product, seller.getNickname());
 
