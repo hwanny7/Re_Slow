@@ -205,18 +205,26 @@ class _MySellListState extends State<MySellList>
     } else if (data.isEmpty) {
       return const Center(child: Text("데이터가 없습니다."));
     } else {
-      return ListView.builder(
-        key: Key(tabIndex.toString()),
-        controller: _scrollControllers[tabIndex],
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return SellItemInfo(
-              removeItem: removeItem,
-              key: Key(data[index].orderNo.toString()),
-              item: data[index],
-              index: index);
-        },
-      );
+      return RefreshIndicator(
+          child: ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(overscroll: false),
+            child: ListView.builder(
+              key: Key(tabIndex.toString()),
+              // shrinkWrap: true,
+              controller: _scrollControllers[tabIndex],
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                return SellItemInfo(
+                    removeItem: removeItem,
+                    key: Key(data[index].orderNo.toString()),
+                    item: data[index],
+                    index: index);
+              },
+            ),
+          ),
+          onRefresh: () async {
+            await fetchData(tabIndex, false);
+          });
     }
   }
 }

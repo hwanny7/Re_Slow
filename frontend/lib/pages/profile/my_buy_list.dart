@@ -227,7 +227,7 @@ class _MyBuyListState extends State<MyBuyList>
             ),
           ),
           onRefresh: () async {
-            print("hello");
+            await fetchData(tabIndex, false);
           });
     }
   }
