@@ -18,9 +18,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class BatchScheduler {
 
-    final private JobLauncher jobLauncher;
+    private final JobLauncher jobLauncher;
 
-    final private DeliveryBatchConfiguration batchConfig;
+    private final DeliveryBatchConfiguration batchConfig;
+    private final SettlementBatchConfiguration settlementConfig;
+
 
     @Scheduled(cron = "0 0 0 * * *")
     public void deliveryConfirmJob() {
@@ -46,6 +48,22 @@ public class BatchScheduler {
 
         try {
             jobLauncher.run(batchConfig.deliveryTrackJob(), jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
+                 | JobParametersInvalidException |
+                 org.springframework.batch.core.repository.JobRestartException e) {
+
+            log.error(e.getMessage());
+        }
+    }
+
+    @Scheduled(cron = "0 0 3 * * ?")
+    public void settlementJob() {
+        Map<String, JobParameter> confMap = new HashMap<>();
+        confMap.put("time", new JobParameter(System.currentTimeMillis()));
+        JobParameters jobParameters = new JobParameters(confMap);
+
+        try {
+            jobLauncher.run(settlementConfig.settlementJob(), jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                  | JobParametersInvalidException |
                  org.springframework.batch.core.repository.JobRestartException e) {

@@ -47,7 +47,7 @@ public class SettlementBatchConfiguration {
 	private static final String SETTLEMENT_JOB_NAME = "settlementJob";
 	private static final String SETTLEMENT_STEP1_NAME = "settlementStep1";
 
-	public static final int CHUNK_SIZE = 1;
+	public static final int CHUNK_SIZE = 10;
 
 
 	@Bean
