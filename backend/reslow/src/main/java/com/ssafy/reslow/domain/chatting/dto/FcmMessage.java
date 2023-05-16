@@ -42,19 +42,40 @@ public class FcmMessage {
 	@Builder
 	@AllArgsConstructor
 	@Getter
-	public static class SendMessage {
+	public static class SendChatMessage {
 		String targetToken;
 		String title;
 		String body;
 		String roomId;
 		MessageType type;
 
-		public static SendMessage of(ChatMessageRequest request, String token) {
-			return SendMessage.builder()
+		public static SendChatMessage of(ChatMessageRequest request, String token) {
+			return SendChatMessage.builder()
 				.targetToken(token)
 				.title(null)
 				.body(request.getMessage())
 				.roomId(request.getRoomId())
+				.type(MessageType.CHATTING)
+				.build();
+		}
+	}
+
+	@Builder
+	@AllArgsConstructor
+	@Getter
+	public static class SendCommentMessage {
+		String targetToken;
+		String title;
+		String body;
+		String knowhowNo;
+		MessageType type;
+
+		public static SendCommentMessage of(ChatMessageRequest request, String token) {
+			return SendCommentMessage.builder()
+				.targetToken(token)
+				.title(null)
+				.body(request.getMessage())
+				.knowhowNo(request.getRoomId())
 				.type(MessageType.CHATTING)
 				.build();
 		}
