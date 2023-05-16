@@ -1,8 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:reslow/models/user.dart';
 import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/pages/market/item_detail.dart';
+import 'package:reslow/utils/shared_preference.dart';
 import 'coupondownload.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:dio/dio.dart';
@@ -25,6 +27,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   List<dynamic> recommends2 = [];
   List<dynamic> recommends3 = [];
   List<dynamic> displayrecommends3 = [];
+  User? user;
 
   Future<void> fetchData() async {
     Map<String, dynamic> queryParams = {
@@ -82,11 +85,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       setState(() {
         displayrecommends3 = recommends3.sublist(0, 3);
       });
-      print("들어온 데이터 ${response3}");
-      print("추천3 ${recommends3}");
     } else {
       print('HTTP request failed with status: ${response3.statusCode}');
     }
+  }
+
+  void getUserData() async {
+    user = await UserPreferences().getUser();
+    // setState(() {});
   }
 
   @override
@@ -94,6 +100,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance!.removeObserver(this);
     fetchData();
+    getUserData();
   }
 
   @override
@@ -460,7 +467,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             Container(
               padding: const EdgeInsets.fromLTRB(0, 12, 0, 12),
               child: Text(
-                "리폼왕춘식이 님을 위한 추천 상품!\u{1f4d3}",
+                "${user?.nickname ?? ""} 님을 위한 추천 상품!\u{1f4d3}",
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             )

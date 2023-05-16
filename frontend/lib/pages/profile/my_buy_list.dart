@@ -209,21 +209,24 @@ class _MyBuyListState extends State<MyBuyList>
       return const Center(child: Text("데이터가 없습니다."));
     } else {
       return RefreshIndicator(
-          child: ScrollConfiguration(
-            behavior: const ScrollBehavior().copyWith(overscroll: false),
-            child: ListView.builder(
-              key: Key(tabIndex.toString()),
-              // shrinkWrap: true,
-              controller: _scrollControllers[tabIndex],
-              itemCount: data.length,
-              itemBuilder: (context, index) {
-                return BuyItemInfo(
-                  removeItem: removeItem,
-                  key: Key(data[index].orderNo.toString()),
-                  item: data[index],
-                  index: index,
-                );
-              },
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: ScrollConfiguration(
+              behavior: const ScrollBehavior().copyWith(overscroll: false),
+              child: ListView.builder(
+                key: Key(tabIndex.toString()),
+                // shrinkWrap: true,
+                controller: _scrollControllers[tabIndex],
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return BuyItemInfo(
+                    removeItem: removeItem,
+                    key: Key(data[index].orderNo.toString()),
+                    item: data[index],
+                    index: index,
+                  );
+                },
+              ),
             ),
           ),
           onRefresh: () async {
