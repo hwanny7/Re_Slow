@@ -67,8 +67,6 @@ public class ChatService {
 		FirebaseMessagingException {
 		String roomId = chatMessage.getRoomId();
 
-		System.out.println("!!sendMessage로 들어옴!!");
-
 		Member receiver = findReceiver(roomId, chatMessage.getSender());
 		System.out.println("보내는사람 찾음: " + receiver.getNickname());
 

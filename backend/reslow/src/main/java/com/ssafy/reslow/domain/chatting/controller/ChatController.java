@@ -143,7 +143,7 @@ public class ChatController {
 
 		System.out.println("데이터는 안갈거니?????????????????");
 		System.out.println(requestDTO.getRoomId());
-		firebaseCloudMessageService.sendMessageTo(FcmMessage.SendMessage.builder()
+		firebaseCloudMessageService.sendMessageTo(FcmMessage.SendChatMessage.builder()
 			.targetToken(
 				requestDTO.getTargetToken())
 			.title(requestDTO.getTitle())
