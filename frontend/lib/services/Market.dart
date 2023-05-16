@@ -60,3 +60,17 @@ Future<Response> getDelivery(Map<String, dynamic> queryParams) async {
 
   return response;
 }
+
+Future<Response> getTotalSettlement(Map<String, dynamic>? queryParams) async {
+  Response response = await dioClient.dio
+      .get('/settlements/amount', queryParameters: queryParams);
+
+  return response;
+}
+
+Future<Response> getSettlementList(Map<String, dynamic> queryParams) async {
+  Response response =
+      await dioClient.dio.get('/settlements', queryParameters: queryParams);
+
+  return response;
+}
