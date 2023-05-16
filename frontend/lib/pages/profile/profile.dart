@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> {
               children: [
                 // Profile
                 Container(
-                  height: 150,
+                  height: 140,
                   color: Colors.grey[300],
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -137,11 +137,11 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                // const SizedBox(height: 20),
                 Container(
                   color: Colors.green,
                   padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
