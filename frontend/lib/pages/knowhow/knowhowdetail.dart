@@ -43,7 +43,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
         'Authorization': 'Bearer $token',
       }),
     );
-    print(response.data);
+
     return response.data;
   }
 
@@ -83,7 +83,7 @@ class _KnowHowDetailState extends State<KnowHowDetail> {
                       Container(
                           margin: const EdgeInsets.fromLTRB(0, 0, 16, 0),
                           child: Text(
-                            content["date"] ?? "",
+                            content["date"]?.replaceAll('T', ' ') ?? "",
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w100,
