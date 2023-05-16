@@ -28,6 +28,11 @@ class UserPreferences {
     prefs.setBool("existAccount", true);
   }
 
+  Future<void> changeProfilePicture(String newImage) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("profileImg", newImage);
+  }
+
   Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
