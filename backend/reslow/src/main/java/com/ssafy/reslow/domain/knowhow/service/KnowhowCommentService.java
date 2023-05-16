@@ -121,11 +121,11 @@ public class KnowhowCommentService {
 		IOException,
 		FirebaseMessagingException {
 
-		ChatFcmMessage.SendCommentMessage sendCommentMessage = ChatFcmMessage.SendCommentMessage.of(
+		ChatFcmMessage.SendCommentOrderMessage sendCommentMessage = ChatFcmMessage.SendCommentOrderMessage.of(
 			deviceToken, knowhow.getTitle(), content,
 			knowhow.getNo(), senderNickname);
 
-		FirebaseCloudMessageService.sendCommentMessageTo(sendCommentMessage);
+		FirebaseCloudMessageService.sendCommentOrderMessageTo(sendCommentMessage);
 	}
 
 }
