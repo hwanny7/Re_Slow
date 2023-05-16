@@ -357,11 +357,14 @@ class _BuyItemState extends State<BuyItem> {
                       const SizedBox(
                         width: 20.0,
                       ),
-                      Text(
-                        widget.item!.title,
-                        style: const TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      )
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.6,
+                          child: Text(widget.item!.title,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ))),
                     ],
                   ),
                   const Divider(

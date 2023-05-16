@@ -37,8 +37,8 @@ class AuthProvider with ChangeNotifier {
       body: json.encode(payload),
       headers: {'Content-Type': 'application/json'},
     );
-    Map<String, dynamic> responseData = json.decode(response.body);
-    print(responseData);
+    Map<String, dynamic> responseData =
+        json.decode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
       User authUser = User.fromJson(responseData);
@@ -53,7 +53,7 @@ class AuthProvider with ChangeNotifier {
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
 
-      result = {'status': false, 'message': responseData['error']};
+      result = {'status': false, 'message': responseData['message']};
     }
     return result;
   }

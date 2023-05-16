@@ -114,6 +114,13 @@ class _DeliveryCheckState extends State<DeliveryCheck> {
                                     ),
                                   ],
                                 ),
+                                const Divider(
+                                  thickness: 1.5,
+                                  color: Colors.black,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
                                 Padding(
                                   padding: EdgeInsets.only(top: 10),
                                   child: Row(
@@ -147,44 +154,45 @@ class _DeliveryCheckState extends State<DeliveryCheck> {
                                     ],
                                   ),
                                 ),
-                                Expanded(
-                                  child: ListView.builder(
-                                    reverse: true,
-                                    itemCount: data?["trackingDetails"].length,
-                                    itemBuilder: (context, index) {
-                                      final detail =
-                                          data?["trackingDetails"][index];
-                                      return Container(
-                                          color: index % 2 == 1
-                                              ? Colors.blue[100]
-                                              : null,
-                                          child: ListTile(
-                                            title: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(detail["timeString"],
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(detail["where"],
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(detail["kind"],
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
-                                            ),
-                                          ));
-                                    },
-                                  ),
-                                )
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                ListView.builder(
+                                  reverse: true,
+                                  shrinkWrap: true,
+                                  itemCount: data?["trackingDetails"].length,
+                                  itemBuilder: (context, index) {
+                                    final detail =
+                                        data?["trackingDetails"][index];
+                                    return Container(
+                                        color: index % 2 == 1
+                                            ? Colors.blue[100]
+                                            : null,
+                                        child: ListTile(
+                                          title: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(detail["timeString"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(detail["where"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(detail["kind"],
+                                                  style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                            ],
+                                          ),
+                                        ));
+                                  },
+                                ),
                               ],
                             ))
                     : CircularProgressIndicator())));
