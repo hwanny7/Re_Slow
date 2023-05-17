@@ -116,7 +116,7 @@ public class OrderService {
 
 		// 상품 알림
 		Device device = deviceRepository.findByMember(seller)
-			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+			.orElse(null);
 
 		// 알림을 꺼놓지 않았다면
 		boolean status = (boolean)redisTemplate.opsForHash()
