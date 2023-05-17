@@ -108,13 +108,6 @@ public class MemberController {
 		return memberService.registAccount(memberNo, request);
 	}
 
-	@PutMapping("/account")
-	public Map<String, Long> updateAccount(Authentication authentication,
-		@RequestBody MemberAccountRequest request) {
-		Long memberNo = Long.parseLong(authentication.getName());
-		return memberService.updateAccount(memberNo, request);
-	}
-
 	@GetMapping("/info")
 	public MemberNoNickPicResponse getMemberNoAndNickname(Authentication authentication) {
 		Long memberNo = Long.parseLong(authentication.getName());
