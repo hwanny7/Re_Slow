@@ -81,9 +81,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             .map((json) => Recommend3.fromJson(json))
             .toList();
       });
-      setState(() {
-        displayrecommends3 = recommends3.sublist(0, 3);
-      });
+      if (recommends3.length >= 3) {
+        setState(() {
+          displayrecommends3 = recommends3.sublist(0, 3);
+        });
+      } else {
+        setState(() {
+          displayrecommends3 = recommends3;
+        });
+      }
     } else {
       print('HTTP request failed with status: ${response3.statusCode}');
     }
