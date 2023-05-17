@@ -5,6 +5,7 @@ import 'package:reslow/pages/knowhow/knowhowdetail.dart';
 import 'package:reslow/utils/date.dart';
 import 'package:reslow/pages/market/item_detail.dart';
 import 'package:reslow/utils/shared_preference.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'coupondownload.dart';
 import 'package:reslow/utils/navigator.dart';
 import 'package:dio/dio.dart';
@@ -102,30 +103,64 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Future<void> requestAlarmPermission() async {
-    // final PermissionStatus status = await Permission.alarm.request();
-    final PermissionStatus cameraStatus = await Permission.camera.status;
-    // final PermissionStatus alarmStatus = await Permission.alarm.status;
-    if (!cameraStatus.isGranted) {
-      requestCameraPermission();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? permission = prefs.getBool('permission');
+
+    prefs.setBool('permission', false);
+    if (permission == null || permission == false) {
+      final PermissionStatus alarmStatus = await Permission.notification.status;
+      if (!alarmStatus.isGranted) {
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('알림 설정'),
+                content: const Text("채팅, 댓글, 주문 알림을 위해 권한 허용을 해주세요."),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('다시 보지 않기',
+                        style: TextStyle(color: Colors.red)),
+                    onPressed: () async {
+                      prefs.setBool('permission', true);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('설정하러 가기'),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await openAppSettings();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
     }
-    // Map<Permission, PermissionStatus> statuses = await [
-    //   Permission.camera,
-    //   Permission.notification,
-    // ].request();
-
-    // if (!alarmStatus.isGranted) {
-    //   requestAlarmPermission();
-    // }
   }
 
-  Future<void> requestCameraPermission() async {
-    final status = await Permission.camera.request();
-    print(status.isGranted);
-  }
-
-  // Future<void> requestAlarmPermission() async {
-  //   final status = await Permission.alarm.request();
-  //   print(status.isGranted);
+  // void requestNotificationPermission() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: Text('알림 권한'),
+  //         content: Text("채팅, 댓글, 주문 알림을 위해 권한 허용을 해주세요."),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: Text('설정 하러가기'),
+  //             onPressed: () async {
+  //               Navigator.of(context).pop();
+  //               await openAppSettings();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
   // }
 
   @override
@@ -134,6 +169,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     WidgetsBinding.instance!.removeObserver(this);
     fetchData();
     getUserData();
+    requestAlarmPermission();
   }
 
   @override
