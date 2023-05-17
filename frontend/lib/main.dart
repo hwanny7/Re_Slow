@@ -14,6 +14,7 @@ import 'package:reslow/providers/user_provider.dart';
 import 'package:reslow/utils/shared_preference.dart';
 import 'package:reslow/pages/knowhow/knowhowregister.dart';
 import 'pages/auth/login.dart';
+import 'pages/market/item_detail.dart';
 import 'splashscreen.dart';
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
