@@ -16,6 +16,7 @@ class _CuponListState extends State<CuponList> {
   List<MyCoupons> couponList = [];
   bool isLoading = false;
   bool isLast = false;
+  bool isFirst = true;
   int page = 0;
   final ScrollController _scrollController = ScrollController();
 
@@ -46,6 +47,7 @@ class _CuponListState extends State<CuponList> {
         print("empty");
       } else {
         setState(() {
+          isFirst = false;
           couponList = List<MyCoupons>.from(
               jsonData["content"].map((coupon) => MyCoupons.fromJson(coupon)));
         });
@@ -89,90 +91,93 @@ class _CuponListState extends State<CuponList> {
             ),
           ],
         ),
-        body: couponList.isEmpty
-            ? const Center(child: Text("등록된 쿠폰이 없습니다."))
-            : Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                color: Colors.grey[200],
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        itemCount: couponList.length,
-                        itemBuilder: (context, index) {
-                          return Stack(
-                            children: [
-                              Container(
-                                  color: Colors.white,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 16, horizontal: 16),
-                                  height: 150,
-                                  width: double.infinity,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        couponList[index].name ?? '',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
-                                        ),
+        body: isFirst
+            ? Center(child: CircularProgressIndicator())
+            : couponList.isEmpty
+                ? const Center(child: Text("등록된 쿠폰이 없습니다."))
+                : Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    color: Colors.grey[200],
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            itemCount: couponList.length,
+                            itemBuilder: (context, index) {
+                              return Stack(
+                                children: [
+                                  Container(
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16, horizontal: 16),
+                                      height: 150,
+                                      width: double.infinity,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            couponList[index].name ?? '',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          Text(
+                                            // couponList[index].startDate ?? '',
+                                            '${couponList[index].startDate?.substring(0, couponList[index].startDate!.length - 3).replaceAll('T', ' ')} ~ ${couponList[index].startDate?.substring(0, couponList[index].startDate!.length - 3).replaceAll('T', ' ')}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 40,
+                                          ),
+                                          Text(
+                                            // '${priceDot(coupon!.discountAmount)}',
+                                            couponList[index].discountType == 1
+                                                ? priceDot(couponList[index]
+                                                    .discountAmount!) // Amount discount
+                                                : '${couponList[index].discountPercent}% OFF', // Percent discount
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.blue,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                  Positioned(
+                                    bottom: 25.0,
+                                    right: 16.0,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        widget.setCoupon!(couponList[index]);
+                                        Navigator.of(context).pop();
+                                      },
+                                      style: OutlinedButton.styleFrom(
+                                        side: const BorderSide(
+                                            color: Colors.grey),
+                                        elevation: 0,
                                       ),
-                                      const SizedBox(
-                                        height: 15,
-                                      ),
-                                      Text(
-                                        // couponList[index].startDate ?? '',
-                                        '${couponList[index].startDate?.substring(0, couponList[index].startDate!.length - 3).replaceAll('T', ' ')} ~ ${couponList[index].startDate?.substring(0, couponList[index].startDate!.length - 3).replaceAll('T', ' ')}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 40,
-                                      ),
-                                      Text(
-                                        // '${priceDot(coupon!.discountAmount)}',
-                                        couponList[index].discountType == 1
-                                            ? priceDot(couponList[index]
-                                                .discountAmount!) // Amount discount
-                                            : '${couponList[index].discountPercent}% OFF', // Percent discount
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                              Positioned(
-                                bottom: 25.0,
-                                right: 16.0,
-                                child: OutlinedButton(
-                                  onPressed: () {
-                                    widget.setCoupon!(couponList[index]);
-                                    Navigator.of(context).pop();
-                                  },
-                                  style: OutlinedButton.styleFrom(
-                                    side: const BorderSide(color: Colors.grey),
-                                    elevation: 0,
-                                  ),
-                                  child: const Text('적용하기'),
-                                ),
-                              )
-                            ],
-                          );
-                        },
-                      ),
-                    )
-                  ],
-                )));
+                                      child: const Text('적용하기'),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    )));
   }
 }
