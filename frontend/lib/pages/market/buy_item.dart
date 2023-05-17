@@ -29,6 +29,7 @@ class _BuyItemState extends State<BuyItem> {
   Shipment registeredShipment = Shipment();
 
   String price = '';
+  int defaultPrice = 0;
   int intPrice = 0;
   String deliveryFee = '';
   int? issuedCouponNo;
@@ -43,6 +44,7 @@ class _BuyItemState extends State<BuyItem> {
     price = priceDot(widget.item!.price);
     deliveryFee = priceDot(widget.item!.deliveryFee);
     intPrice = widget.item!.price + widget.item!.deliveryFee;
+    defaultPrice = widget.item!.price + widget.item!.deliveryFee;
     fetchData();
   }
 
@@ -65,9 +67,10 @@ class _BuyItemState extends State<BuyItem> {
         coupon?.discountAmount =
             (widget.item!.price * coupon!.discountPercent ~/ 100);
       }
-      intPrice = intPrice < coupon!.discountAmount
+      print(coupon?.discountAmount);
+      intPrice = defaultPrice < coupon!.discountAmount
           ? 0
-          : (intPrice - coupon!.discountAmount);
+          : (defaultPrice - coupon!.discountAmount);
     });
   }
 
