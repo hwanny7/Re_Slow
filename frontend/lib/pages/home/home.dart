@@ -41,7 +41,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         await dioClient.dio.get('/coupons', queryParameters: queryParams);
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
-      print(jsonData);
       List<Coupon> fetchedCoupons = List<Coupon>.from(
           jsonData['content'].map((itemJson) => Coupon.fromJson(itemJson)));
       setState(() {
