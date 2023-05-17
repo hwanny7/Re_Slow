@@ -10,6 +10,7 @@ import 'package:reslow/utils/navigator.dart';
 import 'package:dio/dio.dart';
 import 'package:reslow/utils/dio_client.dart';
 import 'package:reslow/models/recommend.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -94,6 +95,33 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     user = await UserPreferences().getUser();
     // setState(() {});
   }
+
+  Future<void> requestAlarmPermission() async {
+    // final PermissionStatus status = await Permission.alarm.request();
+    final PermissionStatus cameraStatus = await Permission.camera.status;
+    // final PermissionStatus alarmStatus = await Permission.alarm.status;
+    if (!cameraStatus.isGranted) {
+      requestCameraPermission();
+    }
+    // Map<Permission, PermissionStatus> statuses = await [
+    //   Permission.camera,
+    //   Permission.notification,
+    // ].request();
+
+    // if (!alarmStatus.isGranted) {
+    //   requestAlarmPermission();
+    // }
+  }
+
+  Future<void> requestCameraPermission() async {
+    final status = await Permission.camera.request();
+    print(status.isGranted);
+  }
+
+  // Future<void> requestAlarmPermission() async {
+  //   final status = await Permission.alarm.request();
+  //   print(status.isGranted);
+  // }
 
   @override
   void initState() {
