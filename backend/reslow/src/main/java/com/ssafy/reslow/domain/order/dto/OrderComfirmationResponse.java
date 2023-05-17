@@ -35,7 +35,7 @@ public class OrderComfirmationResponse {
         if (issuedCoupon != null) {
             Coupon coupon = issuedCoupon.getCoupon();
             if(coupon.getDiscountType() == 1) { // 금액
-                discountPrice = coupon.getDiscountAmount();
+                discountPrice = (product.getPrice()<=coupon.getDiscountAmount())?product.getPrice():product.getPrice()-coupon.getDiscountAmount();
             } else {
                 double discount = issuedCoupon.getCoupon().getDiscountPercent() * 0.01;
                 discountPrice = (int) (totalPrice * discount);
