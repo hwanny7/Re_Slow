@@ -133,6 +133,7 @@ class _MarketState extends State<Market> {
                         behavior:
                             const ScrollBehavior().copyWith(overscroll: false),
                         child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
                           controller: _scrollController,
                           itemCount: itemList.length,
                           itemBuilder: (context, idx) {
