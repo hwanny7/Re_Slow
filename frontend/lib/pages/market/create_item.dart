@@ -79,9 +79,21 @@ class _CreateArticleState extends State<CreateArticle> {
     if (response.statusCode == 200) {
       Map<String, dynamic> jsonData = response.data;
       if (context.mounted) {
-        Navigator.of(context).popUntil((route) => route.isFirst);
-        leftToRightNavigator(
-            ItemDetail(itemPk: jsonData['productNo']), context);
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 500),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(-1, 0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: ItemDetail(itemPk: jsonData['productNo']),
+              );
+            },
+          ),
+        );
       }
     } else {
       print('HTTP request failed with status: ${response.statusCode}');
