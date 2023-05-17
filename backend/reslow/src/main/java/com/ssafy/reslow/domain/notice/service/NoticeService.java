@@ -30,8 +30,13 @@ public class NoticeService {
 	private final RedisTemplate redisTemplate;
 
 	public void updateNoticeStatus(Long memberNo, NoticeStatusRequest request) {
-		Member member = memberRepository.findById(memberNo).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-		redisTemplate.opsForHash().put("alert_" + memberNo, request.getType(), request.isAlert());
+		if (request.getType().size() == 1) {
+			redisTemplate.opsForHash().put("alert_" + memberNo, request.getType(), request.isAlert());
+		} else { // 전체끄기
+			request.getType().forEach(type -> {
+				redisTemplate.opsForHash().put("alert_" + memberNo, request.getType(), false);
+			});
+		}
 	}
 
 	public List<NoticeResponse> getNoticeList(Long memberNo, Pageable pageable) {
