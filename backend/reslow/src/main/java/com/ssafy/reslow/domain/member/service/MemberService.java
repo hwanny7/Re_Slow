@@ -199,23 +199,14 @@ public class MemberService {
         Member member = memberRepository.findById(memberNo)
             .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         if (member.getMemberAccount() != null) {
-            throw new CustomException(ALREADY_EXISTS_ACCOUNT);
+            MemberAccount memberAccount = member.getMemberAccount();
+            MemberAccount updatedMemberAccount = MemberAccount.of(request);
+            memberAccount.updateAccount(updatedMemberAccount);
+            member.registAccount(memberAccount);
+        } else {
+            MemberAccount memberAccount = MemberAccount.of(request);
+            member.registAccount(memberAccount);
         }
-        MemberAccount memberAccount = MemberAccount.of(request);
-        member.registAccount(memberAccount);
-        Map<String, Long> map = new HashMap<>();
-        map.put("memberNo", memberNo);
-        return map;
-    }
-
-    @Transactional
-    public Map<String, Long> updateAccount(Long memberNo, MemberAccountRequest request) {
-        Member member = memberRepository.findById(memberNo)
-            .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-        MemberAccount memberAccount = member.getMemberAccount();
-        MemberAccount updatedMemberAccount = MemberAccount.of(request);
-        memberAccount.updateAccount(updatedMemberAccount);
-        member.registAccount(memberAccount);
         Map<String, Long> map = new HashMap<>();
         map.put("memberNo", memberNo);
         return map;
