@@ -2,11 +2,6 @@ package com.ssafy.reslow.domain.member.service;
 
 import static com.ssafy.reslow.global.exception.ErrorCode.*;
 
-import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
-import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
-import com.ssafy.reslow.domain.order.entity.Order;
-import com.ssafy.reslow.domain.product.entity.Product;
-import com.ssafy.reslow.domain.product.repository.ProductRepository;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.reslow.domain.knowhow.entity.Knowhow;
 import com.ssafy.reslow.domain.knowhow.entity.KnowhowCategory;
 import com.ssafy.reslow.domain.knowhow.repository.KnowhowCategoryRepository;
+import com.ssafy.reslow.domain.knowhow.repository.KnowhowRepository;
 import com.ssafy.reslow.domain.member.dto.MemberAccountRequest;
 import com.ssafy.reslow.domain.member.dto.MemberAddressResponse;
 import com.ssafy.reslow.domain.member.dto.MemberIdRequest;
@@ -220,8 +217,7 @@ public class MemberService {
         if (preToken.equals("null")) {
             device = Device.of(member, newToken);
         } else {
-            device = deviceRepository.findByMemberAndDeviceToken(member, preToken)
-                .orElse(Device.of(member, newToken));
+            device = deviceRepository.findByMember(member).orElse(Device.of(member, newToken));
             device.updateToken(newToken);
         }
         deviceRepository.save(device);
@@ -287,14 +283,14 @@ public class MemberService {
 
         ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
         for (Product product : products) {
-            zSetOperations.incrementScore("product", product.getNo()+"", 1);
+            zSetOperations.incrementScore("product", product.getNo() + "", 1);
         }
 
         List<Knowhow> knowhows = knowhowRepository.findAll();
 
         ZSetOperations<String, String> zSetOperations1 = redisTemplate.opsForZSet();
         for (Knowhow knowhow : knowhows) {
-            zSetOperations1.incrementScore("knowhow", knowhow.getNo()+"", 1);
+            zSetOperations1.incrementScore("knowhow", knowhow.getNo() + "", 1);
         }
         return "OK";
     }
