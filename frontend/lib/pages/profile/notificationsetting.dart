@@ -126,7 +126,7 @@ class _NotificationSettingState extends State<NotificationSetting> {
             Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: SwitchListTile(
-                title: Text('주문서 알림'),
+                title: Text('주문 알림'),
                 value: _orderNotificationEnabled,
                 onChanged: (bool value) {
                   setState(() {
