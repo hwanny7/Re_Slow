@@ -37,10 +37,12 @@ import com.ssafy.reslow.global.exception.CustomException;
 import com.ssafy.reslow.global.exception.ErrorCode;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class KnowhowCommentService {
 
 	private final KnowhowCommentRepository commentRepository;
@@ -74,8 +76,14 @@ public class KnowhowCommentService {
 		Long savedCommentNo = commentRepository.save(comment).getNo();
 
 		// 알림을 꺼놓지 않았다면
-		boolean status = (boolean)redisTemplate.opsForHash()
-			.get("alert_" + knowhow.getMember().getNo(), MessageType.COMMENT);
+		boolean status = false;
+		try {
+			status = (boolean)redisTemplate.opsForHash()
+				.get("alert_" + knowhow.getMember().getNo(), MessageType.COMMENT);
+		} catch (Exception e) {
+			log.error("redis에 디바이스별 상태가 나타나지 않음: " + e);
+		}
+
 		if (status) {
 			Device device = deviceRepository.findByMember(knowhow.getMember())
 				.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));

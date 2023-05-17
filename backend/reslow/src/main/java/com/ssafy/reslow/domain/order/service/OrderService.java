@@ -119,8 +119,13 @@ public class OrderService {
 			.orElse(null);
 
 		// 알림을 꺼놓지 않았다면
-		boolean status = (boolean)redisTemplate.opsForHash()
-			.get("alert_" + product.getMember().getNo(), MessageType.ORDER);
+		boolean status = false;
+		try {
+			status = (boolean)redisTemplate.opsForHash()
+				.get("alert_" + product.getMember().getNo(), MessageType.ORDER);
+		} catch (Exception e) {
+			log.error("redis에 디바이스별 상태가 나타나지 않음: " + e);
+		}
 
 		if (device != null && status) {
 			// 작성자에게 fcm 알림을 보낸다.
