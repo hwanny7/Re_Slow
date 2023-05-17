@@ -102,6 +102,8 @@ public class ChatService {
 			try {
 				status = (boolean)redisTemplate.opsForHash().get("alert_" + receiver.getNo(), MessageType.CHATTING);
 			} catch (Exception e) {
+				// redis에 alert 상태 정보가 없다면 추가함
+				redisTemplate.opsForHash().put("alert_" + receiver.getNo(), MessageType.CHATTING, true);
 				log.error("redis에 디바이스별 상태가 나타나지 않음: " + e);
 			}
 			if (status) {
