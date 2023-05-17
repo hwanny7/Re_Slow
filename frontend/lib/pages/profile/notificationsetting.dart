@@ -8,11 +8,9 @@ class NotificationSetting extends StatefulWidget {
 
 class _NotificationSettingState extends State<NotificationSetting> {
   bool _allNotificationEnabled = true;
-  bool _likeNotificationEnabled = true;
   bool _commentNotificationEnabled = true;
-  bool _chatNotificationEnabled = true;
-  bool _eventNotificationEnabled = true;
-  bool _moneyNotificationEnabled = true;
+  bool _chattingNotificationEnabled = true;
+  bool _orderNotificationEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -33,32 +31,14 @@ class _NotificationSettingState extends State<NotificationSetting> {
               onChanged: (bool value) {
                 setState(() {
                   _allNotificationEnabled = value;
-                  _likeNotificationEnabled = value;
                   _commentNotificationEnabled = value;
-                  _chatNotificationEnabled = value;
-                  _eventNotificationEnabled = value;
-                  _moneyNotificationEnabled = value;
+                  _chattingNotificationEnabled = value;
+                  _orderNotificationEnabled = value;
                 });
               },
             ),
             Divider(),
-            Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: SwitchListTile(
-                title: Text('관심 알림'),
-                value: _likeNotificationEnabled,
-                onChanged: (bool value) {
-                  setState(() {
-                    _likeNotificationEnabled = value;
-                    _allNotificationEnabled = _likeNotificationEnabled &&
-                        _commentNotificationEnabled &&
-                        _chatNotificationEnabled &&
-                        _eventNotificationEnabled &&
-                        _moneyNotificationEnabled;
-                  });
-                },
-              ),
-            ),
+            // COMMENT
             Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: SwitchListTile(
@@ -67,79 +47,41 @@ class _NotificationSettingState extends State<NotificationSetting> {
                 onChanged: (bool value) {
                   setState(() {
                     _commentNotificationEnabled = value;
-                    _allNotificationEnabled = _likeNotificationEnabled &&
-                        _commentNotificationEnabled &&
-                        _chatNotificationEnabled &&
-                        _eventNotificationEnabled &&
-                        _moneyNotificationEnabled;
+                    _allNotificationEnabled = _commentNotificationEnabled &&
+                        _chattingNotificationEnabled &&
+                        _orderNotificationEnabled;
                   });
                 },
               ),
             ),
+            // CHATTING
             Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: SwitchListTile(
                 title: Text('채팅 알림'),
-                value: _chatNotificationEnabled,
+                value: _chattingNotificationEnabled,
                 onChanged: (bool value) {
                   setState(() {
-                    _chatNotificationEnabled = value;
-                    _allNotificationEnabled = _likeNotificationEnabled &&
-                        _commentNotificationEnabled &&
-                        _chatNotificationEnabled &&
-                        _eventNotificationEnabled &&
-                        _moneyNotificationEnabled;
+                    _chattingNotificationEnabled = value;
+                    _allNotificationEnabled = _commentNotificationEnabled &&
+                        _chattingNotificationEnabled &&
+                        _orderNotificationEnabled;
                   });
                 },
               ),
             ),
-                        Padding(
+            // ORDER
+            Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: SwitchListTile(
                 title: Text('주문서 알림'),
-                value: _chatNotificationEnabled,
+                value: _orderNotificationEnabled,
                 onChanged: (bool value) {
                   setState(() {
-                    _chatNotificationEnabled = value;
-                    _allNotificationEnabled = _likeNotificationEnabled &&
-                        _commentNotificationEnabled &&
-                        _chatNotificationEnabled &&
-                        _eventNotificationEnabled &&
-                        _moneyNotificationEnabled;
-                  });
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: SwitchListTile(
-                title: Text('이벤트 알림'),
-                value: _eventNotificationEnabled,
-                onChanged: (bool value) {
-                  setState(() {
-                    _eventNotificationEnabled = value;
-                    _allNotificationEnabled = _likeNotificationEnabled &&
-                        _commentNotificationEnabled &&
-                        _chatNotificationEnabled &&
-                        _eventNotificationEnabled &&
-                        _moneyNotificationEnabled;
-                  });
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: SwitchListTile(
-                title: Text('정산 알림'),
-                value: _moneyNotificationEnabled,
-                onChanged: (bool value) {
-                  setState(() {
-                    _moneyNotificationEnabled = value;
-                    _allNotificationEnabled = _likeNotificationEnabled &&
-                        _commentNotificationEnabled &&
-                        _chatNotificationEnabled &&
-                        _eventNotificationEnabled &&
-                        _moneyNotificationEnabled;
+                    _orderNotificationEnabled = value;
+                    _allNotificationEnabled = _commentNotificationEnabled &&
+                        _chattingNotificationEnabled &&
+                        _orderNotificationEnabled;
                   });
                 },
               ),
