@@ -4,8 +4,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -44,15 +42,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@EventListener
 	public void handelWebSocketDisConnectListener(SessionDisconnectEvent event) {
-		Long senderNo = Long.parseLong(
-			SecurityContextHolder.getContext().getAuthentication().getName());
-		StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-		String sessionId = headerAccessor.getSessionId();
-
-		System.out.println("해당 소켓에서 나감!!: " + sessionId + " ,멤버: " + senderNo);
-		redisTemplate.opsForSet().remove(sessionId, senderNo);
-
-		// chatService.removeUserSocketInfo(roomId, senderNo);
 		log.info("소켓 끊어짐 ㅂㅂㅂㅂ");
 	}
 }
