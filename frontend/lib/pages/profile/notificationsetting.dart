@@ -16,11 +16,20 @@ class _NotificationSettingState extends State<NotificationSetting> {
   bool _orderNotificationEnabled = true;
 
 // api request
-  void sendPatchRequest(bool alertValue) async {
+  void sendPatchRequest(bool value, String notificationType) async {
     try {
+      List<String> type = [];
+      if (notificationType == 'ALL') {
+        type.addAll(['COMMENT', 'CHATTING', 'ORDER']);
+      } else {
+        if (_commentNotificationEnabled) type.add('COMMENT');
+        if (_chattingNotificationEnabled) type.add('CHATTING');
+        if (_orderNotificationEnabled) type.add('ORDER');
+      }
+
       Map<String, dynamic> requestBody = {
-        'type': ['CHATTING', 'COMMENT', 'ORDER'],
-        'alert': alertValue,
+        'type': type, // ['CHATTING', 'ORDER', 'COMMENT'] _ 리스트
+        'alert': value,
       };
       Response response =
           await dioClient.dio.patch('/notices', data: requestBody);
@@ -51,13 +60,16 @@ class _NotificationSettingState extends State<NotificationSetting> {
                 style: TextStyle(fontSize: 20),
               ),
               value: _allNotificationEnabled,
-              onChanged: (bool value) {
+              onChanged: (
+                bool value,
+              ) {
                 setState(() {
                   _allNotificationEnabled = value;
                   _commentNotificationEnabled = value;
                   _chattingNotificationEnabled = value;
                   _orderNotificationEnabled = value;
-                  sendPatchRequest(value); // Call the method with the new value
+                  sendPatchRequest(
+                      value, 'ALL'); // Call the method with the new value
                 });
               },
             ),
@@ -75,7 +87,7 @@ class _NotificationSettingState extends State<NotificationSetting> {
                         _chattingNotificationEnabled &&
                         _orderNotificationEnabled;
                     sendPatchRequest(
-                        value); // Call the method with the new value
+                        value, "COMMENT"); // Call the method with the new value
                     print(
                         'Comment notification enabled: $_commentNotificationEnabled');
                     print(
@@ -98,8 +110,8 @@ class _NotificationSettingState extends State<NotificationSetting> {
                     _allNotificationEnabled = _commentNotificationEnabled &&
                         _chattingNotificationEnabled &&
                         _orderNotificationEnabled;
-                    sendPatchRequest(
-                        value); // Call the method with the new value
+                    sendPatchRequest(value,
+                        "CHATTING"); // Call the method with the new value
                     print(
                         'Comment notification enabled: $_commentNotificationEnabled');
                     print(
@@ -123,7 +135,7 @@ class _NotificationSettingState extends State<NotificationSetting> {
                         _chattingNotificationEnabled &&
                         _orderNotificationEnabled;
                     sendPatchRequest(
-                        value); // Call the method with the new value
+                        value, "ORDER"); // Call the method with the new value
                     print(
                         'Comment notification enabled: $_commentNotificationEnabled');
                     print(
