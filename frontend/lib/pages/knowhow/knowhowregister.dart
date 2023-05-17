@@ -18,7 +18,11 @@ class KnowhowRegister extends StatefulWidget {
 }
 
 class _KnowhowRegisterState extends State<KnowhowRegister> {
+  bool isSubmit = false;
+
   Future<void> _requestRegister() async {
+    if (isSubmit) return;
+
     //제목 선택했는지 확인
     if (title == "") {
       FlutterDialog("글의 제목을 입력해주세요");
@@ -68,6 +72,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
     final token = await _getTokenFromSharedPreferences();
     print("token $token");
 
+    isSubmit = true;
     try {
       final response = await dio
           .post(
@@ -79,7 +84,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
       )
           .then((res) {
         // Use the appended endpoint
-        Timer(Duration(milliseconds: 500), () {
+        Timer(Duration(milliseconds: 300), () {
           Navigator.pop(context);
         });
       });
@@ -88,6 +93,7 @@ class _KnowhowRegisterState extends State<KnowhowRegister> {
       //       context, MaterialPageRoute(builder: (context) => KnowHow()));
       // });
     } on DioError catch (e) {
+      isSubmit = false;
       print('error: $e');
     }
   }

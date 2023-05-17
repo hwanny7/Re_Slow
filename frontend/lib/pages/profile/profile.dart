@@ -213,7 +213,7 @@ class _ProfileState extends State<Profile> {
                   padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
                   child: Text(
                     '노하우',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     // textAlign: TextAlign.left,
                   ),
                   alignment: Alignment.centerLeft,
@@ -231,7 +231,7 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(8),
                           child: Row(
                             children: [
                               Icon(Icons.edit),
@@ -240,7 +240,7 @@ class _ProfileState extends State<Profile> {
                                       10), // for spacing between icon and text
                               Text(
                                 '내가 쓴 글',
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 18),
                               ),
                             ],
                           ),
@@ -257,7 +257,7 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(8),
                           child: Row(
                             children: [
                               Icon(Icons.star),
@@ -266,7 +266,7 @@ class _ProfileState extends State<Profile> {
                                       10), // for spacing between icon and text
                               Text(
                                 '내가 찜한 글',
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 18),
                               ),
                             ],
                           ),
@@ -278,11 +278,11 @@ class _ProfileState extends State<Profile> {
                       Divider(),
                       // flea market section
                       Container(
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
+                        padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                         child: Text(
                           '플리마켓',
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         alignment: Alignment.centerLeft,
                       ),
@@ -296,7 +296,7 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(8),
                           child: Row(
                             children: [
                               Icon(Icons.shopping_bag),
@@ -305,7 +305,7 @@ class _ProfileState extends State<Profile> {
                                       10), // for spacing between icon and text
                               Text(
                                 '판매 현황',
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 18),
                               ),
                             ],
                           ),
@@ -323,7 +323,7 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.all(8),
                           child: Row(
                             children: [
                               Icon(Icons.shopping_cart),
@@ -332,7 +332,7 @@ class _ProfileState extends State<Profile> {
                                       10), // for spacing between icon and text
                               Text(
                                 '구매 현황',
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 18),
                               ),
                             ],
                           ),
@@ -356,7 +356,7 @@ class _ProfileState extends State<Profile> {
                           );
                         },
                         child: Container(
-                          padding: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(8),
                           alignment: Alignment.centerLeft,
                           child: const Row(
                             children: [
@@ -364,7 +364,7 @@ class _ProfileState extends State<Profile> {
                               SizedBox(width: 10),
                               Text(
                                 '정산 현황',
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 18),
                               ),
                             ],
                           ),
@@ -374,11 +374,11 @@ class _ProfileState extends State<Profile> {
                       Divider(),
                       // Settings
                       Container(
-                        padding: EdgeInsets.fromLTRB(10, 0, 0, 10),
+                        padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                         child: Text(
                           '설정',
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         alignment: Alignment.centerLeft,
                       ),
@@ -397,7 +397,7 @@ class _ProfileState extends State<Profile> {
                                 );
                               },
                               child: Container(
-                                padding: EdgeInsets.all(5),
+                                padding: EdgeInsets.all(8),
                                 child: Row(
                                   children: [
                                     Icon(Icons.settings),
@@ -406,7 +406,7 @@ class _ProfileState extends State<Profile> {
                                             10), // for spacing between icon and text
                                     Text(
                                       '알림설정',
-                                      style: TextStyle(fontSize: 15),
+                                      style: TextStyle(fontSize: 18),
                                     ),
                                   ],
                                 ),
@@ -414,54 +414,6 @@ class _ProfileState extends State<Profile> {
                               ),
                             ),
                             // 알림설정 끝
-                            GestureDetector(
-                              onTap: () {
-                                // Navigate to privacy settings page
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NotificationSetting(),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(5),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.shield),
-                                    SizedBox(
-                                      width: 10,
-                                    ), // for spacing between icon and text
-                                    Text(
-                                      '개인정보',
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.centerLeft,
-                              ),
-                            ),
-                            // 개인정보 끝
-                            GestureDetector(
-                              onTap: () {},
-                              child: Container(
-                                padding: EdgeInsets.all(5),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.warning),
-                                    SizedBox(
-                                      width: 10,
-                                    ), // for spacing between icon and text
-                                    Text(
-                                      '신고하기',
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.centerLeft,
-                              ),
-                            ),
-                            // 신고하기 끝
                             GestureDetector(
                                 onTap: () {
                                   // Navigate to privacy settings page
@@ -475,7 +427,7 @@ class _ProfileState extends State<Profile> {
                                 },
                                 child: GestureDetector(
                                     child: Container(
-                                      padding: EdgeInsets.all(5),
+                                      padding: EdgeInsets.all(8),
                                       alignment: Alignment.centerLeft,
                                       child: const Row(
                                         children: [
@@ -485,7 +437,7 @@ class _ProfileState extends State<Profile> {
                                           ), // for spacing between icon and text
                                           Text(
                                             '로그아웃',
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 18),
                                           ),
                                         ],
                                       ),

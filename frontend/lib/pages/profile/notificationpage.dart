@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'notificationmessage.dart';
-import 'package:reslow/widgets/common/custom_app_bar.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
-import 'package:reslow/utils/dio_client.dart';
+import 'package:reslow/widgets/common/custom_app_bar.dart';
 import 'package:reslow/utils/dio_client.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -15,44 +12,57 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   final DioClient dioClient = DioClient();
+  List<NotificationModel> notifications = [];
+  bool loading = true;
 
-// 이후, trial data 삭제하고 알림 목록 조회 api를 통해 리스트를 채워야
-  List<Map<String, String>> notifications = [
-    {'title': '새로운 채팅', 'subtitle': '춘장 라이언으로부터 채팅이 도착했어요!', 'time': '1시간 전'},
-    {'title': '새로운 알림', 'subtitle': '상품을 받으셨다면 구매확정을 해주세요!', 'time': '3일 전'},
-  ];
+  Future<void> fetchNotifications() async {
+    try {
+      Map<String, dynamic> queryParams = {
+        'page': 0,
+        'size': 10,
+      };
+      Response response =
+          await dioClient.dio.get('/notices', queryParameters: queryParams);
 
-// 살릴 예정
+      if (response.statusCode == 200) {
+        List<dynamic> jsonData = response.data;
+        print('Response data: $jsonData'); // Print the response data
 
-// Future<List<Map<String, dynamic>>> fetchNotifications() async {
-//     try {
-//       final response = await dioClient.dio.get('/notices');
-//       if (response.statusCode == 200) {
-//         final List<dynamic> data = response.data['data'];
-//         final List<Map<String, dynamic>> notifications =
-//             data.map((e) => e as Map<String, dynamic>).toList();
-//         return notifications;
-//       } else {
-//         print('HTTP request failed with status: ${response.statusCode}');
-//         return [];
-//       }
-//     } catch (e) {
-//       print('Error occurred while fetching notifications: $e');
-//       return [];
-//     }
-//   }
+        setState(() {
+          loading = false;
+          notifications = jsonData
+              .map<NotificationModel>(
+                  (notification) => NotificationModel.fromJson(notification))
+              .toList();
+        });
+      } else {
+        print('HTTP request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
+    }
+  }
 
-//  List<Map<String, dynamic>> notifications = [];
+  Future<void> deleteAllNotifications() async {
+    try {
+      final response = await dioClient.dio.delete('/notices/-1');
+      if (response.statusCode == 200) {
+        setState(() {
+          notifications.clear();
+        });
+      } else {
+        print('HTTP request failed with status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('An error occurred: $e');
+    }
+  }
 
-// @override
-//   void initState() {
-//     super.initState();
-//     fetchNotifications().then((data) {
-//       setState(() {
-//         notifications = data;
-//       });
-//     });
-//   }
+  @override
+  void initState() {
+    super.initState();
+    fetchNotifications();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,53 +78,163 @@ class _NotificationPageState extends State<NotificationPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: (context, index) {
-                final notification = notifications[index];
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: NotificationMessage(
-                    title: notification['title'] ?? '',
-                    subtitle: notification['subtitle'] ?? '',
-                    time: notification['time'] ?? '',
-                    // Pass the notifications list to the widget
-                    // notifications: notifications,
-                    // Pass the index of the notification being deleted
-                    // noticeNo 삭제 버튼 클릭한 알림의 index를 함께 보내줘야... notificationNo를 백에서 주는건지 내가 매겨야 하는건지?
-                    onDeletePressed: (index) async {
-                      final noticeNo = notifications[index]['noticeNo'];
-                      final response = await dioClient.dio
-                          .delete('/notices/$noticeNo'); // 알림 삭제
-                      if (response.statusCode == 200) {
-                        setState(() {
-                          notifications.removeAt(index);
-                        });
-                      } else {
-                        print(
-                            'HTTP request failed with status: ${response.statusCode}');
-                      }
-                    },
-                    // onDeleteAllPressed: (index) async {
-                    //   final noticeNo = notifications[index]['noticeNo'];
-                    //   final response = await dioClient.dio
-                    //       .delete('/notices/$noticeNo'); // 알림 삭제
-                    //   if (response.statusCode == 200) {
-                    //     setState(() {
-                    //       notifications.removeAt(index);
-                    //     });
-                    //   } else {
-                    //     print(
-                    //         'HTTP request failed with status: ${response.statusCode}');
-                    //   }
-                    // },
-                  ),
-                );
-              },
-            ),
+            child: loading
+                ? Center(
+                    child: CircularProgressIndicator(), // 로딩중
+                  )
+                : notifications.isEmpty
+                    ? Center(
+                        child: Text(
+                          '받은 알림이 없습니다.',
+                          style: TextStyle(
+                            fontSize: 20, // Adjust the font size as desired
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 80, 80, 80),
+                          ),
+                        ), // 알림 없음
+                      )
+                    : Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                right: 20.0), // Set the desired right padding
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: OutlinedButton(
+                                onPressed: deleteAllNotifications,
+                                style: ButtonStyle(
+                                  side: MaterialStateProperty.all(BorderSide(
+                                      color: Colors
+                                          .green)), // Set the outline color
+                                  overlayColor: MaterialStateProperty.all(
+                                      Colors.green.withOpacity(
+                                          0.1)), // Set the overlay color
+                                ),
+                                child: Text(
+                                  '전체 삭제',
+                                  style: TextStyle(
+                                    fontSize:
+                                        18, // Adjust the font size as desired
+                                    color:
+                                        const Color.fromARGB(255, 80, 80, 80),
+                                  ),
+                                ), // 전체 삭제 버튼
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: notifications.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                NotificationModel notification =
+                                    notifications[index];
+                                final noticeNo = notification.noticeNo;
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  child: Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Icon(Icons.notifications,
+                                            size: 30,
+                                            color: Colors.green.shade400),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                notification.title ?? '',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                notification.senderNickname ??
+                                                    '',
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                              SizedBox(height: 5),
+                                              Text(
+                                                notification.time ?? '',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.grey),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        // 알림 개별 삭제
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.remove_circle,
+                                            size: 22,
+                                            color: Colors.red.shade400,
+                                          ),
+                                          onPressed: () async {
+                                            final response = await dioClient.dio
+                                                .delete('/notices/$noticeNo');
+                                            if (response.statusCode == 200) {
+                                              setState(() {
+                                                notifications
+                                                    .remove(notification);
+                                              });
+                                            } else {
+                                              print(
+                                                  'HTTP request failed with status: ${response.statusCode}');
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
           ),
         ],
       ),
     ));
+  }
+}
+
+class NotificationModel {
+  final int noticeNo;
+  final String title;
+  final String senderNickname;
+  final String type;
+  final String time;
+
+  NotificationModel({
+    required this.noticeNo, // 보여줄 X
+    required this.title,
+    required this.senderNickname,
+    required this.type, // 보여줄 X
+    required this.time,
+  });
+
+  factory NotificationModel.fromJson(Map<String, dynamic> responseData) {
+    print('responseData: $responseData'); // 프린트
+    return NotificationModel(
+      noticeNo: responseData['noticeNo'],
+      title: responseData['title'],
+      senderNickname: responseData['senderNickname'],
+      type: responseData['type'],
+      time: responseData['time'],
+    );
   }
 }

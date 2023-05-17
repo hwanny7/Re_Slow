@@ -19,6 +19,7 @@ class CreateArticle extends StatefulWidget {
 class _CreateArticleState extends State<CreateArticle> {
   List<File> selectedImages = [];
   int? category;
+  bool isSubmit = false;
 
   final DioClient dioClient = DioClient();
   final int maxImageCount = 10;
@@ -72,7 +73,7 @@ class _CreateArticleState extends State<CreateArticle> {
   ) async {
     // Perform the HTTP GET request here
     // For example, using the http package
-
+    isSubmit = true;
     Response response = await dioClient.dio.post('/products',
         data: formData, options: Options(contentType: 'multipart/form-data'));
 
@@ -96,12 +97,14 @@ class _CreateArticleState extends State<CreateArticle> {
         );
       }
     } else {
+      isSubmit = false;
       print('HTTP request failed with status: ${response.statusCode}');
     }
   }
 
   void _submit() async {
-    // var formData = FormData();
+    if (isSubmit) return;
+
     List<String> errorMessage = [];
 
     final title = titleController.text;
@@ -109,9 +112,6 @@ class _CreateArticleState extends State<CreateArticle> {
     final deliveryFee = deliveryFeeController.text;
     final price = priceController.text;
 
-    // if (category) {
-
-    //
     if (category == null) {
       errorMessage.add('카테고리');
     }

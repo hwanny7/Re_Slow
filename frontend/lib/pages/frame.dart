@@ -225,7 +225,7 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       await dio
           .post(
         'http://k8b306.p.ssafy.io:8080/chat/fcm/token',
-        data: FormData.fromMap({"preToken": preToken, "newToken": newToken}),
+        data: {"preToken": preToken, "newToken": newToken},
         options: Options(headers: {
           'Authorization': 'Bearer $token',
         }),
