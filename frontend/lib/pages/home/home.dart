@@ -61,8 +61,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             .map((json) => Recommend1.fromJson(json))
             .toList();
       });
-      print("들어온 데이터 ${response1}");
-      print("추천1 ${recommends1[0].imageList[0]}");
     } else {
       print('HTTP request failed with status: ${response1.statusCode}');
     }
@@ -72,8 +70,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             .map((json) => Recommend2.fromJson(json))
             .toList();
       });
-      print("들어온 데이터 ${response2}");
-      print("추천2 ${recommends2}");
     } else {
       print('HTTP request failed with status: ${response2.statusCode}');
     }
@@ -109,6 +105,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     prefs.setBool('permission', false);
     if (permission == null || permission == false) {
       final PermissionStatus alarmStatus = await Permission.notification.status;
+
       if (!alarmStatus.isGranted) {
         if (context.mounted) {
           showDialog(

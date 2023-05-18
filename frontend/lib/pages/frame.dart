@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -305,7 +304,9 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
       floatingActionButton:
           _currentIndex == 0 || _currentIndex == 1 || _currentIndex == 2
               ? FloatingActionButton(
-                  child: const Icon(Icons.add),
+                  child: _currentIndex == 0
+                      ? const Icon(Icons.search)
+                      : const Icon(Icons.add),
                   onPressed: () {
                     _pressedPlus();
                   })
