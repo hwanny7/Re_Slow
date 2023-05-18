@@ -36,6 +36,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     List<Product> findTop10ByOrderIsNullOrderByCreatedDateDesc();
 
+    @Query("SELECT p from Product p left join p.order o where p.order.no IS NULL and (p.productCategory = :category1 or p.productCategory = :category2) GROUP BY p.no ORDER BY p.updatedDate DESC")
     List<Product> findTop10ByOrderIsNullAndProductCategoryOrProductCategoryOrderByCreatedDateDesc(
         ProductCategory category1, ProductCategory category2);
 }
