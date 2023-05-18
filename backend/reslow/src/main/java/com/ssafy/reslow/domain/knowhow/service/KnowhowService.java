@@ -79,6 +79,7 @@ public class KnowhowService {
 
 		// 노하우 글 좋아요 개수 0으로 레디스에 저장
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
+		redisTemplate.opsForSet().add(String.valueOf(newKnowhow.getNo()), 0);
 		zSetOperations.add("knowhow", String.valueOf(newKnowhow.getNo()), 0);
 
 		return "글 작성 완료";
