@@ -163,8 +163,6 @@ class _RecommendState extends State<Recommend>
             ),
           ),
           const SizedBox(height: 16.0),
-
-          // Wrap
           Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
@@ -179,8 +177,6 @@ class _RecommendState extends State<Recommend>
                 )
                 .toList(),
           ),
-
-          // Draw Floating Bubbles
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
@@ -192,23 +188,23 @@ class _RecommendState extends State<Recommend>
                     if (_tags.isEmpty) Container(), // Nothing
 
                     // 입력 했는데, 결과가 없는 경우
-                    if ((_tags.isNotEmpty && recommendations.isEmpty) ||
-                        (_tags.isNotEmpty &&
-                            recommendations[0] == null &&
-                            recommendations[1] == null &&
-                            recommendations[2] == null))
-                      Container(
-                        width: 300,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            "검색 결과가 존재하지 않습니다",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ),
+                    // if ((_tags.isNotEmpty && recommendations.isEmpty) ||
+                    //     (_tags.isNotEmpty &&
+                    //         recommendations[0] == null &&
+                    //         recommendations[1] == null &&
+                    //         recommendations[2] == null))
+                    //   Container(
+                    //     width: 300,
+                    //     height: 50,
+                    //     child: Center(
+                    //       child: Text(
+                    //         "검색 결과가 존재하지 않습니다",
+                    //         style: TextStyle(
+                    //           fontSize: 16,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
 
                     // 입력 했고, 결과가 있는 경우 (1개-2개-3개 분기처리)
                     // Bubble 1

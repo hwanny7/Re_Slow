@@ -44,7 +44,9 @@ class _CuponListState extends State<CuponList> {
       Map<String, dynamic> jsonData = response.data;
       if (jsonData["content"].isEmpty) {
         isLast = true;
-        print("empty");
+        setState(() {
+          isFirst = false;
+        });
       } else {
         setState(() {
           isFirst = false;
