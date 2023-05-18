@@ -34,7 +34,7 @@ public class SettlementService {
 		LocalDateTime startDt = startDate.atStartOfDay();
 		LocalDateTime endDt = endDate.atTime(LocalTime.MAX);
 		Member member = memberRepository.getReferenceById(memberNo);
-		Slice<Settlement> settlementSlice = settlementRepository.findByMemberAndCreatedDateBetween(member, startDt, endDt, pageable);
+		Slice<Settlement> settlementSlice = settlementRepository.findByMemberAndCreatedDateBetweenOrderByCreatedDateDesc(member, startDt, endDt, pageable);
 		List<SettlementListResponse> list = settlementSlice.getContent()
 			.stream()
 			.map(SettlementListResponse::of)
@@ -60,4 +60,5 @@ public class SettlementService {
 		map.put("amount", amount);
 		return map;
 	}
+
 }
