@@ -131,14 +131,19 @@ class _KnowhowcommentState extends State<Knowhowcomment> {
                 border: Border.all(
                     color: Colors.grey, style: BorderStyle.solid, width: 0.5)),
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(50),
+            child: ClipOval(
                 child: content[index]["profilePic"] == null
                     ? Image.asset(
                         "assets/image/user.png",
                         width: 50,
+                        height: 50,
                       )
-                    : Image.network(content[index]["profilePic"], width: 50))),
+                    : Image.network(
+                        content[index]["profilePic"],
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ))),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

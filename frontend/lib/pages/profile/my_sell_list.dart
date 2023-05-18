@@ -118,7 +118,7 @@ class _MySellListState extends State<MySellList>
         iconTheme: const IconThemeData(color: Colors.black),
         centerTitle: true,
         title: Text(
-          '주문내역',
+          '판매 현황',
           style: const TextStyle(
             color: Colors.black,
             fontSize: 20,

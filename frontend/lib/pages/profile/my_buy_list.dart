@@ -121,7 +121,7 @@ class _MyBuyListState extends State<MyBuyList>
         iconTheme: const IconThemeData(color: Colors.black),
         centerTitle: true,
         title: const Text(
-          '주문내역',
+          '구매 현황',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
