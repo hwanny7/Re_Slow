@@ -216,8 +216,7 @@ public class KnowhowService {
 
 		// 글 삭제
 		setOperations.remove(knowhowString, String.valueOf(memberNo));
-		// 사용자의 좋아요 개수 -1
-		zSetOperations.incrementScore("knowhow", knowhowString, -1);
+		zSetOperations.remove("knowhow", knowhowString);
 		return "글 삭제 완료";
 	}
 

@@ -140,8 +140,9 @@ public class ProductService {
 		SetOperations<String, String> setOperations = redisTemplate.opsForSet();
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet();
 		setOperations.remove(String.valueOf(productNo));
+		zSetOperations.remove("product", String.valueOf(productNo));
+
 		zSetOperations.remove(memberNo + "_like_product", String.valueOf(productNo));
-		zSetOperations.remove(memberNo + "product", String.valueOf(productNo));
 		zSetOperations.incrementScore("product_" + memberNo,
 			String.valueOf(product.getProductCategory().getNo()),
 			-1);
