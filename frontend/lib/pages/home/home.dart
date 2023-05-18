@@ -31,7 +31,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   List<dynamic> displayrecommends3 = [];
   User? user;
 
-  Future<void> fetchData() async {
+  void fetchCoupon() async {
     Map<String, dynamic> queryParams = {
       'page': 0,
       'size': 10,
@@ -51,10 +51,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } else {
       print('HTTP request failed with status: ${response.statusCode}');
     }
-// 추천
+  }
+
+  void fetchResponse1() async {
     Response response1 = await dioClient.dio.get('/knowhows/recommends/main');
-    Response response2 = await dioClient.dio.get('/products/recommends');
-    Response response3 = await dioClient.dio.get('/products/recommends/orders');
     if (response1.statusCode == 200) {
       setState(() {
         recommends1 = (response1.data as List<dynamic>)
@@ -64,6 +64,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } else {
       print('HTTP request failed with status: ${response1.statusCode}');
     }
+  }
+
+  void fetchResponse2() async {
+    Response response2 = await dioClient.dio.get('/products/recommends');
     if (response2.statusCode == 200) {
       setState(() {
         recommends2 = (response2.data as List<dynamic>)
@@ -73,6 +77,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     } else {
       print('HTTP request failed with status: ${response2.statusCode}');
     }
+  }
+
+  void fetchResponse3() async {
+    Response response3 = await dioClient.dio.get('/products/recommends/orders');
+
     if (response3.statusCode == 200) {
       setState(() {
         recommends3 = (response3.data as List<dynamic>)
@@ -93,9 +102,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     }
   }
 
+  Future<void> fetchData() async {
+    fetchCoupon();
+    fetchResponse1();
+    fetchResponse2();
+    fetchResponse3();
+  }
+
   void getUserData() async {
     user = await UserPreferences().getUser();
-    // setState(() {});
   }
 
   Future<void> requestAlarmPermission() async {
