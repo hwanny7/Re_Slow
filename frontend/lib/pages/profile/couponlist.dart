@@ -139,7 +139,6 @@ class Coupon {
   });
 
   factory Coupon.fromJson(Map<String, dynamic> responseData) {
-    print('responseData: $responseData'); // 프린트
     return Coupon(
         couponNo: responseData['couponNo'],
         name: responseData['name'],

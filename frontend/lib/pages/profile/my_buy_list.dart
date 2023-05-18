@@ -90,7 +90,6 @@ class _MyBuyListState extends State<MyBuyList>
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data['content'];
-      print(jsonData);
 
       if (isInfinite) {
         if (jsonData.isEmpty) {

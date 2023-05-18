@@ -34,12 +34,9 @@ class _NotificationSettingState extends State<NotificationSetting> {
       Response response =
           await dioClient.dio.patch('/notices', data: requestBody);
       // Handle the response if needed
-      print('PATCH request completed successfully!');
-      print('Response status: ${response.statusCode}');
-      print('Response data: ${response.data}');
     } catch (error) {
       // Handle any errors that occur during the request
-      print('Error occurred during PATCH request:');
+
       print(error);
     }
   }
@@ -88,12 +85,6 @@ class _NotificationSettingState extends State<NotificationSetting> {
                         _orderNotificationEnabled;
                     sendPatchRequest(
                         value, "COMMENT"); // Call the method with the new value
-                    print(
-                        'Comment notification enabled: $_commentNotificationEnabled');
-                    print(
-                        'Chatting notification enabled: $_chattingNotificationEnabled');
-                    print(
-                        'Order notification enabled: $_orderNotificationEnabled');
                   });
                 },
               ),
@@ -112,12 +103,6 @@ class _NotificationSettingState extends State<NotificationSetting> {
                         _orderNotificationEnabled;
                     sendPatchRequest(value,
                         "CHATTING"); // Call the method with the new value
-                    print(
-                        'Comment notification enabled: $_commentNotificationEnabled');
-                    print(
-                        'Chatting notification enabled: $_chattingNotificationEnabled');
-                    print(
-                        'Order notification enabled: $_orderNotificationEnabled');
                   });
                 },
               ),
@@ -136,12 +121,6 @@ class _NotificationSettingState extends State<NotificationSetting> {
                         _orderNotificationEnabled;
                     sendPatchRequest(
                         value, "ORDER"); // Call the method with the new value
-                    print(
-                        'Comment notification enabled: $_commentNotificationEnabled');
-                    print(
-                        'Chatting notification enabled: $_chattingNotificationEnabled');
-                    print(
-                        'Order notification enabled: $_orderNotificationEnabled');
                   });
                 },
               ),

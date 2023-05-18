@@ -84,7 +84,7 @@ class _CalendarSelectionState extends State<CalendarSelection> {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = response.data["content"];
-      print(jsonData);
+
       if (isInfinite) {
         if (jsonData.isEmpty) {
           isLast = true;

@@ -26,7 +26,6 @@ class _NotificationPageState extends State<NotificationPage> {
 
       if (response.statusCode == 200) {
         List<dynamic> jsonData = response.data;
-        print('Response data: $jsonData'); // Print the response data
 
         setState(() {
           loading = false;
@@ -228,7 +227,6 @@ class NotificationModel {
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> responseData) {
-    print('responseData: $responseData'); // 프린트
     return NotificationModel(
       noticeNo: responseData['noticeNo'],
       title: responseData['title'],

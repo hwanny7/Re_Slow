@@ -59,7 +59,7 @@ class _MyKnowhowState extends State<MyKnowhow> {
         myknowhowisLast = false;
       }
       final token = await _getTokenFromSharedPreferences();
-      print("token $token");
+
       await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/mylist',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
@@ -67,11 +67,10 @@ class _MyKnowhowState extends State<MyKnowhow> {
           queryParameters: {"page": myknowhowpage, "size": 4}).then(
         (value) {
           List<dynamic> jsonData = value.data;
-          // print(jsonData);
+
           if (isInfinite) {
             if (jsonData.isEmpty) {
               myknowhowisLast = true;
-              print('empty');
             } else {
               setState(() {
                 content.addAll(List<KnowhowItem>.from(jsonData
@@ -103,7 +102,7 @@ class _MyKnowhowState extends State<MyKnowhow> {
     try {
       if (isLike) {
         final token = await _getTokenFromSharedPreferences();
-        print("token $token");
+
         final response = await dio
             .post('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
                 options: Options(headers: {
@@ -114,10 +113,9 @@ class _MyKnowhowState extends State<MyKnowhow> {
             content[index].likeCnt = value.data["count"];
           });
         });
-        print(response);
       } else {
         final token = await _getTokenFromSharedPreferences();
-        print("token $token");
+
         final response = await dio
             .delete('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
                 options: Options(headers: {
@@ -128,7 +126,6 @@ class _MyKnowhowState extends State<MyKnowhow> {
             content[index].likeCnt = value.data["count"];
           });
         });
-        print(response);
       }
     } on DioError catch (e) {
       print('likeerror: $e');
@@ -138,7 +135,7 @@ class _MyKnowhowState extends State<MyKnowhow> {
   Future<void> _deleteKnowhow(int KnowhowNo) async {
     try {
       final token = await _getTokenFromSharedPreferences();
-      print("token $token");
+
       await dio
           .delete('http://k8b306.p.ssafy.io:8080/knowhows/$KnowhowNo',
               options: Options(headers: {

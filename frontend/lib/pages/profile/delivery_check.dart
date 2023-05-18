@@ -45,7 +45,6 @@ class _DeliveryCheckState extends State<DeliveryCheck> {
         'http://info.sweettracker.co.kr/api/v1/trackingInfo?t_code=${widget.tcode}&t_invoice=${widget.tinvoice}&t_key=604N6oIERfVJqXggjzXyJg'));
 
     if (response.statusCode == 200) {
-      print(response.body);
       setState(() {
         data = jsonDecode(response.body);
         isLoaded = true;

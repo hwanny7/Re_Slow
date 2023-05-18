@@ -61,20 +61,18 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
         myknowhowisLast = false;
       }
       final token = await _getTokenFromSharedPreferences();
-      print("token $token");
+
       await dio.get('http://k8b306.p.ssafy.io:8080/knowhows/likes/',
           options: Options(headers: {
             'Authorization': 'Bearer $token',
           }),
           queryParameters: {"page": mylikeknowhowpage, "size": 4}).then(
         (value) {
-          print(value);
           List<dynamic> jsonData = value.data["content"];
-          // print(jsonData);
+
           if (isInfinite) {
             if (jsonData.isEmpty) {
               myknowhowisLast = true;
-              print('empty');
             } else {
               setState(() {
                 content.addAll(List<KnowhowItem>.from(jsonData
@@ -106,7 +104,7 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
     try {
       if (isLike) {
         final token = await _getTokenFromSharedPreferences();
-        print("token $token");
+
         final response = await dio
             .post('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
                 options: Options(headers: {
@@ -117,10 +115,9 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
             content[index].likeCnt = value.data["count"];
           });
         });
-        print(response);
       } else {
         final token = await _getTokenFromSharedPreferences();
-        print("token $token");
+
         final response = await dio
             .delete('http://k8b306.p.ssafy.io:8080/knowhows/${KnowhowNo}/like',
                 options: Options(headers: {
@@ -131,7 +128,6 @@ class _MylikeknowhowState extends State<Mylikeknowhow> {
             content[index].likeCnt = value.data["count"];
           });
         });
-        print(response);
       }
     } on DioError catch (e) {
       print('likeerror: $e');
