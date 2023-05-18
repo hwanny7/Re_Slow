@@ -1,11 +1,11 @@
 # 🚀 깃 컨벤션
 ## [자세히보기](https://blushing-friend-fae.notion.site/Git-Convention-63351e7b214346f48f2946316b7cc5ab)
 
-<br/>
+
 ## GIT ****커밋 컨벤션****
 
 <aside>
-💡 **형식**
+💡 형식
 gitmoji subject
 
 body
