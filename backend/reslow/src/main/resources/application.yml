@@ -1,0 +1,83 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: ${ACTIVE}
+  redis:
+    host: k8b306.p.ssafy.io
+    port: '6379'
+    password: ${REDIS_PASSWORD}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+    dialect: com.ssafy.reslow.global.config.MySQLDialectCustom
+  sql:
+    init:
+      mode: always
+      continue-on-error: true
+      data-locations: classpath:sql/data.sql
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    mongodb:
+      host: k8b306.p.ssafy.io
+      port: 27017
+      username: ${DEV_MONGO_NAME}
+      password: ${DEV_MONGO_PASSWORD}
+      authentication-database: admin
+      database: reslow
+
+  batch:
+    jdbc:
+      initialize-schema: always
+
+jwt:
+  secret: ${JWT_SECRETKEY}
+
+fcm:
+  credentials:
+    fcm-server-key: ${FCM_SERVER_KEY}
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${ACCESS_KEY_AWS_S3}
+      secretKey: ${SECRET_KEY_AWS_S3}
+    s3:
+      bucket: ${BUCKET_ADDRESS}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+  profiles:
+    include: aws
+
+default-image-s3: ${DEFAULT_PROGILE_IMAGE}
+
+iamport:
+  api:
+    key: ${IAMPORT_KEY}
+    secret: ${IAMPORT_SECRET}
+
+delivery:
+  api:
+    key: ${DELIVERY_API_KEY}
+
+#logging:
+#  level:
+#    root:
+#      debug
