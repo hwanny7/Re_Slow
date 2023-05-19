@@ -71,22 +71,28 @@ RE:SLOW는 제품의 리폼(reform)을 통해 소비 생활을 돕는다는 의�
 **Backend - Spring**
 - IntelliJ IDE
 - OpenJDK 11
-- Springboot 2.7.8
+- Springboot 2.7.11
 - Spring Data JPA
 - Spring Security 5.7.6
-- Spring Web
+- Spring Batch 5.0.2
+- QueryDSL 1.0.10
 - Redis 7.0.8
 - MySQL 8.0.32
-- MongoDB
+- MongoDB 6.0.5
+- firebase 9.1.1
 
 **Frontend**
 - Visual Studio Code IDE
+- android studio 2022.2.1
+- flutter sdk 3.10.1
+- gradle 7.3.0
+- dart 3.0.0
 
 **CI/CD**
 - AWS EC2
     - Ubuntu 20.04 LTS
-    - Docker 20.10.12
-- Jenkins 2.375.1
+    - Docker 23.0.4
+- Jenkins
 
 ## ✔ 프로젝트 파일 기본구조
 ---
@@ -133,26 +139,41 @@ reslow
 
 ### Frontend
 ```
-Frontend
-  ├── .prettierrc
-  ├── build
-  ├── default.conf
-  ├── Dockerfile
-  ├── package-lock.json
-  ├── package.json
-  ├── public
+frontend
+  ├── .vscode
+  ├── android
+  ├── assets
+  ├── functions
+  ├── ios
+  ├── test
+  ├── .firebaserc
+  ├── .metadata
   ├── README.md
-  └── src
-      ├── assets
-      │  ├── fonts
-      │  └── images
-      ├── components
-      │  ├── accounts
-      │  ├── battle
-      │  ├── home
-      │  └── mypage
-      ├── shared
-      └── states
+  ├── analysis_options.yaml
+  ├── database.rules.json
+  ├── firebase.json
+  ├── flutter_launcher_icons.yaml
+  ├── pubspec.lock
+  ├── pubspec.yaml
+  ├── lib
+  │
+  ├── widgets
+  │     ├── common
+  │     ├── knowhow
+  │     └── market
+  │
+  ├── pages
+  │     ├── auth
+  │     ├── chat
+  │     ├── home
+  │     ├── knowhow
+  │     ├── market
+  │     └── profile
+  │
+  ├── models
+  ├── providers
+  ├── services
+  └── utils
 
 ```
 
@@ -162,14 +183,6 @@ Frontend
 ### ERD
 ---
 ![ERD](/images/ERD.PNG)
-
-</br>
-
-## ✔ CI/CD
----
-### 프로젝트 단위마다 Docker 컨테이너로 나누어 관리, 젠킨스를 통해 자동 빌드, 배포 중
----
-![iimage](/uploads/c718ce6a72f89c83957f886f2ccbf4b9/iimage.png)
 
 </br>
 
@@ -187,14 +200,13 @@ Frontend
 ## ✔ 협업 환경
 ---
 - Gitlab
-  - 코드의 버전을 관리
   - Git Flow 브랜치 전략 사용
   - 팀원과의 소통을 위해 설정한 Git Convention을 따름
 - JIRA
   - 매주 월요일 목표를 설정하여 Sprint 진행
-  - 업무의 할당량을 정하여 Story Point를 설정하고 해당하는 컴포넌트와 버전을 명시함
+  - 업무의 할당량을 정하여 Story Point를 설정함
 - 회의
-  - 매일아침 30분씩 스크럼을 통해 진행사항 공유
+  - 매일아침 20분씩 스크럼을 통해 진행사항 공유
   - 긴급 안건이 있는 경우 별도의 회의를 진행함
 - Notion
   - 회의가 있을때마다 회의록을 기록하여 보관
@@ -221,7 +233,6 @@ Frontend
 - [깃 브랜치전략](/docs/GIT%20%EB%B8%8C%EB%9E%9C%EC%B9%98.md)
 - [API](/docs/API%EB%AA%85%EC%84%B8%EC%84%9C.md)
 - [ERD](/docs/ERD.md)
-- [회의록]()
 - [시스템 구조도]()
 
 </br>
