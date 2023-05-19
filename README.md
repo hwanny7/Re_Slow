@@ -276,8 +276,9 @@ frontend
 
 - 쿠폰을 발급받아 플리마켓에서 사용할 수 있습니다.
 
-![쿠폰발급 화면]()
-![내 쿠폰 리스트 화면]()
+|     쿠폰발급     |
+| ------------ |
+| ![큐](../images/service/coupon.gif) |
 
 ### 노하우
 
@@ -295,21 +296,31 @@ frontend
 
 - 플리마켓을 통해 리폼한 물품을 사고 팔 수 있습니다.
 
-|     플리마켓 홈     |      글쓰기       |   내가 올린 상품  |
-| ------------ | ------------- | ------------- |
-| ![노하우홈](../images/service/market-category.gif) | ![글쓰기](../images/service/market.gif)  | ![내글](../images/service/mypage-salespage.gif)  |
+|     플리마켓 홈     |      글쓰기       |
+| ------------ | ------------- |
+| ![노하우홈](../images/service/market-category.gif) | ![글쓰기](../images/service/market.gif)  |
 
 - 궁금한 사항은 채팅을 통해 물어볼 수 있습니다.
+|     채팅걸기     |      채팅하기       |   알림  |
+| ------------ | ------------- | ------------- |
+| ![ㅊㅌ](../images/service/market-chat.gif) | ![ㅊㅌ2](../images/service/chatting.gif)  | ![ㅇㄹ](../images/service/notice.png)  |
+
 
 ### 판매내역
 - 판매자는 들어온 주문을 확인하고 수락/거절할 수 있습니다.
 - 보낸 물품의 운송장 번호를 입력하여 택배를 추적할 수 있습니다.
 - 배송을 완료한 후 구매자가 구매확정 클릭 시 정산 리스트에 추가됩니다.
 
+|     판매내역    |
+| ------------ |
+| ![ㅍㅁㄴㅇ](../images/service/mypage-salespage.gif) |
+
 ### 정산
 - 구매확정된 +1 영업일 오전 5시에 자동으로 정산 기능이 활성화됩니다.
 
-![연습문제]()
+|     정산페이지    |
+| ------------ |
+| ![ㅈㅅ](../images/service/settlement.gif) |
 
 ### 관리자 사이트
 
