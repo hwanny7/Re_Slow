@@ -301,9 +301,10 @@ frontend
 | ![노하우홈](../images/service/market-category.gif) | ![글쓰기](../images/service/market.gif)  |
 
 - 궁금한 사항은 채팅을 통해 물어볼 수 있습니다.
-|     채팅걸기     |      채팅하기       |   알림  |
+
+|     채팅걸기     |      채팅하기       |      알림       |
 | ------------ | ------------- | ------------- |
-| ![ㅊㅌ](../images/service/market-chat.gif) | ![ㅊㅌ2](../images/service/chatting.gif)  | ![ㅇㄹ](../images/service/notice.png)  |
+| ![ㅊㅌ](../images/service/market-chat.gif) | ![ㅊㅌ2](../images/service/chatting.gif)  | ![ㅇㄹ](../images/service/notice.jpg) |
 
 
 ### 판매내역
