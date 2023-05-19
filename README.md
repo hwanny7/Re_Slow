@@ -187,7 +187,7 @@ frontend
 
 ### 아키텍처
 ---
-![ERD](/images/%EC%95%84%ED%82%A4%ED%85%8D%EC%B3%90.png)
+![아키텍처](/images/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
 
 <br/>
 <br/>
