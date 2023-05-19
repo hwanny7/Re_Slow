@@ -1,6 +1,6 @@
 # 🐢 RE:SLOW - MZ 세대의 현명한 소비를 지원하는 리폼 커뮤니티
 
-![로고](/)
+![로고](/images/main.png)
 
 </br>  
 
@@ -185,6 +185,13 @@ frontend
 <br/>
 <br/>
 
+### 아키텍처
+---
+![ERD](/images/%EC%95%84%ED%82%A4%ED%85%8D%EC%B3%90.png)
+
+<br/>
+<br/>
+
 ### ERD
 ---
 ![ERD](/images/ERD.PNG)
@@ -241,7 +248,7 @@ frontend
 - [깃 브랜치전략](/docs/GIT%20%EB%B8%8C%EB%9E%9C%EC%B9%98.md)
 - [API](/docs/API%EB%AA%85%EC%84%B8%EC%84%9C.md)
 - [ERD](/docs/ERD.md)
-- [시스템 구조도]()
+- [시스템 구조도](/docs/%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.md)
 
 <br/>
 <br/>
@@ -249,7 +256,7 @@ frontend
 ## ✔ 프로젝트 결과물
 -   [포팅메뉴얼](/exec/%ED%8F%AC%ED%8C%85%20%EB%A9%94%EB%89%B4%EC%96%BC.md)
 -   [중간발표자료](/ppt/%EC%A4%91%EA%B0%84%EB%B0%9C%ED%91%9CPPT.pdf)
--   [최종발표자료]()
+-   [최종발표자료](/ppt/%EC%B5%9C%EC%A2%85%EB%B0%9C%ED%91%9CPPT.pdf)
 
 <br/>
 <br/>
@@ -261,7 +268,9 @@ frontend
 - 사용자 맞춤형 플리마켓 상품을 추천받을 수 있습니다.
 - 현재 가장 인기있는 상품과 노하우 글을 추천받을 수 있습니다.
 
-![ALCOL_-_Chrome_2023-02-17_12-54-18_Trim]()
+|     홈화면     |
+| ------------ |
+| ![홈](../images/service/home.gif) |
 
 ### 쿠폰발급
 
@@ -276,14 +285,19 @@ frontend
 - 좋아요를 누르고 댓글을 달아 소통할 수 있습니다.
 - 댓글을 달면 작성자에게 알림 보내 알릴 수 있습니다.
 
-![]()
+|     노하우 홈     |      글쓰기       |   내가 쓴 노하우  |
+| ------------ | ------------- | ------------- |
+| ![노하우홈](../images/service/knowhow-category.gif) | ![글쓰기](../images/service/knowhowpage.gif)  | ![내글](../images/service/mypage-knowhow.gif)  |
+
 
 
 ### 플리마켓
 
 - 플리마켓을 통해 리폼한 물품을 사고 팔 수 있습니다.
 
-![Untitled]()
+|     플리마켓 홈     |      글쓰기       |   내가 올린 상품  |
+| ------------ | ------------- | ------------- |
+| ![노하우홈](../images/service/market-category.gif) | ![글쓰기](../images/service/market.gif)  | ![내글](../images/service/mypage-salespage.gif)  |
 
 - 궁금한 사항은 채팅을 통해 물어볼 수 있습니다.
 
@@ -301,4 +315,6 @@ frontend
 
 - 관리자는 웹사이트로 로그인하여 쿠폰을 등록하고 쿠폰 목록을 확인할 수 있습니다.
 
-
+|     관리자사이트     |
+| ------------ |
+| ![홈](../images/service/managepage.gif) |
