@@ -288,7 +288,7 @@ frontend
 
 |     노하우 홈     |      글쓰기       |   내가 쓴 노하우  |
 | ------------ | ------------- | ------------- |
-| <img src="../images/service/knowhow-category.gif"  width="300" height="600"/> | <img src="../images/service/knowhowpage.gif"  width="300" height="600"/>  | <img src="../images/service/mypage-knowhow.gif"  width="300" height="600"/>  |
+| <img src="/images/service/knowhow-category.gif"  width="300" height="600"/> | <img src="../images/service/knowhowpage.gif"  width="300" height="600"/>  | <img src="../images/service/mypage-knowhow.gif"  width="300" height="600"/>  |
 
 
 
